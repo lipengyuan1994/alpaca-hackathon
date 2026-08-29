@@ -1,0 +1,16 @@
+# syntax=docker/dockerfile:1
+# This image intentionally excludes agent, strategy SDK, runner, and plug-ins.
+FROM python:3.12-slim AS execution
+ARG TARGETARCH
+RUN test "$TARGETARCH" = "arm64" || test "$TARGETARCH" = "amd64"
+WORKDIR /app
+COPY packages/contracts packages/contracts
+COPY packages/domain packages/domain
+COPY packages/risk_kernel packages/risk_kernel
+COPY packages/market_data packages/market_data
+COPY packages/ledger packages/ledger
+COPY packages/execution_core packages/execution_core
+COPY packages/alpaca_execution_mcp packages/alpaca_execution_mcp
+COPY apps/execution_worker apps/execution_worker
+RUN pip install --no-cache-dir "pydantic==2.13.5"
+CMD ["python", "-m", "apps.execution_worker.main"]

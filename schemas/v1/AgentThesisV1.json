@@ -1,0 +1,105 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "content_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Content Hash"
+    },
+    "context_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Context Hash",
+      "type": "string"
+    },
+    "diagnostic_confidence": {
+      "anyOf": [
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+          "type": "string"
+        }
+      ],
+      "title": "Diagnostic Confidence"
+    },
+    "expires_at": {
+      "format": "date-time",
+      "title": "Expires At",
+      "type": "string"
+    },
+    "model_input_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Model Input Hash",
+      "type": "string"
+    },
+    "model_version": {
+      "minLength": 1,
+      "title": "Model Version",
+      "type": "string"
+    },
+    "prompt_version": {
+      "minLength": 1,
+      "title": "Prompt Version",
+      "type": "string"
+    },
+    "raw_output_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Raw Output Hash",
+      "type": "string"
+    },
+    "reason_code": {
+      "pattern": "^[A-Z][A-Z0-9_]{2,95}$",
+      "title": "Reason Code",
+      "type": "string"
+    },
+    "recommendation": {
+      "enum": [
+        "ALLOW_UNCHANGED",
+        "VETO"
+      ],
+      "title": "Recommendation",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "agent-thesis/v1",
+      "default": "agent-thesis/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "strategy_evaluation_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Strategy Evaluation Hash",
+      "type": "string"
+    },
+    "thesis_id": {
+      "minLength": 1,
+      "title": "Thesis Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "thesis_id",
+    "context_hash",
+    "strategy_evaluation_hash",
+    "model_input_hash",
+    "model_version",
+    "prompt_version",
+    "raw_output_hash",
+    "recommendation",
+    "diagnostic_confidence",
+    "expires_at",
+    "reason_code"
+  ],
+  "title": "AgentThesisV1",
+  "type": "object"
+}

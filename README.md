@@ -1,5 +1,29 @@
-# alpaca-hackathon
+# RegimeSwitch — paper-only options-agent system
 
-Start with the [documentation index](docs/index.md).
+This is the executable modular-monolith skeleton defined in the
+[system architecture](docs/architecture/SYSTEM_ARCHITECTURE.md). It has no
+live-trading mode, endpoint, or credential path.
 
-The canonical competition strategy, team decisions, risk posture, six-person ownership model, delivery gates, and remaining questions are in [HACKATHON_PLAN.md](HACKATHON_PLAN.md). Separate documents define the [system architecture](docs/architecture/SYSTEM_ARCHITECTURE.md), [strategy plug-in API](docs/architecture/STRATEGY_API.md), [skeleton implementation plan](docs/plans/SKELETON_IMPLEMENTATION_PLAN.md), and [strategy research plan](docs/plans/STRATEGY_RESEARCH_PLAN.md).
+The committed fixture paths run without network or broker credentials:
+
+```zsh
+UV_CACHE_DIR="$PWD/.uv-cache" UV_PYTHON_INSTALL_DIR="$PWD/.uv-python-arm64" /opt/homebrew/bin/uv sync --frozen
+UV_CACHE_DIR="$PWD/.uv-cache" UV_PYTHON_INSTALL_DIR="$PWD/.uv-python-arm64" /opt/homebrew/bin/uv run python -m pytest
+UV_CACHE_DIR="$PWD/.uv-cache" UV_PYTHON_INSTALL_DIR="$PWD/.uv-python-arm64" /opt/homebrew/bin/uv run paper-decision-worker
+UV_CACHE_DIR="$PWD/.uv-cache" UV_PYTHON_INSTALL_DIR="$PWD/.uv-python-arm64" /opt/homebrew/bin/uv run paper-decision-worker --approved
+```
+
+The normal fixture produces a visible, deterministic `NO_TRADE` decision tape.
+The `--approved` fixture ends at the transactional outbox; it does not contact
+Alpaca. The execution-side test consumes that immutable command with the fake
+broker and independently validates all preflight bindings.
+
+`apps/api` exposes credential-free read-only replay endpoints. `apps/operator_cli`
+only validates one-shot control command payloads; it has no broker or public
+API integration. Role-specific Dockerfiles are in [infra](infra).
+
+Start with the [documentation index](docs/index.md). The competition strategy,
+risk posture, ownership model, and delivery gates remain in
+[HACKATHON_PLAN.md](HACKATHON_PLAN.md). The strategy boundary and delivery
+sequence are in [STRATEGY_API.md](docs/architecture/STRATEGY_API.md) and
+[SKELETON_IMPLEMENTATION_PLAN.md](docs/plans/SKELETON_IMPLEMENTATION_PLAN.md).

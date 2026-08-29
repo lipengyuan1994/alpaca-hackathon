@@ -1,0 +1,82 @@
+{
+  "additionalProperties": false,
+  "description": "Evidence record that binds a replay result to all immutable release inputs.",
+  "properties": {
+    "config_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Config Hash",
+      "type": "string"
+    },
+    "content_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Content Hash"
+    },
+    "git_revision": {
+      "maxLength": 128,
+      "minLength": 7,
+      "title": "Git Revision",
+      "type": "string"
+    },
+    "market_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Market Hash",
+      "type": "string"
+    },
+    "plugin_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Plugin Hash",
+      "type": "string"
+    },
+    "run_id": {
+      "minLength": 1,
+      "title": "Run Id",
+      "type": "string"
+    },
+    "schema_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Schema Hash",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "run-manifest/v1",
+      "default": "run-manifest/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "NO_TRADE",
+        "RISK_REJECTED",
+        "APPROVED_AND_ENQUEUED",
+        "EXECUTION_FAILED"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "thesis_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Thesis Hash",
+      "type": "string"
+    }
+  },
+  "required": [
+    "run_id",
+    "status",
+    "git_revision",
+    "config_hash",
+    "schema_hash",
+    "plugin_hash",
+    "market_hash",
+    "thesis_hash"
+  ],
+  "title": "RunManifestV1",
+  "type": "object"
+}

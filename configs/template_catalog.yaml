@@ -1,0 +1,10 @@
+version: template-catalog/v1
+templates:
+  CALL_DEBIT_SPREAD_V1:
+    direction: BULLISH
+    atomic_option_only: true
+    max_legs: 2
+  PUT_DEBIT_SPREAD_V1:
+    direction: BEARISH
+    atomic_option_only: true
+    max_legs: 2

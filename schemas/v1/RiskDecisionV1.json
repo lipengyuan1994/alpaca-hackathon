@@ -1,0 +1,91 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "approved": {
+      "title": "Approved",
+      "type": "boolean"
+    },
+    "decision_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Decision Hash"
+    },
+    "decision_id": {
+      "minLength": 1,
+      "title": "Decision Id",
+      "type": "string"
+    },
+    "expires_at": {
+      "format": "date-time",
+      "title": "Expires At",
+      "type": "string"
+    },
+    "maximum_loss": {
+      "anyOf": [
+        {
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+          "type": "string"
+        }
+      ],
+      "title": "Maximum Loss"
+    },
+    "plan_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Plan Hash",
+      "type": "string"
+    },
+    "reason_codes": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Reason Codes",
+      "type": "array"
+    },
+    "reservation_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reservation Id"
+    },
+    "risk_input_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Risk Input Hash",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "risk-decision/v1",
+      "default": "risk-decision/v1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "decision_id",
+    "plan_hash",
+    "risk_input_hash",
+    "approved",
+    "reason_codes",
+    "maximum_loss",
+    "expires_at"
+  ],
+  "title": "RiskDecisionV1",
+  "type": "object"
+}

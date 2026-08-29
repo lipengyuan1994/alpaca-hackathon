@@ -1,0 +1,371 @@
+{
+  "$defs": {
+    "OrderLegV1": {
+      "additionalProperties": false,
+      "properties": {
+        "expiration": {
+          "format": "date-time",
+          "title": "Expiration",
+          "type": "string"
+        },
+        "multiplier": {
+          "const": 100,
+          "default": 100,
+          "title": "Multiplier",
+          "type": "integer"
+        },
+        "quantity": {
+          "exclusiveMinimum": 0,
+          "title": "Quantity",
+          "type": "integer"
+        },
+        "right": {
+          "enum": [
+            "CALL",
+            "PUT"
+          ],
+          "title": "Right",
+          "type": "string"
+        },
+        "side": {
+          "enum": [
+            "BUY",
+            "SELL"
+          ],
+          "title": "Side",
+          "type": "string"
+        },
+        "strike": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "title": "Strike"
+        },
+        "symbol": {
+          "pattern": "^[A-Z0-9]{1,32}$",
+          "title": "Symbol",
+          "type": "string"
+        }
+      },
+      "required": [
+        "symbol",
+        "side",
+        "quantity",
+        "right",
+        "strike",
+        "expiration"
+      ],
+      "title": "OrderLegV1",
+      "type": "object"
+    },
+    "OrderPlanV1": {
+      "additionalProperties": false,
+      "properties": {
+        "account_id": {
+          "minLength": 1,
+          "title": "Account Id",
+          "type": "string"
+        },
+        "account_snapshot_version": {
+          "minimum": 0,
+          "title": "Account Snapshot Version",
+          "type": "integer"
+        },
+        "client_order_id": {
+          "pattern": "^[a-z0-9-]{8,64}$",
+          "title": "Client Order Id",
+          "type": "string"
+        },
+        "intent_id": {
+          "minLength": 1,
+          "title": "Intent Id",
+          "type": "string"
+        },
+        "legs": {
+          "items": {
+            "$ref": "#/$defs/OrderLegV1"
+          },
+          "maxItems": 4,
+          "minItems": 1,
+          "title": "Legs",
+          "type": "array"
+        },
+        "limit_debit": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "title": "Limit Debit"
+        },
+        "market_snapshot_hash": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Market Snapshot Hash",
+          "type": "string"
+        },
+        "maximum_loss": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "title": "Maximum Loss"
+        },
+        "order_risk_snapshot_version": {
+          "minimum": 0,
+          "title": "Order Risk Snapshot Version",
+          "type": "integer"
+        },
+        "plan_hash": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Plan Hash"
+        },
+        "plan_id": {
+          "minLength": 1,
+          "title": "Plan Id",
+          "type": "string"
+        },
+        "position_snapshot_version": {
+          "minimum": 0,
+          "title": "Position Snapshot Version",
+          "type": "integer"
+        },
+        "quantity": {
+          "exclusiveMinimum": 0,
+          "title": "Quantity",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "order-plan/v1",
+          "default": "order-plan/v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "template_id": {
+          "enum": [
+            "CALL_DEBIT_SPREAD_V1",
+            "PUT_DEBIT_SPREAD_V1",
+            "LONG_CALL_V1",
+            "LONG_PUT_V1"
+          ],
+          "title": "Template Id",
+          "type": "string"
+        },
+        "time_in_force": {
+          "const": "DAY",
+          "default": "DAY",
+          "title": "Time In Force",
+          "type": "string"
+        },
+        "underlying": {
+          "pattern": "^[A-Z]{1,8}$",
+          "title": "Underlying",
+          "type": "string"
+        }
+      },
+      "required": [
+        "plan_id",
+        "intent_id",
+        "account_id",
+        "underlying",
+        "template_id",
+        "legs",
+        "quantity",
+        "limit_debit",
+        "client_order_id",
+        "market_snapshot_hash",
+        "account_snapshot_version",
+        "position_snapshot_version",
+        "order_risk_snapshot_version",
+        "maximum_loss"
+      ],
+      "title": "OrderPlanV1",
+      "type": "object"
+    },
+    "RiskDecisionV1": {
+      "additionalProperties": false,
+      "properties": {
+        "approved": {
+          "title": "Approved",
+          "type": "boolean"
+        },
+        "decision_hash": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Decision Hash"
+        },
+        "decision_id": {
+          "minLength": 1,
+          "title": "Decision Id",
+          "type": "string"
+        },
+        "expires_at": {
+          "format": "date-time",
+          "title": "Expires At",
+          "type": "string"
+        },
+        "maximum_loss": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "title": "Maximum Loss"
+        },
+        "plan_hash": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Plan Hash",
+          "type": "string"
+        },
+        "reason_codes": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "reservation_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reservation Id"
+        },
+        "risk_input_hash": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Risk Input Hash",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "risk-decision/v1",
+          "default": "risk-decision/v1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "decision_id",
+        "plan_hash",
+        "risk_input_hash",
+        "approved",
+        "reason_codes",
+        "maximum_loss",
+        "expires_at"
+      ],
+      "title": "RiskDecisionV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "account_snapshot_version": {
+      "minimum": 0,
+      "title": "Account Snapshot Version",
+      "type": "integer"
+    },
+    "approval": {
+      "$ref": "#/$defs/RiskDecisionV1"
+    },
+    "command_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Command Hash"
+    },
+    "command_id": {
+      "minLength": 1,
+      "title": "Command Id",
+      "type": "string"
+    },
+    "market_snapshot_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Market Snapshot Hash",
+      "type": "string"
+    },
+    "order_risk_snapshot_version": {
+      "minimum": 0,
+      "title": "Order Risk Snapshot Version",
+      "type": "integer"
+    },
+    "plan": {
+      "$ref": "#/$defs/OrderPlanV1"
+    },
+    "position_snapshot_version": {
+      "minimum": 0,
+      "title": "Position Snapshot Version",
+      "type": "integer"
+    },
+    "risk_input_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Risk Input Hash",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "execute-approved-plan/v1",
+      "default": "execute-approved-plan/v1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "command_id",
+    "plan",
+    "approval",
+    "risk_input_hash",
+    "market_snapshot_hash",
+    "account_snapshot_version",
+    "position_snapshot_version",
+    "order_risk_snapshot_version"
+  ],
+  "title": "ExecuteApprovedPlanV1",
+  "type": "object"
+}

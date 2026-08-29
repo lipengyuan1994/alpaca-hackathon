@@ -475,27 +475,22 @@ Notebooks may explore; only tested package code may enter either competition wor
 
 ### Parallel candidate workstreams
 
-The first research pass assigns one symbol to each member under the same protocol; this is a feasibility comparison, not permission for six researchers to invent six incompatible backtest standards.
+Round 0 remains a standardized six-symbol **data feasibility** scan owned by the data steward. Alpha research is now delegated by economic hypothesis rather than ticker: every owner evaluates one frozen strategy family over every compatible feasible symbol through one shared backtester.
 
-| Member | Initial symbol | Role in the comparison | Required first-pass output |
-|---|---|---|---|
-| 1 | SPY | Broad-market and options-liquidity control | Coverage/entitlement card, quote-quality profile, baseline hypotheses |
-| 2 | QQQ | Large-cap technology benchmark | Same standardized card and artifacts |
-| 3 | TQQQ | Leveraged technology-beta stress case | Same artifacts plus leverage/decay and gap-risk memo |
-| 4 | SMH | Semiconductor-sector benchmark | Same artifacts plus concentration/regime memo |
-| 5 | SOXL | Leveraged semiconductor stress case | Same artifacts plus leverage/decay, spread, and tail-risk memo |
-| 6 | IGV | Software-sector benchmark | Same artifacts plus chain-depth and liquidity memo |
+| Research owner | Strategy family | Common expression |
+|---|---|---|
+| Person 1 | Same-time normalized 60-minute continuation plus VWAP confirmation | Debit vertical |
+| Person 2 | Normalized VWAP reversion in a weak-trend regime | Debit vertical |
+| Person 3 | First-30-minute opening-range breakout with volume/VWAP confirmation | Debit vertical |
+| Person 4 | Standardized overnight-gap continuation after first-hour confirmation | Debit vertical |
+| Person 5 | Benchmark-residual relative strength across the ETF clusters | Debit vertical |
+| Person 6 | Intraday range-compression breakout with volume/VWAP confirmation | Debit vertical |
 
-After the standardized scan, pool the artifacts and select at most three symbols for full research and at most two for the competition trading allowlist. Freeze that subset from blinded entitlement, coverage, timestamp, and prospective-liquidity fields before anyone sees candidate P&L; otherwise all six remain in the selection-adjustment family. The detailed data rules, artifact names, metrics, and pass/fail gates in [`docs/plans/STRATEGY_RESEARCH_PLAN.md`](docs/plans/STRATEGY_RESEARCH_PLAN.md) are normative when this overview is less specific.
+These research assignments are secondary hats and do not replace the primary engineering ownership in Section 7. Owners share immutable Alpaca data, features, costs, folds, selector/sizer, portfolio constraints, artifacts, and conformance tests. They may not create six private engines or optimize a separate threshold per ticker.
 
-| Workstream | Owner | Hypothesis | Deliverable | Decision |
-|---|---|---|---|---|
-| H1 — primary | Alpha quant | Regime-filtered intraday momentum on the symbols that pass Round 0, expressed as 7–21 DTE call/put debit spreads | Walk-forward report, cost stress, trade ledger, parameter-stability plot | Preferred champion if gates pass |
-| H2 — contingent challenger | Data/backend platform engineer with alpha-quant review | VWAP mean reversion only in a measured low-trend regime, also expressed as debit spreads | Independent report and explicit no-trade region | Start only after the platform spine, H1, and full vertical slice pass by the Sunday cutoff |
-| H3 — deferred | Options/risk quant | Volatility/event dislocation using defined-risk long-volatility structures | Post-hackathon research note only | Cut from the competition build now |
-| Contract selection | Options/risk quant | Map approved signal to executable, liquid multi-leg order | Deterministic selector, max-loss tests, chain fixtures | Required for all strategies |
-| Agent context | Agent engineer | Structured catalyst/regime extraction improves veto quality without adding leakage | Schema-valid evaluation and no-LLM ablation | Veto-only in V1; cannot change family, width, DTE, ranking, or size |
-| Independent validation | Quant/product lead or non-author quant | Reproduce the champion from frozen artifacts | Reviewed validation card | Required before paper enablement |
+After the feasibility scan, select at most three symbols for expensive option-history work and at most two for the competition allowlist using blinded data/coverage/liquidity fields, not P&L. All viewed strategy × symbol variants remain in the selection-adjustment family. The detailed formulas, interface-readiness blockers, artifact schemas, tests, and promotion gates in [`docs/plans/STRATEGY_RESEARCH_PLAN.md`](docs/plans/STRATEGY_RESEARCH_PLAN.md) are normative.
+
+Contract selection remains owned by options/risk; advisory context remains veto-only; a non-author must reproduce the champion. No researcher can self-promote a plug-in or bypass a failed platform/risk gate.
 
 Do not blend candidate signals during discovery. Select one champion and at most one clearly independent fallback by a fixed cutoff.
 
@@ -503,7 +498,7 @@ Do not blend candidate signals during discovery. Select one champion and at most
 
 Research universe: SPY, QQQ, TQQQ, SMH, SOXL, and IGV. The deployable universe is the gated subset; do not add a seventh symbol during the hackathon.
 
-The normative H1 is intentionally narrow: on completed 15-minute IEX bars, every 30 minutes compare the centered same-time-of-day 60-minute return z-score with ±1.0 and require price to be on the confirming side of session IEX VWAP. Hold for at most four bars, with a 15-minute adverse-VWAP exit check. H2 is the separately frozen same-time normalized VWAP-reversion challenger and begins only after H1 reproduces on two machines. Do not add opening-gap, volatility-band, breadth, news, or member-specific features to the competition candidate without a new preregistered version. Exact formulas, latency, cadence, sensitivities, and falsification rules live in the normative research plan.
+The six normative central candidates are H1 continuation, H2 VWAP reversion, H3 opening-range breakout, H4 gap continuation, H5 benchmark-residual relative strength, and H6 compression breakout. H1 remains the golden harness fixture and must reproduce on two native ARM64 machines before comparative outcomes are opened. Each family is preregistered and evaluated independently; no blend, ensemble, threshold change, breadth/news addition, or per-symbol optimization is allowed after results without a new candidate version. Exact formulas, latency, cadence, sensitivities, and falsification rules live in the normative research plan.
 
 Initial contract policy:
 

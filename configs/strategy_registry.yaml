@@ -1,0 +1,12 @@
+version: strategy-registry/v1
+entries:
+  - plugin_id: always_no_trade
+    plugin_version: 1.0.0
+    entrypoint: strategy_plugins.always_no_trade_v1.plugin:Plugin
+    lifecycle: paper_demo_only
+    authority: central-registry-only
+  - plugin_id: regime_momentum
+    plugin_version: 1.0.0
+    entrypoint: strategy_plugins.regime_momentum_v1.plugin:Plugin
+    lifecycle: paper_demo_only
+    authority: central-registry-only

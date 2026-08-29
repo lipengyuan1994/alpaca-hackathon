@@ -1,0 +1,23 @@
+name: paper-system-ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify native runtime
+        run: |
+          test "$(uname -m)" = arm64
+          /opt/homebrew/bin/uv --version
+      - name: Install locked dependencies
+        run: /opt/homebrew/bin/uv sync --frozen
+      - name: Test architecture and fixture replay
+        run: /opt/homebrew/bin/uv run python -m pytest
+      - name: Verify schema snapshots
+        run: |
+          /opt/homebrew/bin/uv run python -m packages.contracts.schema_export
+          git diff --exit-code -- schemas/v1

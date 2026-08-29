@@ -1,0 +1,214 @@
+{
+  "$defs": {
+    "FeedIdentityV1": {
+      "additionalProperties": false,
+      "properties": {
+        "entitlement": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Entitlement",
+          "type": "string"
+        },
+        "equity": {
+          "const": "iex",
+          "default": "iex",
+          "title": "Equity",
+          "type": "string"
+        },
+        "options": {
+          "const": "indicative",
+          "default": "indicative",
+          "title": "Options",
+          "type": "string"
+        }
+      },
+      "required": [
+        "entitlement"
+      ],
+      "title": "FeedIdentityV1",
+      "type": "object"
+    },
+    "OptionContractV1": {
+      "additionalProperties": false,
+      "properties": {
+        "deliverable": {
+          "const": "STANDARD",
+          "default": "STANDARD",
+          "title": "Deliverable",
+          "type": "string"
+        },
+        "expiration": {
+          "format": "date-time",
+          "title": "Expiration",
+          "type": "string"
+        },
+        "multiplier": {
+          "const": 100,
+          "default": 100,
+          "title": "Multiplier",
+          "type": "integer"
+        },
+        "quote": {
+          "$ref": "#/$defs/QuoteV1"
+        },
+        "right": {
+          "enum": [
+            "CALL",
+            "PUT"
+          ],
+          "title": "Right",
+          "type": "string"
+        },
+        "strike": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "title": "Strike"
+        },
+        "symbol": {
+          "pattern": "^[A-Z0-9]{1,32}$",
+          "title": "Symbol",
+          "type": "string"
+        },
+        "underlying": {
+          "pattern": "^[A-Z]{1,8}$",
+          "title": "Underlying",
+          "type": "string"
+        }
+      },
+      "required": [
+        "symbol",
+        "underlying",
+        "right",
+        "strike",
+        "expiration",
+        "quote"
+      ],
+      "title": "OptionContractV1",
+      "type": "object"
+    },
+    "QuoteV1": {
+      "additionalProperties": false,
+      "properties": {
+        "ask": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "title": "Ask"
+        },
+        "available_time": {
+          "format": "date-time",
+          "title": "Available Time",
+          "type": "string"
+        },
+        "bid": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "title": "Bid"
+        },
+        "event_time": {
+          "format": "date-time",
+          "title": "Event Time",
+          "type": "string"
+        }
+      },
+      "required": [
+        "bid",
+        "ask",
+        "event_time",
+        "available_time"
+      ],
+      "title": "QuoteV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "as_of": {
+      "format": "date-time",
+      "title": "As Of",
+      "type": "string"
+    },
+    "content_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Content Hash"
+    },
+    "feed_identity": {
+      "$ref": "#/$defs/FeedIdentityV1"
+    },
+    "option_contracts": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/OptionContractV1"
+      },
+      "title": "Option Contracts",
+      "type": "array"
+    },
+    "quality_flags": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Quality Flags",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "market-snapshot/v1",
+      "default": "market-snapshot/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "snapshot_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Snapshot Id",
+      "type": "string"
+    },
+    "underlying_quotes": {
+      "additionalProperties": {
+        "$ref": "#/$defs/QuoteV1"
+      },
+      "minProperties": 1,
+      "title": "Underlying Quotes",
+      "type": "object"
+    }
+  },
+  "required": [
+    "snapshot_id",
+    "as_of",
+    "feed_identity",
+    "underlying_quotes"
+  ],
+  "title": "MarketSnapshotV1",
+  "type": "object"
+}

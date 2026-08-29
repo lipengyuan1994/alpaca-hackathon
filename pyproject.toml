@@ -1,0 +1,51 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "alpaca-hackathon-paper-system"
+version = "0.1.0"
+description = "Paper-only, replayable options-agent architecture."
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "fastapi>=0.141,<0.142",
+  "pydantic>=2.13,<3",
+  "uvicorn>=0.41,<0.42",
+]
+
+[dependency-groups]
+dev = [
+  "httpx>=0.28,<0.29",
+  "pytest>=8.4,<9",
+  "ruff>=0.16,<0.17",
+]
+
+[project.scripts]
+paper-api = "apps.api.main:run"
+paper-decision-worker = "apps.decision_worker.main:main"
+paper-execution-worker = "apps.execution_worker.main:main"
+paper-operator = "apps.operator_cli.main:main"
+schema-export = "packages.contracts.schema_export:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["apps", "packages", "strategy_plugins"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B"]
+ignore = ["E501", "B008"]
+
+[tool.ruff.lint.per-file-ignores]
+"packages/strategy_runner/child.py" = ["E402"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["apps", "packages", "strategy_plugins"]

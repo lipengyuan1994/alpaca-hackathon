@@ -1,0 +1,125 @@
+{
+  "$defs": {
+    "OperatingModeV1": {
+      "enum": [
+        "DISARMED",
+        "REPLAY",
+        "SHADOW",
+        "PAPER_DEMO_ARMED",
+        "PAPER_ARMED",
+        "FLATTENING",
+        "HALTED"
+      ],
+      "title": "OperatingModeV1",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Typed private control command that can only halt or begin flattening.",
+  "properties": {
+    "account_allowlist_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Account Allowlist Hash",
+      "type": "string"
+    },
+    "account_id": {
+      "title": "Account Id",
+      "type": "string"
+    },
+    "command_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Command Hash"
+    },
+    "command_id": {
+      "title": "Command Id",
+      "type": "string"
+    },
+    "config_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Config Hash",
+      "type": "string"
+    },
+    "expected_mode": {
+      "$ref": "#/$defs/OperatingModeV1"
+    },
+    "expected_version": {
+      "minimum": 0,
+      "title": "Expected Version",
+      "type": "integer"
+    },
+    "expires_at": {
+      "format": "date-time",
+      "title": "Expires At",
+      "type": "string"
+    },
+    "issued_at": {
+      "format": "date-time",
+      "title": "Issued At",
+      "type": "string"
+    },
+    "nonce": {
+      "format": "uuid",
+      "title": "Nonce",
+      "type": "string"
+    },
+    "operator_id": {
+      "minLength": 1,
+      "title": "Operator Id",
+      "type": "string"
+    },
+    "reason_code": {
+      "pattern": "^[A-Z][A-Z0-9_]{2,95}$",
+      "title": "Reason Code",
+      "type": "string"
+    },
+    "reconciliation_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Reconciliation Hash",
+      "type": "string"
+    },
+    "release_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Release Hash",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "halt-command/v1",
+      "default": "halt-command/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "target_mode": {
+      "enum": [
+        "FLATTENING",
+        "HALTED"
+      ],
+      "title": "Target Mode",
+      "type": "string"
+    }
+  },
+  "required": [
+    "nonce",
+    "issued_at",
+    "expires_at",
+    "operator_id",
+    "expected_mode",
+    "expected_version",
+    "target_mode",
+    "account_id",
+    "account_allowlist_hash",
+    "release_hash",
+    "config_hash",
+    "reconciliation_hash",
+    "reason_code"
+  ],
+  "title": "HaltCommandV1",
+  "type": "object"
+}

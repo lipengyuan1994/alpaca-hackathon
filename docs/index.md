@@ -10,7 +10,7 @@ This directory is the navigation hub for the Alpaca hackathon project. The root 
 | [`architecture/SYSTEM_ARCHITECTURE.md`](architecture/SYSTEM_ARCHITECTURE.md) | Process topology, trust boundaries, package dependency rules, event flow, persistence, deployment, and scaling path | Platform, execution, frontend, release | Normative system design |
 | [`architecture/STRATEGY_API.md`](architecture/STRATEGY_API.md) | Versioned plug-in contract that lets strategies be developed independently without broker or exact-order access | All strategy researchers and reviewers | Normative strategy boundary |
 | [`plans/SKELETON_IMPLEMENTATION_PLAN.md`](plans/SKELETON_IMPLEMENTATION_PLAN.md) | Ordered repository-skeleton and vertical-slice implementation backlog with owners, reviewers, deliverables, and gates | All developers | Delivery sequence |
-| [`plans/STRATEGY_RESEARCH_PLAN.md`](plans/STRATEGY_RESEARCH_PLAN.md) | Common free-Alpaca data protocol, six-symbol delegation, hypotheses, validation, metrics, artifacts, and promotion gates | Six researchers, quant lead, risk reviewer | Normative research protocol |
+| [`plans/STRATEGY_RESEARCH_PLAN.md`](plans/STRATEGY_RESEARCH_PLAN.md) | Architecture-readiness gates, six delegated strategy families, common free-Alpaca research protocol, plug-in/parity deliverables, validation, metrics, and promotion gates | Six researchers, platform owner, quant lead, risk reviewer | Normative research and integration handoff protocol |
 
 ## Read by role
 

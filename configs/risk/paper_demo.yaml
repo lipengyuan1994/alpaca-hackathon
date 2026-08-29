@@ -1,0 +1,8 @@
+version: risk-policy/v1
+mode: PAPER_DEMO_ARMED
+max_per_trade_loss: "250"
+max_daily_loss: "500"
+max_total_reserved_loss: "250"
+quote_ttl_seconds: 30
+approval_ttl_seconds: 60
+live_endpoints: forbidden

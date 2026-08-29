@@ -1,0 +1,259 @@
+{
+  "$defs": {
+    "FeedIdentityV1": {
+      "additionalProperties": false,
+      "properties": {
+        "entitlement": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Entitlement",
+          "type": "string"
+        },
+        "equity": {
+          "const": "iex",
+          "default": "iex",
+          "title": "Equity",
+          "type": "string"
+        },
+        "options": {
+          "const": "indicative",
+          "default": "indicative",
+          "title": "Options",
+          "type": "string"
+        }
+      },
+      "required": [
+        "entitlement"
+      ],
+      "title": "FeedIdentityV1",
+      "type": "object"
+    },
+    "IntentTupleV1": {
+      "additionalProperties": false,
+      "properties": {
+        "horizon_bucket": {
+          "const": "INTRADAY_15_60M",
+          "title": "Horizon Bucket",
+          "type": "string"
+        },
+        "max_intent_ttl_seconds": {
+          "maximum": 300,
+          "minimum": 1,
+          "title": "Max Intent Ttl Seconds",
+          "type": "integer"
+        },
+        "risk_tier": {
+          "enum": [
+            "TINY",
+            "STANDARD"
+          ],
+          "title": "Risk Tier",
+          "type": "string"
+        },
+        "template_id": {
+          "enum": [
+            "CALL_DEBIT_SPREAD_V1",
+            "PUT_DEBIT_SPREAD_V1",
+            "LONG_CALL_V1",
+            "LONG_PUT_V1"
+          ],
+          "title": "Template Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "template_id",
+        "horizon_bucket",
+        "risk_tier",
+        "max_intent_ttl_seconds"
+      ],
+      "title": "IntentTupleV1",
+      "type": "object"
+    },
+    "StrategyStateV1": {
+      "additionalProperties": false,
+      "properties": {
+        "as_of": {
+          "format": "date-time",
+          "title": "As Of",
+          "type": "string"
+        },
+        "payload": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Payload",
+          "type": "object"
+        },
+        "plugin_id": {
+          "title": "Plugin Id",
+          "type": "string"
+        },
+        "plugin_version": {
+          "title": "Plugin Version",
+          "type": "string"
+        },
+        "sequence": {
+          "minimum": 0,
+          "title": "Sequence",
+          "type": "integer"
+        },
+        "state_hash": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "State Hash"
+        },
+        "state_schema_version": {
+          "const": "strategy-state/v1",
+          "default": "strategy-state/v1",
+          "title": "State Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "plugin_id",
+        "plugin_version",
+        "as_of",
+        "sequence"
+      ],
+      "title": "StrategyStateV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "allowed_intent_tuples": {
+      "items": {
+        "$ref": "#/$defs/IntentTupleV1"
+      },
+      "minItems": 1,
+      "title": "Allowed Intent Tuples",
+      "type": "array"
+    },
+    "as_of": {
+      "format": "date-time",
+      "title": "As Of",
+      "type": "string"
+    },
+    "config_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Config Hash",
+      "type": "string"
+    },
+    "context_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Context Hash"
+    },
+    "evaluation_id": {
+      "minLength": 1,
+      "title": "Evaluation Id",
+      "type": "string"
+    },
+    "feature_vector_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Feature Vector Hash",
+      "type": "string"
+    },
+    "feature_vector_id": {
+      "title": "Feature Vector Id",
+      "type": "string"
+    },
+    "feed_identity": {
+      "$ref": "#/$defs/FeedIdentityV1"
+    },
+    "logical_positions": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Logical Positions",
+      "type": "array"
+    },
+    "market_snapshot_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Market Snapshot Hash",
+      "type": "string"
+    },
+    "market_snapshot_id": {
+      "title": "Market Snapshot Id",
+      "type": "string"
+    },
+    "option_surface_summaries": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "type": "string"
+          }
+        ]
+      },
+      "title": "Option Surface Summaries",
+      "type": "object"
+    },
+    "prior_state": {
+      "$ref": "#/$defs/StrategyStateV1"
+    },
+    "quality_flags": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Quality Flags",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "strategy-context/v1",
+      "default": "strategy-context/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "universe_features": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "type": "string"
+          }
+        ]
+      },
+      "title": "Universe Features",
+      "type": "object"
+    }
+  },
+  "required": [
+    "evaluation_id",
+    "as_of",
+    "market_snapshot_id",
+    "market_snapshot_hash",
+    "feature_vector_id",
+    "feature_vector_hash",
+    "feed_identity",
+    "universe_features",
+    "allowed_intent_tuples",
+    "prior_state",
+    "config_hash"
+  ],
+  "title": "StrategyContextV1",
+  "type": "object"
+}

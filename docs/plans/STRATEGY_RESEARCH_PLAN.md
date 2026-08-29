@@ -1,6 +1,6 @@
 # Strategy research plan
 
-Status: normative research protocol, v1 draft
+Status: normative research and integration handoff protocol, v2 draft
 
 Universe: SPY, QQQ, TQQQ, SMH, SOXL, IGV and their listed options
 
@@ -20,6 +20,46 @@ These are not interchangeable:
 - Historical option-bar/trade results are implementation proxies, not executable OPRA backtests.
 - Four competition sessions are descriptive telemetry, not proof of alpha or a durable Sharpe ratio.
 - A profitable competition path cannot promote a research candidate that failed its preregistered gates.
+
+### How each researcher uses this document
+
+Each owner receives one strategy family from Section 3 and follows this sequence:
+
+1. Copy the assigned strategy card into `research/candidates/<candidate_id>/strategy_card.md` and freeze the economic hypothesis, central parameters, eligible symbols, feature contract, exit-policy ID, and falsification conditions **before viewing outcome P&L**.
+2. Use only the centrally collected, immutable Alpaca datasets and the shared backtest engine. Do not create a private downloader, substitute vendor data, or fork execution/cost semantics.
+3. Run the central specification on every compatible feasible symbol. Publish all prescribed sensitivities; never return only the best threshold, symbol, direction, date range, or cost model.
+4. Build one portfolio replay using the frozen cross-symbol ranking rule. Per-symbol studies diagnose where the edge lives; the portfolio replay is the deployable candidate.
+5. Return the complete research, plug-in, golden-fixture, and parity package in Section 12. A notebook, chart, Sharpe ratio, or `plugin.py` by itself is not a deliverable.
+6. Have the named non-author reviewer reproduce the run from hashes and sign the promotion card. The owner cannot promote their own lifecycle state.
+7. Stop at the first failed gate. `NO_TRADE`, `REJECTED`, and `INSUFFICIENT_EVIDENCE` are valid results and must remain visible.
+
+There are four distinct completion states:
+
+| State | Meaning | May run in the judged account? |
+|---|---|---:|
+| `RESEARCH_COMPLETE` | Reproducible signal/option-proxy report exists | No |
+| `INTEGRATION_READY` | Plug-in contract, golden contexts, and backtest/runtime parity pass | No |
+| `PAPER_CANDIDATE` | Independent research/promotion gates pass and platform safety blockers are closed | No, until release approval |
+| `PAPER_ENABLED` | Exact source/config/catalog/evidence hashes are centrally registered and the release/risk owners approve | Yes, paper only |
+
+### Architecture review and readiness boundary — 2026-08-29
+
+The repository currently implements a useful deterministic **fixture vertical slice**, not the full deployable architecture described in the normative design. On a verified native ARM64 Python 3.12 environment, all 13 current tests and Ruff pass. Implemented foundations include strict Pydantic contracts, canonical hashes, semantic strategy outputs, a subprocess runner, deterministic `NO_TRADE` and approved-plan fixtures, a fake broker, and a GET-only replay API.
+
+The current release state is therefore `REFERENCE_FIXTURE_ONLY`. It must not receive judged-account credentials or be armed for paper trading. Researchers may start hypothesis definitions, feature specifications, Alpaca entitlement/coverage work, and underlying backtests while the platform owner closes the following gates:
+
+| Gate | Current implementation gap | Required evidence before integration claim |
+|---|---|---|
+| `G-R1_REGISTRY_AUTHORITY` | Runtime uses a hard-coded registry, does not call central validation, uses placeholder content hashes, and excludes underlyings/intent tuples from the registry hash | One schema-validated registry loader; externally computed package hash; metadata/config/lifecycle/mode/underlying/tuple validation; authority-complete registry hash; negative tests |
+| `G-R2_CATALOG_PARITY` | Research specifies 7–14 DTE, nearest-spot/approximately 1% verticals and fixed-risk sizing, while runtime uses a separate hard-coded catalog, earliest expiry, adjacent extreme strikes, and one/two contracts | One normalized `template_catalog.yaml` loaded and hashed by both backtest and runtime; identical selector/sizer library; parity fixtures for every candidate |
+| `G-R3_OUTPUT_BINDING` | Host does not prove that evaluation ID, context/config hashes, plug-in identity/hash, next-state sequence/time, underlying, and tuple match the request and registry authority | Host-side conformance validator plus bullish, bearish, no-signal, stale, tampered, and unauthorized-output tests |
+| `G-R4_FEATURE_CONTRACT` | Plug-ins receive flat arbitrary Decimal maps; `data_requirements()` is not used and no named feature registry exists | Versioned feature definitions, namespaced keys, availability rules, missing/stale behavior, worked fixtures, and shared feature builder |
+| `G-R5_EXIT_OWNERSHIP` | `PositionDirectiveV1` is modeled but every directive is refused; there is no close-plan path | For hackathon V1, centrally implement and registry-bind `TREND_VWAP_OR_60M_V1` and `REVERSION_VWAP_TOUCH_OR_60M_V1`, plus Thursday flatten; keep plug-ins entry-only |
+| `G-R6_RUNNER_ISOLATION` | Plug-in import/constructor runs before Python I/O denial; resource-limit failure is ignored; monkey-patching is weaker than the documented container/process boundary | Isolation is installed before untrusted module code, mandatory limits fail closed, and malicious fixture plug-ins prove network/filesystem/environment/output/time denial |
+
+Paper enablement has additional non-research blockers: independently recompute defined maximum loss, use an exact paper-host allowlist, enforce daily loss/buying power/market clock/option quote freshness, bind current control state, implement durable reservation/outbox/inbox/CAS and reconciliation, implement Alpaca MCP transport, and prove close/flatten/restart behavior. Passing a strategy backtest cannot waive any of them.
+
+The platform/release owner must publish a dated `RESEARCH_INTERFACE_FREEZE` containing the registry schema, catalog hash, feature schema, reason-code namespace, position-policy IDs, conformance command, and shared backtest commit before outcome-bearing team runs are called integration evidence. All implementation files must also be reviewed and committed so six developers branch from one reproducible baseline.
 
 ## 2. Hard data and entitlement boundary
 
@@ -45,30 +85,75 @@ Every request that accepts a feed parameter specifies it explicitly and consumes
 
 One designated data steward performs and caches shared downloads. Credentials remain with the collector; the six researchers consume immutable hashed artifacts. No researcher retrieves the same range independently or places any order through a research task.
 
-## 3. Six-member initial assignment
+## 3. Six-member strategy-family assignment
 
-All owners run the same code, hypotheses, thresholds, cost models, metrics, and artifact schemas. A member owns a symbol report—not a private backtester or personalized winning parameter.
+The team is searching across **strategy families**, not asking six people to optimize six tickers. Every owner uses the same immutable data, decision clock, backtest engine, folds, option selector, sizing, cost stresses, metrics, artifact schemas, and promotion gates. A member owns one economic hypothesis and its integration package—not a private backtester or a personalized winning parameter.
 
-| Member | Symbol | Special issue | Cross-review partner |
+| Member | Candidate ID / family | Core question | Compatible initial universe | Required reviewer |
+|---|---|---|---|---|
+| Person 1 | `h1_intraday_continuation_v1` | Do unusually large same-time 60-minute moves continue when aligned with IEX VWAP? | All six | Person 2 |
+| Person 2 | `h2_vwap_reversion_v1` | Do unusually large VWAP deviations revert when short-horizon trend is weak? | SPY, QQQ, SMH, IGV; leveraged ETFs remain diagnostic | Person 1 |
+| Person 3 | `h3_opening_range_breakout_v1` | Does a confirmed break of the first 30-minute range continue intraday? | All six | Person 4 |
+| Person 4 | `h4_gap_continuation_v1` | Does a standardized overnight gap continue after first-hour confirmation? | All six; leveraged/unleveraged results reported together | Person 3 |
+| Person 5 | `h5_relative_strength_residual_v1` | Does a target-specific move persist after removing its frozen benchmark relationship? | QQQ, TQQQ, SMH, SOXL, IGV; SPY is diagnostic only | Person 6 |
+| Person 6 | `h6_compression_breakout_v1` | Does low intraday range followed by price/volume expansion predict continuation? | All six | Person 5 |
+
+Sections H1–H6 define the central rules. Owners may propose a correction **before outcome-bearing runs**, but the quant lead and reviewer must version and freeze it; after results are viewed, a rule change is a new candidate and enters the trial ledger.
+
+Primary engineering ownership still applies. The research sprint adds these shared duties so “common” work has an accountable owner:
+
+| Person | Shared research duty | Concrete handoff | Reviewer |
 |---|---|---|---|
-| Person 1 | SPY | Broad-market and options-liquidity control | IGV owner |
-| Person 2 | QQQ | Technology benchmark and TQQQ comparison anchor | TQQQ owner |
-| Person 3 | TQQQ | Leveraged-ETF path dependence, splits, gaps, and option affordability | QQQ owner |
-| Person 4 | SMH | Semiconductor concentration and option coverage | SOXL owner |
-| Person 5 | SOXL | Leveraged semiconductor tail/path risk and SMH comparison | SMH owner |
-| Person 6 | IGV | Software concentration, chain depth, adjusted/nonstandard contracts | SPY owner |
+| Person 1 | Candidate registry, fold calendar, trial budget, bootstrap/multiplicity, final selection | Frozen candidate/selection manifests and full comparison table | Person 6 |
+| Person 2 | Alpaca entitlement probe, pagination, raw/normalized cache, symbol feasibility | Immutable shared dataset manifests and six feasibility cards | Person 3 |
+| Person 3 | Feature registry, common signal/backtest adapter, plug-in conformance | Two-machine H1 golden run and shared parity command | Person 2 |
+| Person 4 | O1/O2 selector, option proxy, fee/max-loss arithmetic | Catalog-parity fixtures and option-coverage report | Person 5 |
+| Person 5 | Portfolio replay, quote stress, risk/position-policy integration | Base/severe portfolio replay and integration gate report | Person 4 |
+| Person 6 | Standard plots/cards, limitations, judge-facing evidence package | Comparable report bundle and promotion-card generator | Person 1 |
 
-QQQ/TQQQ and SMH/SOXL are evidence clusters, not independent confirmations. Pooled inference clusters by session/date and does not count leveraged/unleveraged variants as separate discoveries.
+### Candidate identity
 
-Round 0 produces six comparable feasibility cards. Before any candidate P&L is exposed, the data steward freezes the advancing subset from blinded entitlement, coverage, timestamp integrity, and prospective-liquidity fields only. If the team views returns before that freeze, all six symbols remain in the selection/multiple-testing family even if some are later operationally excluded. Only the top **feasible** subset—not the best in-sample P&L subset—advances:
+A candidate is one complete deployable portfolio specification, not a chart, one trade rule on one ticker, or a post-hoc collection of winning cells:
 
-- at most three symbols enter full walk-forward option research;
-- at most two symbols enter the competition deployment allowlist;
-- one plug-in becomes champion and at most one genuinely independent plug-in becomes fallback.
+```text
+CandidateSpecV1 =
+    signal_family_id
+  + ordered_eligible_symbol_set
+  + feature_schema_hash
+  + central_config_hash
+  + O2_expression_and_template_catalog_hash
+  + allocator_hash
+  + position_policy_hash
+  + base_cost_policy_hash
+```
+
+The human-readable ID follows `<signal_family>__<symbol_scope>__o2_v1`; the canonical hash over the fields above is the actual identity. Changing the symbol set, allocation/tie-break, exit, selector, costs, or central parameter creates a new candidate before returns are viewed. Per-symbol rows are diagnostic cells inside that candidate. Combining the best symbols after seeing outcomes is a new, contaminated search—not portfolio construction.
+
+### Common cross-symbol portfolio construction
+
+Each owner's pure candidate function computes one score and direction per compatible symbol at every decision time. Because V1 `StrategyEvaluationV1` can return only one entry request, the active plug-in uses the shared pure arbitration helper internally and emits only the winner; frozen input features make every suppressed candidate replayable. The rules are:
+
+1. Remove candidates that fail feature/data/session, candidate-specific, cluster, cooldown, or existing-exposure gates.
+2. Normalize each strategy's score so its entry threshold equals `1.0`; rank by `entry_score - 1.0`.
+3. Break an exact score tie by the frozen symbol order `SPY, QQQ, TQQQ, SMH, SOXL, IGV`; do not use option P&L, spread width, or any future outcome as an alpha tie-break.
+4. Map the winning score to `signal_strength_bucket`: `[1.00, 1.25)` is `LOW`, `[1.25, 1.75)` is `MEDIUM`, and `>= 1.75` is `HIGH`.
+5. Send only that semantic winner to central template/quote/risk checks. If it fails, return/record `NO_TRADE` for the cycle; do not fall through to the second-ranked symbol.
+6. Permit at most one new exposure-increasing intent at a decision time and at most one nonterminal position/order for competition V1.
+7. Treat QQQ/TQQQ/IGV as one technology cluster and SMH/SOXL as one semiconductor cluster. Leveraged/unleveraged pairs are correlated expressions, not independent confirmation.
+8. In research artifacts, record every eligible, rejected, selected, and suppressed candidate with its reason code so portfolio P&L reconciles to per-symbol results. Runtime replay recomputes the same table from frozen context/config and `signal.py`.
+
+Round 0 still produces six comparable **symbol feasibility cards**, but data stewardship is cross-cutting rather than the alpha assignment. Before any candidate return is exposed, the data steward freezes the provisional advancing symbol subset using blinded entitlement, coverage, timestamp integrity, and standard-contract/history fields only. Monday prospective quotes are accept/reject gates and never re-rank or replace a frozen symbol. If anyone views returns first, all viewed strategy × symbol variants remain in the selection/multiple-testing family.
+
+Resource limits for the sprint:
+
+- at most three symbols enter expensive full historical option-proxy retrieval, selected on feasibility rather than P&L;
+- at most two symbols enter the final competition deployment allowlist;
+- each owner has one central candidate and only the sensitivities explicitly listed in Section 5;
+- one plug-in becomes champion and at most one genuinely independent plug-in becomes an operational fallback; fallback is not intraday P&L switching.
 
 ## 4. Standard one-symbol feasibility scan
 
-Each owner completes A–F and records evidence paths, not just prose.
+The data steward assigns or runs A–F once per symbol and records evidence paths, not just prose. Alpha owners consume the same frozen card; they do not issue independent downloads or reinterpret a red data gate.
 
 ### A. Entitlement and surface probe
 
@@ -186,11 +271,28 @@ Return exactly one status:
 - `RED_REMOVE`: underlying or contract evidence is materially defective.
 - `PROVISIONAL_AWAITING_LIVE_QUOTES`: weekend gates passed; Monday quote gate remains.
 
+If more than three symbols are provisionally option-feasible, select the expensive option-research subset without P&L by this frozen lexicographic ranking:
+
+1. `GREEN_OPTION_RESEARCH` before `PROVISIONAL_AWAITING_LIVE_QUOTES`; yellow/red cannot advance to option promotion work.
+2. Higher simultaneous two-leg entry-and-exit proxy coverage on the frozen feasibility sample.
+3. Higher `PIT_EXISTENCE_PROXY` coverage.
+4. Lower missing-exit/no-proxy-fill rate.
+5. Higher underlying 15-minute bar coverage.
+6. Final tie-break by `SPY, QQQ, TQQQ, SMH, SOXL, IGV` order.
+
+Record the full ranking and input hashes in `research/shared/selection/feasibility_selection.json`. Monday quote failure removes a frozen symbol from paper eligibility but does not open a search for the fourth-ranked replacement.
+
 ## 5. Common hypotheses
 
 The initial scan excludes LLM output, news, IV, Greeks, and member-specific features.
 
+All rolling calculations are produced upstream by the shared point-in-time feature builder. A runtime plug-in receives schema-validated Decimal features, not bars, DataFrames, Alpaca clients, or a clock. Universe keys use `<SYMBOL>__<feature_name>` (for example, `QQQ__momentum_z_60m_same_time_v1`); units, formula, lookback, availability, and missing-data behavior live in the candidate's `feature_contract.yaml`. Any absent, stale, nonfinite, or schema-mismatched required feature produces `NO_TRADE`.
+
+For cross-symbol comparison, every family defines a nonnegative normalized `entry_score` whose central entry threshold is `1.0`. Score normalization is portfolio arbitration, not a probability or confidence estimate.
+
 Common clock:
+
+For hackathon V1, strategy plug-ins emit entries or `NO_TRADE` only. The central registry binds each plug-in to one deterministic position-policy ID, and the central position manager—not researcher code—creates close intents/plans. Research must replay that exact policy. A candidate cannot reach `INTEGRATION_READY` until `G-R5_EXIT_OWNERSHIP` is implemented and its close fixtures pass.
 
 - Normalize one-minute Alpaca IEX bars into ET half-open intervals `[09:30 + 15k, 09:45 + 15k)`. Aggregate open=first, high=max, low=min, close=last, volume=sum, and interval VWAP=`sum(minute_vwap × minute_volume) / sum(minute_volume)`. An interval with a missing minute, missing VWAP, or zero cumulative volume is invalid for a decision.
 - Session IEX VWAP at `t` is the same volume-weighted calculation over all valid one-minute bars from 09:30 through the completed interval at `t`; do not substitute typical price or an unweighted average.
@@ -224,7 +326,7 @@ Signal:
 - bearish when `momentum_z <= -1.0` and close is below session IEX VWAP;
 - otherwise `NO_TRADE`.
 
-Exit at the common hard time deadline, or earlier on an adverse completed-close VWAP cross.
+Set `entry_score = abs(momentum_z) / 1.0`. Use central exit policy `TREND_VWAP_OR_60M_V1`: exit at the common hard-time deadline, or earlier on an adverse completed-close VWAP cross.
 
 ### H2 — normalized intraday VWAP reversion
 
@@ -240,23 +342,117 @@ Signal:
 - bearish when `deviation_z >= 1.5` and `abs(momentum_z) < 0.5`;
 - otherwise `NO_TRADE`.
 
-Exit on a completed-close VWAP touch or at the common hard time deadline.
+Set `entry_score = abs(deviation_z) / 1.5`. Use central exit policy `REVERSION_VWAP_TOUCH_OR_60M_V1`: exit on a completed-close VWAP touch in the convergence direction or at the common hard-time deadline.
 
-H2 is a standalone challenger, not an H1 overlay or simultaneous fallback signal. It begins only after the shared H1 pipeline reproduces on two machines.
+H2 is a standalone challenger, not an H1 overlay or simultaneous fallback signal. All six owners may write strategy cards in parallel, but no outcome-bearing comparison begins until the shared H1 golden run reproduces on two native ARM64 machines.
 
-Sensitivity values test stability; they are not per-symbol optimization:
+### H3 — opening-range breakout with participation confirmation
 
-- H1 threshold: 0.75, 1.00, 1.25;
-- H2 threshold: 1.25, 1.50, 1.75;
-- time-exit delay from confirmed fill: 45, 60, 90 minutes (three, four, or six 15-minute bars).
+Define the first 30 regular-session minutes as `[09:30, 10:00)` ET:
 
-The central value is the declared candidate. Owners may not report only the best neighboring value.
+- `or_high` and `or_low` are the maximum high and minimum low of those 30 one-minute IEX bars;
+- `or_width_log = max(log(or_high / or_low), 1e-6)`;
+- at a decision time `t >= 10:30:01`, `up_break_fraction = log(close_t / or_high) / or_width_log` and `down_break_fraction = log(or_low / close_t) / or_width_log`;
+- `volume_ratio_t` is current completed 15-minute IEX volume divided by the median volume of the prior 20 valid sessions at the same time of day.
+
+Signal:
+
+- bullish when `up_break_fraction >= 0.10`, `volume_ratio_t >= 1.25`, and close is above session IEX VWAP;
+- bearish when `down_break_fraction >= 0.10`, `volume_ratio_t >= 1.25`, and close is below session IEX VWAP;
+- otherwise `NO_TRADE`.
+
+Set `entry_score = min(break_fraction / 0.10, volume_ratio_t / 1.25)` in the signaled direction. Permit only the first valid H3 entry per symbol per session; a later re-break is not a new trial. Use central exit policy `TREND_VWAP_OR_60M_V1`.
+
+Falsification focus: remove the volume/VWAP confirmation one at a time, check whether one opening-gap regime dominates, and prove that next-observation execution plus option costs does not erase the apparent breakout.
+
+### H4 — standardized overnight-gap continuation
+
+This family evaluates only at `10:30:01 ET`:
+
+- `gap = log(open_0930 / prior_regular_session_close)` on the split-adjusted continuous series, with both source prices separately retained in the raw audit record;
+- over the prior 60 valid completed sessions, compute sample `sigma_gap` and `gap_z = gap / max(sigma_gap, 1e-6)`; prior mean/median are reported diagnostically but are not subtracted from direction;
+- `first_hour_directional_return = sign(gap) * log(close_1030 / open_0930)`;
+- `continuation_ratio = first_hour_directional_return / max(abs(gap), 1e-6)`.
+
+Signal:
+
+- direction is the sign of the raw adjusted `gap` when `abs(gap_z) >= 1.0`, `continuation_ratio >= 0.25`, and the 10:30 close is on the same side of session IEX VWAP;
+- otherwise `NO_TRADE`.
+
+Set `entry_score = min(abs(gap_z) / 1.0, continuation_ratio / 0.25)`. There is at most one H4 decision per symbol per day. Use `TREND_VWAP_OR_60M_V1`.
+
+Falsification focus: report gap-up and gap-down results separately, exclude split/corporate-action discontinuities, compare leveraged and unleveraged pairs at equal maximum loss, and test whether a few macro-gap dates explain the result.
+
+### H5 — benchmark-residual relative strength
+
+Freeze this benchmark map before results:
+
+| Target | Benchmark |
+|---|---|
+| QQQ | SPY |
+| TQQQ | QQQ |
+| SMH | QQQ |
+| SOXL | SMH |
+| IGV | QQQ |
+| SPY diagnostic | QQQ |
+
+At each common decision time:
+
+- calculate target and benchmark `r60` using the exact H1 clock;
+- using the prior 60 valid same-time session pairs only, estimate `beta_t = cov(r_target, r_benchmark) / max(var(r_benchmark), 1e-8)`;
+- apply that frozen-at-`t` beta to the same prior pairs, compute residual mean/standard deviation, and form `residual_z = (r_target_t - beta_t * r_benchmark_t - mu_residual) / max(sigma_residual, 1e-6)`.
+
+Signal:
+
+- bullish when `residual_z >= 1.25` and target close is above its session IEX VWAP;
+- bearish when `residual_z <= -1.25` and target close is below its session IEX VWAP;
+- otherwise `NO_TRADE`.
+
+Set `entry_score = abs(residual_z) / 1.25` and use `TREND_VWAP_OR_60M_V1`. Missing benchmark data invalidates the target decision. SPY is a diagnostic symmetry check and is not promotion-eligible for H5 V1.
+
+Falsification focus: show raw target momentum beside residual momentum, test beta stability, and verify that TQQQ/SOXL do not win merely because leverage was left unnormalized.
+
+### H6 — intraday compression followed by expansion
+
+H6 starts at `11:00:01 ET`. At decision time `t`, exclude the just-completed decision interval from the compression box:
+
+- the box spans the four completed 15-minute intervals `[t-75m, t-15m)`;
+- `box_range_log = max(log(box_high / box_low), 1e-6)`;
+- `compression_ratio = box_range_log / median_box_range`, where the denominator uses the prior 20 valid sessions at the same decision time;
+- `up_break_fraction = log(close_t / box_high) / box_range_log` and `down_break_fraction = log(box_low / close_t) / box_range_log`;
+- `volume_ratio_t` uses the same definition as H3.
+
+Signal:
+
+- bullish when `compression_ratio <= 0.65`, `up_break_fraction >= 0.10`, `volume_ratio_t >= 1.25`, and close is above session IEX VWAP;
+- bearish under the symmetric lower-box and below-VWAP conditions;
+- otherwise `NO_TRADE`.
+
+Set `entry_score = min(0.65 / max(compression_ratio, 1e-6), break_fraction / 0.10, volume_ratio_t / 1.25)`. Permit only the first H6 entry per symbol per session and use `TREND_VWAP_OR_60M_V1`.
+
+Falsification focus: prove that the result is not an H3 duplicate, report the overlap in trade timestamps with H1/H3, and require incremental portfolio evidence rather than counting correlated signals as independent discoveries.
+
+### Prescribed stability sensitivities
+
+Sensitivities are diagnostic, run one dimension at a time, and are not per-symbol optimization:
+
+- H1 `abs(momentum_z)` threshold: central `1.00`; diagnostics `0.75`, `1.25`.
+- H2 `abs(deviation_z)` threshold: central `1.50`; diagnostics `1.25`, `1.75`.
+- H3 breakout fraction: central `0.10`; diagnostics `0.05`, `0.15`. Volume ratio: central `1.25`; diagnostics `1.00`, `1.50`.
+- H4 `abs(gap_z)`: central `1.00`; diagnostics `0.75`, `1.25`. Continuation ratio: central `0.25`; diagnostics `0.00`, `0.50`.
+- H5 `abs(residual_z)`: central `1.25`; diagnostics `1.00`, `1.50`.
+- H6 compression ratio: central `0.65`; diagnostics `0.50`, `0.80`. Breakout fraction: central `0.10`; diagnostics `0.05`, `0.15`.
+- All families' time exit from confirmed fill: central `60` minutes; diagnostics `45`, `90` minutes.
+
+The central specification is the only promotion-eligible value. Owners publish every prescribed neighbor and may not report only the best run. Any unlisted value is a new candidate and counts in the selection family if its result is viewed.
 
 ## 6. Common option expressions
 
 Evaluate the underlying signal first. The option layer expresses the frozen direction and cannot rescue or reverse it.
 
 Research and runtime load the same committed `configs/template_catalog.yaml`; every run and order plan records its canonical hash. The catalog freezes family, DTE bucket, moneyness/width construction, ranking, atomicity, and exit rules. The advisory agent is veto-only at this boundary: it cannot change expression family, strike-width policy, DTE, selector ranking, or size. Current quotes and Greeks may reject an otherwise selected candidate or serve as diagnostics, but may not retrofit a different historical selection rule.
+
+This paragraph is a required target invariant, not a description of the current fixture planner. Until `G-R2_CATALOG_PARITY` passes, owners may complete option-proxy research using this frozen policy but must label `backtest_runtime_parity=FAILED_NOT_IMPLEMENTED`; no candidate can become `INTEGRATION_READY` or `PAPER_CANDIDATE`.
 
 Historical selection may use only raw underlying spot, contract type, strike, expiration, standard multiplier/deliverable, and evidence the contract existed by the decision time. It may not use historical Greeks, current snapshots, future volume, or post-decision open interest.
 
@@ -281,6 +477,117 @@ Historical selection may use only raw underlying spot, contract type, strike, ex
 For one debit spread, fee-inclusive maximum loss is `gross_entry_debit_per_share × 100 + opening_fees + reserved_exit_fees`; the same arithmetic and integer floor are used in research portfolio replay and runtime. If the risk budget cannot buy one spread, the expression is infeasible. O1 diagnoses whether paying two leg spreads destroys the signal; it is not a second opportunity to cherry-pick P&L.
 
 Contract ranking uses only the frozen metadata/raw-spot fields and is completed before option observations or current quote quality are joined. Missing historical bars for the chosen leg(s) yield `NO_PROXY_FILL`; do not rerank to a contract with better coverage. A failed current quote gate yields `NO_TRADE`; do not walk the chain to a different width/DTE/strike.
+
+## 6A. Exact strategy-to-system integration contract
+
+Researchers implement a pure semantic decision plug-in. They do **not** implement Alpaca retrieval, option-symbol selection, sizing, pricing, risk approval, order submission, position reconciliation, or lifecycle promotion.
+
+### Required Python surface
+
+The candidate exposes one importable `Plugin` implementing `StrategyPluginV1`:
+
+```python
+class Plugin:
+    @property
+    def metadata(self) -> StrategyMetadataV1: ...
+
+    def data_requirements(self, config: StrategyConfigV1) -> DataRequirementsV1: ...
+
+    def evaluate(
+        self,
+        context: StrategyContextV1,
+        config: StrategyConfigV1,
+    ) -> StrategyEvaluationV1: ...
+```
+
+Current V1 implementation constraints that every owner must design around:
+
+- `plugin_id` is a stable lowercase slug and `plugin_version` is semantic `x.y.z`.
+- `StrategyConfigV1.values` is a flat map of `Decimal | str | int | bool`; no list or nested config is allowed.
+- `StrategyContextV1.universe_features` and `option_surface_summaries` are flat Decimal maps. The plug-in receives no raw bars or provider objects.
+- The only current horizon is `INTRADAY_15_60M`; the only risk tiers are `TINY` and `STANDARD`.
+- Entry output may request `CALL_DEBIT_SPREAD_V1` or `PUT_DEBIT_SPREAD_V1` for promotion-eligible V1. Long-call/put templates remain diagnostic/demo only unless separately approved.
+- Effective runner limits are two seconds wall time, one CPU second, 256 MiB address space where enforceable, and 128 KiB combined response/diagnostic policy. A strategy should perform only constant-time comparisons over precomputed features.
+- The committed `regime_momentum_v1` is a fixture, not an H1 reference implementation: it ignores most documented H1 logic and must not be copied as research truth.
+
+### Feature handoff
+
+Each owner submits `feature_contract.yaml`. Every required feature entry includes:
+
+```yaml
+name: QQQ__momentum_z_60m_same_time_v1
+dtype: decimal_string
+unit: z_score
+source: alpaca_stock_bars
+feed: iex
+formula: preregistered exact expression
+lookback: 20 valid prior same-time sessions
+event_time_rule: completed source intervals only
+available_time_rule: interval_end_plus_1_second
+maximum_age_seconds: 60
+missing_behavior: NO_TRADE
+quality_flags_allowed: []
+worked_example_ref: sha256:...
+```
+
+Names are immutable API fields. A formula, unit, lookback, clock, or missing-value change requires a new feature name/version and a new candidate run; silently keeping the old name invalidates parity. The platform owner implements the shared feature builder and validates `data_requirements()` before evaluation.
+
+### Allowed output
+
+For each evaluation, the plug-in returns exactly one:
+
+- `NoTradeV1` with a closed, candidate-declared reason code; or
+- `EntryTemplateRequestV1` containing only underlying, allowed template, horizon, risk tier, strength bucket, expiry no more than the supplied tuple TTL, reason codes, and immutable evidence references.
+
+The plug-in must never emit or encode an option symbol, strike, exact option expiration, leg, quantity, price, limit, time in force, account/buying power, maximum-loss amount, client/broker ID, order class, or broker operation. It may not hide executable instructions in reason codes, state, record IDs, or prose.
+
+Required stable reason-code families include:
+
+- data: `DATA_MISSING`, `DATA_STALE`, `DATA_QUALITY_REJECTED`, `FEATURE_SCHEMA_MISMATCH`;
+- session: `OUTSIDE_DECISION_WINDOW`, `EARLY_CLOSE_SESSION`, `DAILY_ENTRY_ALREADY_USED`, `COOLDOWN_ACTIVE`;
+- signal: `<HYPOTHESIS>_GATE_NOT_MET`, `DIRECTION_AMBIGUOUS`, `BENCHMARK_MISSING`;
+- authority: `UNDERLYING_NOT_ALLOWED`, `TEMPLATE_NOT_ALLOWED`, `INTENT_TTL_INVALID`.
+
+Owners may add candidate-specific codes in `reason_codes.yaml`; the reviewer checks that none changes execution semantics.
+
+### Required output bindings and state
+
+The plug-in must copy the request's evaluation ID, context hash, config hash, registered plug-in ID/version/content hash, and evaluation time exactly. `next_state` must:
+
+- belong to the same plug-in ID/version;
+- set `sequence = prior_state.sequence + 1`;
+- use `as_of = context.as_of`;
+- be deterministic and schema-limited;
+- contain only small string fields needed for explicit cooldown or one-entry-per-day state.
+
+The host—not the plug-in—must recheck all bindings, the centrally computed package hash, lifecycle/mode, allowed underlying/tuple, TTL, state sequence/hash, and metadata/data-requirement match. A mismatch becomes a stable refusal and never reaches planning.
+
+### Backtest/runtime parity rule
+
+Put the economic decision in a small pure function such as `signal.py`; both the shared backtest adapter and `Plugin.evaluate()` call that function on the same normalized feature/config row. For at least 20 frozen timestamps per candidate, `integration/backtest_runtime_parity.json` records:
+
+- canonical feature/context/config hashes;
+- expected direction and normalized score;
+- expected `NO_TRADE` reason or exact semantic entry tuple;
+- expected next-state sequence/payload;
+- canonical evaluation hash after the registered content hash is injected.
+
+The shared conformance job runs every case twice through the isolated runner and requires byte-identical canonical output. Minimum cases are bullish, bearish, below threshold, equality at threshold, conflicting gates, missing feature, stale/quality-flagged data, forbidden underlying, missing tuple, excessive TTL, repeated daily entry/cooldown, and state-sequence mismatch.
+
+### Central integration pipeline
+
+```text
+candidate research artifacts and non-author review
+→ registry candidate remains research_only
+→ source/config/feature/catalog/evidence hashes frozen
+→ shared conformance and backtest/runtime parity
+→ complete portfolio replay through exact selector/sizer/position policy
+→ NO_TRADE + risk-rejection + approved/fake-fill + close/flatten fixtures
+→ paper_candidate review
+→ release owner may set exact version/hash to paper_enabled
+```
+
+Adding a plug-in directory or reporting a profitable backtest never authorizes it. Researchers submit `integration/registry_candidate.yaml`; only the central registry owner merges lifecycle and authority fields.
 
 ## 7. No-lookahead protocol
 
@@ -382,7 +689,7 @@ Champion, preregistered fallback, symbols, thresholds, expression, selector, and
 
 Walk-forward rules:
 
-- require at least 252 completed experiment-history sessions before the first OOS fold, while each feature value uses exactly the most recent 20 valid same-time observations defined in Section 5;
+- require at least 252 completed experiment-history sessions before the first OOS fold; feature values use the exact preregistered lookback in Section 5—20 valid same-time sessions for H1/H2/H3/H6 and 60 for H4/H5;
 - fixed common rule; rolling scale estimates may update;
 - test one calendar quarter at a time;
 - purge observations spanning a boundary and embargo one full session;
@@ -396,7 +703,7 @@ Walk-forward rules:
 
 Frozen null/resampling specification:
 
-- the authorizing test uses complete 2025 OOS daily account returns for every promotion-eligible central H1/H2 × symbol × O2 candidate, plus any variant actually allowed to influence selection; it excludes 2024 calibration and never pools post-selection 2026 results;
+- the authorizing test uses complete 2025 OOS daily account returns for every promotion-eligible central H1–H6 × compatible feasible-symbol scope × O2 candidate, plus any variant actually allowed to influence selection; it excludes 2024 calibration and never pools post-selection 2026 results;
 - align every candidate to the same complete market-date index and include zero-return inactive dates;
 - for each candidate, center its daily OOS return series under the zero-mean null;
 - use a fixed seed and 10,000 synchronized bootstrap replications of five-session moving date blocks;
@@ -410,12 +717,13 @@ Only the central preregistered specification is promotion-eligible. Neighboring 
 Predeclared selection sequence using data through December 31, 2025 only:
 
 1. Candidate passes every data and falsification gate.
-2. Total OOS net percentage return is positive.
+2. Total OOS net percentage return is positive under base conservative costs and nonnegative under the severe/2×-cost run.
 3. At least 60% of populated quarterly folds are positive.
-4. Select highest median quarterly net percentage return among remaining candidates.
-5. Tie-break on lower maximum drawdown, then higher 2024–2025 two-leg simultaneous proxy-coverage rate, then lexicographically by stable candidate ID.
+4. A candidate called `statistically_supported` or `paper_enabled` must pass the frozen family-wise adjusted positive-edge test; otherwise it may remain `suggestive`, shadow, or explicit demo-only.
+5. Among evidence-backed candidates, rank by the preregistered deflated/selection-adjusted Sharpe probability on complete daily OOS returns. Values within `0.02` are treated as tied rather than economically distinct.
+6. Tie-break on higher median quarterly net percentage return, then lower maximum drawdown, then higher 2024–2025 simultaneous two-leg proxy coverage, then lexicographically by stable candidate ID.
 
-Do not select a winner independently inside each symbol and present six winners.
+Do not select a winner independently inside each symbol or researcher report and then present six winners. Selection is over the complete strategy-family portfolio candidates, with every viewed trial retained.
 
 Monday prospective quotes are accept/reject operational gates only. They may produce `NO_TRADE` or reject a frozen candidate, but they never re-rank the champion/fallback or select a replacement.
 
@@ -439,7 +747,7 @@ After candidates are frozen, the 2026 accept/reject gate requires for each prede
 - active days and trades;
 - session-clustered standard error and five-day block-bootstrap interval;
 - year/quarter/direction/regime slices;
-- matched-null/permutation percentile.
+- synchronized centered moving-block null percentile; no separate per-trade permutation test.
 
 ### Option/account performance
 
@@ -539,40 +847,108 @@ Immediate falsification/demotion:
 
 ## 12. Standard artifacts
 
-Every symbol owner returns the same package:
+Shared data/feasibility evidence is stored once; every **strategy-family owner** returns the same candidate and plug-in package:
 
 ```text
-research/<symbol>/
-├── hypothesis_H1.yaml
-├── hypothesis_H2.yaml
-├── entitlement_probe.json
-├── data_manifest.json
-├── data_quality.json
-├── contract_universe_manifest.json
-├── pit_existence_proxy.parquet
-├── feasibility_card.json
-├── feasibility_card.md
-├── runs/<run_id>/
-│   ├── run_manifest.json
-│   ├── signals.parquet
-│   ├── selected_contracts.parquet
-│   ├── proxy_leg_observations.parquet
-│   ├── trades.parquet
-│   ├── daily_returns.parquet
-│   ├── fold_metrics.parquet
-│   ├── metrics.json
-│   ├── cost_stress.json
-│   ├── portfolio_replay.json
-│   ├── limitations.md
-│   └── plots/
-└── promotion_card.md
+research/
+├── shared/
+│   ├── entitlement_probe.json
+│   ├── trial_ledger.jsonl
+│   ├── datasets/<dataset_id>/data_manifest.json
+│   ├── selection/
+│   │   ├── feasibility_selection.json
+│   │   └── candidate_selection.json
+│   └── symbol_feasibility/<symbol>/
+│       ├── data_quality.json
+│       ├── contract_universe_manifest.json
+│       ├── pit_existence_proxy.parquet
+│       ├── feasibility_card.json
+│       └── feasibility_card.md
+└── candidates/<candidate_id>/
+    ├── strategy_card.md
+    ├── hypothesis.yaml
+    ├── feature_contract.yaml
+    ├── central_config.json
+    ├── sensitivities.yaml
+    ├── reason_codes.yaml
+    ├── state_schema.json
+    ├── data_refs.json
+    ├── runs/<run_id>/
+    │   ├── run_manifest.json
+    │   ├── signals.parquet
+    │   ├── selected_contracts.parquet
+    │   ├── proxy_leg_observations.parquet
+    │   ├── trades.parquet
+    │   ├── daily_returns.parquet
+    │   ├── fold_metrics.parquet
+    │   ├── metrics.json
+    │   ├── cost_stress.json
+    │   ├── portfolio_replay.json
+    │   ├── limitations.md
+    │   └── plots/
+    ├── integration/
+    │   ├── registry_candidate.yaml
+    │   ├── golden_contexts/
+    │   ├── golden_evaluations/
+    │   ├── backtest_runtime_parity.json
+    │   ├── conformance_report.json
+    │   ├── catalog_parity.json
+    │   └── integration_checklist.md
+    └── promotion_card.md
+
+strategy_plugins/<plugin_id>_v1/
+├── __init__.py
+├── plugin.py
+├── signal.py
+├── README.md
+├── defaults.json
+└── tests/
+    ├── test_metadata.py
+    ├── test_thresholds.py
+    ├── test_no_trade.py
+    ├── test_determinism.py
+    ├── test_boundary.py
+    └── test_parity.py
 ```
 
-`data_manifest.json` records endpoint/tool/version, explicit feed, scrubbed query, requested/returned coverage, page completion, row count, fetch time, raw/normalized hashes, missingness, rate-limit/errors, and adjustment type.
+`strategy_card.md` freezes the economic mechanism, eligible symbols, exact entry formula, normalized score, decision cadence, position-policy ID, option-template mapping, no-trade conditions, expected failure regimes, and one-sentence reason the edge could persist after costs.
+
+`hypothesis.yaml` records candidate/hypothesis IDs, owner/reviewer, preregistration time, central parameters, prescribed sensitivities, discovery/OOS/final periods, null, primary metric, falsification thresholds, and hashes of the feature/selector/cost policies.
+
+`data_manifest.json` records endpoint/tool/version, explicit feed, scrubbed query, requested/returned coverage, page completion, row count, fetch time, raw/normalized hashes, missingness, rate-limit/errors, and adjustment type. `data_refs.json` references those immutable shared hashes; candidates do not copy or mutate raw data.
 
 `run_manifest.json` records Git commit, config/data/hypothesis/expression hashes, exact `template_catalog.yaml` hash, fold boundaries, one-minute/five-minute proxy timing rules, tick/fee assumptions, bootstrap seed/specification, all viewed and tried variants, start/end time, status, owner, and reviewer.
 
-`promotion_card.md` contains every gate with artifact reference, falsification attempts, limitations, owner/reviewer sign-off, and exact permitted state: rejected, shadow, demo-only, or candidate.
+Minimum tabular schemas:
+
+- `signals.parquet`: candidate/plugin ID/version, symbol, UTC decision time, feature/context/config hashes, eligibility, direction, normalized entry score, decision kind, reason code, requested semantic tuple, position-policy ID, portfolio-selected/suppressed status, and quality flags.
+- `selected_contracts.parquet`: signal ID, point-in-time contract evidence hashes, call/put, expiration/DTE, raw spot, long/short strikes, ranking fields, template/catalog hash, and selection/rejection reason. It contains research selections, never broker authority.
+- `proxy_leg_observations.parquet`: requested/source timestamps, option symbol, side, OHLC/trade fields, coverage status, base/severe buy/sell proxies, and raw artifact hash.
+- `trades.parquet`: signal/portfolio IDs, requested/observed entry and exit times, quantity, fee-inclusive debit/max loss, liquidation proxy, base/severe P&L and returns, exit-policy/reason, and missing-mark/no-fill penalty.
+- `daily_returns.parquet`: every market date including zero-return inactive dates, start/end normalized equity, gross/net P&L, return, maximum reserved loss, exposure minutes, trade count, and data-quality status.
+
+`metrics.json` contains the exact metrics in Section 10 for the central run and explicit evidence status; `cost_stress.json` contains every prescribed fee/tick/missing-exit scenario, never just the favorable one.
+
+`registry_candidate.yaml` is a **non-authorizing proposal** with lifecycle `research_only`, exact plug-in/config/feature/state/evidence hashes, requested underlyings and intent tuples, position-policy ID, owner, and reviewer. Researchers never edit `paper_enabled` in the central registry.
+
+`backtest_runtime_parity.json` and golden directories contain the cases in Section 6A. `catalog_parity.json` proves that portfolio replay and runtime select identical contracts, quantities, maximum loss, and refusal reasons from identical frozen inputs.
+
+`promotion_card.md` contains every gate with artifact reference, falsification attempts, overlap/correlation with other candidates, known limitations, owner/reviewer sign-off, and exactly one permitted state: `REJECTED`, `RESEARCH_COMPLETE`, `INTEGRATION_READY`, `PAPER_SHADOW`, `PAPER_DEMO_ONLY`, or `PAPER_CANDIDATE`. It cannot declare `PAPER_ENABLED`.
+
+### Researcher definition of done
+
+Before requesting integration review, the owner and non-author reviewer answer **yes** to all of these:
+
+- The central hypothesis and all viewed trials are in the trial ledger.
+- All inputs come from shared Alpaca-only immutable manifests and pass availability-time checks.
+- The run reproduces from one documented native ARM64 command and exact commit/lock/config hashes.
+- Central and every prescribed sensitivity result are published across every compatible feasible symbol.
+- Portfolio replay includes suppressed signals, zero-return dates, integer contracts, cluster/concurrency limits, exact selector/sizer, and exact exit policy.
+- Base and severe costs, missing observations, no-fill cases, concentration, drawdown, and selection-adjusted evidence are reported.
+- `signal.py` and `Plugin.evaluate()` make identical semantic decisions on every parity row.
+- The isolated runner produces byte-identical output twice and every negative/boundary test passes.
+- Output contains no exact order authority, hidden I/O, or self-promotion.
+- Reviewer independently reproduces artifact hashes and records deviations; unresolved deviation means not done.
 
 Competition telemetry is separate:
 
@@ -591,39 +967,46 @@ telemetry/competition/
 
 ### Saturday morning
 
+- Release captain reviews and commits the implementation baseline; no researcher branches from the current untracked workspace state.
+- Platform owners close or explicitly track `G-R1`–`G-R5`, publish the registry/catalog/feature/reason/position-policy schemas, and provide one conformance command.
 - Data steward runs one shared entitlement probe.
 - Freeze feed, timestamp, contract, and proxy rules.
-- Build one common scanner/artifact schema.
+- Build one common scanner, artifact schema, and backtest adapter; no member-specific engines.
 - Bulk-fetch the six underlying histories once.
-- Assign one symbol per member; forbid member-specific backtest engines.
+- Assign one strategy family per Section 3. Each owner writes `strategy_card.md`, `hypothesis.yaml`, `feature_contract.yaml`, and central/sensitivity configs without viewing result P&L.
 
 ### Saturday afternoon
 
 - Complete six historical feasibility cards.
 - Remove `RED_REMOVE` symbols.
-- Run H1 underlying scan on all green/yellow symbols.
+- Implement all six pure `signal.py` functions and boundary fixtures against the frozen feature rows.
+- Reproduce the H1 golden underlying run on two native ARM64 machines before opening comparative outcomes.
+- Run H1–H6 central underlying scans across every compatible green/yellow symbol through the common harness; log every run.
 - Begin point-in-time contract-existence proxy construction.
-- Do not start H2 until H1 reproduces on two machines.
+- Researchers may implement plug-in shells in parallel, but nothing is called `INTEGRATION_READY` while `G-R1`–`G-R5` is open.
 
 ### Sunday morning
 
-- Run H2 under the frozen common rule.
 - Deep-test option expressions for at most three symbols selected by data/coverage quality—not P&L.
 - Cut O1/O2 where mark coverage fails.
-- Run quarterly walk-forward, purge/embargo, cost stress, null and multiplicity controls.
+- Run every central strategy-family portfolio through quarterly walk-forward, purge/embargo, base/severe costs, null, multiplicity, concentration, and risk-adjusted controls.
+- Run every prescribed sensitivity as a diagnostic and publish it; do not use a neighbor to replace the central candidate.
+- Complete plug-in conformance, runner determinism, golden contexts/evaluations, and semantic backtest/runtime parity where platform gates permit.
 
 ### Sunday afternoon
 
-- Cross-review and independently reproduce.
+- Named reviewers independently reproduce candidate manifests, hashes, central metrics, at least one negative fixture, and catalog parity.
+- Quant lead compares complete portfolio candidates—not per-member headline metrics—and records the full selection table.
 - Using data through 2025 only, freeze one champion and at most one operational fallback by 18:00 ET, including its explicit session-boundary failover condition.
 - Only after that freeze, open 2026 once for accept/reject validation; do not tune, reorder, or designate a new fallback from that result.
 - If none passes, use `NO_TRADE` or separately authorized minimum-risk `paper_demo_only` without an alpha claim.
-- Freeze strategy rules, symbols, config, proxy assumptions, and hashes.
+- Freeze strategy rules, symbol scope, feature/config/source/catalog/position-policy/evidence hashes, risk profile, and exact release candidate.
 
 ### Monday
 
 - Capture the prospective indicative quote-quality gate.
-- Start in shadow; arm only after chain, quote, account, risk, and release gates pass.
+- Start in shadow. Arm only after chain, quote, account, research, registry/catalog parity, maximum-loss/preflight, close/flatten/reconcile, control, credential, and release gates all pass.
+- If any P0 architecture finding remains, do not connect or arm the judged account; demonstrate deterministic replay and continue `PAPER_DEMO_ONLY` work on a development account/fixture.
 - Any parameter change creates a new version and voids prior forward-evidence continuity.
 
 ### Tuesday–Thursday
@@ -651,7 +1034,10 @@ This evidence boundary is part of the product's credibility, not a disclaimer to
 - [Historical option-data coverage and indicative/OPRA definitions](https://docs.alpaca.markets/us/docs/historical-option-data)
 - [Historical option bars API](https://docs.alpaca.markets/us/reference/optionbars)
 - [Historical option trades API](https://docs.alpaca.markets/us/reference/optiontrades)
+- [Current option snapshots API](https://docs.alpaca.markets/us/reference/optionsnapshots)
+- [Current option-chain snapshots API](https://docs.alpaca.markets/us/reference/optionchain)
 - [Option-contract enumeration API](https://docs.alpaca.markets/us/reference/get-options-contracts-1)
 - [Historical stock bars API](https://docs.alpaca.markets/us/reference/stockbars)
 - [Alpaca market-data FAQ](https://docs.alpaca.markets/us/docs/market-data-faq)
+- [Alpaca multi-leg options behavior and restrictions](https://docs.alpaca.markets/us/v1.4.2/docs/options-level-3-trading)
 - [Paper-trading behavior and simulation limitations](https://docs.alpaca.markets/us/v1.4.2/docs/paper-trading)

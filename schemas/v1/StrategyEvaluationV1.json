@@ -1,0 +1,354 @@
+{
+  "$defs": {
+    "ArtifactRefV1": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_type": {
+          "enum": [
+            "FEATURE_VECTOR",
+            "RESEARCH_REPORT",
+            "DATASET",
+            "MODEL_OUTPUT"
+          ],
+          "title": "Artifact Type",
+          "type": "string"
+        },
+        "content_hash": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Content Hash",
+          "type": "string"
+        },
+        "record_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Record Id"
+        }
+      },
+      "required": [
+        "artifact_type",
+        "content_hash"
+      ],
+      "title": "ArtifactRefV1",
+      "type": "object"
+    },
+    "EntryTemplateRequestV1": {
+      "additionalProperties": false,
+      "properties": {
+        "entry_reason_codes": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Entry Reason Codes",
+          "type": "array"
+        },
+        "evidence_refs": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ArtifactRefV1"
+          },
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "horizon_bucket": {
+          "const": "INTRADAY_15_60M",
+          "title": "Horizon Bucket",
+          "type": "string"
+        },
+        "intent_expires_at": {
+          "format": "date-time",
+          "title": "Intent Expires At",
+          "type": "string"
+        },
+        "kind": {
+          "const": "ENTRY_TEMPLATE_REQUEST",
+          "default": "ENTRY_TEMPLATE_REQUEST",
+          "title": "Kind",
+          "type": "string"
+        },
+        "risk_tier": {
+          "enum": [
+            "TINY",
+            "STANDARD"
+          ],
+          "title": "Risk Tier",
+          "type": "string"
+        },
+        "signal_strength_bucket": {
+          "enum": [
+            "LOW",
+            "MEDIUM",
+            "HIGH"
+          ],
+          "title": "Signal Strength Bucket",
+          "type": "string"
+        },
+        "template_id": {
+          "enum": [
+            "CALL_DEBIT_SPREAD_V1",
+            "PUT_DEBIT_SPREAD_V1",
+            "LONG_CALL_V1",
+            "LONG_PUT_V1"
+          ],
+          "title": "Template Id",
+          "type": "string"
+        },
+        "underlying": {
+          "pattern": "^[A-Z]{1,8}$",
+          "title": "Underlying",
+          "type": "string"
+        }
+      },
+      "required": [
+        "underlying",
+        "template_id",
+        "horizon_bucket",
+        "risk_tier",
+        "signal_strength_bucket",
+        "intent_expires_at",
+        "entry_reason_codes"
+      ],
+      "title": "EntryTemplateRequestV1",
+      "type": "object"
+    },
+    "NoTradeV1": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "NO_TRADE",
+          "default": "NO_TRADE",
+          "title": "Kind",
+          "type": "string"
+        },
+        "primary_reason_code": {
+          "pattern": "^[A-Z][A-Z0-9_]{2,95}$",
+          "title": "Primary Reason Code",
+          "type": "string"
+        },
+        "retry_after": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Retry After"
+        }
+      },
+      "required": [
+        "primary_reason_code"
+      ],
+      "title": "NoTradeV1",
+      "type": "object"
+    },
+    "PositionDirectiveV1": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "enum": [
+            "HOLD",
+            "REDUCE",
+            "CLOSE"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "directive_expires_at": {
+          "format": "date-time",
+          "title": "Directive Expires At",
+          "type": "string"
+        },
+        "kind": {
+          "const": "POSITION_DIRECTIVE",
+          "default": "POSITION_DIRECTIVE",
+          "title": "Kind",
+          "type": "string"
+        },
+        "reason_codes": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "strategy_position_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Strategy Position Id",
+          "type": "string"
+        },
+        "urgency": {
+          "enum": [
+            "NORMAL",
+            "RISK_EXIT"
+          ],
+          "title": "Urgency",
+          "type": "string"
+        }
+      },
+      "required": [
+        "strategy_position_id",
+        "action",
+        "urgency",
+        "reason_codes",
+        "directive_expires_at"
+      ],
+      "title": "PositionDirectiveV1",
+      "type": "object"
+    },
+    "StrategyStateV1": {
+      "additionalProperties": false,
+      "properties": {
+        "as_of": {
+          "format": "date-time",
+          "title": "As Of",
+          "type": "string"
+        },
+        "payload": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Payload",
+          "type": "object"
+        },
+        "plugin_id": {
+          "title": "Plugin Id",
+          "type": "string"
+        },
+        "plugin_version": {
+          "title": "Plugin Version",
+          "type": "string"
+        },
+        "sequence": {
+          "minimum": 0,
+          "title": "Sequence",
+          "type": "integer"
+        },
+        "state_hash": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "State Hash"
+        },
+        "state_schema_version": {
+          "const": "strategy-state/v1",
+          "default": "strategy-state/v1",
+          "title": "State Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "plugin_id",
+        "plugin_version",
+        "as_of",
+        "sequence"
+      ],
+      "title": "StrategyStateV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "config_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Config Hash",
+      "type": "string"
+    },
+    "context_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Context Hash",
+      "type": "string"
+    },
+    "decision": {
+      "discriminator": {
+        "mapping": {
+          "ENTRY_TEMPLATE_REQUEST": "#/$defs/EntryTemplateRequestV1",
+          "NO_TRADE": "#/$defs/NoTradeV1",
+          "POSITION_DIRECTIVE": "#/$defs/PositionDirectiveV1"
+        },
+        "propertyName": "kind"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/NoTradeV1"
+        },
+        {
+          "$ref": "#/$defs/EntryTemplateRequestV1"
+        },
+        {
+          "$ref": "#/$defs/PositionDirectiveV1"
+        }
+      ],
+      "title": "Decision"
+    },
+    "evaluation_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Evaluation Hash"
+    },
+    "evaluation_id": {
+      "title": "Evaluation Id",
+      "type": "string"
+    },
+    "next_state": {
+      "$ref": "#/$defs/StrategyStateV1"
+    },
+    "plugin_content_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Plugin Content Hash",
+      "type": "string"
+    },
+    "plugin_id": {
+      "title": "Plugin Id",
+      "type": "string"
+    },
+    "plugin_version": {
+      "title": "Plugin Version",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "strategy-evaluation/v1",
+      "default": "strategy-evaluation/v1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "evaluation_id",
+    "plugin_id",
+    "plugin_version",
+    "plugin_content_hash",
+    "context_hash",
+    "config_hash",
+    "decision",
+    "next_state"
+  ],
+  "title": "StrategyEvaluationV1",
+  "type": "object"
+}
