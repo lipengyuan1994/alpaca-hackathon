@@ -22,7 +22,7 @@ Send each research owner this page plus exactly one packet:
 - [Group B — SMH and SOXL](GROUP_B_SEMICONDUCTOR_PLAN.md)
 - [Group C — TQQQ and IGV](GROUP_C_LEVERAGED_SOFTWARE_PLAN.md)
 
-Every packet owner must also follow the normative [strategy research protocol](../plans/STRATEGY_RESEARCH_PLAN.md), [strategy API](../architecture/STRATEGY_API.md), and [published research interface freeze](../architecture/RESEARCH_INTERFACE_FREEZE.md). If a packet conflicts with those documents, stop and ask the release owner.
+Every packet owner starts with [trading foundation](trading_foundation.md) and [quant trading basics](quant_trading_basic.md), then follows the normative [strategy research protocol](../plans/STRATEGY_RESEARCH_PLAN.md), [strategy API](../architecture/STRATEGY_API.md), and [published research interface freeze](../architecture/RESEARCH_INTERFACE_FREEZE.md). If a packet conflicts with those documents, stop and ask the release owner.
 
 ## 2. What the platform/data owner must supply first
 
@@ -39,12 +39,12 @@ The data steward collects once for the team. Researchers must not build private 
 
 ## 3. Required workflow for each packet owner
 
-1. Verify native `arm64`, the source commit, and lock hash.
+1. Verify Python 3.12, the source commit, and lock hash; record operating system and CPU architecture in the run manifest. Windows, Linux, and non-ARM macOS are supported for offline research.
 2. For each assigned family, and before viewing its outcome P&L, separately freeze `strategy_card.md`, `hypothesis.yaml`, `feature_contract.yaml`, central config, sensitivities, reason codes, state schema, compatible symbol set, option-expression policy, exit-policy ID, cost policy, and falsification conditions.
 3. Compute and record a distinct candidate-specific feature-contract hash for each family. Do not reuse the host fixture feature hash unless the complete formulas and keys truly match.
 4. Implement each economic rule once in its own pure `signal.py`; its offline adapter and `Plugin.evaluate()` call that same function.
 5. Run the prescribed pair cells, folds, null, costs, sensitivities, and falsifications for both families. Preserve all attempted trials, including failures.
-6. Build two canonical plug-in packages, each with golden contexts/evaluations, negative/boundary tests, and deterministic `scripts/reproduce.sh`.
+6. Build two canonical plug-in packages, each with golden contexts/evaluations, negative/boundary tests, and one deterministic cross-platform Python reproduction entry point. POSIX and PowerShell wrappers may call that same entry point.
 7. Ask the designated owner of another packet to reproduce both packages' hashes, metrics, and at least one negative fixture per package. The reviewer reports defects but does not tune a reviewed rule after seeing outcomes.
 8. Return both packages, each with one truthful state: `REJECTED`, `RESEARCH_COMPLETE`, or a request for central integration review. Do not declare `PAPER_ENABLED`.
 
@@ -65,8 +65,10 @@ strategy_plugins/<plugin_id>_v1/
 │   ├── __init__.py
 │   ├── plugin.py
 │   ├── signal.py
-│   └── reason_codes.py
-├── scripts/reproduce.sh
+│   ├── reason_codes.py
+│   └── reproduce.py
+├── scripts/reproduce.sh                 # optional POSIX wrapper
+├── scripts/reproduce.ps1                # optional PowerShell wrapper
 ├── tests/
 │   ├── fixtures/
 │   ├── golden/
@@ -116,18 +118,18 @@ An unselected option-proxy symbol still returns schema-valid empty option tables
 
 ## 5. Reproducibility contract
 
-Each package supplies an executable offline command:
+Each package supplies a platform-neutral offline command:
 
-```zsh
-./scripts/reproduce.sh \
+```text
+uv run python -m <plugin_id>_v1.reproduce \
   --data-manifest /absolute/path/to/data_manifest.json \
   --feasibility-manifest /absolute/path/to/option_proxy_feasibility_manifest.json \
   --output /absolute/path/to/empty-output-directory
 ```
 
-It must refuse a nonempty output directory, validate the pinned commit/lock/data/config hashes, run package tests, make no network or credential call, and produce deterministic authoritative artifacts. Running it twice from the same inputs must yield identical authoritative hashes.
+It must refuse a nonempty output directory, validate the pinned commit/lock/data/config hashes, run package tests, make no network or credential call, and produce deterministic authoritative artifacts. Running it twice from the same inputs must yield identical authoritative hashes. A shell or PowerShell wrapper must invoke this same Python module; it cannot contain different research logic.
 
-The host-interface baseline is:
+The following host-interface baseline is run only by the central Mac/ARM64 owner:
 
 ```zsh
 UV_CACHE_DIR="$PWD/.uv-cache" UV_PYTHON_INSTALL_DIR="$PWD/.uv-python-arm64" /opt/homebrew/bin/uv run --frozen pytest -q tests/security/test_strategy_authorization.py tests/contract/test_feature_contract.py tests/contract/test_strategy_arbitration.py

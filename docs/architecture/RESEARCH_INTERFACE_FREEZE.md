@@ -10,6 +10,8 @@ Dependency lock: `uv.lock` SHA-256 `b846dc0b4d52be240cbb131e8267a5bf5ed4659b2157
 
 This release is sufficient for three packet owners to preregister all six assigned hypotheses, implement pure signal packages, run offline pair-cell research from centrally supplied immutable data, and return reproducible evidence. It does **not** certify the judged-account runtime, authorize broker credentials, or permit a candidate to self-promote.
 
+The native-ARM64 commands later in this document are the central host baseline, not a researcher admission gate. Offline research may run on supported Windows, Linux, or macOS platforms with Python 3.12 and the pinned lock file; researchers record their platform in the run manifest. See [`../research/quant_trading_basic.md`](../research/quant_trading_basic.md).
+
 ## 1. What is frozen
 
 Researchers build against these semantics until the release owner publishes a versioned replacement:
@@ -134,7 +136,7 @@ There is no claimed shared historical backtester in this release. Each package m
 
 Partial gates do not block credential-free hypothesis work, pure plug-in implementation, or offline pair-cell research. They do block `INTEGRATION_READY`, `PAPER_CANDIDATE`, `PAPER_ENABLED`, and judged-account access until their candidate- and runtime-specific evidence passes.
 
-## 8. Exact verification commands
+## 8. Central native-ARM64 host verification commands
 
 Run from repository root on native Apple Silicon:
 
@@ -145,7 +147,7 @@ UV_CACHE_DIR="$PWD/.uv-cache" UV_PYTHON_INSTALL_DIR="$PWD/.uv-python-arm64" /opt
 UV_CACHE_DIR="$PWD/.uv-cache" UV_PYTHON_INSTALL_DIR="$PWD/.uv-python-arm64" /opt/homebrew/bin/uv run --frozen ruff check .
 ```
 
-The first three targeted test files are the published host-interface baseline. They are not a candidate backtest. A candidate records `host_interface_baseline=PASSED_AT_cb03a76` only when this exact command passes, and records `candidate_host_conformance=NOT_RUN_UNTIL_REGISTRY_PROPOSAL_REVIEWED` until the release owner runs its golden cases through the host.
+The first three targeted test files are the published host-interface baseline. They are not a candidate backtest. Only the central host owner records `host_interface_baseline=PASSED_AT_cb03a76` when this exact command passes. Researchers running on other supported architectures record their own `uv` command, OS, CPU, and output hashes; the release owner later runs a candidate's golden cases through the host before integration/paper promotion.
 
 ## 9. Paper-safety non-claims
 

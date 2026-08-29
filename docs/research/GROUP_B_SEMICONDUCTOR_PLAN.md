@@ -257,16 +257,16 @@ Common `NO_TRADE` codes are exactly `DATA_MISSING`, `DATA_STALE`, `DATA_QUALITY_
 
 ### 9.3 Truthful reproduction command
 
-No central historical backtester is claimed. Each of the two packages must implement an executable, offline `scripts/reproduce.sh` accepting exactly `--data-manifest PATH --feasibility-manifest PATH --output PATH`; it refuses nonempty output, validates commit/lock/data/config hashes, runs package tests, and emits deterministically ordered evidence. The package README contains:
+No central historical backtester is claimed. Each of the two packages must implement an offline `src/<plugin_id>_v1/reproduce.py` module accepting exactly `--data-manifest PATH --feasibility-manifest PATH --output PATH`; it refuses nonempty output, validates commit/lock/data/config hashes, runs package tests, and emits deterministically ordered evidence. Optional POSIX/PowerShell wrappers must call that same Python module. The package README contains:
 
-```zsh
-./scripts/reproduce.sh \
+```text
+uv run python -m <plugin_id>_v1.reproduce \
   --data-manifest /absolute/path/to/data_manifest.json \
   --feasibility-manifest /absolute/path/to/option_proxy_feasibility_manifest.json \
   --output /absolute/path/to/empty-output-directory
 ```
 
-Baseline verification uses only the current root README commands: native ARM64 `uv sync --frozen`, `uv run python -m pytest`, and `uv run ruff check .`. A researcher may not call those a backtest. JSON uses sorted keys and decimal strings; JSONL sorts by `(candidate_id, symbol_order, decision_time, variant_id, record_id)`; Parquet uses the fixed `artifact_schema.json` column order, UTC timestamps, symbol order `SPY, QQQ, TQQQ, SMH, SOXL, IGV`, and stable row-group size `65536`.
+Baseline verification uses the platform-neutral commands `uv sync --frozen`, `uv run python -m pytest`, and `uv run ruff check .`. A researcher records their operating system and CPU architecture in the run manifest but is not blocked by either. A researcher may not call verification a backtest. JSON uses sorted keys and decimal strings; JSONL sorts by `(candidate_id, symbol_order, decision_time, variant_id, record_id)`; Parquet uses the fixed `artifact_schema.json` column order, UTC timestamps, symbol order `SPY, QQQ, TQQQ, SMH, SOXL, IGV`, and stable row-group size `65536`.
 
 ## 10. Golden fixtures and conformance cases
 
@@ -293,7 +293,7 @@ Common conformance fixtures for each plug-in cover tampered context/config/packa
 
 For at least 20 frozen timestamps per candidate, `integration/backtest_runtime_parity.json` records feature/context/config hashes, expected direction/score, exact semantic output or refusal reason, next state, and evaluation hash. Run every context twice through the isolated runner and require byte-identical canonical output. An open platform gate is recorded honestly as failed/not implemented; the group cannot waive it.
 
-The non-author reproduction section in `pair_cell_review.json` records reviewer, native `arm64` machine report, pinned commit/lock hash, the literal package `scripts/reproduce.sh` command, immutable data/feasibility refs, candidate hash, expected/actual artifact hashes, metric differences, one reproduced negative fixture, deviations, and timestamp. Record `host_interface_baseline=PASSED_AT_cb03a76` separately from `candidate_host_conformance=NOT_RUN_UNTIL_REGISTRY_PROPOSAL_REVIEWED`; the package script is never mislabeled as a central backtester.
+The non-author reproduction section in `pair_cell_review.json` records reviewer, operating-system/CPU report, pinned commit/lock hash, the literal `uv run python -m <plugin_id>_v1.reproduce` command, immutable data/feasibility refs, candidate hash, expected/actual artifact hashes, metric differences, one reproduced negative fixture, deviations, and timestamp. Record the central `host_interface_baseline=PASSED_AT_cb03a76` separately from `candidate_host_conformance=NOT_RUN_UNTIL_REGISTRY_PROPOSAL_REVIEWED`; the package module is never mislabeled as a central backtester.
 
 ## 11. Backtest and artifact requirements
 
@@ -376,7 +376,7 @@ Family-wise adjusted evidence that does not pass is labeled `suggestive`, shadow
 | `B4_OPTION_PROXY` | PIT existence, simultaneous-leg coverage, O2 base/severe output, no reranking, Monday quote gate | No option-expression support |
 | `B5_PLUGIN` | Packages, golden/boundary fixtures, deterministic output, semantic parity, forbidden-field/I/O tests | Not `INTEGRATION_READY` |
 | `B6_PLATFORM_PARITY` | Platform-owner evidence for `G-R1`–`G-R6`, especially feature/catalog/exit/runner parity | Record failed/not implemented; do not claim closure |
-| `B7_REPRODUCTION` | B2 reproduces manifests, hashes, metrics, split audit, a negative fixture, and parity on another ARM64 machine | Not done |
+| `B7_REPRODUCTION` | Non-author reproduces manifests, hashes, metrics, split audit, a negative fixture, and parity on another available supported platform; record OS/CPU and investigate any hash difference | Not done |
 | `B8_SELECTION` | Central quant includes all viewed trials, applies 2025 family-wide test, and freezes champion/fallback before 2026 | No promotion |
 
 Passing Group B gates never authorizes paper trading. The release/risk/execution owners must separately close every paper-host, account, control, preflight, reservation, outbox/inbox, reconciliation, close/flatten, credential, and deployment gate.

@@ -31,7 +31,7 @@ Each of the three packet owners receives two strategy families from Section 3 an
 
 1. Copy the assigned strategy card into `research/candidates/<candidate_id>/strategy_card.md` and freeze the economic hypothesis, central parameters, owned symbol cells, feature contract, exit-policy ID, and falsification conditions **before viewing outcome P&L**.
 2. Use only centrally collected, immutable Alpaca datasets. Do not create a private downloader, substitute vendor data, or fork the frozen clock, selector, cost, or marking semantics.
-3. Implement exactly one assigned strategy family and its canonical plug-in package. Each package must ship its own offline `scripts/reproduce.sh`; this repository does not claim that a central research backtester exists.
+3. Implement exactly one assigned strategy family and its canonical plug-in package. Each package must ship its own offline, cross-platform Python reproduction module; POSIX/PowerShell wrappers may call that module. This repository does not claim that a central research backtester exists.
 4. Run the central specification on the packet's two owned symbol cells and publish every prescribed sensitivity. A pair-cell result is diagnostic research evidence, not a complete deployable `CandidateSpecV1` and not permission to choose the better of the two symbols.
 5. Return one complete research, plug-in, golden-fixture, and parity package per assigned family as defined in Section 12. A notebook, chart, Sharpe ratio, or `plugin.py` by itself is not a deliverable.
 6. Have the designated owner of another packet reproduce both runs from hashes and sign both promotion cards. The reviewer must not alter a family they review after seeing outcomes, and the packet owner cannot promote their own lifecycle state.
@@ -367,7 +367,7 @@ Signal:
 
 Set `entry_score = abs(deviation_z) / 1.5`. Use central exit policy `REVERSION_VWAP_TOUCH_OR_60M_V1`: exit on a completed-close VWAP touch in the convergence direction or at the common hard-time deadline.
 
-VWAP reversion is a standalone challenger, not an intraday-continuation overlay or simultaneous fallback signal. All three packet owners may write their two strategy cards in parallel, but no outcome-bearing comparison begins until every packet has frozen both assigned strategies and the shared intraday-continuation golden run reproduces on two native ARM64 machines.
+VWAP reversion is a standalone challenger, not an intraday-continuation overlay or simultaneous fallback signal. All three packet owners may write their two strategy cards in parallel. Researchers may run the shared intraday-continuation golden fixture on any supported Windows, Linux, or macOS platform; the central owner records native-ARM64 host compatibility before integration/paper promotion. Architecture never blocks offline research.
 
 ### Opening-range breakout with participation confirmation
 
@@ -959,9 +959,11 @@ strategy_plugins/<plugin_id>_v1/
 │   ├── __init__.py
 │   ├── plugin.py
 │   ├── signal.py
-│   └── reason_codes.py
+│   ├── reason_codes.py
+│   └── reproduce.py
 ├── scripts/
-│   └── reproduce.sh
+│   ├── reproduce.sh                 # optional POSIX wrapper
+│   └── reproduce.ps1                # optional PowerShell wrapper
 ├── tests/
 │   ├── fixtures/
 │   ├── golden/
@@ -975,7 +977,7 @@ strategy_plugins/<plugin_id>_v1/
     └── promotion.json
 ```
 
-This is the canonical core layout from `docs/architecture/STRATEGY_API.md`; `scripts/reproduce.sh`, threshold/parity tests, and pair-cell evidence are required research extensions. Do not return the current fixture-style flat package as a candidate package.
+This is the canonical core layout from `docs/architecture/STRATEGY_API.md`; the Python reproduction module, threshold/parity tests, and pair-cell evidence are required research extensions. Do not return the current fixture-style flat package as a candidate package.
 
 `strategy_card.md` freezes the economic mechanism, eligible symbols, exact entry formula, normalized score, decision cadence, position-policy ID, option-template mapping, no-trade conditions, expected failure regimes, and one-sentence reason the edge could persist after costs.
 
@@ -985,21 +987,21 @@ This is the canonical core layout from `docs/architecture/STRATEGY_API.md`; `scr
 
 `run_manifest.json` records the pinned implementation commit and lock hash, config/data/hypothesis/expression hashes, exact `template_catalog.yaml` and feasibility-manifest hashes, fold boundaries, one-minute/five-minute proxy timing rules, tick/fee assumptions, `PCG64` seed `20260829`, bootstrap specification, all viewed and tried variants, start/end time, status, owner, and reviewer.
 
-`scripts/reproduce.sh` is supplied by the family owner and is the only claimed research reproduction command. It must be executable, make no network or credential call, accept exactly `--data-manifest PATH --feasibility-manifest PATH --output PATH`, refuse a nonempty output directory, validate the pinned commit/lock/config/data hashes, run the package tests, and write one deterministic run tree. It may invoke repository libraries but must not claim an absent central backtester. The package README shows this invocation literally:
+`src/<plugin_id>_v1/reproduce.py` is supplied by the family owner and is the canonical research reproduction entry point. It must make no network or credential call, accept exactly `--data-manifest PATH --feasibility-manifest PATH --output PATH`, refuse a nonempty output directory, validate the pinned commit/lock/config/data hashes, run the package tests, and write one deterministic run tree. It may invoke repository libraries but must not claim an absent central backtester. Optional `scripts/reproduce.sh` and `scripts/reproduce.ps1` wrappers invoke this same module and contain no different logic. The package README shows this invocation literally:
 
-```zsh
-./scripts/reproduce.sh \
+```text
+uv run python -m <plugin_id>_v1.reproduce \
   --data-manifest /absolute/path/to/data_manifest.json \
   --feasibility-manifest /absolute/path/to/option_proxy_feasibility_manifest.json \
   --output /absolute/path/to/empty-output-directory
 ```
 
-The only currently published repository verification commands are:
+Researchers use these platform-neutral repository verification commands:
 
-```zsh
-UV_CACHE_DIR="$PWD/.uv-cache" UV_PYTHON_INSTALL_DIR="$PWD/.uv-python-arm64" /opt/homebrew/bin/uv sync --frozen
-UV_CACHE_DIR="$PWD/.uv-cache" UV_PYTHON_INSTALL_DIR="$PWD/.uv-python-arm64" /opt/homebrew/bin/uv run python -m pytest
-UV_CACHE_DIR="$PWD/.uv-cache" UV_PYTHON_INSTALL_DIR="$PWD/.uv-python-arm64" /opt/homebrew/bin/uv run ruff check .
+```text
+uv sync --frozen
+uv run python -m pytest
+uv run ruff check .
 ```
 
 Researchers may quote those commands as baseline/conformance evidence only for what they actually test. They must not relabel them as a shared historical backtest command.
@@ -1036,7 +1038,7 @@ Before requesting integration review, the owner and non-author reviewer answer *
 
 - The central hypothesis and all viewed trials are in the trial ledger.
 - All inputs come from shared Alpaca-only immutable manifests and pass availability-time checks.
-- The run reproduces from one documented native ARM64 command and exact commit/lock/config hashes.
+- The run reproduces from one documented platform-neutral `uv` command and exact commit/lock/config hashes; the manifest records its OS and CPU architecture.
 - Central and every prescribed sensitivity result are published for both owned pair cells; an unselected option-proxy cell carries the explicit `NOT_SELECTED_BY_FEASIBILITY` artifacts.
 - `pair_cell_metrics.json` is labeled diagnostic and does not claim a full-universe candidate, champion, fallback, or symbol winner.
 - The family package can be replayed centrally without changing `signal.py`; only the central owner produces the later full-universe replay with suppressed signals, zero-return dates, integer contracts, cluster/concurrency limits, exact selector/sizer, and exact exit policy.
@@ -1076,7 +1078,7 @@ telemetry/competition/
 - Complete six historical feasibility cards and sign the blinded global `option_proxy_feasibility_manifest.json` before any result exposure.
 - Remove `RED_REMOVE` symbols.
 - Implement all six pure `signal.py` functions and boundary fixtures against the frozen feature rows.
-- Reproduce the intraday-continuation golden underlying run on two native ARM64 machines before opening comparative outcomes.
+- Run the intraday-continuation golden underlying fixture on each available researcher platform and record hash comparisons. A platform difference is investigated and documented; it never blocks offline research. The central owner separately verifies native-ARM64 host compatibility before integration/paper promotion.
 - Run all six central underlying strategy scans on each packet's two owned cells; log every run. Do not call these pair-cell scans full-universe candidates.
 - Begin point-in-time contract-existence proxy construction.
 - Researchers may implement complete plug-in packages in parallel, but nothing is called `INTEGRATION_READY` until its candidate-specific registry, feature, catalog, output-binding, close-policy, and reviewer evidence passes.

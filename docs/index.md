@@ -13,6 +13,8 @@ This directory is the navigation hub for the Alpaca hackathon project. The root 
 | [`plans/SKELETON_IMPLEMENTATION_PLAN.md`](plans/SKELETON_IMPLEMENTATION_PLAN.md) | Ordered repository-skeleton and vertical-slice implementation backlog with owners, reviewers, deliverables, and gates | All developers | Delivery sequence |
 | [`plans/STRATEGY_RESEARCH_PLAN.md`](plans/STRATEGY_RESEARCH_PLAN.md) | Architecture-readiness gates, six delegated strategy families, common free-Alpaca research protocol, plug-in/parity deliverables, validation, metrics, and promotion gates | Six researchers, platform owner, quant lead, risk reviewer | Normative research and integration handoff protocol |
 | [`research/README.md`](research/README.md) | Routes the six symbols and six strategy families into three independently shareable, credential-free research packets | Research owners and reviewers | Delegation index; subordinate to the normative research protocol |
+| [`research/trading_foundation.md`](research/trading_foundation.md) | Plain-language ETF/options vocabulary, defined-risk expressions, and research safety boundaries | New strategy researchers | Educational reference; subordinate to the research protocol |
+| [`research/quant_trading_basic.md`](research/quant_trading_basic.md) | Platform-neutral setup, read-only Alpaca data pattern, no-look-ahead features, proxy simulation, and package handoff | New strategy researchers | Educational reference; subordinate to the research protocol |
 
 ## Research group handoffs
 
@@ -28,7 +30,7 @@ The packets allocate ownership; they do not create isolated two-symbol winner se
 
 - **Quant/product lead:** read the canonical plan, normative architecture/API/research documents, and the published research freeze; own scope, contracts, registry status, risk budget, and release decisions.
 - **Data/backend platform:** start with system architecture, then skeleton phases 0–3 and the research data contract.
-- **Alpha researchers:** start with the research routing index and assigned group packet, then the strategy API, normative research plan, and published freeze; do not build directly against Alpaca payloads or broker clients.
+- **Alpha researchers:** start with the trading foundation and quant basics, then the research routing index and assigned group packet, strategy API, normative research plan, and published freeze. Windows, Linux, and non-ARM macOS are supported for offline research; do not build directly against Alpaca payloads or broker clients.
 - **Options/risk quant:** read strategy API output constraints, order-planner boundary, research cost/quote gates, and final risk sequence.
 - **Agent/execution engineer:** read the credential boundary, execution state machine, plan-hash authorization sequence, and integration phases.
 - **Frontend/submission owner:** read the event/read-model flow, deployment topology, fixture vertical slice, and final reporting labels.

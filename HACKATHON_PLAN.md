@@ -404,7 +404,8 @@ The normative dependency DAG and full target layout are in [`docs/architecture/S
 ### Recommended stack
 
 - Python 3.12 for research, domain, workers, and API.
-- Native ARM64 `/opt/homebrew/bin/uv` with an explicitly verified `macos-aarch64` Python.
+- For the core platform on the maintainer's Mac: native ARM64 `/opt/homebrew/bin/uv` with an explicitly verified `macos-aarch64` Python.
+- For offline strategy research: platform-neutral Python 3.12 and the pinned lock file; Windows, Linux, and non-ARM macOS are supported and recorded in each run manifest.
 - FastAPI, Pydantic, SQLAlchemy/Alembic, asyncpg, and HTTPX.
 - Polars, DuckDB, PyArrow, NumPy, and SciPy for research.
 - PostgreSQL for the event/audit store.
@@ -415,7 +416,7 @@ The normative dependency DAG and full target layout are in [`docs/architecture/S
 - Vercel for the public web app plus a container PaaS, managed Postgres, and persistent object storage for backend roles; confirm the backend host with organizers. Avoid Kubernetes.
 - Provider-neutral `ModelPort`; the first implementation can use whichever LLM provider the team already has funded and working.
 
-Before selecting or creating a local runtime:
+Before selecting or creating a **core-platform** local runtime on the maintainer's Mac:
 
 1. Verify `uname -m` is `arm64`.
 2. Verify the selected `uv` binary is native ARM64.
@@ -495,7 +496,7 @@ Do not blend candidate signals during discovery. Select one champion and at most
 
 Research universe: SPY, QQQ, TQQQ, SMH, SOXL, and IGV. The deployable universe is the gated subset; do not add a seventh symbol during the hackathon.
 
-The six normative central candidates are intraday continuation, VWAP reversion, opening-range breakout, gap continuation, benchmark-residual relative strength, and compression breakout. Intraday continuation remains the golden harness fixture and must reproduce on two native ARM64 machines before comparative outcomes are opened. Each strategy is preregistered and evaluated independently; no blend, ensemble, threshold change, breadth/news addition, or per-symbol optimization is allowed after results without a new candidate version. Exact formulas, latency, cadence, sensitivities, and falsification rules live in the normative research plan.
+The six normative central candidates are intraday continuation, VWAP reversion, opening-range breakout, gap continuation, benchmark-residual relative strength, and compression breakout. Intraday continuation remains the golden harness fixture. Researchers may reproduce it on any supported platform; the central owner separately verifies host compatibility on native ARM64 before integration/paper promotion. Each strategy is preregistered and evaluated independently; no blend, ensemble, threshold change, breadth/news addition, or per-symbol optimization is allowed after results without a new candidate version. Exact formulas, latency, cadence, sensitivities, and falsification rules live in the normative research plan.
 
 Initial contract policy:
 
@@ -765,7 +766,7 @@ By noon EDT:
 - Confirm options level, multi-leg permission, data feed/entitlement, account ID, and official MCP version.
 - Choose the contest objective and maximum drawdown.
 - Freeze the target user, product sentence, repo layout, V1 contracts, and initial risk limits.
-- Verify every local manager/runtime is native ARM64.
+- Core-platform owners verify their local manager/runtime is native ARM64; research owners record their supported platform and are not blocked for using Windows, Linux, or non-ARM macOS.
 - Scaffold the uncredentialed decision worker, credentialed execution worker, API, frontend, Postgres outbox/inbox, persistent object storage, CI, MIT license, secret scanning, and hosted shell.
 
 By end of day:

@@ -4,7 +4,7 @@ This is the executable modular-monolith skeleton defined in the
 [system architecture](docs/architecture/SYSTEM_ARCHITECTURE.md). It has no
 live-trading mode, endpoint, or credential path.
 
-The committed fixture paths run without network or broker credentials:
+The following are **core-platform macOS/ARM64** fixture paths. They run without network or broker credentials:
 
 ```zsh
 UV_CACHE_DIR="$PWD/.uv-cache" UV_PYTHON_INSTALL_DIR="$PWD/.uv-python-arm64" /opt/homebrew/bin/uv sync --frozen
@@ -17,6 +17,11 @@ The normal fixture produces a visible, deterministic `NO_TRADE` decision tape.
 The `--approved` fixture ends at the transactional outbox; it does not contact
 Alpaca. The execution-side test consumes that immutable command with the fake
 broker and independently validates all preflight bindings.
+
+Offline strategy researchers on Windows, Linux, or non-ARM macOS should use
+the platform-neutral setup and reproduction guidance in
+[docs/research/quant_trading_basic.md](docs/research/quant_trading_basic.md),
+not the Mac-specific executable path above.
 
 `apps/api` exposes credential-free read-only replay endpoints. `apps/operator_cli`
 only validates one-shot control command payloads; it has no broker or public
