@@ -38,6 +38,8 @@ def _eligible(
     definition = catalog.templates.get(intent.template_id)  # type: ignore[arg-type]
     if definition is None or not definition.enabled:
         raise PlanningError("PLAN_TEMPLATE_NOT_ENABLED")
+    if intent.direction != definition.direction:
+        raise PlanningError("PLAN_INTENT_DIRECTION_MISMATCH")
     candidates = []
     for option in snapshot.option_contracts:
         dte = (option.expiration - now).total_seconds() / 86_400
@@ -64,7 +66,7 @@ def select_vertical_contracts(
     now: datetime,
     catalog: TemplateCatalogV1 = template_catalog,
 ) -> tuple[OptionContractV1, OptionContractV1]:
-    """Select nearest-spot long and closest one-percent target short deterministically."""
+    """Select the frozen O2 long and outward short strikes deterministically."""
     candidates = _eligible(market, intent, now, catalog)
     if len(candidates) < 2:
         raise PlanningError("PLAN_INSUFFICIENT_SPREAD_LEGS")
@@ -76,8 +78,20 @@ def select_vertical_contracts(
     same_expiry = [item for item in candidates if item.expiration == expiration]
     if len(same_expiry) < 2:
         raise PlanningError("PLAN_INSUFFICIENT_SPREAD_LEGS")
-    long = min(same_expiry, key=lambda item: (abs(item.strike - spot), item.strike, item.symbol))
     definition = catalog.templates[intent.template_id]  # type: ignore[index]
+    # The published O2 policy resolves an exact nearest-spot tie toward OTM:
+    # a higher strike for calls and a lower strike for puts.  Symbol is merely
+    # a stable final tie-breaker for duplicate contract records.
+    if definition.right == "CALL":
+        long = min(
+            same_expiry,
+            key=lambda item: (abs(item.strike - spot), -item.strike, item.symbol),
+        )
+    else:
+        long = min(
+            same_expiry,
+            key=lambda item: (abs(item.strike - spot), item.strike, item.symbol),
+        )
     offset = Decimal(str(definition.target_short_offset_fraction))
     if intent.template_id == "CALL_DEBIT_SPREAD_V1":
         eligible_shorts = [item for item in same_expiry if item.strike > long.strike]
@@ -89,7 +103,19 @@ def select_vertical_contracts(
         raise PlanningError("PLAN_TEMPLATE_NOT_ENABLED")
     if not eligible_shorts:
         raise PlanningError("PLAN_INSUFFICIENT_SPREAD_LEGS")
-    short = min(eligible_shorts, key=lambda item: (abs(item.strike - target), item.strike, item.symbol))
+    # A debit spread's short must be rounded *outward* to the next listed
+    # standard strike, never inward merely because that strike is closer to
+    # the one-percent target.
+    if definition.right == "CALL":
+        outward = [item for item in eligible_shorts if item.strike >= target]
+        if not outward:
+            raise PlanningError("PLAN_SHORT_STRIKE_OUTWARD_UNAVAILABLE")
+        short = min(outward, key=lambda item: (item.strike, item.symbol))
+    else:
+        outward = [item for item in eligible_shorts if item.strike <= target]
+        if not outward:
+            raise PlanningError("PLAN_SHORT_STRIKE_OUTWARD_UNAVAILABLE")
+        short = min(outward, key=lambda item: (-item.strike, item.symbol))
     return long, short
 
 

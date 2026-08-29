@@ -408,6 +408,19 @@ class StrategyEvaluationV1(TimestampedModel):
         return self
 
 
+class AgentNarrativeV1(StrictModel):
+    """Display-only explanation from the advisory model.
+
+    The resolver never reads these fields.  They are retained in the frozen
+    thesis artifact so a public replay can explain an allow or veto without
+    allowing prose to alter any executable semantic field.
+    """
+
+    market_thesis: str = Field(min_length=1, max_length=2_000)
+    counter_thesis: str = Field(min_length=1, max_length=2_000)
+    explanation: str = Field(min_length=1, max_length=4_000)
+
+
 class AgentThesisV1(TimestampedModel):
     schema_version: Literal["agent-thesis/v1"] = "agent-thesis/v1"
     thesis_id: str = Field(min_length=1)
@@ -421,6 +434,9 @@ class AgentThesisV1(TimestampedModel):
     diagnostic_confidence: Decimal = Field(ge=0, le=1)
     expires_at: datetime
     reason_code: str = Field(pattern=r"^[A-Z][A-Z0-9_]{2,95}$")
+    # Optional only for compatibility with previously frozen replay artifacts.
+    # New model adapters must populate it before publishing a public tape.
+    narrative: AgentNarrativeV1 | None = None
     content_hash: str | None = None
 
     @model_validator(mode="after")

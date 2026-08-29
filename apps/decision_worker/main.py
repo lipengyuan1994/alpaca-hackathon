@@ -88,6 +88,53 @@ def _event(
     )
 
 
+def _append_decision_trace(
+    ledger: MemoryLedger,
+    *,
+    run_id: str,
+    market: MarketSnapshotV1,
+    context: StrategyContextV1,
+    evaluation: Any,
+    thesis: Any,
+    outcome: Any,
+) -> int:
+    """Persist the public, replayable part of a decision before any order exists.
+
+    The tape carries only normalized/frozen artifacts.  In particular, it has
+    no broker client, credential, account-secret, or mutable model response.
+    """
+    records = (
+        ("MarketSnapshotRecordedV1", market),
+        (
+            "FeatureVectorComputedV1",
+            {
+                "feature_vector_id": context.feature_vector_id,
+                "feature_vector_hash": context.feature_vector_hash,
+                "feature_contract_hash": context.feature_contract_hash,
+                "available_time": context.feature_available_time,
+                "values": context.universe_features,
+            },
+        ),
+        ("StrategyDecisionProducedV1", evaluation),
+        ("AgentThesisFrozenV1", thesis),
+        (
+            "NoTradeRecordedV1" if isinstance(outcome, NoTradeRecordedV1) else "TradeIntentResolvedV1",
+            outcome.__dict__ if isinstance(outcome, NoTradeRecordedV1) else outcome,
+        ),
+    )
+    for version, (event_type, payload) in enumerate(records, start=1):
+        ledger.append(
+            _event(
+                event_type=event_type,
+                aggregate_id=run_id,
+                version=version,
+                payload=payload,
+                run_id=run_id,
+            )
+        )
+    return len(records)
+
+
 def fixture_inputs(*, momentum: bool = False) -> tuple[
     MarketSnapshotV1,
     AccountSnapshotV1,
@@ -96,7 +143,10 @@ def fixture_inputs(*, momentum: bool = False) -> tuple[
     StrategyContextV1,
     StrategyConfigV1,
 ]:
-    quote = QuoteV1(bid="600", ask="600.01", event_time=FIXTURE_TIME, available_time=FIXTURE_TIME)
+    # This keeps the 605 call short just outside the published 1%-OTM target.
+    # It is deliberately not an executable price source; all fixtures are
+    # offline and frozen.
+    quote = QuoteV1(bid="599", ask="599.01", event_time=FIXTURE_TIME, available_time=FIXTURE_TIME)
     market = MarketSnapshotV1(
         snapshot_id="market-fixture-1",
         as_of=FIXTURE_TIME,
@@ -237,9 +287,14 @@ def run_refusal_fixture() -> RunResult:
         position_policy_id=entry.position_policy_ref,
     )
     assert isinstance(outcome, NoTradeRecordedV1)
-    ledger.append(_event(event_type="MarketSnapshotRecordedV1", aggregate_id=run_id, version=1, payload=market, run_id=run_id))
-    ledger.append(
-        _event(event_type="NoTradeRecordedV1", aggregate_id=run_id, version=2, payload=outcome.__dict__, run_id=run_id)
+    _append_decision_trace(
+        ledger,
+        run_id=run_id,
+        market=market,
+        context=context,
+        evaluation=evaluation,
+        thesis=thesis,
+        outcome=outcome,
     )
     return RunResult(
         status="NO_TRADE",
@@ -267,7 +322,26 @@ def run_approved_fixture() -> RunResult:
     )
     if isinstance(intent, NoTradeRecordedV1):
         raise RuntimeError(f"fixture unexpectedly refused: {intent.reason_code}")
+    tape_version = _append_decision_trace(
+        ledger,
+        run_id=run_id,
+        market=market,
+        context=context,
+        evaluation=evaluation,
+        thesis=thesis,
+        outcome=intent,
+    )
     plan = build_plan(intent, market, account, positions, baseline_risk, now=FIXTURE_TIME)
+    tape_version += 1
+    ledger.append(
+        _event(
+            event_type="OrderPlanCreatedV1",
+            aggregate_id=run_id,
+            version=tape_version,
+            payload=plan,
+            run_id=run_id,
+        )
+    )
     policy = default_policy()
     prospective_risk = OrderRiskSnapshotV1(
         snapshot_id="order-risk-fixture-2",
@@ -366,7 +440,7 @@ def run_approved_fixture() -> RunResult:
         event=_event(
             event_type="RiskApprovedAndCapacityReservedV1",
             aggregate_id=run_id,
-            version=1,
+            version=tape_version + 1,
             payload=approval,
             run_id=run_id,
         ),

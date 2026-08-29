@@ -1,0 +1,31 @@
+{
+  "additionalProperties": false,
+  "description": "Display-only explanation from the advisory model.\n\nThe resolver never reads these fields.  They are retained in the frozen\nthesis artifact so a public replay can explain an allow or veto without\nallowing prose to alter any executable semantic field.",
+  "properties": {
+    "counter_thesis": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Counter Thesis",
+      "type": "string"
+    },
+    "explanation": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "title": "Explanation",
+      "type": "string"
+    },
+    "market_thesis": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Market Thesis",
+      "type": "string"
+    }
+  },
+  "required": [
+    "market_thesis",
+    "counter_thesis",
+    "explanation"
+  ],
+  "title": "AgentNarrativeV1",
+  "type": "object"
+}

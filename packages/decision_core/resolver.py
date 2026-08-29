@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import UTC, datetime
 
+from packages.contracts.canonical import hash_without
 from packages.contracts.models import (
     AgentThesisV1,
     EntryTemplateRequestV1,
@@ -41,10 +42,30 @@ def resolve(
     now: datetime,
     position_policy_id: PositionPolicyIdV1,
 ) -> TradeIntentV1 | NoTradeRecordedV1:
+    """Resolve one frozen evaluation and advisory verdict without widening it.
+
+    This is deliberately a semantic gate rather than an order gate.  It
+    verifies the immutable input artifacts before considering an advisory
+    recommendation, then either copies the original semantic tuple into a
+    ``TradeIntentV1`` or records a refusal.  In particular, a thesis cannot be
+    rebound to a different strategy context just by changing its outer hash.
+    """
     now = now.astimezone(UTC)
+    if context.context_hash != hash_without(context, "context_hash"):
+        return _refusal(evaluation, thesis, "CONTEXT_HASH_MISMATCH")
+    if evaluation.evaluation_hash != hash_without(evaluation, "evaluation_hash"):
+        return _refusal(evaluation, thesis, "STRATEGY_EVALUATION_HASH_MISMATCH")
+    if thesis.content_hash != hash_without(thesis, "content_hash"):
+        return _refusal(evaluation, thesis, "THESIS_CONTENT_HASH_MISMATCH")
+    if (
+        evaluation.evaluation_id != context.evaluation_id
+        or evaluation.context_hash != context.context_hash
+        or evaluation.config_hash != context.config_hash
+    ):
+        return _refusal(evaluation, thesis, "STRATEGY_EVALUATION_BINDING_MISMATCH")
     if thesis.context_hash != context.context_hash or thesis.strategy_evaluation_hash != evaluation.evaluation_hash:
         return _refusal(evaluation, thesis, "THESIS_BINDING_MISMATCH")
-    if now > thesis.expires_at:
+    if now >= thesis.expires_at:
         return _refusal(evaluation, thesis, "THESIS_EXPIRED")
     if thesis.recommendation == "VETO":
         return _refusal(evaluation, thesis, "AGENT_VETO")

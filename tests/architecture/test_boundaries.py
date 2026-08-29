@@ -28,6 +28,26 @@ def test_strategy_plugins_do_not_import_platform_or_broker_packages() -> None:
         assert not any(item in source for item in forbidden), path
 
 
+def test_advisory_agent_has_no_broker_order_or_risk_dependency() -> None:
+    """The model adapter may receive semantic context only, never executable state."""
+    forbidden = (
+        "alpaca",
+        "execution_core",
+        "order_planner",
+        "risk_kernel",
+        "ledger",
+        "AccountSnapshotV1",
+        "PositionSnapshotV1",
+        "OrderPlanV1",
+        "RiskInputV1",
+        "ExecuteApprovedPlanV1",
+        "OptionContractV1",
+    )
+    for path in (ROOT / "packages/agent").glob("*.py"):
+        source = path.read_text(encoding="utf-8")
+        assert not any(item in source for item in forbidden), path
+
+
 def test_public_api_declares_get_only_business_routes() -> None:
     from apps.api.main import create_app
 

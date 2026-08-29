@@ -176,7 +176,7 @@ Core immutable payloads:
 | `OrderRiskSnapshotV1` | Reconciler/ledger projection | Risk/preflight/control | Versioned working/pending/unknown broker orders plus unexpired approved-but-nonterminal risk reservations and remaining quantities |
 | `FeatureVectorV1` | Feature package | Strategy plug-in | Exact inputs, availability time, calculation version and hash |
 | `StrategyEvaluationV1` containing `StrategyDecisionV1` | Isolated registered plug-in | Deterministic resolver | Semantic `NO_TRADE`, template request, or logical position directive plus provenance; never an exact order |
-| `AgentThesisV1` | Agent adapter | Deterministic resolver | Frozen allow-unchanged/veto artifact bound to context, strategy evaluation, model input, and expiry; confidence is diagnostic only |
+| `AgentThesisV1` | Agent adapter | Deterministic resolver | Frozen allow-unchanged/veto artifact bound to context, strategy evaluation, model input, and expiry; its structured market thesis/counter-thesis/explanation is display-only and confidence is diagnostic only |
 | `TradeIntentV1` | Resolver | Order planner | Allowed semantic direction/template/risk request and provenance |
 | `OrderPlanV1` | Order planner | Risk, execution | Exact legs, quantity, limit, TIF, deterministic ID and canonical hash |
 | `RiskInputV1` | Decision worker | Risk kernel/execution preflight | Canonical plan, market/account/position/order-risk hashes, risk policy, template catalog, strategy registry/config/content, mode, account allowlist, and release hash |

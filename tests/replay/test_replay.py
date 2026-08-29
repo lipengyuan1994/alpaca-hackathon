@@ -9,4 +9,10 @@ def test_no_trade_replay_is_stable_and_visible() -> None:
     assert first.status == "NO_TRADE"
     assert first.details == second.details
     assert first.tape == second.tape
-    assert [event["event_type"] for event in first.tape] == ["MarketSnapshotRecordedV1", "NoTradeRecordedV1"]
+    assert [event["event_type"] for event in first.tape] == [
+        "MarketSnapshotRecordedV1",
+        "FeatureVectorComputedV1",
+        "StrategyDecisionProducedV1",
+        "AgentThesisFrozenV1",
+        "NoTradeRecordedV1",
+    ]

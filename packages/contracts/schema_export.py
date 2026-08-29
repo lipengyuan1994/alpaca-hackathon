@@ -9,6 +9,7 @@ from pydantic import BaseModel
 
 from .models import (
     AccountSnapshotV1,
+    AgentNarrativeV1,
     AgentThesisV1,
     ArmCommandV1,
     ArtifactRefV1,
@@ -58,6 +59,7 @@ from .models import (
 
 MODELS: tuple[type[BaseModel], ...] = (
     AccountSnapshotV1,
+    AgentNarrativeV1,
     AgentThesisV1,
     ArmCommandV1,
     ArtifactRefV1,

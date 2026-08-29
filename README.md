@@ -11,12 +11,14 @@ UV_CACHE_DIR="$PWD/.uv-cache" UV_PYTHON_INSTALL_DIR="$PWD/.uv-python-arm64" /opt
 UV_CACHE_DIR="$PWD/.uv-cache" UV_PYTHON_INSTALL_DIR="$PWD/.uv-python-arm64" /opt/homebrew/bin/uv run python -m pytest
 UV_CACHE_DIR="$PWD/.uv-cache" UV_PYTHON_INSTALL_DIR="$PWD/.uv-python-arm64" /opt/homebrew/bin/uv run paper-decision-worker
 UV_CACHE_DIR="$PWD/.uv-cache" UV_PYTHON_INSTALL_DIR="$PWD/.uv-python-arm64" /opt/homebrew/bin/uv run paper-decision-worker --approved
+UV_CACHE_DIR="$PWD/.uv-cache" UV_PYTHON_INSTALL_DIR="$PWD/.uv-python-arm64" /opt/homebrew/bin/uv run pytest -q tests/e2e/test_fixture_full_flow.py
 ```
 
 The normal fixture produces a visible, deterministic `NO_TRADE` decision tape.
 The `--approved` fixture ends at the transactional outbox; it does not contact
 Alpaca. The execution-side test consumes that immutable command with the fake
-broker and independently validates all preflight bindings.
+broker, independently validates all preflight bindings, and exposes the
+accepted/fill lifecycle in the credential-free public replay tape.
 
 Offline strategy researchers on Windows, Linux, or non-ARM macOS should use
 the platform-neutral setup and reproduction guidance in

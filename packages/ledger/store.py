@@ -505,15 +505,47 @@ class MemoryLedger:
             return message_id in self._outbox_completed
 
     def decision_tape(self, run_id: str) -> list[dict[str, Any]]:
-        return [
-            {
-                "event_type": event.event_type,
-                "aggregate_id": event.aggregate_id,
-                "aggregate_version": event.aggregate_version,
-                "occurred_at": event.occurred_at,
-                "payload": event.payload,
-                "content_hash": event.content_hash,
+        """Project frozen decision events plus immutable broker evidence.
+
+        Broker events have their own content-addressed store because they are
+        externally observed facts rather than decision-worker emissions.  The
+        read model joins them only through the exact immutable client order ID
+        published in an ``OrderPlanCreatedV1`` event.
+        """
+        with self._lock:
+            run_events = [event for event in self.events if event.run_id == run_id]
+            client_order_ids = {
+                event.payload.get("client_order_id")
+                for event in run_events
+                if event.event_type == "OrderPlanCreatedV1" and isinstance(event.payload, dict)
             }
-            for event in self.events
-            if event.run_id == run_id
-        ]
+            tape = [
+                {
+                    "event_type": event.event_type,
+                    "aggregate_id": event.aggregate_id,
+                    "aggregate_version": event.aggregate_version,
+                    "occurred_at": event.occurred_at,
+                    "payload": event.payload,
+                    "content_hash": event.content_hash,
+                }
+                for event in run_events
+            ]
+            tape.extend(
+                {
+                    "event_type": "BrokerEventV1",
+                    "aggregate_id": run_id,
+                    "aggregate_version": None,
+                    "occurred_at": broker_event.occurred_at,
+                    "payload": broker_event.model_dump(mode="json"),
+                    "content_hash": broker_event.content_hash,
+                }
+                for broker_event in sorted(
+                    (
+                        item
+                        for item in self.broker_events
+                        if item.client_order_id in client_order_ids
+                    ),
+                    key=lambda item: (item.occurred_at, item.content_hash),
+                )
+            )
+            return tape

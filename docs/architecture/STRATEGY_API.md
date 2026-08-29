@@ -230,9 +230,12 @@ TradeIntentV1 or NoTradeRecordedV1
 
 `AgentThesisV1` must bind `context_hash`, `strategy_evaluation_hash`, `model_input_hash`, model/prompt versions, raw-output hash, and `expires_at`. A stale or mismatched thesis yields `NO_TRADE`. Its only executable recommendation enum is `ALLOW_UNCHANGED | VETO`; free-form rationale and diagnostic confidence never enter template, horizon, direction, risk-tier, selector, planner, or sizing logic.
 
+The optional `AgentNarrativeV1` contains `market_thesis`, `counter_thesis`, and `explanation` for the public decision tape. It is hash-bound to the frozen thesis but deliberately has no resolver semantics. New adapters publish it; the optional field preserves replay compatibility with artifacts frozen before this display contract landed.
+
 The resolver rules are monotonic:
 
 - In competition V1, AI may leave the entry unchanged or veto it/choose `NO_TRADE`; it cannot substitute or narrow the strategy-selected template, and confidence cannot alter executable fields.
+- Before resolving, the platform recomputes the context, evaluation, and thesis hashes and requires the evaluation ID, context hash, and config hash to bind to the supplied `StrategyContextV1`. A stale, tampered, or cross-context artifact yields `NO_TRADE`.
 - AI may not add an underlying/template, reverse direction, extend the horizon, increase risk tier, choose contracts, or override strategy/risk gates.
 - If the plug-in and advisory thesis conflict outside a predeclared resolution rule, the result is `NO_TRADE`.
 - Replay uses the frozen `AgentThesisV1`; a fresh model call is a separate behavior evaluation.
