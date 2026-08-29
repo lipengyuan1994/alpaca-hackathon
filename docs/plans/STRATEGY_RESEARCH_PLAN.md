@@ -1,6 +1,10 @@
 # Strategy research plan
 
-Status: normative research and integration handoff protocol, v2 draft
+Status: normative research and integration handoff protocol, v3; published 2026-08-29 for credential-free research
+
+Implementation release: `cb03a7684fb67c6f0888333f6c3c2145e8645be9`
+
+Dependency-lock hash: `sha256:b846dc0b4d52be240cbb131e8267a5bf5ed4659b21570573b9ea1d48dcc865cf`
 
 Universe: SPY, QQQ, TQQQ, SMH, SOXL, IGV and their listed options
 
@@ -25,13 +29,14 @@ These are not interchangeable:
 
 Each owner receives one strategy family from Section 3 and follows this sequence:
 
-1. Copy the assigned strategy card into `research/candidates/<candidate_id>/strategy_card.md` and freeze the economic hypothesis, central parameters, eligible symbols, feature contract, exit-policy ID, and falsification conditions **before viewing outcome P&L**.
-2. Use only the centrally collected, immutable Alpaca datasets and the shared backtest engine. Do not create a private downloader, substitute vendor data, or fork execution/cost semantics.
-3. Run the central specification on every compatible feasible symbol. Publish all prescribed sensitivities; never return only the best threshold, symbol, direction, date range, or cost model.
-4. Build one portfolio replay using the frozen cross-symbol ranking rule. Per-symbol studies diagnose where the edge lives; the portfolio replay is the deployable candidate.
+1. Copy the assigned strategy card into `research/candidates/<candidate_id>/strategy_card.md` and freeze the economic hypothesis, central parameters, owned symbol cells, feature contract, exit-policy ID, and falsification conditions **before viewing outcome P&L**.
+2. Use only centrally collected, immutable Alpaca datasets. Do not create a private downloader, substitute vendor data, or fork the frozen clock, selector, cost, or marking semantics.
+3. Implement exactly one assigned strategy family and its canonical plug-in package. Each package must ship its own offline `scripts/reproduce.sh`; this repository does not claim that a central research backtester exists.
+4. Run the central specification on the packet's two owned symbol cells and publish every prescribed sensitivity. A pair-cell result is diagnostic research evidence, not a complete deployable `CandidateSpecV1` and not permission to choose the better of the two symbols.
 5. Return the complete research, plug-in, golden-fixture, and parity package in Section 12. A notebook, chart, Sharpe ratio, or `plugin.py` by itself is not a deliverable.
-6. Have the named non-author reviewer reproduce the run from hashes and sign the promotion card. The owner cannot promote their own lifecycle state.
-7. Stop at the first failed gate. `NO_TRADE`, `REJECTED`, and `INSUFFICIENT_EVIDENCE` are valid results and must remain visible.
+6. Have the paired non-author reviewer reproduce the run from hashes and sign the promotion card. The reviewer must not alter the family they review after seeing outcomes, and the owner cannot promote their own lifecycle state.
+7. After all six pair-cell packages are frozen, the central quant/release owner alone runs the compatible-symbol, cross-family, and full-universe replay using one frozen arbitration implementation. That later replay creates the portfolio-level candidate and cannot silently modify the researcher's signal function.
+8. Stop at the first failed gate. `NO_TRADE`, `REJECTED`, `NOT_SELECTED_BY_FEASIBILITY`, and `INSUFFICIENT_EVIDENCE` are valid results and must remain visible.
 
 There are four distinct completion states:
 
@@ -44,22 +49,22 @@ There are four distinct completion states:
 
 ### Architecture review and readiness boundary — 2026-08-29
 
-The repository currently implements a useful deterministic **fixture vertical slice**, not the full deployable architecture described in the normative design. On a verified native ARM64 Python 3.12 environment, all 13 current tests and Ruff pass. Implemented foundations include strict Pydantic contracts, canonical hashes, semantic strategy outputs, a subprocess runner, deterministic `NO_TRADE` and approved-plan fixtures, a fake broker, and a GET-only replay API.
+The implementation commit and exact `uv.lock` SHA-256 above are the distributed research release. Researchers must stop on either mismatch. The dated gate status and concrete registry/catalog/fixture-feature hashes live in `docs/architecture/RESEARCH_INTERFACE_FREEZE.md`; candidate-specific feature contracts and hashes remain owner deliverables that must be frozen before outcome P&L.
 
-The current release state is therefore `REFERENCE_FIXTURE_ONLY`. It must not receive judged-account credentials or be armed for paper trading. Researchers may start hypothesis definitions, feature specifications, Alpaca entitlement/coverage work, and underlying backtests while the platform owner closes the following gates:
+Researchers need no judged-account credentials and receive no broker/order authority. They may start hypothesis definitions, pure feature/signal code, Alpaca entitlement/coverage work, and offline pair-cell backtests only against the pinned research interface. The platform owner is responsible for the following integration gates:
 
-| Gate | Current implementation gap | Required evidence before integration claim |
+| Gate | Published research status | Required evidence before integration claim |
 |---|---|---|
-| `G-R1_REGISTRY_AUTHORITY` | Runtime uses a hard-coded registry, does not call central validation, uses placeholder content hashes, and excludes underlyings/intent tuples from the registry hash | One schema-validated registry loader; externally computed package hash; metadata/config/lifecycle/mode/underlying/tuple validation; authority-complete registry hash; negative tests |
-| `G-R2_CATALOG_PARITY` | Research specifies 7–14 DTE, nearest-spot/approximately 1% verticals and fixed-risk sizing, while runtime uses a separate hard-coded catalog, earliest expiry, adjacent extreme strikes, and one/two contracts | One normalized `template_catalog.yaml` loaded and hashed by both backtest and runtime; identical selector/sizer library; parity fixtures for every candidate |
-| `G-R3_OUTPUT_BINDING` | Host does not prove that evaluation ID, context/config hashes, plug-in identity/hash, next-state sequence/time, underlying, and tuple match the request and registry authority | Host-side conformance validator plus bullish, bearish, no-signal, stale, tampered, and unauthorized-output tests |
-| `G-R4_FEATURE_CONTRACT` | Plug-ins receive flat arbitrary Decimal maps; `data_requirements()` is not used and no named feature registry exists | Versioned feature definitions, namespaced keys, availability rules, missing/stale behavior, worked fixtures, and shared feature builder |
-| `G-R5_EXIT_OWNERSHIP` | `PositionDirectiveV1` is modeled but every directive is refused; there is no close-plan path | For hackathon V1, centrally implement and registry-bind `TREND_VWAP_OR_60M_V1` and `REVERSION_VWAP_TOUCH_OR_60M_V1`, plus Thursday flatten; keep plug-ins entry-only |
-| `G-R6_RUNNER_ISOLATION` | Plug-in import/constructor runs before Python I/O denial; resource-limit failure is ignored; monkey-patching is weaker than the documented container/process boundary | Isolation is installed before untrusted module code, mandatory limits fail closed, and malicious fixture plug-ins prove network/filesystem/environment/output/time denial |
+| `G-R1_REGISTRY_AUTHORITY` | Closed for the host research interface; H1–H6 are not registered | Candidate source/config/feature/evidence hashes, allowed scope/tuples, owner/reviewer, non-author review, central merge, and negative tests |
+| `G-R2_CATALOG_PARITY` | Partial; catalog schema/hash/loader are published | Candidate fixtures proving exact OTM tie, outward strike, fee, quantity, maximum-loss, and refusal parity |
+| `G-R3_OUTPUT_BINDING` | Closed for the host baseline | Run each candidate's golden and negative cases through the host after its registry proposal is reviewed |
+| `G-R4_FEATURE_CONTRACT` | Closed for host shape and fixture enforcement | Each family publishes exact formulas, key order, lookback/availability/missing rules, worked examples, and candidate-specific hash |
+| `G-R5_EXIT_OWNERSHIP` | Closed for credential-free research semantics | Candidate close fixtures plus release-owned durable fill/position lifecycle, restart/concurrency, broker deadlines, and confirmed-flat evidence |
+| `G-R6_RUNNER_ISOLATION` | Partial; offline package research may start | Deployment-equivalent image build, OS egress/filesystem containment, and malicious-package evidence |
 
 Paper enablement has additional non-research blockers: independently recompute defined maximum loss, use an exact paper-host allowlist, enforce daily loss/buying power/market clock/option quote freshness, bind current control state, implement durable reservation/outbox/inbox/CAS and reconciliation, implement Alpaca MCP transport, and prove close/flatten/restart behavior. Passing a strategy backtest cannot waive any of them.
 
-The platform/release owner must publish a dated `RESEARCH_INTERFACE_FREEZE` containing the registry schema, catalog hash, feature schema, reason-code namespace, position-policy IDs, conformance command, and shared backtest commit before outcome-bearing team runs are called integration evidence. All implementation files must also be reviewed and committed so six developers branch from one reproducible baseline.
+The platform/release owner has published the dated `RESEARCH_INTERFACE_FREEZE` with the host registry/catalog/fixture-feature values, position-policy references, conformance commands, and implementation commit. A general repository test command is not a research backtester. Each researcher owns and returns the offline reproduction script and candidate-specific feature/reason hashes for their family; the release owner validates them before central replay.
 
 ## 2. Hard data and entitlement boundary
 
@@ -87,18 +92,18 @@ One designated data steward performs and caches shared downloads. Credentials re
 
 ## 3. Six-member strategy-family assignment
 
-The team is searching across **strategy families**, not asking six people to optimize six tickers. Every owner uses the same immutable data, decision clock, backtest engine, folds, option selector, sizing, cost stresses, metrics, artifact schemas, and promotion gates. A member owns one economic hypothesis and its integration package—not a private backtester or a personalized winning parameter.
+The team is searching across **strategy families**, not asking six people to optimize six tickers. Every owner uses the same immutable data, decision clock, folds, option selector, sizing, cost stresses, metrics, artifact schemas, and promotion gates. A member owns one economic hypothesis, one pure signal implementation, one canonical plug-in package, and one deterministic offline reproduction script—not a personalized winning parameter or data downloader.
 
 | Member | Candidate ID / family | Core question | Compatible initial universe | Required reviewer |
 |---|---|---|---|---|
-| Person 1 | `h1_intraday_continuation_v1` | Do unusually large same-time 60-minute moves continue when aligned with IEX VWAP? | All six | Person 2 |
-| Person 2 | `h2_vwap_reversion_v1` | Do unusually large VWAP deviations revert when short-horizon trend is weak? | SPY, QQQ, SMH, IGV; leveraged ETFs remain diagnostic | Person 1 |
-| Person 3 | `h3_opening_range_breakout_v1` | Does a confirmed break of the first 30-minute range continue intraday? | All six | Person 4 |
-| Person 4 | `h4_gap_continuation_v1` | Does a standardized overnight gap continue after first-hour confirmation? | All six; leveraged/unleveraged results reported together | Person 3 |
-| Person 5 | `h5_relative_strength_residual_v1` | Does a target-specific move persist after removing its frozen benchmark relationship? | QQQ, TQQQ, SMH, SOXL, IGV; SPY is diagnostic only | Person 6 |
-| Person 6 | `h6_compression_breakout_v1` | Does low intraday range followed by price/volume expansion predict continuation? | All six | Person 5 |
+| Person 1 | `h1_intraday_continuation_v1` | Do unusually large same-time 60-minute moves continue when aligned with IEX VWAP? | Packet A cells: SPY, QQQ; later central compatibility: all six | Person 2 |
+| Person 2 | `h2_vwap_reversion_v1` | Do unusually large VWAP deviations revert when short-horizon trend is weak? | Packet A cells: SPY, QQQ; later central compatibility: SPY, QQQ, SMH, IGV | Person 1 |
+| Person 3 | `h3_opening_range_breakout_v1` | Does a confirmed break of the first 30-minute range continue intraday? | Packet B cells: SMH, SOXL; later central compatibility: all six | Person 4 |
+| Person 4 | `h4_gap_continuation_v1` | Does a standardized overnight gap continue after first-hour confirmation? | Packet B cells: SMH, SOXL; later central compatibility: all six | Person 3 |
+| Person 5 | `h5_relative_strength_residual_v1` | Does a target-specific move persist after removing its frozen benchmark relationship? | Packet C cells: TQQQ, IGV with QQQ control; later central compatibility: QQQ, TQQQ, SMH, SOXL, IGV | Person 6 |
+| Person 6 | `h6_compression_breakout_v1` | Does low intraday range followed by price/volume expansion predict continuation? | Packet C cells: TQQQ, IGV; later central compatibility: all six | Person 5 |
 
-Sections H1–H6 define the central rules. Owners may propose a correction **before outcome-bearing runs**, but the quant lead and reviewer must version and freeze it; after results are viewed, a rule change is a new candidate and enters the trial ledger.
+Sections H1–H6 define the central rules. Owners may propose a correction **before outcome-bearing runs**, but the quant lead and reviewer must version and freeze it; after results are viewed, a rule change is a new candidate and enters the trial ledger. Pairing means reciprocal review, not shared authorship: Persons 1/2, 3/4, and 5/6 must develop their own family without copying the partner's outcome-driven changes.
 
 Primary engineering ownership still applies. The research sprint adds these shared duties so “common” work has an accountable owner:
 
@@ -111,9 +116,20 @@ Primary engineering ownership still applies. The research sprint adds these shar
 | Person 5 | Portfolio replay, quote stress, risk/position-policy integration | Base/severe portfolio replay and integration gate report | Person 4 |
 | Person 6 | Standard plots/cards, limitations, judge-facing evidence package | Comparable report bundle and promotion-card generator | Person 1 |
 
-### Candidate identity
+### Pair-cell evidence versus central candidate identity
 
-A candidate is one complete deployable portfolio specification, not a chart, one trade rule on one ticker, or a post-hoc collection of winning cells:
+Each researcher returns a `PairCellEvidenceV1`-equivalent package for the two symbols assigned by their packet. It answers whether the frozen family is reproducible on those cells. It must retain both symbols and may not declare a winner, deployment universe, champion, fallback, or `PAPER_ENABLED` state.
+
+Only the central quant/release owner constructs a `CandidateSpecV1` after all six packages are frozen. That job expands each family to its complete compatible feasible universe, runs the frozen cross-symbol arbitration, records every suppressed row, applies the common family-wise test, and selects at most one champion plus one preregistered fallback. A researcher must therefore use these labels exactly:
+
+| Artifact | Producer | Scope | Authority |
+|---|---|---|---|
+| `pair_cell_metrics.json` | Family owner | Two assigned symbols, central and prescribed diagnostics | Research evidence only |
+| `pair_cell_review.json` | Paired reviewer | Independent reproduction of the same cells | Review evidence only |
+| `central_full_universe_replay.json` | Central quant/release owner | All compatible feasible symbols and frozen arbitration | Selection evidence, still non-authorizing |
+| `registry_candidate.yaml` | Family owner proposes; release owner validates | Requested plug-in capability | Lifecycle must remain `research_only` |
+
+A central candidate is one complete deployable portfolio specification, not a chart, one trade rule on one ticker, a pair-cell package, or a post-hoc collection of winning cells:
 
 ```text
 CandidateSpecV1 =
@@ -131,7 +147,7 @@ The human-readable ID follows `<signal_family>__<symbol_scope>__o2_v1`; the cano
 
 ### Common cross-symbol portfolio construction
 
-Each owner's pure candidate function computes one score and direction per compatible symbol at every decision time. Because V1 `StrategyEvaluationV1` can return only one entry request, the active plug-in uses the shared pure arbitration helper internally and emits only the winner; frozen input features make every suppressed candidate replayable. The rules are:
+Each owner's `signal.py` must expose a pure per-symbol evaluation that computes one score and direction. The pair-cell reproduction script records both rows independently. The later central adapter applies `packages/strategy_sdk/arbitration.py` at source-file SHA-256 `864fe5d419717bb424eb10ed54b5ad8ac5095bfc235d3f10a2d894e39826edd5` and emits one winner because V1 `StrategyEvaluationV1` can return only one entry request. Do not ship a private outcome-sensitive substitute. The frozen rules are:
 
 1. Remove candidates that fail feature/data/session, candidate-specific, cluster, cooldown, or existing-exposure gates.
 2. Normalize each strategy's score so its entry threshold equals `1.0`; rank by `entry_score - 1.0`.
@@ -142,7 +158,17 @@ Each owner's pure candidate function computes one score and direction per compat
 7. Treat QQQ/TQQQ/IGV as one technology cluster and SMH/SOXL as one semiconductor cluster. Leveraged/unleveraged pairs are correlated expressions, not independent confirmation.
 8. In research artifacts, record every eligible, rejected, selected, and suppressed candidate with its reason code so portfolio P&L reconciles to per-symbol results. Runtime replay recomputes the same table from frozen context/config and `signal.py`.
 
-Round 0 still produces six comparable **symbol feasibility cards**, but data stewardship is cross-cutting rather than the alpha assignment. Before any candidate return is exposed, the data steward freezes the provisional advancing symbol subset using blinded entitlement, coverage, timestamp integrity, and standard-contract/history fields only. Monday prospective quotes are accept/reject gates and never re-rank or replace a frozen symbol. If anyone views returns first, all viewed strategy × symbol variants remain in the selection/multiple-testing family.
+Round 0 still produces six comparable **symbol feasibility cards**, but data stewardship is cross-cutting rather than the alpha assignment. Before any candidate return is exposed, the data steward writes `research/shared/selection/option_proxy_feasibility_manifest.json`. It ranks all six symbols using only blinded fields: entitlement result, requested/returned dates, timestamp integrity, bar completeness, standard-contract count, simultaneous-leg observation coverage, corporate-action classification, and deterministic symbol-order tie-break. It contains no signal return, option P&L, direction, Sharpe, candidate ID, or owner preference.
+
+The manifest has `schema_version=option-proxy-feasibility/v1`, the pinned implementation/lock/data hashes, `generated_at`, ordered scoring fields, all six ranked rows, `selected_symbols` of length at most three, `selection_cutoff_rank`, and a manifest hash. It is signed by the data steward and one reviewer before outcome access. Each packet then behaves as follows:
+
+- an owned symbol selected by the manifest receives full historical option-proxy work;
+- an owned symbol not selected still receives the complete underlying pair-cell study, but `option_proxy_status` is exactly `NOT_SELECTED_BY_FEASIBILITY`;
+- its run directory includes empty schema-valid `selected_contracts.parquet`, `proxy_leg_observations.parquet`, and `trades.parquet`, plus `option_proxy_not_selected.json` referencing the feasibility manifest and reason `NOT_SELECTED_BY_FEASIBILITY`;
+- no group may exchange, rerank, or fill an unused slot after seeing any outcome;
+- Monday prospective quotes are accept/reject gates and never re-rank or replace the frozen subset.
+
+If returns were visible before this manifest was signed, record `BLINDING_BREACH` and include every viewed strategy-by-symbol variant in the selection/multiple-testing family.
 
 Resource limits for the sprint:
 
@@ -292,7 +318,7 @@ For cross-symbol comparison, every family defines a nonnegative normalized `entr
 
 Common clock:
 
-For hackathon V1, strategy plug-ins emit entries or `NO_TRADE` only. The central registry binds each plug-in to one deterministic position-policy ID, and the central position manager—not researcher code—creates close intents/plans. Research must replay that exact policy. A candidate cannot reach `INTEGRATION_READY` until `G-R5_EXIT_OWNERSHIP` is implemented and its close fixtures pass.
+For hackathon V1, strategy plug-ins emit entries or `NO_TRADE` only. The central registry binds each plug-in to one deterministic position-policy ID, and the central position manager—not researcher code—creates close intents/plans. The pinned host implements the named policy decisions and reduce-only construction; research must replay that exact policy. A candidate cannot reach `INTEGRATION_READY` until its close fixtures pass, and it cannot reach paper use until the release owner proves the durable broker/fill/position/flatten lifecycle.
 
 - Normalize one-minute Alpaca IEX bars into ET half-open intervals `[09:30 + 15k, 09:45 + 15k)`. Aggregate open=first, high=max, low=min, close=last, volume=sum, and interval VWAP=`sum(minute_vwap × minute_volume) / sum(minute_volume)`. An interval with a missing minute, missing VWAP, or zero cumulative volume is invalid for a decision.
 - Session IEX VWAP at `t` is the same volume-weighted calculation over all valid one-minute bars from 09:30 through the completed interval at `t`; do not substitute typical price or an unweighted average.
@@ -452,7 +478,7 @@ Evaluate the underlying signal first. The option layer expresses the frozen dire
 
 Research and runtime load the same committed `configs/template_catalog.yaml`; every run and order plan records its canonical hash. The catalog freezes family, DTE bucket, moneyness/width construction, ranking, atomicity, and exit rules. The advisory agent is veto-only at this boundary: it cannot change expression family, strike-width policy, DTE, selector ranking, or size. Current quotes and Greeks may reject an otherwise selected candidate or serve as diagnostics, but may not retrofit a different historical selection rule.
 
-This paragraph is a required target invariant, not a description of the current fixture planner. Until `G-R2_CATALOG_PARITY` passes, owners may complete option-proxy research using this frozen policy but must label `backtest_runtime_parity=FAILED_NOT_IMPLEMENTED`; no candidate can become `INTEGRATION_READY` or `PAPER_CANDIDATE`.
+The catalog and selector are published host interfaces, but a candidate's option-proxy evidence is not runtime parity by assertion. Owners may complete option-proxy research using this frozen policy and must label `catalog_parity=CANDIDATE_NOT_RUN` until central fixtures prove identical DTE, strikes, fees, quantity, maximum loss, and refusal reasons. No candidate becomes `INTEGRATION_READY` or `PAPER_CANDIDATE` without that proof.
 
 Historical selection may use only raw underlying spot, contract type, strike, expiration, standard multiplier/deliverable, and evidence the contract existed by the decision time. It may not use historical Greeks, current snapshots, future volume, or post-decision open interest.
 
@@ -502,11 +528,13 @@ class Plugin:
 
 Current V1 implementation constraints that every owner must design around:
 
-- `plugin_id` is a stable lowercase slug and `plugin_version` is semantic `x.y.z`.
+- `plugin_id` is the assigned slug in Section 3, `plugin_version` is exactly `1.0.0` for the first handoff, `api_version` is `strategy-plugin/v1`, and `decision_schema_version` is `strategy-evaluation/v1`.
 - `StrategyConfigV1.values` is a flat map of `Decimal | str | int | bool`; no list or nested config is allowed.
 - `StrategyContextV1.universe_features` and `option_surface_summaries` are flat Decimal maps. The plug-in receives no raw bars or provider objects.
-- The only current horizon is `INTRADAY_15_60M`; the only risk tiers are `TINY` and `STANDARD`.
+- The research handoff requests only `(CALL_DEBIT_SPREAD_V1, INTRADAY_15_60M, TINY, 300)` and `(PUT_DEBIT_SPREAD_V1, INTRADAY_15_60M, TINY, 300)`. `STANDARD` is structurally supported but is not researcher-authorized; the release owner may add it only through a new registry review.
 - Entry output may request `CALL_DEBIT_SPREAD_V1` or `PUT_DEBIT_SPREAD_V1` for promotion-eligible V1. Long-call/put templates remain diagnostic/demo only unless separately approved.
+- A valid entry uses the bullish call-debit or bearish put-debit tuple unchanged, sets `intent_expires_at = context.as_of + 300 seconds`, and includes exactly one `FEATURE_VECTOR` evidence reference bound to the input vector hash/ID. An unavailable tuple returns `TEMPLATE_NOT_ALLOWED`; it never substitutes another tuple.
+- `DataRequirementsV1.maximum_observation_age_seconds` is exactly `60`, `needs_logical_positions=false`, and `required_feature_keys` are ordered first by frozen symbol order `SPY, QQQ, TQQQ, SMH, SOXL, IGV`, then lexicographically by feature key. Each owner computes the candidate-specific feature-contract hash before outcome P&L and uses it in every context, manifest, and integration proposal.
 - Effective runner limits are two seconds wall time, one CPU second, 256 MiB address space where enforceable, and 128 KiB combined response/diagnostic policy. A strategy should perform only constant-time comparisons over precomputed features.
 - The committed `regime_momentum_v1` is a fixture, not an H1 reference implementation: it ignores most documented H1 logic and must not be copied as research truth.
 
@@ -545,26 +573,29 @@ Required stable reason-code families include:
 
 - data: `DATA_MISSING`, `DATA_STALE`, `DATA_QUALITY_REJECTED`, `FEATURE_SCHEMA_MISMATCH`;
 - session: `OUTSIDE_DECISION_WINDOW`, `EARLY_CLOSE_SESSION`, `DAILY_ENTRY_ALREADY_USED`, `COOLDOWN_ACTIVE`;
-- signal: `<HYPOTHESIS>_GATE_NOT_MET`, `DIRECTION_AMBIGUOUS`, `BENCHMARK_MISSING`;
-- authority: `UNDERLYING_NOT_ALLOWED`, `TEMPLATE_NOT_ALLOWED`, `INTENT_TTL_INVALID`.
+- selection: `NO_SIGNAL`, `NOT_SELECTED_BY_ARBITRATION`, `NOT_SELECTED_BY_FEASIBILITY`, `DIRECTION_AMBIGUOUS`;
+- signal: `<HYPOTHESIS>_GATE_NOT_MET`, `<HYPOTHESIS>_BULLISH`, `<HYPOTHESIS>_BEARISH`, `BENCHMARK_MISSING`;
+- authority: `UNDERLYING_NOT_ALLOWED`, `TEMPLATE_NOT_ALLOWED`, `INTENT_TTL_INVALID`, `TUPLE_NOT_ALLOWED`.
 
-Owners may add candidate-specific codes in `reason_codes.yaml`; the reviewer checks that none changes execution semantics.
+Each packet freezes its exact `<HYPOTHESIS>` substitutions. `reason_codes.yaml` must declare every code, decision kind, description, and retry behavior; the implementation may emit no undeclared code. Reviewer checks that none encodes executable values or changes execution semantics. Host/registry refusal codes remain platform-owned and must not be imitated by plug-in output.
 
 ### Required output bindings and state
 
-The plug-in must copy the request's evaluation ID, context hash, config hash, registered plug-in ID/version/content hash, and evaluation time exactly. `next_state` must:
+The plug-in must copy the request's evaluation ID, context hash, config hash, registered plug-in ID/version, and evaluation time exactly. Source authority is host-owned: plug-in code emits `packages.strategy_sdk.UNBOUND_PLUGIN_CONTENT_HASH`, and the isolated host replaces/checks it against the registry-pinned source digest. A plug-in must not hard-code a self-authorizing digest. `next_state` must:
 
 - belong to the same plug-in ID/version;
 - set `sequence = prior_state.sequence + 1`;
 - use `as_of = context.as_of`;
 - be deterministic and schema-limited;
-- contain only small string fields needed for explicit cooldown or one-entry-per-day state.
+- contain only small string fields needed for explicit one-entry-per-day state.
+
+For all six entry-only families, `state_schema.json` freezes `state_schema_version=strategy-state/v1`, initial `sequence=0`, and initial `payload={}`. The only permitted payload keys are `last_entry_session_<SYMBOL>` with ISO `YYYY-MM-DD` string values for symbols the family evaluated. Keys are sorted by frozen symbol order; a `NO_TRADE` preserves payload, while an emitted entry updates only its selected symbol. A family that does not need daily-entry state must still increment sequence and preserve `{}`. `PositionDirectiveV1`, hidden module/class state, timestamps read from the clock, and arbitrary payload keys are forbidden.
 
 The host—not the plug-in—must recheck all bindings, the centrally computed package hash, lifecycle/mode, allowed underlying/tuple, TTL, state sequence/hash, and metadata/data-requirement match. A mismatch becomes a stable refusal and never reaches planning.
 
 ### Backtest/runtime parity rule
 
-Put the economic decision in a small pure function such as `signal.py`; both the shared backtest adapter and `Plugin.evaluate()` call that function on the same normalized feature/config row. For at least 20 frozen timestamps per candidate, `integration/backtest_runtime_parity.json` records:
+Put the economic decision in a small pure function in `src/<plugin_id>_v1/signal.py`; both the package's offline reproduction adapter and `Plugin.evaluate()` call that function on the same normalized feature/config row. For at least 20 frozen timestamps per candidate, `integration/backtest_runtime_parity.json` records:
 
 - canonical feature/context/config hashes;
 - expected direction and normalized score;
@@ -572,7 +603,7 @@ Put the economic decision in a small pure function such as `signal.py`; both the
 - expected next-state sequence/payload;
 - canonical evaluation hash after the registered content hash is injected.
 
-The shared conformance job runs every case twice through the isolated runner and requires byte-identical canonical output. Minimum cases are bullish, bearish, below threshold, equality at threshold, conflicting gates, missing feature, stale/quality-flagged data, forbidden underlying, missing tuple, excessive TTL, repeated daily entry/cooldown, and state-sequence mismatch.
+The package tests run every case twice and require byte-identical canonical output. The release owner later reruns the same golden cases through the repository's isolated runner. Minimum cases are bullish, bearish, below threshold, equality at threshold, conflicting gates, missing feature, stale/quality-flagged data, forbidden underlying, missing tuple, excessive TTL, repeated daily entry/cooldown, and state-sequence mismatch. The published host baseline command is in `RESEARCH_INTERFACE_FREEZE.md`; a package records `host_interface_baseline=PASSED_AT_cb03a76` when it passes and `candidate_host_conformance=NOT_RUN_UNTIL_REGISTRY_PROPOSAL_REVIEWED` until its own cases run through the host.
 
 ### Central integration pipeline
 
@@ -653,7 +684,7 @@ For a debit vertical:
 
 This is intentionally punitive. If missing exit observations occur, assign zero exit value for the long/debit structure and report the penalty rate; if that penalty dominates, classify the result `UNSCORABLE_OPTION_HISTORY` rather than profitable/unprofitable.
 
-Fee assumptions are stress-model parameters, not claimed Alpaca commissions or market data. Before viewing results, freeze the central placeholder at **$0.10 per contract, per leg, per side**. Publish sensitivities at $0.00 and $0.25 on the same basis, plus the severe 2× central-cost scenario. Never select the fee or tick proxy that makes P&L positive; every output is labeled `bar_proxy_supported`, `bar_proxy_suggestive`, or `bar_proxy_unsupported`, never “filled,” “executable,” or “execution-quality evidence.”
+Fee assumptions are stress-model parameters, not claimed Alpaca commissions or market data. Before viewing results, freeze the central assumption at **$0.10 per contract, per leg, per side**. Publish sensitivities at $0.00 and $0.25 on the same basis, plus the severe 2× central-cost scenario. Never select the fee or tick proxy that makes P&L positive; every output is labeled `bar_proxy_supported`, `bar_proxy_suggestive`, or `bar_proxy_unsupported`, never “filled,” “executable,” or “execution-quality evidence.”
 
 ### Prospective and paper shadow marks
 
@@ -676,12 +707,17 @@ Keep separate fields/panels:
 
 ## 9. Validation design
 
-Proposed partitions, conditional on coverage and prior researcher exposure:
+Frozen partitions, clipped only by a shared documented Alpaca coverage failure:
 
-- Underlying discovery: 2017–2023.
-- Option feasibility/proxy calibration: February–December 2024.
-- Quarterly walk-forward OOS: January–December 2025.
-- Intended final validation: January 1–August 27, 2026.
+- underlying discovery/warm-up: `2017-01-03T14:30:00Z` through `2023-12-29T21:00:00Z`;
+- option feasibility/proxy calibration: `2024-02-01T14:30:00Z` through `2024-12-31T21:00:00Z`;
+- OOS fold `2025Q1`: `2025-01-02T14:30:00Z` through `2025-03-31T20:00:00Z`;
+- OOS fold `2025Q2`: `2025-04-01T13:30:00Z` through `2025-06-30T20:00:00Z`;
+- OOS fold `2025Q3`: `2025-07-01T13:30:00Z` through `2025-09-30T20:00:00Z`;
+- OOS fold `2025Q4`: `2025-10-01T13:30:00Z` through `2025-12-31T21:00:00Z`;
+- final validation: `2026-01-02T14:30:00Z` through cutoff `2026-08-27T20:00:00Z`.
+
+The ET decision clock and exchange calendar determine actual in-session rows; the UTC endpoints above bound the query and prevent timezone ambiguity. Half days remain invalid for research entry. Any source-coverage clipping is applied identically to all six families, recorded before outcomes in `coverage_exception.json`, and reviewed centrally; a family owner may not choose its own start/end dates.
 
 If anyone already inspected 2026 outcomes, label the last period `final_validation`, disclose prior exposure, and do not call it a sealed holdout. A true sealed holdout needs its manifest hash and access gate recorded before inspection.
 
@@ -706,7 +742,7 @@ Frozen null/resampling specification:
 - the authorizing test uses complete 2025 OOS daily account returns for every promotion-eligible central H1–H6 × compatible feasible-symbol scope × O2 candidate, plus any variant actually allowed to influence selection; it excludes 2024 calibration and never pools post-selection 2026 results;
 - align every candidate to the same complete market-date index and include zero-return inactive dates;
 - for each candidate, center its daily OOS return series under the zero-mean null;
-- use a fixed seed and 10,000 synchronized bootstrap replications of five-session moving date blocks;
+- use NumPy-compatible `PCG64` seed `20260829`, exactly 10,000 synchronized bootstrap replications, and five-session circular moving date blocks; replication IDs are `00000` through `09999` and use the identical sampled date-block indices for every candidate;
 - use the identical sampled date-block indices for all symbols, hypotheses, expressions, and selectable variants in each replication, preserving cross-symbol dependence;
 - compute each candidate's studentized mean daily return and retain the maximum positive statistic per replication for the one-sided positive-edge family;
 - report raw and family-wise adjusted one-sided p-values against that maximum-statistic null; `statistically_supported` and `paper_enabled` require 2025 adjusted `p <= 0.10` on the frozen central specification;
@@ -730,6 +766,24 @@ Monday prospective quotes are accept/reject operational gates only. They may pro
 After candidates are frozen, the 2026 accept/reject gate requires for each predesignated candidate: positive base-cost normalized-account return, nonnegative severe/2×-cost return, maximum drawdown no greater than 4%, no data/falsification failure, and the exact trade/day concentration limits below. Report a fixed-candidate 2026 interval and p-value descriptively; it is not pooled into or substituted for the authorizing 2025 adjusted test. Failure rejects that candidate; it does not open a search.
 
 ## 10. Metrics
+
+All metric implementations use complete exchange-date rows and the following frozen definitions. Let normalized account equity be `E_d`, with initial `E_0 = 100000`, no external cash flow, and daily net return `r_d = E_d / E_(d-1) - 1`. Inactive valid dates have `r_d = 0`; an invalid/unscorable date is retained with a quality flag and does not silently become zero. Unless stated otherwise, `N` is the number of complete OOS market dates, sample standard deviation uses `ddof=1`, annualization is 252 sessions, and the risk-free rate/minimum acceptable return is zero.
+
+- cumulative return: `E_N / E_0 - 1`;
+- annualized geometric return: `(E_N / E_0) ** (252 / N) - 1` when `N > 0`;
+- Sharpe: `sqrt(252) * mean(r_d) / sample_std(r_d)`, or `UNDEFINED_ZERO_VARIANCE`;
+- Sortino: `sqrt(252) * mean(r_d) / sqrt(mean(min(r_d, 0) ** 2))`, or `UNDEFINED_ZERO_DOWNSIDE`;
+- drawdown: `E_d / running_max(E_d) - 1`; maximum drawdown is the minimum drawdown, reported as both signed value and positive magnitude;
+- Calmar: annualized geometric return divided by positive maximum-drawdown magnitude, or `UNDEFINED_ZERO_DRAWDOWN`;
+- historical 95% expected shortfall: negative mean of returns at or below the empirical 5th percentile; interpolation method must be recorded;
+- hit rate: scored trades with strictly positive net P&L divided by scored trades; zero P&L is not a win;
+- profit factor: positive net trade P&L sum divided by absolute negative net trade P&L sum, with zero-loss denominator reported as undefined/infinite explicitly;
+- turnover: sum of absolute opening and closing premium notionals divided by mean daily normalized equity;
+- exposure time: total position-open minutes divided by total eligible regular-session minutes;
+- top-trade concentration: largest positive trade P&L divided by total positive trade P&L; top-day concentration is analogous on daily net P&L;
+- SPY beta: sample covariance of candidate and SPY complete-date returns divided by sample variance of SPY; Pearson correlation uses the same synchronized dates.
+
+JSON uses decimal strings for exact monetary/return fields and sorted keys. Charts may render floats but never become metric authority.
 
 ### Data and feasibility
 
@@ -856,7 +910,7 @@ research/
 │   ├── trial_ledger.jsonl
 │   ├── datasets/<dataset_id>/data_manifest.json
 │   ├── selection/
-│   │   ├── feasibility_selection.json
+│   │   ├── option_proxy_feasibility_manifest.json
 │   │   └── candidate_selection.json
 │   └── symbol_feasibility/<symbol>/
 │       ├── data_quality.json
@@ -875,6 +929,8 @@ research/
     ├── data_refs.json
     ├── runs/<run_id>/
     │   ├── run_manifest.json
+    │   ├── pair_cell_metrics.json
+    │   ├── pair_cell_review.json
     │   ├── signals.parquet
     │   ├── selected_contracts.parquet
     │   ├── proxy_leg_observations.parquet
@@ -897,19 +953,32 @@ research/
     └── promotion_card.md
 
 strategy_plugins/<plugin_id>_v1/
-├── __init__.py
-├── plugin.py
-├── signal.py
+├── pyproject.toml
+├── manifest.yaml
 ├── README.md
-├── defaults.json
-└── tests/
-    ├── test_metadata.py
-    ├── test_thresholds.py
-    ├── test_no_trade.py
-    ├── test_determinism.py
-    ├── test_boundary.py
-    └── test_parity.py
+├── hypothesis.yaml
+├── defaults.yaml
+├── src/<plugin_id>_v1/
+│   ├── __init__.py
+│   ├── plugin.py
+│   ├── signal.py
+│   └── reason_codes.py
+├── scripts/
+│   └── reproduce.sh
+├── tests/
+│   ├── fixtures/
+│   ├── golden/
+│   ├── test_contract.py
+│   ├── test_thresholds.py
+│   ├── test_no_trade.py
+│   ├── test_determinism.py
+│   ├── test_boundary.py
+│   └── test_parity.py
+└── evidence/
+    └── promotion.json
 ```
+
+This is the canonical core layout from `docs/architecture/STRATEGY_API.md`; `scripts/reproduce.sh`, threshold/parity tests, and pair-cell evidence are required research extensions. Do not return the current fixture-style flat package as a candidate package.
 
 `strategy_card.md` freezes the economic mechanism, eligible symbols, exact entry formula, normalized score, decision cadence, position-policy ID, option-template mapping, no-trade conditions, expected failure regimes, and one-sentence reason the edge could persist after costs.
 
@@ -917,7 +986,26 @@ strategy_plugins/<plugin_id>_v1/
 
 `data_manifest.json` records endpoint/tool/version, explicit feed, scrubbed query, requested/returned coverage, page completion, row count, fetch time, raw/normalized hashes, missingness, rate-limit/errors, and adjustment type. `data_refs.json` references those immutable shared hashes; candidates do not copy or mutate raw data.
 
-`run_manifest.json` records Git commit, config/data/hypothesis/expression hashes, exact `template_catalog.yaml` hash, fold boundaries, one-minute/five-minute proxy timing rules, tick/fee assumptions, bootstrap seed/specification, all viewed and tried variants, start/end time, status, owner, and reviewer.
+`run_manifest.json` records the pinned implementation commit and lock hash, config/data/hypothesis/expression hashes, exact `template_catalog.yaml` and feasibility-manifest hashes, fold boundaries, one-minute/five-minute proxy timing rules, tick/fee assumptions, `PCG64` seed `20260829`, bootstrap specification, all viewed and tried variants, start/end time, status, owner, and reviewer.
+
+`scripts/reproduce.sh` is supplied by the family owner and is the only claimed research reproduction command. It must be executable, make no network or credential call, accept exactly `--data-manifest PATH --feasibility-manifest PATH --output PATH`, refuse a nonempty output directory, validate the pinned commit/lock/config/data hashes, run the package tests, and write one deterministic run tree. It may invoke repository libraries but must not claim an absent central backtester. The package README shows this invocation literally:
+
+```zsh
+./scripts/reproduce.sh \
+  --data-manifest /absolute/path/to/data_manifest.json \
+  --feasibility-manifest /absolute/path/to/option_proxy_feasibility_manifest.json \
+  --output /absolute/path/to/empty-output-directory
+```
+
+The only currently published repository verification commands are:
+
+```zsh
+UV_CACHE_DIR="$PWD/.uv-cache" UV_PYTHON_INSTALL_DIR="$PWD/.uv-python-arm64" /opt/homebrew/bin/uv sync --frozen
+UV_CACHE_DIR="$PWD/.uv-cache" UV_PYTHON_INSTALL_DIR="$PWD/.uv-python-arm64" /opt/homebrew/bin/uv run python -m pytest
+UV_CACHE_DIR="$PWD/.uv-cache" UV_PYTHON_INSTALL_DIR="$PWD/.uv-python-arm64" /opt/homebrew/bin/uv run ruff check .
+```
+
+Researchers may quote those commands as baseline/conformance evidence only for what they actually test. They must not relabel them as a shared historical backtest command.
 
 Minimum tabular schemas:
 
@@ -928,6 +1016,16 @@ Minimum tabular schemas:
 - `daily_returns.parquet`: every market date including zero-return inactive dates, start/end normalized equity, gross/net P&L, return, maximum reserved loss, exposure minutes, trade count, and data-quality status.
 
 `metrics.json` contains the exact metrics in Section 10 for the central run and explicit evidence status; `cost_stress.json` contains every prescribed fee/tick/missing-exit scenario, never just the favorable one.
+
+Deterministic serialization is part of the handoff:
+
+- all timestamps are UTC RFC 3339 with `Z`; dates are ISO `YYYY-MM-DD`;
+- canonical JSON is UTF-8, keys sorted recursively, no insignificant whitespace, decimal values encoded as strings, and one terminal newline;
+- JSONL rows are ordered by `(candidate_id, symbol_order, decision_time, variant_id, record_id)` and each line is canonical JSON;
+- Parquet files use explicit Arrow types and fixed column order from `artifact_schema.json`, UTC timestamps, stable row-group size `65536`, and the same applicable sort keys;
+- symbol order is always `SPY, QQQ, TQQQ, SMH, SOXL, IGV`; nulls sort last; reason-code sets are emitted lexicographically;
+- plots are non-authoritative; hashes cover the tabular/JSON inputs and plot specifications, not renderer metadata;
+- a second run must produce identical authoritative artifact hashes. Nondeterministic metadata must live outside hashed evidence or be normalized.
 
 `registry_candidate.yaml` is a **non-authorizing proposal** with lifecycle `research_only`, exact plug-in/config/feature/state/evidence hashes, requested underlyings and intent tuples, position-policy ID, owner, and reviewer. Researchers never edit `paper_enabled` in the central registry.
 
@@ -942,11 +1040,12 @@ Before requesting integration review, the owner and non-author reviewer answer *
 - The central hypothesis and all viewed trials are in the trial ledger.
 - All inputs come from shared Alpaca-only immutable manifests and pass availability-time checks.
 - The run reproduces from one documented native ARM64 command and exact commit/lock/config hashes.
-- Central and every prescribed sensitivity result are published across every compatible feasible symbol.
-- Portfolio replay includes suppressed signals, zero-return dates, integer contracts, cluster/concurrency limits, exact selector/sizer, and exact exit policy.
+- Central and every prescribed sensitivity result are published for both owned pair cells; an unselected option-proxy cell carries the explicit `NOT_SELECTED_BY_FEASIBILITY` artifacts.
+- `pair_cell_metrics.json` is labeled diagnostic and does not claim a full-universe candidate, champion, fallback, or symbol winner.
+- The family package can be replayed centrally without changing `signal.py`; only the central owner produces the later full-universe replay with suppressed signals, zero-return dates, integer contracts, cluster/concurrency limits, exact selector/sizer, and exact exit policy.
 - Base and severe costs, missing observations, no-fill cases, concentration, drawdown, and selection-adjusted evidence are reported.
 - `signal.py` and `Plugin.evaluate()` make identical semantic decisions on every parity row.
-- The isolated runner produces byte-identical output twice and every negative/boundary test passes.
+- Package tests produce byte-identical output twice and every negative/boundary test passes; record the host baseline separately from candidate host conformance, which remains `NOT_RUN_UNTIL_REGISTRY_PROPOSAL_REVIEWED` until centrally executed.
 - Output contains no exact order authority, hidden I/O, or self-promotion.
 - Reviewer independently reproduces artifact hashes and records deviations; unresolved deviation means not done.
 
@@ -968,28 +1067,28 @@ telemetry/competition/
 ### Saturday morning
 
 - Release captain reviews and commits the implementation baseline; no researcher branches from the current untracked workspace state.
-- Platform owners close or explicitly track `G-R1`–`G-R5`, publish the registry/catalog/feature/reason/position-policy schemas, and provide one conformance command.
+- Platform owners close or explicitly track `G-R1`–`G-R6`, publish the registry/catalog/feature/reason/position-policy schemas, and pin only conformance commands that actually exist.
 - Data steward runs one shared entitlement probe.
 - Freeze feed, timestamp, contract, and proxy rules.
-- Build one common scanner, artifact schema, and backtest adapter; no member-specific engines.
+- Publish the common scanner outputs and artifact schema. Each family package implements the same frozen clock/metric rules in its required offline reproduction script; parity fixtures expose semantic drift.
 - Bulk-fetch the six underlying histories once.
 - Assign one strategy family per Section 3. Each owner writes `strategy_card.md`, `hypothesis.yaml`, `feature_contract.yaml`, and central/sensitivity configs without viewing result P&L.
 
 ### Saturday afternoon
 
-- Complete six historical feasibility cards.
+- Complete six historical feasibility cards and sign the blinded global `option_proxy_feasibility_manifest.json` before any result exposure.
 - Remove `RED_REMOVE` symbols.
 - Implement all six pure `signal.py` functions and boundary fixtures against the frozen feature rows.
 - Reproduce the H1 golden underlying run on two native ARM64 machines before opening comparative outcomes.
-- Run H1–H6 central underlying scans across every compatible green/yellow symbol through the common harness; log every run.
+- Run H1–H6 central underlying scans on each packet's two owned cells; log every run. Do not call these pair-cell scans full-universe candidates.
 - Begin point-in-time contract-existence proxy construction.
-- Researchers may implement plug-in shells in parallel, but nothing is called `INTEGRATION_READY` while `G-R1`–`G-R5` is open.
+- Researchers may implement complete plug-in packages in parallel, but nothing is called `INTEGRATION_READY` until its candidate-specific registry, feature, catalog, output-binding, close-policy, and reviewer evidence passes.
 
 ### Sunday morning
 
-- Deep-test option expressions for at most three symbols selected by data/coverage quality—not P&L.
+- Deep-test option expressions only for the at-most-three symbols named in the frozen blinded feasibility manifest. Emit `NOT_SELECTED_BY_FEASIBILITY` artifacts for every other owned cell.
 - Cut O1/O2 where mark coverage fails.
-- Run every central strategy-family portfolio through quarterly walk-forward, purge/embargo, base/severe costs, null, multiplicity, concentration, and risk-adjusted controls.
+- Run every pair-cell family package through quarterly walk-forward, purge/embargo, base/severe costs where eligible, null, concentration, and risk-adjusted controls. The central owner runs the full-universe portfolio and multiplicity comparison only after all packages freeze.
 - Run every prescribed sensitivity as a diagnostic and publish it; do not use a neighbor to replace the central candidate.
 - Complete plug-in conformance, runner determinism, golden contexts/evaluations, and semantic backtest/runtime parity where platform gates permit.
 

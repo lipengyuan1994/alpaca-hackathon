@@ -9,14 +9,26 @@ This directory is the navigation hub for the Alpaca hackathon project. The root 
 | [`HACKATHON_PLAN.md`](../HACKATHON_PLAN.md) | Competition requirements, team decisions, product scope, risk posture, six-person ownership, schedule, gates, and submission plan | Entire team | Canonical competition plan |
 | [`architecture/SYSTEM_ARCHITECTURE.md`](architecture/SYSTEM_ARCHITECTURE.md) | Process topology, trust boundaries, package dependency rules, event flow, persistence, deployment, and scaling path | Platform, execution, frontend, release | Normative system design |
 | [`architecture/STRATEGY_API.md`](architecture/STRATEGY_API.md) | Versioned plug-in contract that lets strategies be developed independently without broker or exact-order access | All strategy researchers and reviewers | Normative strategy boundary |
+| [`architecture/RESEARCH_INTERFACE_FREEZE.md`](architecture/RESEARCH_INTERFACE_FREEZE.md) | Pinned research release values, host-interface status, exact conformance commands, and remaining integration/paper-safety boundaries | Researchers, platform, release | Published for credential-free research; not paper authorization |
 | [`plans/SKELETON_IMPLEMENTATION_PLAN.md`](plans/SKELETON_IMPLEMENTATION_PLAN.md) | Ordered repository-skeleton and vertical-slice implementation backlog with owners, reviewers, deliverables, and gates | All developers | Delivery sequence |
 | [`plans/STRATEGY_RESEARCH_PLAN.md`](plans/STRATEGY_RESEARCH_PLAN.md) | Architecture-readiness gates, six delegated strategy families, common free-Alpaca research protocol, plug-in/parity deliverables, validation, metrics, and promotion gates | Six researchers, platform owner, quant lead, risk reviewer | Normative research and integration handoff protocol |
+| [`research/README.md`](research/README.md) | Routes the six symbols and six strategy families into three independently shareable, credential-free research packets | Research owners and reviewers | Delegation index; subordinate to the normative research protocol |
+
+## Research group handoffs
+
+| Packet | Owned symbol cells | Assigned families | Independent handoff |
+|---|---|---|---|
+| Group A — broad tech controls | SPY, QQQ | H1 normalized intraday continuation; H2 normalized VWAP reversion | [`research/GROUP_A_BROAD_TECH_PLAN.md`](research/GROUP_A_BROAD_TECH_PLAN.md) |
+| Group B — semiconductor pair | SMH, SOXL | H3 opening-range breakout; H4 standardized gap continuation | [`research/GROUP_B_SEMICONDUCTOR_PLAN.md`](research/GROUP_B_SEMICONDUCTOR_PLAN.md) |
+| Group C — leveraged/software technology | TQQQ, IGV | H5 benchmark-residual relative strength; H6 compression breakout | [`research/GROUP_C_LEVERAGED_SOFTWARE_PLAN.md`](research/GROUP_C_LEVERAGED_SOFTWARE_PLAN.md) |
+
+The packets allocate ownership; they do not create isolated two-symbol winner searches. Candidate identity retains its complete compatible symbol set, and central integration applies the common selector and multiple-testing controls across every viewed trial.
 
 ## Read by role
 
-- **Quant/product lead:** read all five documents; own scope, contracts, registry status, risk budget, and release decisions.
+- **Quant/product lead:** read the canonical plan, normative architecture/API/research documents, and the published research freeze; own scope, contracts, registry status, risk budget, and release decisions.
 - **Data/backend platform:** start with system architecture, then skeleton phases 0–3 and the research data contract.
-- **Alpha researchers:** start with the strategy API and research plan; do not build directly against Alpaca payloads or broker clients.
+- **Alpha researchers:** start with the research routing index and assigned group packet, then the strategy API, normative research plan, and published freeze; do not build directly against Alpaca payloads or broker clients.
 - **Options/risk quant:** read strategy API output constraints, order-planner boundary, research cost/quote gates, and final risk sequence.
 - **Agent/execution engineer:** read the credential boundary, execution state machine, plan-hash authorization sequence, and integration phases.
 - **Frontend/submission owner:** read the event/read-model flow, deployment topology, fixture vertical slice, and final reporting labels.
@@ -38,10 +50,11 @@ When documents appear to conflict, use this order:
 1. A dated written organizer clarification for this event.
 2. The current event-specific requirement captured in `HACKATHON_PLAN.md`.
 3. The normative system or strategy API document.
-4. The implementation or research plan.
-5. A code comment, notebook, chat message, or slide.
+4. The implementation or normative research plan.
+5. A research group handoff or research interface-status record.
+6. A code comment, notebook, chat message, or slide.
 
-Contract schemas generated from code become the executable source of truth only after the interface-freeze gate. Until then, these documents and committed golden fixtures must agree. Any change to a V1 contract requires the release captain and at least one consuming owner.
+Contract schemas generated from code are the executable host-interface source of truth at the pinned release. `RESEARCH_INTERFACE_FREEZE.md` distinguishes closed host baselines from candidate-specific and paper-safety evidence that remains open; publication never self-promotes a candidate. Any change to a V1 contract requires the release captain and at least one consuming owner.
 
 ## Documentation ownership
 
