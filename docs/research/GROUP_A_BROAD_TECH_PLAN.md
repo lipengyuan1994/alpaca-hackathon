@@ -10,13 +10,13 @@ Assigned capacity: one packet owner responsible for two independently versioned 
 
 Primary symbol cells: `SPY`, `QQQ`
 
-Assigned strategy families: H1 normalized intraday continuation and H2 normalized intraday VWAP reversion
+Assigned strategies: normalized intraday continuation and normalized intraday VWAP reversion
 
 ## 1. Mission and authority boundary
 
 Group A establishes the broad-market and large-cap technology reference results against which the specialized groups are compared. SPY is the broad-market/liquidity control; QQQ is the liquid technology benchmark and the parent control for TQQQ/IGV work.
 
-The group owns the SPY/QQQ data-quality interpretation, feature specifications, H1/H2 pure signal functions, plug-in packages, group cells, artifacts, and review. It does not own Alpaca ingestion, the central registry, option contract selection, sizing, risk approval, order submission, promotion, or judged-account operation.
+The group owns the SPY/QQQ data-quality interpretation, feature specifications, both pure signal functions, plug-in packages, group cells, artifacts, and review. It does not own Alpaca ingestion, the central registry, option contract selection, sizing, risk approval, order submission, promotion, or judged-account operation.
 
 Researchers work from a source snapshot plus immutable data artifacts. They need no GitHub write credential, Alpaca credential, account ID, broker access, MCP trading tool, deployment secret, or order permission. Return patches/source archives and content-addressed evidence to the platform owner.
 
@@ -26,8 +26,8 @@ The signal plug-in never calls an LLM. Any advisory AI may leave a frozen determ
 
 ## 2. Packet ownership and exact returns
 
-- **H1 deliverable:** `h1_intraday_continuation_v1`, including its feature contract, pure signal, canonical plug-in, package-local offline reproduction script, SPY/QQQ pair-cell evidence, prescribed sensitivities, option-proxy status, falsifications, and complete artifact tree.
-- **H2 deliverable:** `h2_vwap_reversion_v1`, including its separate feature contract, pure signal, canonical plug-in, package-local offline reproduction script, SPY/QQQ pair-cell evidence, prescribed sensitivities, option-proxy status, falsifications, and complete artifact tree.
+- **Intraday-continuation deliverable:** `intraday_continuation_v1`, including its feature contract, pure signal, canonical plug-in, package-local offline reproduction script, SPY/QQQ pair-cell evidence, prescribed sensitivities, option-proxy status, falsifications, and complete artifact tree.
+- **VWAP-reversion deliverable:** `vwap_reversion_v1`, including its separate feature contract, pure signal, canonical plug-in, package-local offline reproduction script, SPY/QQQ pair-cell evidence, prescribed sensitivities, option-proxy status, falsifications, and complete artifact tree.
 
 The Group A packet owner authors both families but freezes both specifications before viewing outcome P&L for either family. The Group B packet owner independently reviews both returned packages and signs each `pair_cell_review.json`. The reviewer may report a defect but cannot tune or directly repair a reviewed economic rule after seeing P&L; the Group A owner versions any outcome-changing correction and repeats affected runs. If the designated reviewer is unavailable, obtain another non-author reviewer outside Group A.
 
@@ -38,13 +38,13 @@ The packet owner may not modify the authoritative registry, install broker crede
 | Use | Symbols | Rule |
 |---|---|---|
 | Owned research cells | SPY, QQQ | Complete data/signal/stress/falsification output for both; run option proxy only when the global blinded feasibility manifest selects the symbol. |
-| H1 candidate compatibility | SPY, QQQ, TQQQ, SMH, SOXL, IGV | Group A freezes one H1 implementation; central integration runs it unchanged on every compatible feasible symbol. |
-| H2 promotion-eligible compatibility | SPY, QQQ, SMH, IGV | Leveraged ETF H2 rows are diagnostic unless a separately frozen version changes that status before outcomes. |
+| Intraday-continuation compatibility | SPY, QQQ, TQQQ, SMH, SOXL, IGV | Group A freezes one implementation; central integration runs it unchanged on every compatible feasible symbol. |
+| VWAP-reversion promotion-eligible compatibility | SPY, QQQ, SMH, IGV | Leveraged-ETF rows are diagnostic unless a separately frozen version changes that status before outcomes. |
 | Broad-market control | SPY | QQQ results must report beta/correlation and active-date overlap with SPY. |
-| Technology control | QQQ | QQQ supplies the benchmark inputs consumed by the TQQQ/IGV group; Group A may not tune H1/H2 to improve those downstream results. |
+| Technology control | QQQ | QQQ supplies the benchmark inputs consumed by the TQQQ/IGV group; Group A may not tune either strategy to improve those downstream results. |
 | Statistical null | All viewed candidates on common dates | Use the synchronized centered five-session moving-block maximum-statistic procedure; no per-trade sign permutation. |
 
-This packet returns two separate family packages and their SPY/QQQ `pair_cell_metrics.json` files. Those files are diagnostic evidence only: the packet owner may not select SPY versus QQQ, declare a champion/fallback, or claim the pair is the complete `CandidateSpecV1`. After all six families freeze, the central quant/release owner expands H1/H2 unchanged to their compatible feasible universe and writes `central_full_universe_replay.json`. That later replay alone applies cross-symbol arbitration and the family-wide selection test.
+This packet returns two separate strategy packages and their SPY/QQQ `pair_cell_metrics.json` files. Those files are diagnostic evidence only: the packet owner may not select SPY versus QQQ, declare a champion/fallback, or claim the pair is the complete `CandidateSpecV1`. After all six strategies freeze, the central quant/release owner expands both unchanged to their compatible feasible universe and writes `central_full_universe_replay.json`. That later replay alone applies cross-symbol arbitration and the family-wide selection test.
 
 Before any alpha outcome is viewed, the data steward must sign `research/shared/selection/option_proxy_feasibility_manifest.json`, ranking all six symbols from blinded entitlement, completeness, timestamp, standard-contract, simultaneous-leg, and corporate-action fields. The global `selected_symbols` list has at most three symbols. SPY or QQQ absent from it still receives full underlying research, but its option artifacts are empty schema-valid tables plus `option_proxy_not_selected.json` with exact status `NOT_SELECTED_BY_FEASIBILITY`. Group A cannot swap, rerank, or fill a slot after seeing results.
 
@@ -89,12 +89,12 @@ Every normalized row carries `event_time`, `available_time`, `ingested_at`, endp
 - Position age starts at confirmed proxy/runtime fill, never at signal time.
 - No overnight positions, overlapping labels, or early-close sessions.
 - Central time exit is 60 minutes from confirmed fill, capped at 15:45 ET. Diagnostics at 45 and 90 minutes cannot replace the central result.
-- Evaluate open-position management after every completed 15-minute interval plus one second. For trend exits, bullish closes on `close <= session_vwap` and bearish on `close >= session_vwap`; for H2 reversion, bullish closes on `close >= session_vwap` and bearish on `close <= session_vwap`.
+- Evaluate open-position management after every completed 15-minute interval plus one second. For trend exits, bullish closes on `close <= session_vwap` and bearish on `close >= session_vwap`; for VWAP reversion, bullish closes on `close >= session_vwap` and bearish on `close <= session_vwap`.
 - Strategy-level premium profit targets and price stops are disabled. Safety/reconciliation exits are recorded separately and never tuned as alpha exits.
 - On the competition final Thursday, the target policy allows no new entry after 13:30 ET, begins flatten by 15:15, and requires broker-confirmed flat by 15:30. Research replays the rule through the pinned policy semantics; durable broker-confirmed flatten evidence remains release-owned and blocks paper use, not credential-free research.
 - Plug-ins are entry-only. The central position manager owns exit orders and final flatten; the named policy decisions and reduce-only construction exist at the pinned commit, while durable broker/fill/restart/confirmed-flat proof remains a release-owned paper gate.
 
-## 6. H1 — normalized intraday continuation
+## 6. Normalized intraday continuation
 
 At decision time `t`:
 
@@ -121,7 +121,7 @@ Parameter budget:
 - central time exit 60 minutes; diagnostic 45 and 90 minutes;
 - no symbol-specific thresholds, time windows, regime overlays, news, IV, Greeks, or additional feature search.
 
-## 7. H2 — normalized VWAP reversion
+## 7. Normalized VWAP reversion
 
 At decision time `t`:
 
@@ -145,16 +145,16 @@ Parameter budget:
 - diagnostic thresholds `1.25`, `1.75` one at a time;
 - momentum-neutral gate fixed at `0.50` with no optimization;
 - central time exit 60 minutes; diagnostic 45 and 90 minutes;
-- H2 remains a standalone candidate, never an H1 overlay or intraday fallback.
+- VWAP reversion remains a standalone candidate, never a continuation overlay or intraday fallback.
 
-No outcome-bearing H1/H2 comparison begins until the common H1 golden run reproduces on two native ARM64 machines.
+No outcome-bearing comparison begins until the common intraday-continuation golden run reproduces on two native ARM64 machines.
 
 ## 8. Candidate and feature contracts
 
 Create these complete candidate identities before viewing outcome P&L:
 
-- `h1_intraday_continuation__all_feasible__o2_v1`, with ordered eligible set `[SPY, QQQ, TQQQ, SMH, SOXL, IGV]`;
-- `h2_vwap_reversion__spy_qqq_smh_igv__o2_v1`, with ordered eligible set `[SPY, QQQ, SMH, IGV]`.
+- `intraday_continuation__all_feasible__o2_v1`, with ordered eligible set `[SPY, QQQ, TQQQ, SMH, SOXL, IGV]`;
+- `vwap_reversion__spy_qqq_smh_igv__o2_v1`, with ordered eligible set `[SPY, QQQ, SMH, IGV]`.
 
 Each `CandidateSpecV1`-equivalent strategy card freezes:
 
@@ -216,11 +216,11 @@ The separate research evidence tree is `research/candidates/<candidate_id>/` and
 
 ### 9.1 Frozen integration cards
 
-| Field | H1 package | H2 package |
+| Field | Intraday-continuation package | VWAP-reversion package |
 |---|---|---|
-| `plugin_id` / version | `h1_intraday_continuation` / `1.0.0` | `h2_vwap_reversion` / `1.0.0` |
-| entry point | `h1_intraday_continuation_v1.plugin:Plugin` | `h2_vwap_reversion_v1.plugin:Plugin` |
-| hypothesis ID | `H1_NORMALIZED_INTRADAY_CONTINUATION` | `H2_NORMALIZED_VWAP_REVERSION` |
+| `plugin_id` / version | `intraday_continuation` / `1.0.0` | `vwap_reversion` / `1.0.0` |
+| entry point | `intraday_continuation_v1.plugin:Plugin` | `vwap_reversion_v1.plugin:Plugin` |
+| hypothesis ID | `NORMALIZED_INTRADAY_CONTINUATION` | `NORMALIZED_VWAP_REVERSION` |
 | owner / reviewer | assigned Group A owner / independent Group B reviewer | assigned Group A owner / independent Group B reviewer |
 | pair-cell evidence | ordered `[SPY, QQQ]` | ordered `[SPY, QQQ]` |
 | later compatibility | ordered `[SPY, QQQ, TQQQ, SMH, SOXL, IGV]` | ordered `[SPY, QQQ, SMH, IGV]` |
@@ -228,15 +228,15 @@ The separate research evidence tree is `research/candidates/<candidate_id>/` and
 | allowed entry tuples | bullish call-debit and bearish put-debit; `INTRADAY_15_60M`, `TINY`, max TTL `300` | same |
 | data requirements | `feature-vector/v1`; hash `CANDIDATE_DEFINED_AND_HASHED_BEFORE_OUTCOME_RUN`; maximum age `60`; logical positions `false` | same |
 
-Both manifests use `api_version: strategy-plugin/v1`, `decision_schema_version: strategy-evaluation/v1`, `deterministic: true`, and `network_access: false`. Required feature keys are ordered by `SPY, QQQ, TQQQ, SMH, SOXL, IGV`, then lexicographically within symbol. H1 requires each compatible symbol's `close_completed_15m_v1`, `momentum_z_60m_same_time_v1`, and `session_iex_vwap_v1`; H2 requires `deviation_z_same_time_v1` and `momentum_z_60m_same_time_v1`. The packet owner freezes and hashes both complete candidate-specific contracts before viewing outcome P&L for either one; the release owner validates the key lists and hashes before integration review.
+Both manifests use `api_version: strategy-plugin/v1`, `decision_schema_version: strategy-evaluation/v1`, `deterministic: true`, and `network_access: false`. Required feature keys are ordered by `SPY, QQQ, TQQQ, SMH, SOXL, IGV`, then lexicographically within symbol. Intraday continuation requires each compatible symbol's `close_completed_15m_v1`, `momentum_z_60m_same_time_v1`, and `session_iex_vwap_v1`; VWAP reversion requires `deviation_z_same_time_v1` and `momentum_z_60m_same_time_v1`. The packet owner freezes and hashes both complete candidate-specific contracts before viewing outcome P&L for either one; the release owner validates the key lists and hashes before integration review.
 
-`central_config.json` is a canonical rendering of flat `StrategyConfigV1.values`. Exact H1 keys/values are `momentum_threshold="1.00"`, `same_time_lookback_sessions=20`, `std_floor="0.000001"`, `vwap_alignment_required=true`, `decision_start_et="10:30:01"`, `decision_end_et="14:30:01"`, `decision_step_minutes=30`, `max_entries_per_symbol_session=1`, `time_exit_minutes=60`, `risk_tier="TINY"`, and `intent_ttl_seconds=300`. Exact H2 keys/values are `deviation_threshold="1.50"`, `momentum_neutral_abs_max="0.50"`, `same_time_lookback_sessions=20`, `std_floor="0.000001"`, the same decision clock/entry/time-exit keys, `risk_tier="TINY"`, and `intent_ttl_seconds=300`. Decimal thresholds are strings in JSON and become `Decimal` values in `StrategyConfigV1`.
+`central_config.json` is a canonical rendering of flat `StrategyConfigV1.values`. Exact intraday-continuation keys/values are `momentum_threshold="1.00"`, `same_time_lookback_sessions=20`, `std_floor="0.000001"`, `vwap_alignment_required=true`, `decision_start_et="10:30:01"`, `decision_end_et="14:30:01"`, `decision_step_minutes=30`, `max_entries_per_symbol_session=1`, `time_exit_minutes=60`, `risk_tier="TINY"`, and `intent_ttl_seconds=300`. Exact VWAP-reversion keys/values are `deviation_threshold="1.50"`, `momentum_neutral_abs_max="0.50"`, `same_time_lookback_sessions=20`, `std_floor="0.000001"`, the same decision clock/entry/time-exit keys, `risk_tier="TINY"`, and `intent_ttl_seconds=300`. Decimal thresholds are strings in JSON and become `Decimal` values in `StrategyConfigV1`.
 
 ### 9.2 Output, reason, and state rules
 
 The pure `signal.py` function and `Plugin.evaluate()` use identical logic. A bullish entry emits `CALL_DEBIT_SPREAD_V1`; bearish emits `PUT_DEBIT_SPREAD_V1`; horizon is `INTRADAY_15_60M`, risk tier is `TINY`, expiry is exactly `context.as_of + 300 seconds`, and the sole evidence reference is the input `FEATURE_VECTOR`. Score buckets are `[1.00,1.25)=LOW`, `[1.25,1.75)=MEDIUM`, and `>=1.75=HIGH`. The plug-in emits `packages.strategy_sdk.UNBOUND_PLUGIN_CONTENT_HASH`; the host owns source-hash binding.
 
-Common `NO_TRADE` codes are exactly `DATA_MISSING`, `DATA_STALE`, `DATA_QUALITY_REJECTED`, `FEATURE_SCHEMA_MISMATCH`, `OUTSIDE_DECISION_WINDOW`, `EARLY_CLOSE_SESSION`, `DAILY_ENTRY_ALREADY_USED`, `NO_SIGNAL`, `DIRECTION_AMBIGUOUS`, `UNDERLYING_NOT_ALLOWED`, `TEMPLATE_NOT_ALLOWED`, and `TUPLE_NOT_ALLOWED`. H1 adds `H1_GATE_NOT_MET`, `H1_BULLISH_CONTINUATION`, and `H1_BEARISH_CONTINUATION`; H2 adds `H2_GATE_NOT_MET`, `H2_BULLISH_REVERSION`, and `H2_BEARISH_REVERSION`. `reason_codes.yaml` declares every code and the implementation emits no undeclared code.
+Common `NO_TRADE` codes are exactly `DATA_MISSING`, `DATA_STALE`, `DATA_QUALITY_REJECTED`, `FEATURE_SCHEMA_MISMATCH`, `OUTSIDE_DECISION_WINDOW`, `EARLY_CLOSE_SESSION`, `DAILY_ENTRY_ALREADY_USED`, `NO_SIGNAL`, `DIRECTION_AMBIGUOUS`, `UNDERLYING_NOT_ALLOWED`, `TEMPLATE_NOT_ALLOWED`, and `TUPLE_NOT_ALLOWED`. Intraday continuation adds `INTRADAY_CONTINUATION_GATE_NOT_MET`, `INTRADAY_CONTINUATION_BULLISH`, and `INTRADAY_CONTINUATION_BEARISH`; VWAP reversion adds `VWAP_REVERSION_GATE_NOT_MET`, `VWAP_REVERSION_BULLISH`, and `VWAP_REVERSION_BEARISH`. `reason_codes.yaml` declares every code and the implementation emits no undeclared code.
 
 `state_schema.json` freezes `strategy-state/v1`, initial sequence `0`, and payload `{}`. Every evaluation sets sequence to prior plus one and `as_of=context.as_of`. `NO_TRADE` preserves payload; entry may set only `last_entry_session_<SYMBOL>=YYYY-MM-DD`. No `PositionDirectiveV1`, clock/random/global state, I/O, raw bars, broker object, option symbol, strike, expiration, quantity, price, account, or order field is permitted.
 
@@ -255,7 +255,7 @@ Baseline verification uses only the current root README commands: native ARM64 `
 
 ## 10. Golden fixtures and conformance cases
 
-Minimum H1 fixtures for both SPY and QQQ:
+Minimum intraday-continuation fixtures for both SPY and QQQ:
 
 - bullish above threshold and VWAP;
 - bearish below negative threshold and VWAP;
@@ -266,7 +266,7 @@ Minimum H1 fixtures for both SPY and QQQ:
 - stale/quality-flagged feature;
 - early-close and outside-window refusal.
 
-Minimum H2 fixtures for both symbols:
+Minimum VWAP-reversion fixtures for both symbols:
 
 - bullish and bearish central entries;
 - equality at `±1.50`;
@@ -313,7 +313,7 @@ Report at minimum:
 - gross/net option-proxy P&L, normalized $100,000 account return, drawdown, expected shortfall, worst trade/day, top-trade/day concentration, turnover, exposure time, and SPY beta/correlation;
 - Sharpe, Sortino, Calmar, deflated/selection-adjusted Sharpe, and block-bootstrap probability on complete historical daily returns only;
 - raw and family-wise adjusted one-sided p-values;
-- overlap/correlation between H1 and H2 signals and portfolio selections.
+- overlap/correlation between intraday-continuation and VWAP-reversion signals and portfolio selections.
 
 Common O2 expression:
 
@@ -341,9 +341,9 @@ Central fee assumption is $0.10 per contract, per leg, per side. Publish $0.00 a
 
 ## 13. Falsification requirements
 
-H1 is rejected/demoted when next-observation execution removes the edge, the central sign is unstable across most folds/diagnostics, VWAP confirmation adds no defensible value, one date/regime dominates, or option costs erase the result.
+Intraday continuation is rejected/demoted when next-observation execution removes the edge, the central sign is unstable across most folds/diagnostics, VWAP confirmation adds no defensible value, one date/regime dominates, or option costs erase the result.
 
-H2 additionally requires a genuine low-trend reversion region. Report results with the momentum-neutral gate removed only as a falsification diagnostic. Reject/demote if reversion exists only at midpoint/close proxies, only in one volatility regime, or only after choosing a symbol/threshold from outcomes.
+VWAP reversion additionally requires a genuine low-trend reversion region. Report results with the momentum-neutral gate removed only as a falsification diagnostic. Reject/demote if reversion exists only at midpoint/close proxies, only in one volatility regime, or only after choosing a symbol/threshold from outcomes.
 
 Both candidates fail promotion when any of these occurs:
 
@@ -362,7 +362,7 @@ Both candidates fail promotion when any of these occurs:
 | `A0_HANDOFF` | Baseline, native lock, immutable data refs, Group A owner, both candidate IDs, and external reviewer recorded | Do not start outcome runs |
 | `A1_DATA` | SPY/QQQ feasibility cards, at least 99% expected 15-minute bars, zero duplicates/OHLC failures, explained raw/split discontinuities | Remove affected symbol or stop |
 | `A2_SPEC_FREEZE` | Strategy cards, feature contracts, central/sensitivity configs, costs, exits, and trial entries hashed before P&L | New candidate/version required |
-| `A3_SIGNAL` | Common-engine H1/H2 runs, next-observation behavior, prescribed diagnostics, minimum sample/fold/concentration gates | `REJECTED` or `RESEARCH_COMPLETE` only |
+| `A3_SIGNAL` | Common-engine runs for both strategies, next-observation behavior, prescribed diagnostics, minimum sample/fold/concentration gates | `REJECTED` or `RESEARCH_COMPLETE` only |
 | `A4_OPTION_PROXY` | PIT existence, simultaneous-leg coverage, O2 base/severe output, no reranking, Monday quote gate | No option-expression support |
 | `A5_PLUGIN` | Package, golden fixtures, deterministic runner output, semantic parity, no forbidden fields/I/O | Not `INTEGRATION_READY` |
 | `A6_PLATFORM_PARITY` | Required `G-R1`–`G-R6` evidence from platform owners, especially feature/catalog/exit parity | Record failed/not implemented; do not claim closure |

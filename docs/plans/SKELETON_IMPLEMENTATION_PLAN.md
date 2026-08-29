@@ -44,7 +44,7 @@ The skeleton is **not** six services, a production trading platform, a notebook 
 |---|---|---|---|
 | 1 — quant/product lead and release captain | Contracts, ADRs, registry, integration, scope, release gates | Approved V1 schemas, fixtures, dependency DAG, issue board | Person 6 plus consuming owner |
 | 2 — data/backend platform | Ledger, Postgres outbox/inbox, object store, normalized ingestion, read-only API, private operator CLI, backend deployment | Event backbone and frozen snapshot ingestion | Person 3 |
-| 3 — alpha/research | `strategy_sdk` consumer, isolated runner, H1 plug-in, feature code, evidence adapter | `always_no_trade` conformance plus runner isolation and candidate replay fixtures | Person 4 |
+| 3 — alpha/research | `strategy_sdk` consumer, isolated runner, intraday-continuation plug-in, feature code, evidence adapter | `always_no_trade` conformance plus runner isolation and candidate replay fixtures | Person 4 |
 | 4 — options/risk | Template catalog, selector, order planner, pure risk kernel | Exact-plan and maximum-loss property tests | Person 5 |
 | 5 — agent/execution | Advisory adapter, execution state machine, fake broker, private Alpaca MCP adapter, reconciliation | Approved-plan-to-fake-fill lifecycle and unknown-submit test | Person 4 |
 | 6 — product/frontend/submission | Generated client, decision tape, replay UX, public deployment, demo assets | Dashboard rendering golden approved/rejected/no-trade traces | Person 1 |
@@ -200,7 +200,7 @@ Owner: Person 3. Review: Person 4.
 - Implement `StrategyPluginV1` and conformance harness.
 - Implement the production-equivalent isolated runner with canonical JSON IPC, cleared environment, network denial, minimal read-only filesystem, no inherited descriptors, and CPU/memory/output/time limits.
 - Package `always_no_trade_v1`.
-- Implement versioned H1 features and candidate plug-in only after the research manifest freezes.
+- Implement versioned intraday-continuation features and candidate plug-in only after the research manifest freezes.
 - Central registry validation, content-hash pinning, lifecycle/mode checks.
 - Determinism, no-I/O, no-forbidden-import, stale-data, and output-shape tests.
 

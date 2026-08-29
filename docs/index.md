@@ -18,9 +18,9 @@ This directory is the navigation hub for the Alpaca hackathon project. The root 
 
 | Packet | Owned symbol cells | Assigned families | Independent handoff |
 |---|---|---|---|
-| Group A — broad tech controls | SPY, QQQ | H1 normalized intraday continuation; H2 normalized VWAP reversion | [`research/GROUP_A_BROAD_TECH_PLAN.md`](research/GROUP_A_BROAD_TECH_PLAN.md) |
-| Group B — semiconductor pair | SMH, SOXL | H3 opening-range breakout; H4 standardized gap continuation | [`research/GROUP_B_SEMICONDUCTOR_PLAN.md`](research/GROUP_B_SEMICONDUCTOR_PLAN.md) |
-| Group C — leveraged/software technology | TQQQ, IGV | H5 benchmark-residual relative strength; H6 compression breakout | [`research/GROUP_C_LEVERAGED_SOFTWARE_PLAN.md`](research/GROUP_C_LEVERAGED_SOFTWARE_PLAN.md) |
+| Group A — broad tech controls | SPY, QQQ | Normalized intraday continuation; normalized VWAP reversion | [`research/GROUP_A_BROAD_TECH_PLAN.md`](research/GROUP_A_BROAD_TECH_PLAN.md) |
+| Group B — semiconductor pair | SMH, SOXL | Opening-range breakout; standardized gap continuation | [`research/GROUP_B_SEMICONDUCTOR_PLAN.md`](research/GROUP_B_SEMICONDUCTOR_PLAN.md) |
+| Group C — leveraged/software technology | TQQQ, IGV | Benchmark-residual relative strength; compression breakout | [`research/GROUP_C_LEVERAGED_SOFTWARE_PLAN.md`](research/GROUP_C_LEVERAGED_SOFTWARE_PLAN.md) |
 
 The packets allocate ownership; they do not create isolated two-symbol winner searches. Candidate identity retains its complete compatible symbol set, and central integration applies the common selector and multiple-testing controls across every viewed trial.
 

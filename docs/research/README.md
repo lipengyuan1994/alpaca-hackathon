@@ -12,9 +12,9 @@ This page is the front door for three research owners. Each owner receives one p
 
 | Packet recipient | Owned families | Required pair cells | Independent review |
 |---|---|---|---|
-| Group A research owner | H1 `h1_intraday_continuation_v1`; H2 `h2_vwap_reversion_v1` | SPY, QQQ | Group B research owner reviews both packages |
-| Group B research owner | H3 `h3_opening_range_breakout_v1`; H4 `h4_gap_continuation_v1` | SMH, SOXL | Group C research owner reviews both packages |
-| Group C research owner | H5 `h5_relative_strength_residual_v1`; H6 `h6_compression_breakout_v1` | TQQQ, IGV, with immutable QQQ controls for H5 | Group A research owner reviews both packages |
+| Group A research owner | `intraday_continuation_v1`; `vwap_reversion_v1` | SPY, QQQ | Group B research owner reviews both packages |
+| Group B research owner | `opening_range_breakout_v1`; `gap_continuation_v1` | SMH, SOXL | Group C research owner reviews both packages |
+| Group C research owner | `relative_strength_residual_v1`; `compression_breakout_v1` | TQQQ, IGV, with immutable QQQ controls for relative strength | Group A research owner reviews both packages |
 
 Send each research owner this page plus exactly one packet:
 

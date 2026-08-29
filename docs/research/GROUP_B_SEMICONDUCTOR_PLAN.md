@@ -10,13 +10,13 @@ Assigned capacity: one packet owner responsible for two independently versioned 
 
 Primary symbol cells: `SMH`, `SOXL`
 
-Assigned strategy families: H3 opening-range breakout and H4 standardized gap continuation
+Assigned strategies: opening-range breakout and standardized gap continuation
 
 ## 1. Mission and authority boundary
 
 Group B tests whether two event-driven intraday hypotheses survive in the semiconductor cluster. `SMH` is the unleveraged sector control. `SOXL` is a leveraged stress cell: it can expose leverage, rebalance, split, path-dependence, option-liquidity, and cost failures, but it is not independent confirmation of an SMH result.
 
-The group owns the SMH/SOXL data-quality interpretation, H3/H4 feature definitions, pure signal functions, plug-in packages, group cells, artifacts, falsification, and review. It does not own Alpaca ingestion, the central registry, portfolio arbitration, option contract selection, sizing, risk approval, order submission, promotion, or judged-account operation.
+The group owns the SMH/SOXL data-quality interpretation, both feature definitions and pure signal functions, plug-in packages, group cells, artifacts, falsification, and review. It does not own Alpaca ingestion, the central registry, portfolio arbitration, option contract selection, sizing, risk approval, order submission, promotion, or judged-account operation.
 
 Researchers work from a source snapshot plus immutable data artifacts. They need no GitHub write credential, Alpaca credential, account ID, broker access, MCP trading tool, deployment secret, or order permission. Return patches/source archives and content-addressed evidence to the platform owner.
 
@@ -26,8 +26,8 @@ The signal plug-in never calls an LLM. Any advisory AI may leave a frozen determ
 
 ## 2. Packet ownership and exact returns
 
-- **H3 deliverable:** `h3_opening_range_breakout_v1`, including its feature contract, pure signal, canonical plug-in, package-local offline reproduction script, SMH/SOXL pair-cell evidence, prescribed sensitivities, split audit, option-proxy status, falsifications, and complete artifact tree.
-- **H4 deliverable:** `h4_gap_continuation_v1`, including its separate feature contract, pure signal, canonical plug-in, package-local offline reproduction script, SMH/SOXL pair-cell evidence, prescribed sensitivities, corporate-action audit, option-proxy status, falsifications, and complete artifact tree.
+- **Opening-range-breakout deliverable:** `opening_range_breakout_v1`, including its feature contract, pure signal, canonical plug-in, package-local offline reproduction script, SMH/SOXL pair-cell evidence, prescribed sensitivities, split audit, option-proxy status, falsifications, and complete artifact tree.
+- **Gap-continuation deliverable:** `gap_continuation_v1`, including its separate feature contract, pure signal, canonical plug-in, package-local offline reproduction script, SMH/SOXL pair-cell evidence, prescribed sensitivities, corporate-action audit, option-proxy status, falsifications, and complete artifact tree.
 
 The Group B packet owner authors both families but freezes both specifications before viewing outcome P&L for either family. The Group C packet owner independently reviews both returned packages and signs each `pair_cell_review.json`. The reviewer may report a defect but cannot tune or directly repair a reviewed economic rule after seeing P&L; the Group B owner versions any outcome-changing correction and repeats affected runs. If the designated reviewer is unavailable, obtain another non-author reviewer outside Group B.
 
@@ -38,14 +38,14 @@ The packet owner may not modify the authoritative registry, install broker crede
 | Use | Symbols | Rule |
 |---|---|---|
 | Owned research cells | SMH, SOXL | Complete data/signal/stress/falsification output for both; run option proxy only when the global blinded feasibility manifest selects the symbol. |
-| H3 compatibility | SPY, QQQ, TQQQ, SMH, SOXL, IGV | Freeze one H3 implementation. Central integration runs it unchanged on every compatible feasible symbol. |
-| H4 compatibility | SPY, QQQ, TQQQ, SMH, SOXL, IGV | Freeze one H4 implementation. Central integration runs it unchanged on every compatible feasible symbol. |
+| Opening-range-breakout compatibility | SPY, QQQ, TQQQ, SMH, SOXL, IGV | Freeze one implementation. Central integration runs it unchanged on every compatible feasible symbol. |
+| Gap-continuation compatibility | SPY, QQQ, TQQQ, SMH, SOXL, IGV | Freeze one implementation. Central integration runs it unchanged on every compatible feasible symbol. |
 | Sector control | SMH | Report SOXL results at the same account maximum-loss budget and synchronized dates; never compare raw share returns as equivalent risk. |
 | Leverage stress | SOXL | Audit adjusted/raw joins, splits, option strikes, volatility, gap scale, and costs separately. Never use SOXL as an independent replication of SMH. |
 | External controls | QQQ and SPY | Consume central benchmark returns for beta/correlation and market-wide gap/regime attribution only; they are not tuning inputs. |
 | Statistical null | All viewed candidates on common dates | Use the synchronized centered five-session moving-block maximum-statistic procedure; no per-trade sign permutation. |
 
-This packet returns two separate family packages and their SMH/SOXL `pair_cell_metrics.json` files. Those files are diagnostic evidence only: the packet owner may not select SMH versus SOXL, count the leveraged echo as independent evidence, declare a champion/fallback, or claim the pair is the complete `CandidateSpecV1`. After all six families freeze, the central quant/release owner expands H3/H4 unchanged to their compatible feasible universe and writes `central_full_universe_replay.json`. That later replay alone applies cross-symbol arbitration and the family-wide selection test.
+This packet returns two separate strategy packages and their SMH/SOXL `pair_cell_metrics.json` files. Those files are diagnostic evidence only: the packet owner may not select SMH versus SOXL, count the leveraged echo as independent evidence, declare a champion/fallback, or claim the pair is the complete `CandidateSpecV1`. After all six strategies freeze, the central quant/release owner expands both unchanged to their compatible feasible universe and writes `central_full_universe_replay.json`. That later replay alone applies cross-symbol arbitration and the family-wide selection test.
 
 Before any alpha outcome is viewed, the data steward must sign `research/shared/selection/option_proxy_feasibility_manifest.json`, ranking all six symbols from blinded entitlement, completeness, timestamp, standard-contract, simultaneous-leg, and corporate-action fields. The global `selected_symbols` list has at most three symbols. SMH or SOXL absent from it still receives full underlying research, but its option artifacts are empty schema-valid tables plus `option_proxy_not_selected.json` with exact status `NOT_SELECTED_BY_FEASIBILITY`. Group B cannot swap, rerank, or fill a slot after seeing results.
 
@@ -97,7 +97,7 @@ The SMH/SOXL audit must publish corporate-action records, raw/adjusted discontin
 - On the competition final Thursday, the target policy allows no new entry after 13:30 ET, begins flatten by 15:15, and requires broker-confirmed flat by 15:30. Research replays the rule through the pinned policy semantics; durable broker-confirmed flatten evidence remains release-owned and blocks paper use, not credential-free research.
 - Plug-ins are entry-only. The central position manager owns exit orders and final flatten; the named policy decisions and reduce-only construction exist at the pinned commit, while durable broker/fill/restart/confirmed-flat proof remains a release-owned paper gate.
 
-## 6. H3 — opening-range breakout
+## 6. Opening-range breakout
 
 For each regular session, form the opening range from the half-open interval `[09:30, 10:00)` ET:
 
@@ -120,7 +120,7 @@ Central signal, evaluated no earlier than 10:30:01:
 - bearish when `down_break_fraction >= 0.10`, `volume_ratio >= 1.25`, and close is below completed session VWAP;
 - otherwise `NO_TRADE`.
 
-Set `entry_score = min(active_break_fraction / 0.10, volume_ratio / 1.25)`. Allow only the first H3 entry for a symbol/session. Target exit policy is `TREND_VWAP_OR_60M_V1`: adverse completed-close VWAP cross or the hard-time deadline.
+Set `entry_score = min(active_break_fraction / 0.10, volume_ratio / 1.25)`. Allow only the first opening-range-breakout entry for a symbol/session. Target exit policy is `TREND_VWAP_OR_60M_V1`: adverse completed-close VWAP cross or the hard-time deadline.
 
 Parameter budget:
 
@@ -130,9 +130,9 @@ Parameter budget:
 - central time exit 60 minutes; diagnostic 45 and 90 minutes;
 - no symbol-specific thresholds, gap filters, volatility regimes, news, IV, Greeks, or additional feature search.
 
-## 7. H4 — standardized gap continuation
+## 7. Standardized gap continuation
 
-H4 makes exactly one entry decision per symbol/session at 10:30:01 ET. Compute the economic gap on the split-adjusted continuous series. Retain the corresponding raw prior close and raw open separately for audit and option-strike joins:
+Gap continuation makes exactly one entry decision per symbol/session at 10:30:01 ET. Compute the economic gap on the split-adjusted continuous series. Retain the corresponding raw prior close and raw open separately for audit and option-strike joins:
 
 ```text
 gap = log(adjusted_open_0930 / adjusted_prior_regular_close)
@@ -159,14 +159,14 @@ Parameter budget:
 - central time exit 60 minutes; diagnostic 45 and 90 minutes;
 - no earnings/news labels, overnight futures, premarket data, symbol-specific cutoffs, regime overlays, IV, Greeks, or alternate confirmation hour.
 
-The corporate-action calendar is a validity control, not a signal. A split or distribution with uncertain raw-price continuity invalidates the H4 session; it cannot be interpreted as a gap.
+The corporate-action calendar is a validity control, not a signal. A split or distribution with uncertain raw-price continuity invalidates the gap-continuation session; it cannot be interpreted as a gap.
 
 ## 8. Candidate and feature contracts
 
 Create these complete candidate identities before viewing outcome P&L:
 
-- `h3_opening_range_breakout__all_feasible__o2_v1`, with ordered eligible set `[SPY, QQQ, TQQQ, SMH, SOXL, IGV]`;
-- `h4_gap_continuation__all_feasible__o2_v1`, with ordered eligible set `[SPY, QQQ, TQQQ, SMH, SOXL, IGV]`.
+- `opening_range_breakout__all_feasible__o2_v1`, with ordered eligible set `[SPY, QQQ, TQQQ, SMH, SOXL, IGV]`;
+- `gap_continuation__all_feasible__o2_v1`, with ordered eligible set `[SPY, QQQ, TQQQ, SMH, SOXL, IGV]`.
 
 Each `CandidateSpecV1`-equivalent strategy card freezes:
 
@@ -231,11 +231,11 @@ The separate research evidence tree is `research/candidates/<candidate_id>/` and
 
 ### 9.1 Frozen integration cards
 
-| Field | H3 package | H4 package |
+| Field | Opening-range-breakout package | Gap-continuation package |
 |---|---|---|
-| `plugin_id` / version | `h3_opening_range_breakout` / `1.0.0` | `h4_gap_continuation` / `1.0.0` |
-| entry point | `h3_opening_range_breakout_v1.plugin:Plugin` | `h4_gap_continuation_v1.plugin:Plugin` |
-| hypothesis ID | `H3_OPENING_RANGE_BREAKOUT` | `H4_STANDARDIZED_GAP_CONTINUATION` |
+| `plugin_id` / version | `opening_range_breakout` / `1.0.0` | `gap_continuation` / `1.0.0` |
+| entry point | `opening_range_breakout_v1.plugin:Plugin` | `gap_continuation_v1.plugin:Plugin` |
+| hypothesis ID | `OPENING_RANGE_BREAKOUT` | `STANDARDIZED_GAP_CONTINUATION` |
 | owner / reviewer | assigned Group B owner / independent Group C reviewer | assigned Group B owner / independent Group C reviewer |
 | pair-cell evidence | ordered `[SMH, SOXL]` | ordered `[SMH, SOXL]` |
 | later compatibility | ordered `[SPY, QQQ, TQQQ, SMH, SOXL, IGV]` | same |
@@ -243,15 +243,15 @@ The separate research evidence tree is `research/candidates/<candidate_id>/` and
 | allowed entry tuples | bullish call-debit and bearish put-debit; `INTRADAY_15_60M`, `TINY`, max TTL `300` | same |
 | data requirements | `feature-vector/v1`; hash `CANDIDATE_DEFINED_AND_HASHED_BEFORE_OUTCOME_RUN`; maximum age `60`; logical positions `false` | same |
 
-Both manifests use `api_version: strategy-plugin/v1`, `decision_schema_version: strategy-evaluation/v1`, `deterministic: true`, and `network_access: false`. Required feature keys are ordered by `SPY, QQQ, TQQQ, SMH, SOXL, IGV`, then lexicographically within symbol. H3 requires each compatible symbol's opening-range high/low/width, up/down break fraction, same-time volume ratio, completed close, and session VWAP keys from Section 8. H4 requires adjusted/raw prior close and open audit bindings, `gap_z_60_v1`, `continuation_ratio_v1`, completed close, session VWAP, and corporate-action validity. The packet owner freezes and hashes both complete candidate-specific contracts before viewing outcome P&L for either one; the release owner validates the key lists and hashes before integration review.
+Both manifests use `api_version: strategy-plugin/v1`, `decision_schema_version: strategy-evaluation/v1`, `deterministic: true`, and `network_access: false`. Required feature keys are ordered by `SPY, QQQ, TQQQ, SMH, SOXL, IGV`, then lexicographically within symbol. Opening-range breakout requires each compatible symbol's opening-range high/low/width, up/down break fraction, same-time volume ratio, completed close, and session VWAP keys from Section 8. Gap continuation requires adjusted/raw prior close and open audit bindings, `gap_z_60_v1`, `continuation_ratio_v1`, completed close, session VWAP, and corporate-action validity. The packet owner freezes and hashes both complete candidate-specific contracts before viewing outcome P&L for either one; the release owner validates the key lists and hashes before integration review.
 
-`central_config.json` is a canonical rendering of flat `StrategyConfigV1.values`. Exact H3 keys/values are `opening_range_start_et="09:30:00"`, `opening_range_end_et="10:00:00"`, `break_fraction_threshold="0.10"`, `volume_ratio_threshold="1.25"`, `same_time_volume_lookback_sessions=20`, `range_floor="0.000001"`, `decision_start_et="10:30:01"`, `decision_end_et="14:30:01"`, `decision_step_minutes=30`, `max_entries_per_symbol_session=1`, `time_exit_minutes=60`, `risk_tier="TINY"`, and `intent_ttl_seconds=300`. Exact H4 keys/values are `gap_z_threshold="1.00"`, `continuation_ratio_threshold="0.25"`, `gap_lookback_sessions=60`, `gap_floor="0.000001"`, `decision_time_et="10:30:01"`, `max_entries_per_symbol_session=1`, `time_exit_minutes=60`, `risk_tier="TINY"`, and `intent_ttl_seconds=300`. Decimal thresholds are strings in JSON and become `Decimal` values in `StrategyConfigV1`.
+`central_config.json` is a canonical rendering of flat `StrategyConfigV1.values`. Exact opening-range-breakout keys/values are `opening_range_start_et="09:30:00"`, `opening_range_end_et="10:00:00"`, `break_fraction_threshold="0.10"`, `volume_ratio_threshold="1.25"`, `same_time_volume_lookback_sessions=20`, `range_floor="0.000001"`, `decision_start_et="10:30:01"`, `decision_end_et="14:30:01"`, `decision_step_minutes=30`, `max_entries_per_symbol_session=1`, `time_exit_minutes=60`, `risk_tier="TINY"`, and `intent_ttl_seconds=300`. Exact gap-continuation keys/values are `gap_z_threshold="1.00"`, `continuation_ratio_threshold="0.25"`, `gap_lookback_sessions=60`, `gap_floor="0.000001"`, `decision_time_et="10:30:01"`, `max_entries_per_symbol_session=1`, `time_exit_minutes=60`, `risk_tier="TINY"`, and `intent_ttl_seconds=300`. Decimal thresholds are strings in JSON and become `Decimal` values in `StrategyConfigV1`.
 
 ### 9.2 Output, reason, and state rules
 
 The pure `signal.py` function and `Plugin.evaluate()` use identical logic. A bullish entry emits `CALL_DEBIT_SPREAD_V1`; bearish emits `PUT_DEBIT_SPREAD_V1`; horizon is `INTRADAY_15_60M`, risk tier is `TINY`, expiry is exactly `context.as_of + 300 seconds`, and the sole evidence reference is the input `FEATURE_VECTOR`. Score buckets are `[1.00,1.25)=LOW`, `[1.25,1.75)=MEDIUM`, and `>=1.75=HIGH`. The plug-in emits `packages.strategy_sdk.UNBOUND_PLUGIN_CONTENT_HASH`; the host owns source-hash binding.
 
-Common `NO_TRADE` codes are exactly `DATA_MISSING`, `DATA_STALE`, `DATA_QUALITY_REJECTED`, `FEATURE_SCHEMA_MISMATCH`, `OUTSIDE_DECISION_WINDOW`, `EARLY_CLOSE_SESSION`, `DAILY_ENTRY_ALREADY_USED`, `NO_SIGNAL`, `DIRECTION_AMBIGUOUS`, `UNDERLYING_NOT_ALLOWED`, `TEMPLATE_NOT_ALLOWED`, and `TUPLE_NOT_ALLOWED`. H3 adds `H3_GATE_NOT_MET`, `H3_BULLISH_BREAKOUT`, and `H3_BEARISH_BREAKOUT`; H4 adds `H4_GATE_NOT_MET`, `H4_BULLISH_GAP_CONTINUATION`, `H4_BEARISH_GAP_CONTINUATION`, and `CORPORATE_ACTION_AMBIGUOUS`. `reason_codes.yaml` declares every code and the implementation emits no undeclared code.
+Common `NO_TRADE` codes are exactly `DATA_MISSING`, `DATA_STALE`, `DATA_QUALITY_REJECTED`, `FEATURE_SCHEMA_MISMATCH`, `OUTSIDE_DECISION_WINDOW`, `EARLY_CLOSE_SESSION`, `DAILY_ENTRY_ALREADY_USED`, `NO_SIGNAL`, `DIRECTION_AMBIGUOUS`, `UNDERLYING_NOT_ALLOWED`, `TEMPLATE_NOT_ALLOWED`, and `TUPLE_NOT_ALLOWED`. Opening-range breakout adds `OPENING_RANGE_BREAKOUT_GATE_NOT_MET`, `OPENING_RANGE_BREAKOUT_BULLISH`, and `OPENING_RANGE_BREAKOUT_BEARISH`; gap continuation adds `GAP_CONTINUATION_GATE_NOT_MET`, `GAP_CONTINUATION_BULLISH`, `GAP_CONTINUATION_BEARISH`, and `CORPORATE_ACTION_AMBIGUOUS`. `reason_codes.yaml` declares every code and the implementation emits no undeclared code.
 
 `state_schema.json` freezes `strategy-state/v1`, initial sequence `0`, and payload `{}`. Every evaluation sets sequence to prior plus one and `as_of=context.as_of`. `NO_TRADE` preserves payload; entry may set only `last_entry_session_<SYMBOL>=YYYY-MM-DD`. No `PositionDirectiveV1`, clock/random/global state, I/O, raw bars, broker object, option symbol, strike, expiration, quantity, price, account, or order field is permitted.
 
@@ -270,7 +270,7 @@ Baseline verification uses only the current root README commands: native ARM64 `
 
 ## 10. Golden fixtures and conformance cases
 
-Minimum H3 fixtures for both SMH and SOXL:
+Minimum opening-range-breakout fixtures for both SMH and SOXL:
 
 - bullish and bearish central entries;
 - equality at break `0.10` and volume ratio `1.25`;
@@ -280,7 +280,7 @@ Minimum H3 fixtures for both SMH and SOXL:
 - stale/quality-flagged feature, early close, and outside-window refusal;
 - raw/adjusted basis mismatch and split-date invalidation.
 
-Minimum H4 fixtures for both symbols:
+Minimum gap-continuation fixtures for both symbols:
 
 - positive-gap bullish and negative-gap bearish central entries;
 - equality at `abs(gap_z) == 1.00` and continuation `0.25`;
@@ -351,9 +351,9 @@ Central fee assumption is $0.10 per contract, per leg, per side. Publish $0.00 a
 
 ## 13. Required falsification
 
-H3 must publish removal tests for the volume and VWAP confirmations one at a time, opening-gap-size slices, next-observation timing, and overlap with H1/H4. Reject/demote if the result is only the opening print, only one calendar episode, a duplicate of another family without incremental portfolio evidence, or erased by base option costs.
+Opening-range breakout must publish removal tests for the volume and VWAP confirmations one at a time, opening-gap-size slices, next-observation timing, and overlap with intraday continuation and gap continuation. Reject/demote if the result is only the opening print, only one calendar episode, a duplicate of another family without incremental portfolio evidence, or erased by base option costs.
 
-H4 must publish positive/negative-gap, gap-size, volatility, macro-date concentration, and first-hour-confirmation slices. Remove the continuation and VWAP confirmations one at a time only as prescribed falsifications. Reject/demote if apparent gaps are adjustment artifacts, if one direction/date dominates, if confirmation adds no stable evidence, or if next-observation execution removes the result.
+Gap continuation must publish positive/negative-gap, gap-size, volatility, macro-date concentration, and first-hour-confirmation slices. Remove the continuation and VWAP confirmations one at a time only as prescribed falsifications. Reject/demote if apparent gaps are adjustment artifacts, if one direction/date dominates, if confirmation adds no stable evidence, or if next-observation execution removes the result.
 
 For both families:
 
@@ -372,7 +372,7 @@ Family-wise adjusted evidence that does not pass is labeled `suggestive`, shadow
 | `B0_HANDOFF` | Baseline, native lock, immutable data refs, Group B owner, both candidate IDs, and external reviewer recorded | Do not start outcome runs |
 | `B1_DATA` | SMH/SOXL feasibility cards, at least 99% expected 15-minute bars, zero duplicates/OHLC failures, complete split/raw-strike audit | Remove affected symbol or stop |
 | `B2_SPEC_FREEZE` | Candidate cards, features, central/sensitivity configs, exits, costs, trial entries, and hashes frozen before P&L | New candidate/version required |
-| `B3_SIGNAL` | Common-engine H3/H4 runs, next-observation behavior, diagnostics, minimum sample/fold/concentration gates | `REJECTED` or `RESEARCH_COMPLETE` only |
+| `B3_SIGNAL` | Common-engine runs for both strategies, next-observation behavior, diagnostics, minimum sample/fold/concentration gates | `REJECTED` or `RESEARCH_COMPLETE` only |
 | `B4_OPTION_PROXY` | PIT existence, simultaneous-leg coverage, O2 base/severe output, no reranking, Monday quote gate | No option-expression support |
 | `B5_PLUGIN` | Packages, golden/boundary fixtures, deterministic output, semantic parity, forbidden-field/I/O tests | Not `INTEGRATION_READY` |
 | `B6_PLATFORM_PARITY` | Platform-owner evidence for `G-R1`–`G-R6`, especially feature/catalog/exit/runner parity | Record failed/not implemented; do not claim closure |

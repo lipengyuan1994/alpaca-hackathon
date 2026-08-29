@@ -479,9 +479,9 @@ Round 0 remains a standardized six-symbol **data feasibility** scan owned by the
 
 | Packet recipient | Pair cells | Strategy families | Independent reviewer |
 |---|---|---|---|
-| Group A research owner | SPY, QQQ | H1 same-time normalized continuation; H2 normalized VWAP reversion | Group B research owner |
-| Group B research owner | SMH, SOXL | H3 opening-range breakout; H4 standardized gap continuation | Group C research owner |
-| Group C research owner | TQQQ, IGV, with immutable QQQ controls for H5 | H5 benchmark-residual relative strength; H6 compression breakout | Group A research owner |
+| Group A research owner | SPY, QQQ | Same-time normalized continuation; normalized VWAP reversion | Group B research owner |
+| Group B research owner | SMH, SOXL | Opening-range breakout; standardized gap continuation | Group C research owner |
+| Group C research owner | TQQQ, IGV, with immutable QQQ controls for relative strength | Benchmark-residual relative strength; compression breakout | Group A research owner |
 
 These research assignments are secondary hats and do not replace the primary engineering ownership in Section 7. Each packet owner freezes both assigned candidates before viewing P&L for either one. Owners share immutable Alpaca data, features, costs, folds, selector/sizer, portfolio constraints, artifacts, and conformance tests. They may not create private engines or optimize a separate threshold per ticker.
 
@@ -495,7 +495,7 @@ Do not blend candidate signals during discovery. Select one champion and at most
 
 Research universe: SPY, QQQ, TQQQ, SMH, SOXL, and IGV. The deployable universe is the gated subset; do not add a seventh symbol during the hackathon.
 
-The six normative central candidates are H1 continuation, H2 VWAP reversion, H3 opening-range breakout, H4 gap continuation, H5 benchmark-residual relative strength, and H6 compression breakout. H1 remains the golden harness fixture and must reproduce on two native ARM64 machines before comparative outcomes are opened. Each family is preregistered and evaluated independently; no blend, ensemble, threshold change, breadth/news addition, or per-symbol optimization is allowed after results without a new candidate version. Exact formulas, latency, cadence, sensitivities, and falsification rules live in the normative research plan.
+The six normative central candidates are intraday continuation, VWAP reversion, opening-range breakout, gap continuation, benchmark-residual relative strength, and compression breakout. Intraday continuation remains the golden harness fixture and must reproduce on two native ARM64 machines before comparative outcomes are opened. Each strategy is preregistered and evaluated independently; no blend, ensemble, threshold change, breadth/news addition, or per-symbol optimization is allowed after results without a new candidate version. Exact formulas, latency, cadence, sensitivities, and falsification rules live in the normative research plan.
 
 Initial contract policy:
 
@@ -715,7 +715,7 @@ Replace the six numbered role placeholders with names after the team wakes up.
 |---|---|---|---|
 | 1. Quant/product lead and release captain | Requirements matrix, target objective, strategy registry, risk budget, architecture decisions, scope, release, final submission | Approved scope, hypothesis manifests, rubric-to-feature matrix | Product/frontend owner |
 | 2. Data/backend platform engineer | Alpaca ingestion, time semantics, immutable datasets, Postgres/outbox/inbox, migrations, read-only API, private operator-control procedure, object storage, and backend deployment | Reproducible shared six-symbol dataset plus running API/event backbone | Alpha quant and release captain |
-| 3. Alpha quant | Momentum/regime hypothesis, baselines, walk-forward and cost stress | H1 report, ledger, parameter stability, no-trade region | Non-author quant |
+| 3. Alpha quant | Momentum/regime hypothesis, baselines, walk-forward and cost stress | Intraday-continuation report, ledger, parameter stability, no-trade region | Non-author quant |
 | 4. Options/risk quant | Contract selector, option cost model, Greeks/exposure, deterministic risk engine | Eligible-chain selector and max-loss/risk property tests | Execution engineer |
 | 5. Agent/execution engineer | Structured LLM workflow, MCP adapter, order state machine, idempotency, reconciliation, kill switch | Quote-to-approved-plan-to-tiny-paper-order lifecycle | Options/risk quant |
 | 6. Product/frontend and submission engineer | Dashboard UX, generated API client, demo, cover, slides, video, one-page write-up, and social entry | Hosted read-only decision tape with replay fixture | Release captain |
@@ -773,7 +773,7 @@ By end of day:
 - Complete fixture-driven snapshot → signal → thesis → intent → exact order plan → risk decision → audit → dashboard.
 - Complete a real read-only Alpaca market/account connectivity test.
 - Implement a fake broker and recorded-market replay.
-- Publish hypothesis manifests; begin H1 only and require its shared pipeline to reproduce on two machines before H2 starts.
+- Publish hypothesis manifests; begin the intraday-continuation golden run first and require its shared pipeline to reproduce on two machines before comparative outcomes are opened.
 - Deploy a blank but working public read-only application.
 
 ### Sunday, August 30 — data, research, risk, and full rehearsal
@@ -783,7 +783,7 @@ By end of day:
 - Complete contract selector and risk property tests.
 - Integrate MCP behind the execution adapter.
 - Rehearse order preview, idempotency, rejection, partial fill, cancellation, restart, and reconciliation with fixtures/development accounts.
-- Start H2 only if H1 plus the vertical slice passed, keep H3 cut, and complete all selection using data through 2025.
+- Start the remaining strategy runs only if the intraday-continuation golden run plus the vertical slice passed, keep the research cutoff fixed, and complete all selection using data through 2025.
 - By the predeclared cutoff, freeze one champion and any named fallback—including symbols, thresholds, O2 expression, template/selector/risk hashes and failover condition—before opening 2026.
 - Open the access-controlled 2026 validation once for accept/reject only; do not tune, reorder, or promote an undesignated runner-up. If it was previously viewed, label the result final validation rather than sealed evidence.
 - Finish the replayable judge path and deployment.

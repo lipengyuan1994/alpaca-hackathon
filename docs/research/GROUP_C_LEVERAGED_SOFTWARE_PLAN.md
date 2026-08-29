@@ -10,13 +10,13 @@ Assigned capacity: one packet owner responsible for two independently versioned 
 
 Primary symbol cells: `TQQQ`, `IGV`
 
-Assigned strategy families: H5 benchmark-residual relative strength and H6 intraday compression breakout
+Assigned strategies: benchmark-residual relative strength and intraday compression breakout
 
 ## 1. Mission and grouping rationale
 
 Group C tests technology-cluster signals that require explicit benchmark and dependence controls. `TQQQ` is leveraged QQQ beta with daily-reset/path risk; `IGV` is concentrated software exposure. They share QQQ as a required control, but they are not independent replications and must not be pooled as two confirmations of the same technology event.
 
-The group owns TQQQ/IGV data-quality interpretation, H5/H6 feature specifications, pure signal functions, plug-in packages, group cells, artifacts, falsification, and review. It does not own Alpaca ingestion, benchmark publication, the central registry, portfolio arbitration, option contract selection, sizing, risk approval, order submission, promotion, or judged-account operation.
+The group owns TQQQ/IGV data-quality interpretation, both feature specifications and pure signal functions, plug-in packages, group cells, artifacts, falsification, and review. It does not own Alpaca ingestion, benchmark publication, the central registry, portfolio arbitration, option contract selection, sizing, risk approval, order submission, promotion, or judged-account operation.
 
 Researchers work from a source snapshot plus immutable data artifacts. They need no GitHub write credential, Alpaca credential, account ID, broker access, MCP trading tool, deployment secret, or order permission. Return patches/source archives and content-addressed evidence to the platform owner.
 
@@ -26,8 +26,8 @@ The signal plug-in never calls an LLM. Any advisory AI may leave a frozen determ
 
 ## 2. Packet ownership and exact returns
 
-- **H5 deliverable:** `h5_relative_strength_residual_v1`, including its feature contract, pure signal, canonical plug-in, package-local offline reproduction script, TQQQ/IGV pair-cell evidence with immutable QQQ controls, prescribed sensitivities, option-proxy status, falsifications, and complete artifact tree.
-- **H6 deliverable:** `h6_compression_breakout_v1`, including its separate feature contract, pure signal, canonical plug-in, package-local offline reproduction script, TQQQ/IGV pair-cell evidence, prescribed sensitivities, option-proxy status, falsifications, and complete artifact tree.
+- **Relative-strength deliverable:** `relative_strength_residual_v1`, including its feature contract, pure signal, canonical plug-in, package-local offline reproduction script, TQQQ/IGV pair-cell evidence with immutable QQQ controls, prescribed sensitivities, option-proxy status, falsifications, and complete artifact tree.
+- **Compression-breakout deliverable:** `compression_breakout_v1`, including its separate feature contract, pure signal, canonical plug-in, package-local offline reproduction script, TQQQ/IGV pair-cell evidence, prescribed sensitivities, option-proxy status, falsifications, and complete artifact tree.
 
 The Group C packet owner authors both families but freezes both specifications before viewing outcome P&L for either family. The Group A packet owner independently reviews both returned packages and signs each `pair_cell_review.json`. The reviewer may report a defect but cannot tune or directly repair a reviewed economic rule after seeing P&L; the Group C owner versions any outcome-changing correction and repeats affected runs. If the designated reviewer is unavailable, obtain another non-author reviewer outside Group C.
 
@@ -38,15 +38,15 @@ The packet owner may not modify the authoritative registry, install broker crede
 | Use | Symbols | Rule |
 |---|---|---|
 | Owned research cells | TQQQ, IGV | Complete data/signal/stress/falsification output for both; run option proxy only when the global blinded feasibility manifest selects the symbol. |
-| H5 promotion-eligible compatibility | QQQ, TQQQ, SMH, SOXL, IGV | Freeze one H5 implementation and the full benchmark map. Central integration runs it unchanged on every compatible feasible target. |
-| H5 diagnostic only | SPY benchmarked to QQQ | Symmetry check only; never promotion-eligible for H5 V1. |
-| H6 compatibility | SPY, QQQ, TQQQ, SMH, SOXL, IGV | Freeze one H6 implementation. Central integration runs it unchanged on every compatible feasible symbol. |
-| Required technology benchmark | QQQ | H5 map: TQQQ→QQQ and IGV→QQQ. Missing, stale, or mismatched QQQ data invalidates the target decision. |
-| Broad-market reporting control | SPY | Report beta/correlation and market-date overlap; SPY is not an additional H5 tuning variable for these cells. |
+| Relative-strength promotion-eligible compatibility | QQQ, TQQQ, SMH, SOXL, IGV | Freeze one implementation and the full benchmark map. Central integration runs it unchanged on every compatible feasible target. |
+| Relative-strength diagnostic only | SPY benchmarked to QQQ | Symmetry check only; never promotion-eligible for this version. |
+| Compression-breakout compatibility | SPY, QQQ, TQQQ, SMH, SOXL, IGV | Freeze one implementation. Central integration runs it unchanged on every compatible feasible symbol. |
+| Required technology benchmark | QQQ | Benchmark map: TQQQ→QQQ and IGV→QQQ. Missing, stale, or mismatched QQQ data invalidates the target decision. |
+| Broad-market reporting control | SPY | Report beta/correlation and market-date overlap; SPY is not an additional relative-strength tuning variable for these cells. |
 | Leverage stress | TQQQ | Compare at fixed fee-inclusive maximum loss; audit splits and daily-reset/path effects; never use raw share returns as equivalent risk. |
 | Statistical null | All viewed candidates on common dates | Use the synchronized centered five-session moving-block maximum-statistic procedure; no per-trade sign permutation. |
 
-The full H5 benchmark map, frozen before outcome P&L, is:
+The full relative-strength benchmark map, frozen before outcome P&L, is:
 
 | Target | Benchmark |
 |---|---|
@@ -57,9 +57,9 @@ The full H5 benchmark map, frozen before outcome P&L, is:
 | IGV | QQQ |
 | SPY diagnostic | QQQ |
 
-This packet returns two separate family packages and their TQQQ/IGV `pair_cell_metrics.json` files; H5 also binds immutable QQQ control rows. Those files are diagnostic evidence only: the packet owner may not select TQQQ versus IGV, declare a champion/fallback, or claim the pair is the complete `CandidateSpecV1`. After all six families freeze, the central quant/release owner expands H5/H6 unchanged to their compatible feasible universe and writes `central_full_universe_replay.json`. That later replay alone applies cross-symbol arbitration and the family-wide selection test. QQQ inputs are centrally published immutable control data and cannot be tuned or backfilled.
+This packet returns two separate strategy packages and their TQQQ/IGV `pair_cell_metrics.json` files; relative strength also binds immutable QQQ control rows. Those files are diagnostic evidence only: the packet owner may not select TQQQ versus IGV, declare a champion/fallback, or claim the pair is the complete `CandidateSpecV1`. After all six strategies freeze, the central quant/release owner expands both unchanged to their compatible feasible universe and writes `central_full_universe_replay.json`. That later replay alone applies cross-symbol arbitration and the family-wide selection test. QQQ inputs are centrally published immutable control data and cannot be tuned or backfilled.
 
-Before any alpha outcome is viewed, the data steward must sign `research/shared/selection/option_proxy_feasibility_manifest.json`, ranking all six symbols from blinded entitlement, completeness, timestamp, standard-contract, simultaneous-leg, and corporate-action fields. The global `selected_symbols` list has at most three symbols. TQQQ or IGV absent from it still receives full underlying research, but its option artifacts are empty schema-valid tables plus `option_proxy_not_selected.json` with exact status `NOT_SELECTED_BY_FEASIBILITY`. QQQ is a required H5 benchmark input, not automatically an option-proxy selection. Group C cannot swap, rerank, or fill a slot after seeing results.
+Before any alpha outcome is viewed, the data steward must sign `research/shared/selection/option_proxy_feasibility_manifest.json`, ranking all six symbols from blinded entitlement, completeness, timestamp, standard-contract, simultaneous-leg, and corporate-action fields. The global `selected_symbols` list has at most three symbols. TQQQ or IGV absent from it still receives full underlying research, but its option artifacts are empty schema-valid tables plus `option_proxy_not_selected.json` with exact status `NOT_SELECTED_BY_FEASIBILITY`. QQQ is a required relative-strength benchmark input, not automatically an option-proxy selection. Group C cannot swap, rerank, or fill a slot after seeing results.
 
 ### 3.1 Frozen cross-symbol arbitration
 
@@ -99,7 +99,7 @@ Target and benchmark bars must come from the same normalized feed/version and co
 - Aggregate one-minute IEX bars into ET half-open 15-minute intervals. Open is first, high is maximum, low is minimum, close is last, volume is sum, and interval VWAP is volume-weighted minute VWAP.
 - A missing minute, missing VWAP, or zero cumulative volume invalidates the decision interval.
 - Label an interval by its end and set availability to `interval_end + 1 second`.
-- Entry evaluations occur at 10:30:01, then every 30 minutes through 14:30:01 ET. H6 starts only at 11:00:01.
+- Entry evaluations occur at 10:30:01, then every 30 minutes through 14:30:01 ET. Compression breakout starts only at 11:00:01.
 - The underlying execution proxy is the open of the first one-minute interval beginning on the next whole minute after the decision/exit time.
 - Position age starts at confirmed proxy/runtime fill, never at signal time.
 - No overnight positions, overlapping labels, or early-close sessions.
@@ -109,9 +109,9 @@ Target and benchmark bars must come from the same normalized feed/version and co
 - On the competition final Thursday, the target policy allows no new entry after 13:30 ET, begins flatten by 15:15, and requires broker-confirmed flat by 15:30. Research replays the rule through the pinned policy semantics; durable broker-confirmed flatten evidence remains release-owned and blocks paper use, not credential-free research.
 - Plug-ins are entry-only. The central position manager owns exit orders and final flatten; the named policy decisions and reduce-only construction exist at the pinned commit, while durable broker/fill/restart/confirmed-flat proof remains a release-owned paper gate.
 
-## 6. H5 — benchmark-residual relative strength
+## 6. Benchmark-residual relative strength
 
-At each common decision time `t`, use the exact H1 60-minute return clock for target and mapped benchmark. At 10:30, the 60-minute base is the 09:30 session open; at later decisions it is the completed close exactly 60 minutes earlier. Never cross an overnight boundary:
+At each common decision time `t`, use the exact intraday-continuation 60-minute return clock for target and mapped benchmark. At 10:30, the 60-minute base is the 09:30 session open; at later decisions it is the completed close exactly 60 minutes earlier. Never cross an overnight boundary:
 
 ```text
 r_target_t = log(target_close_t / target_price_t_minus_60m)
@@ -146,9 +146,9 @@ Parameter budget:
 - central time exit 60 minutes; diagnostic 45 and 90 minutes;
 - no symbol-specific beta window, shrinkage/model variant, additional factor, volatility normalization, sector substitution, news, IV, Greeks, or regime overlay.
 
-## 7. H6 — intraday compression followed by expansion
+## 7. Intraday compression followed by expansion
 
-H6 starts at 11:00:01 ET. At decision time `t`, exclude the just-completed decision interval from the compression box. The box spans the four completed 15-minute intervals `[t-75m, t-15m)`:
+Compression breakout starts at 11:00:01 ET. At decision time `t`, exclude the just-completed decision interval from the compression box. The box spans the four completed 15-minute intervals `[t-75m, t-15m)`:
 
 ```text
 box_high = max(high in the four box intervals)
@@ -170,23 +170,23 @@ Central signal:
 - bearish when `compression_ratio <= 0.65`, `down_break_fraction >= 0.10`, `volume_ratio_t >= 1.25`, and close is below completed session VWAP;
 - otherwise `NO_TRADE`.
 
-Set `entry_score = min(0.65 / max(compression_ratio, 1e-6), active_break_fraction / 0.10, volume_ratio_t / 1.25)`. Permit only the first H6 entry per symbol/session. Target exit policy is `TREND_VWAP_OR_60M_V1`.
+Set `entry_score = min(0.65 / max(compression_ratio, 1e-6), active_break_fraction / 0.10, volume_ratio_t / 1.25)`. Permit only the first compression-breakout entry per symbol/session. Target exit policy is `TREND_VWAP_OR_60M_V1`.
 
 Parameter budget:
 
 - central compression ratio `0.65`; diagnostic `0.50` and `0.80` one at a time;
 - central break fraction `0.10`; diagnostic `0.05` and `0.15` one at a time;
-- volume ratio fixed at `1.25` with no H6-specific search;
+- volume ratio fixed at `1.25` with no strategy-specific search;
 - fixed four-interval box and 20-session same-time baselines;
 - central time exit 60 minutes; diagnostic 45 and 90 minutes;
-- no alternate box, symbol-specific threshold, H1/H3 overlay, regime filter, news, IV, Greeks, or extra feature search.
+- no alternate box, symbol-specific threshold, continuation/opening-range overlay, regime filter, news, IV, Greeks, or extra feature search.
 
 ## 8. Candidate and feature contracts
 
 Create these complete candidate identities before viewing outcome P&L:
 
-- `h5_relative_strength_residual__qqq_tqqq_smh_soxl_igv__o2_v1`, with ordered eligible set `[QQQ, TQQQ, SMH, SOXL, IGV]`;
-- `h6_compression_breakout__all_feasible__o2_v1`, with ordered eligible set `[SPY, QQQ, TQQQ, SMH, SOXL, IGV]`.
+- `relative_strength_residual__qqq_tqqq_smh_soxl_igv__o2_v1`, with ordered eligible set `[QQQ, TQQQ, SMH, SOXL, IGV]`;
+- `compression_breakout__all_feasible__o2_v1`, with ordered eligible set `[SPY, QQQ, TQQQ, SMH, SOXL, IGV]`.
 
 Each `CandidateSpecV1`-equivalent strategy card freezes:
 
@@ -247,15 +247,15 @@ strategy_plugins/<plugin_id>_v1/
     └── promotion.json
 ```
 
-The separate research evidence tree is `research/candidates/<candidate_id>/` and contains `strategy_card.md`, `hypothesis.yaml`, `feature_contract.yaml`, `central_config.json`, `sensitivities.yaml`, `reason_codes.yaml`, `state_schema.json`, `data_refs.json`, `artifact_schema.json`, `runs/<run_id>/`, `integration/`, and `promotion_card.md`. Every run contains `run_manifest.json`, `pair_cell_metrics.json`, `signals.parquet`, `selected_contracts.parquet`, `proxy_leg_observations.parquet`, `trades.parquet`, `daily_returns.parquet`, `fold_metrics.parquet`, `metrics.json`, `cost_stress.json`, H5 benchmark/H6 compression audits, `limitations.md`, and plots. The reviewer adds `pair_cell_review.json`; central owners later add `central_full_universe_replay.json` outside the researcher's run.
+The separate research evidence tree is `research/candidates/<candidate_id>/` and contains `strategy_card.md`, `hypothesis.yaml`, `feature_contract.yaml`, `central_config.json`, `sensitivities.yaml`, `reason_codes.yaml`, `state_schema.json`, `data_refs.json`, `artifact_schema.json`, `runs/<run_id>/`, `integration/`, and `promotion_card.md`. Every run contains `run_manifest.json`, `pair_cell_metrics.json`, `signals.parquet`, `selected_contracts.parquet`, `proxy_leg_observations.parquet`, `trades.parquet`, `daily_returns.parquet`, `fold_metrics.parquet`, `metrics.json`, `cost_stress.json`, benchmark or compression audits as applicable, `limitations.md`, and plots. The reviewer adds `pair_cell_review.json`; central owners later add `central_full_universe_replay.json` outside the researcher's run.
 
 ### 9.1 Frozen integration cards
 
-| Field | H5 package | H6 package |
+| Field | Relative-strength package | Compression-breakout package |
 |---|---|---|
-| `plugin_id` / version | `h5_relative_strength_residual` / `1.0.0` | `h6_compression_breakout` / `1.0.0` |
-| entry point | `h5_relative_strength_residual_v1.plugin:Plugin` | `h6_compression_breakout_v1.plugin:Plugin` |
-| hypothesis ID | `H5_RELATIVE_STRENGTH_RESIDUAL` | `H6_COMPRESSION_BREAKOUT` |
+| `plugin_id` / version | `relative_strength_residual` / `1.0.0` | `compression_breakout` / `1.0.0` |
+| entry point | `relative_strength_residual_v1.plugin:Plugin` | `compression_breakout_v1.plugin:Plugin` |
+| hypothesis ID | `RELATIVE_STRENGTH_RESIDUAL` | `COMPRESSION_BREAKOUT` |
 | owner / reviewer | assigned Group C owner / independent Group A reviewer | assigned Group C owner / independent Group A reviewer |
 | pair-cell evidence | ordered targets `[TQQQ, IGV]`, immutable `QQQ` control | ordered `[TQQQ, IGV]` |
 | later compatibility | ordered `[QQQ, TQQQ, SMH, SOXL, IGV]` | ordered `[SPY, QQQ, TQQQ, SMH, SOXL, IGV]` |
@@ -263,15 +263,15 @@ The separate research evidence tree is `research/candidates/<candidate_id>/` and
 | allowed entry tuples | bullish call-debit and bearish put-debit; `INTRADAY_15_60M`, `TINY`, max TTL `300` | same |
 | data requirements | `feature-vector/v1`; hash `CANDIDATE_DEFINED_AND_HASHED_BEFORE_OUTCOME_RUN`; maximum age `60`; logical positions `false` | same |
 
-Both manifests use `api_version: strategy-plugin/v1`, `decision_schema_version: strategy-evaluation/v1`, `deterministic: true`, and `network_access: false`. Required feature keys are ordered by `SPY, QQQ, TQQQ, SMH, SOXL, IGV`, then lexicographically within symbol. H5 requires target/benchmark `r60`, frozen benchmark binding, beta, residual mean/std/z, completed close, session VWAP, and paired-quality keys from Section 8. H6 requires compression box high/low/range, same-time median, compression ratio, up/down break, volume ratio, completed close, and session VWAP. The packet owner freezes and hashes both complete candidate-specific contracts before viewing outcome P&L for either one; the release owner validates the key lists and hashes before integration review.
+Both manifests use `api_version: strategy-plugin/v1`, `decision_schema_version: strategy-evaluation/v1`, `deterministic: true`, and `network_access: false`. Required feature keys are ordered by `SPY, QQQ, TQQQ, SMH, SOXL, IGV`, then lexicographically within symbol. Relative strength requires target/benchmark `r60`, frozen benchmark binding, beta, residual mean/std/z, completed close, session VWAP, and paired-quality keys from Section 8. Compression breakout requires compression box high/low/range, same-time median, compression ratio, up/down break, volume ratio, completed close, and session VWAP. The packet owner freezes and hashes both complete candidate-specific contracts before viewing outcome P&L for either one; the release owner validates the key lists and hashes before integration review.
 
-`central_config.json` is a canonical rendering of flat `StrategyConfigV1.values`. Exact H5 keys/values are `residual_z_threshold="1.25"`, `beta_lookback_sessions=60`, `benchmark_variance_floor="0.00000001"`, `residual_std_floor="0.000001"`, `benchmark_map_version="H5_BENCHMARK_MAP_V1"`, `decision_start_et="10:30:01"`, `decision_end_et="14:30:01"`, `decision_step_minutes=30`, `max_entries_per_symbol_session=1`, `time_exit_minutes=60`, `risk_tier="TINY"`, and `intent_ttl_seconds=300`. Exact H6 keys/values are `compression_ratio_max="0.65"`, `break_fraction_threshold="0.10"`, `volume_ratio_threshold="1.25"`, `box_interval_count=4`, `same_time_lookback_sessions=20`, `range_floor="0.000001"`, `decision_start_et="11:00:01"`, `decision_end_et="14:30:01"`, `decision_step_minutes=30`, `max_entries_per_symbol_session=1`, `time_exit_minutes=60`, `risk_tier="TINY"`, and `intent_ttl_seconds=300`. Decimal thresholds are strings in JSON and become `Decimal` values in `StrategyConfigV1`.
+`central_config.json` is a canonical rendering of flat `StrategyConfigV1.values`. Exact relative-strength keys/values are `residual_z_threshold="1.25"`, `beta_lookback_sessions=60`, `benchmark_variance_floor="0.00000001"`, `residual_std_floor="0.000001"`, `benchmark_map_version="RELATIVE_STRENGTH_BENCHMARK_MAP_V1"`, `decision_start_et="10:30:01"`, `decision_end_et="14:30:01"`, `decision_step_minutes=30`, `max_entries_per_symbol_session=1`, `time_exit_minutes=60`, `risk_tier="TINY"`, and `intent_ttl_seconds=300`. Exact compression-breakout keys/values are `compression_ratio_max="0.65"`, `break_fraction_threshold="0.10"`, `volume_ratio_threshold="1.25"`, `box_interval_count=4`, `same_time_lookback_sessions=20`, `range_floor="0.000001"`, `decision_start_et="11:00:01"`, `decision_end_et="14:30:01"`, `decision_step_minutes=30`, `max_entries_per_symbol_session=1`, `time_exit_minutes=60`, `risk_tier="TINY"`, and `intent_ttl_seconds=300`. Decimal thresholds are strings in JSON and become `Decimal` values in `StrategyConfigV1`.
 
 ### 9.2 Output, reason, and state rules
 
 The pure `signal.py` function and `Plugin.evaluate()` use identical logic. A bullish entry emits `CALL_DEBIT_SPREAD_V1`; bearish emits `PUT_DEBIT_SPREAD_V1`; horizon is `INTRADAY_15_60M`, risk tier is `TINY`, expiry is exactly `context.as_of + 300 seconds`, and the sole evidence reference is the input `FEATURE_VECTOR`. Score buckets are `[1.00,1.25)=LOW`, `[1.25,1.75)=MEDIUM`, and `>=1.75=HIGH`. The plug-in emits `packages.strategy_sdk.UNBOUND_PLUGIN_CONTENT_HASH`; the host owns source-hash binding.
 
-Common `NO_TRADE` codes are exactly `DATA_MISSING`, `DATA_STALE`, `DATA_QUALITY_REJECTED`, `FEATURE_SCHEMA_MISMATCH`, `OUTSIDE_DECISION_WINDOW`, `EARLY_CLOSE_SESSION`, `DAILY_ENTRY_ALREADY_USED`, `NO_SIGNAL`, `DIRECTION_AMBIGUOUS`, `UNDERLYING_NOT_ALLOWED`, `TEMPLATE_NOT_ALLOWED`, and `TUPLE_NOT_ALLOWED`. H5 adds `BENCHMARK_MISSING`, `BENCHMARK_BINDING_MISMATCH`, `H5_GATE_NOT_MET`, `H5_BULLISH_RESIDUAL`, and `H5_BEARISH_RESIDUAL`; H6 adds `H6_GATE_NOT_MET`, `H6_BULLISH_BREAKOUT`, and `H6_BEARISH_BREAKOUT`. `reason_codes.yaml` declares every code and the implementation emits no undeclared code.
+Common `NO_TRADE` codes are exactly `DATA_MISSING`, `DATA_STALE`, `DATA_QUALITY_REJECTED`, `FEATURE_SCHEMA_MISMATCH`, `OUTSIDE_DECISION_WINDOW`, `EARLY_CLOSE_SESSION`, `DAILY_ENTRY_ALREADY_USED`, `NO_SIGNAL`, `DIRECTION_AMBIGUOUS`, `UNDERLYING_NOT_ALLOWED`, `TEMPLATE_NOT_ALLOWED`, and `TUPLE_NOT_ALLOWED`. Relative strength adds `BENCHMARK_MISSING`, `BENCHMARK_BINDING_MISMATCH`, `RELATIVE_STRENGTH_GATE_NOT_MET`, `RELATIVE_STRENGTH_BULLISH`, and `RELATIVE_STRENGTH_BEARISH`; compression breakout adds `COMPRESSION_BREAKOUT_GATE_NOT_MET`, `COMPRESSION_BREAKOUT_BULLISH`, and `COMPRESSION_BREAKOUT_BEARISH`. `reason_codes.yaml` declares every code and the implementation emits no undeclared code.
 
 `state_schema.json` freezes `strategy-state/v1`, initial sequence `0`, and payload `{}`. Every evaluation sets sequence to prior plus one and `as_of=context.as_of`. `NO_TRADE` preserves payload; entry may set only `last_entry_session_<SYMBOL>=YYYY-MM-DD`. No `PositionDirectiveV1`, clock/random/global state, I/O, raw bars, broker object, option symbol, strike, expiration, quantity, price, account, or order field is permitted.
 
@@ -290,7 +290,7 @@ Baseline verification uses only the current root README commands: native ARM64 `
 
 ## 10. Golden fixtures and conformance cases
 
-Minimum H5 fixtures for TQQQ and IGV, plus one QQQ control fixture:
+Minimum relative-strength fixtures for TQQQ and IGV, plus one QQQ control fixture:
 
 - bullish and bearish central entries;
 - equality at residual z `+1.25` and `-1.25`;
@@ -301,7 +301,7 @@ Minimum H5 fixtures for TQQQ and IGV, plus one QQQ control fixture:
 - near-zero benchmark variance and residual-standard-deviation floors;
 - wrong benchmark-map binding, unsupported target, early-close, and outside-window refusal.
 
-Minimum H6 fixtures for TQQQ and IGV:
+Minimum compression-breakout fixtures for TQQQ and IGV:
 
 - bullish and bearish central entries;
 - equality at compression `0.65`, break `0.10`, and volume `1.25`;
@@ -345,7 +345,7 @@ Report at minimum:
 - signed underlying/residual forward return, active days/trades, hit rate, excursions, date-clustered interval, and quarter/direction/volatility slices;
 - gross/net option-proxy P&L, normalized $100,000 account return, drawdown, expected shortfall, worst trade/day, top-trade/day concentration, turnover, and exposure time;
 - Sharpe, Sortino, Calmar, deflated/selection-adjusted Sharpe, raw and family-wise adjusted one-sided p-values on complete historical daily returns only;
-- beta distributions/stability, residual versus raw momentum, QQQ/SPY beta/correlation, TQQQ/IGV same-date dependence, H6 overlap with H1/H3, and incremental portfolio contribution;
+- beta distributions/stability, residual versus raw momentum, QQQ/SPY beta/correlation, TQQQ/IGV same-date dependence, compression-breakout overlap with continuation/opening-range signals, and incremental portfolio contribution;
 - fixed maximum-loss versus misleading raw-share-return comparisons.
 
 Common O2 expression:
@@ -374,9 +374,9 @@ Central fee assumption is $0.10 per contract, per leg, per side. Publish $0.00 a
 
 ## 13. Required falsification
 
-H5 must publish raw target momentum beside residual momentum, beta distributions by fold/time, and fixed-risk leveraged/unleveraged comparisons. Reject/demote if the edge is only unnormalized leverage, one unstable beta period, current-pair leakage, a benchmark substitution, or a few dates. Repeat with the prescribed residual threshold neighbors only; alternate factor models are new candidates, not rescue diagnostics.
+Relative strength must publish raw target momentum beside residual momentum, beta distributions by fold/time, and fixed-risk leveraged/unleveraged comparisons. Reject/demote if the edge is only unnormalized leverage, one unstable beta period, current-pair leakage, a benchmark substitution, or a few dates. Repeat with the prescribed residual threshold neighbors only; alternate factor models are new candidates, not rescue diagnostics.
 
-H6 must publish exact timestamp overlap with H1/H3, unique-versus-overlapping trade attribution, and incremental common-portfolio evidence. Remove volume/VWAP confirmation one at a time as falsifications. Reject/demote if the signal is an H3/H1 duplicate without incremental contribution, uses the just-completed bar inside the compression box, is dominated by one leverage/software episode, or is erased by next-observation/base option costs.
+Compression breakout must publish exact timestamp overlap with intraday-continuation and opening-range-breakout signals, unique-versus-overlapping trade attribution, and incremental common-portfolio evidence. Remove volume/VWAP confirmation one at a time as falsifications. Reject/demote if the signal duplicates those strategies without incremental contribution, uses the just-completed bar inside the compression box, is dominated by one leverage/software episode, or is erased by next-observation/base option costs.
 
 For both families:
 
@@ -395,7 +395,7 @@ Family-wise adjusted evidence that does not pass is labeled `suggestive`, shadow
 | `C0_HANDOFF` | Baseline, native lock, immutable target/benchmark refs, Group C owner, both candidate IDs, and external reviewer recorded | Do not start outcome runs |
 | `C1_DATA` | TQQQ/IGV/QQQ feasibility cards, at least 99% expected 15-minute bars, exact pair coverage, zero duplicates/OHLC failures, complete TQQQ split audit | Remove affected symbol or stop |
 | `C2_SPEC_FREEZE` | Candidate cards, benchmark map, features, central/sensitivity configs, exits, costs, trial entries, and hashes frozen before P&L | New candidate/version required |
-| `C3_SIGNAL` | Common-engine H5/H6 runs, next-observation behavior, diagnostics, minimum sample/fold/concentration gates | `REJECTED` or `RESEARCH_COMPLETE` only |
+| `C3_SIGNAL` | Common-engine runs for both strategies, next-observation behavior, diagnostics, minimum sample/fold/concentration gates | `REJECTED` or `RESEARCH_COMPLETE` only |
 | `C4_OPTION_PROXY` | PIT existence, simultaneous-leg coverage, O2 base/severe output, no reranking, Monday quote gate | No option-expression support |
 | `C5_PLUGIN` | Packages, golden/boundary fixtures, deterministic output, semantic parity, forbidden-field/I/O tests | Not `INTEGRATION_READY` |
 | `C6_PLATFORM_PARITY` | Platform-owner evidence for `G-R1`–`G-R6`, especially feature/catalog/exit/runner parity | Record failed/not implemented; do not claim closure |

@@ -55,7 +55,7 @@ Researchers need no judged-account credentials and receive no broker/order autho
 
 | Gate | Published research status | Required evidence before integration claim |
 |---|---|---|
-| `G-R1_REGISTRY_AUTHORITY` | Closed for the host research interface; H1–H6 are not registered | Candidate source/config/feature/evidence hashes, allowed scope/tuples, owner/reviewer, non-author review, central merge, and negative tests |
+| `G-R1_REGISTRY_AUTHORITY` | Closed for the host research interface; research candidates are not registered | Candidate source/config/feature/evidence hashes, allowed scope/tuples, owner/reviewer, non-author review, central merge, and negative tests |
 | `G-R2_CATALOG_PARITY` | Partial; catalog schema/hash/loader are published | Candidate fixtures proving exact OTM tie, outward strike, fee, quantity, maximum-loss, and refusal parity |
 | `G-R3_OUTPUT_BINDING` | Closed for the host baseline | Run each candidate's golden and negative cases through the host after its registry proposal is reviewed |
 | `G-R4_FEATURE_CONTRACT` | Closed for host shape and fixture enforcement | Each family publishes exact formulas, key order, lookback/availability/missing rules, worked examples, and candidate-specific hash |
@@ -96,11 +96,11 @@ The team is searching across **strategy families**, not asking three people to o
 
 | Packet recipient | Candidate families | Core questions | Required pair cells | Independent reviewer |
 |---|---|---|---|---|
-| Group A research owner | H1 `h1_intraday_continuation_v1`; H2 `h2_vwap_reversion_v1` | Continuation after unusually large same-time moves; reversion after unusually large VWAP deviations in a weak-trend regime | SPY, QQQ | Group B research owner reviews both packages |
-| Group B research owner | H3 `h3_opening_range_breakout_v1`; H4 `h4_gap_continuation_v1` | Continuation after a confirmed opening-range break; continuation after a standardized overnight gap and first-hour confirmation | SMH, SOXL | Group C research owner reviews both packages |
-| Group C research owner | H5 `h5_relative_strength_residual_v1`; H6 `h6_compression_breakout_v1` | Persistence of benchmark-residual strength; continuation after intraday compression and price/volume expansion | TQQQ, IGV, with immutable QQQ controls for H5 | Group A research owner reviews both packages |
+| Group A research owner | `intraday_continuation_v1`; `vwap_reversion_v1` | Continuation after unusually large same-time moves; reversion after unusually large VWAP deviations in a weak-trend regime | SPY, QQQ | Group B research owner reviews both packages |
+| Group B research owner | `opening_range_breakout_v1`; `gap_continuation_v1` | Continuation after a confirmed opening-range break; continuation after a standardized overnight gap and first-hour confirmation | SMH, SOXL | Group C research owner reviews both packages |
+| Group C research owner | `relative_strength_residual_v1`; `compression_breakout_v1` | Persistence of benchmark-residual strength; continuation after intraday compression and price/volume expansion | TQQQ, IGV, with immutable QQQ controls for relative strength | Group A research owner reviews both packages |
 
-Sections H1–H6 define the central rules. A packet owner must freeze both assigned families before viewing outcome P&L for either one; this prevents the first result from driving changes to the second. Corrections made after results are viewed create new candidates and enter the trial ledger. Review follows the external ring above rather than self-review within a packet.
+Section 5 defines the six central strategies. A packet owner must freeze both assigned strategies before viewing outcome P&L for either one; this prevents the first result from driving changes to the second. Corrections made after results are viewed create new candidates and enter the trial ledger. Review follows the external ring above rather than self-review within a packet.
 
 Primary engineering ownership still applies. The research sprint adds these shared duties so “common” work has an accountable owner:
 
@@ -108,7 +108,7 @@ Primary engineering ownership still applies. The research sprint adds these shar
 |---|---|---|---|
 | Release/quant lead | Candidate registry, fold calendar, trial budget, bootstrap/multiplicity, final selection | Frozen candidate/selection manifests and full comparison table | Evidence/submission owner |
 | Data steward | Alpaca entitlement probe, pagination, raw/normalized cache, symbol feasibility | Immutable shared dataset manifests and six feasibility cards | Feature/platform owner |
-| Feature/platform owner | Feature registry, common signal/backtest adapter, plug-in conformance | Two-machine H1 golden run and shared parity command | Data steward |
+| Feature/platform owner | Feature registry, common signal/backtest adapter, plug-in conformance | Two-machine intraday-continuation golden run and shared parity command | Data steward |
 | Options/risk quant | O1/O2 selector, option proxy, fee/max-loss arithmetic | Catalog-parity fixtures and option-coverage report | Portfolio/risk integration owner |
 | Portfolio/risk integration owner | Portfolio replay, quote stress, risk/position-policy integration | Base/severe portfolio replay and integration gate report | Options/risk quant |
 | Evidence/submission owner | Standard plots/cards, limitations, judge-facing evidence package | Comparable report bundle and promotion-card generator | Release/quant lead |
@@ -325,16 +325,16 @@ For hackathon V1, strategy plug-ins emit entries or `NO_TRADE` only. The central
 - One position per symbol and no overlapping labels. The central hard exit order triggers at `min(confirmed_fill_time + 60 minutes, 15:45 ET)` independently of the 15-minute signal-management loop; proxy/runtime execution follows at the next eligible observation/order event.
 - Never hold overnight in V1.
 - Position age begins at the confirmed proxy/runtime fill timestamp, not signal or order-submission time.
-- VWAP exits use completed-bar close only, never intrabar high/low. A bullish adverse cross is `close <= session_vwap`; bearish is `close >= session_vwap`. A bullish H2 touch is `close >= session_vwap`; bearish is `close <= session_vwap`.
+- VWAP exits use completed-bar close only, never intrabar high/low. A bullish adverse cross is `close <= session_vwap`; bearish is `close >= session_vwap`. A bullish VWAP-reversion touch is `close >= session_vwap`; bearish is `close <= session_vwap`.
 - Strategy-level premium profit targets and price-based stop-loss exits are disabled in competition V1. Alpha exits are exactly the VWAP and hard-time rules above, frozen before the first 2025 OOS run. Portfolio daily/competition stops and stale/reconciliation/orphan remediation remain mandatory safety overrides; record them separately and never tune them as alpha exits.
 - Exclude Alpaca-calendar early-close sessions from both research scoring and competition entries with `EARLY_CLOSE_SESSION`; do not apply impossible fixed full-session times.
 - Thursday's final-session rule overrides normal cadence: no new entries after 13:30 ET, start programmatic flatten by 15:15 ET, and require broker-confirmed flat by 15:30 ET.
 
-### H0 — matched null control
+### Matched null control
 
 For every real signal, use only the synchronized centered five-session date-block bootstrap frozen in Section 9. There is no per-trade sign-permutation alternative. This measures market drift/small-sample luck and supplies the family-wise maximum-statistic control across every viewed candidate.
 
-### H1 — normalized intraday continuation
+### Normalized intraday continuation
 
 At decision time `t`:
 
@@ -351,7 +351,7 @@ Signal:
 
 Set `entry_score = abs(momentum_z) / 1.0`. Use central exit policy `TREND_VWAP_OR_60M_V1`: exit at the common hard-time deadline, or earlier on an adverse completed-close VWAP cross.
 
-### H2 — normalized intraday VWAP reversion
+### Normalized intraday VWAP reversion
 
 At decision time `t`:
 
@@ -367,9 +367,9 @@ Signal:
 
 Set `entry_score = abs(deviation_z) / 1.5`. Use central exit policy `REVERSION_VWAP_TOUCH_OR_60M_V1`: exit on a completed-close VWAP touch in the convergence direction or at the common hard-time deadline.
 
-H2 is a standalone challenger, not an H1 overlay or simultaneous fallback signal. All three packet owners may write their two strategy cards in parallel, but no outcome-bearing comparison begins until every packet has frozen both assigned families and the shared H1 golden run reproduces on two native ARM64 machines.
+VWAP reversion is a standalone challenger, not an intraday-continuation overlay or simultaneous fallback signal. All three packet owners may write their two strategy cards in parallel, but no outcome-bearing comparison begins until every packet has frozen both assigned strategies and the shared intraday-continuation golden run reproduces on two native ARM64 machines.
 
-### H3 — opening-range breakout with participation confirmation
+### Opening-range breakout with participation confirmation
 
 Define the first 30 regular-session minutes as `[09:30, 10:00)` ET:
 
@@ -384,11 +384,11 @@ Signal:
 - bearish when `down_break_fraction >= 0.10`, `volume_ratio_t >= 1.25`, and close is below session IEX VWAP;
 - otherwise `NO_TRADE`.
 
-Set `entry_score = min(break_fraction / 0.10, volume_ratio_t / 1.25)` in the signaled direction. Permit only the first valid H3 entry per symbol per session; a later re-break is not a new trial. Use central exit policy `TREND_VWAP_OR_60M_V1`.
+Set `entry_score = min(break_fraction / 0.10, volume_ratio_t / 1.25)` in the signaled direction. Permit only the first valid opening-range-breakout entry per symbol per session; a later re-break is not a new trial. Use central exit policy `TREND_VWAP_OR_60M_V1`.
 
 Falsification focus: remove the volume/VWAP confirmation one at a time, check whether one opening-gap regime dominates, and prove that next-observation execution plus option costs does not erase the apparent breakout.
 
-### H4 — standardized overnight-gap continuation
+### Standardized overnight-gap continuation
 
 This family evaluates only at `10:30:01 ET`:
 
@@ -402,11 +402,11 @@ Signal:
 - direction is the sign of the raw adjusted `gap` when `abs(gap_z) >= 1.0`, `continuation_ratio >= 0.25`, and the 10:30 close is on the same side of session IEX VWAP;
 - otherwise `NO_TRADE`.
 
-Set `entry_score = min(abs(gap_z) / 1.0, continuation_ratio / 0.25)`. There is at most one H4 decision per symbol per day. Use `TREND_VWAP_OR_60M_V1`.
+Set `entry_score = min(abs(gap_z) / 1.0, continuation_ratio / 0.25)`. There is at most one gap-continuation decision per symbol per day. Use `TREND_VWAP_OR_60M_V1`.
 
 Falsification focus: report gap-up and gap-down results separately, exclude split/corporate-action discontinuities, compare leveraged and unleveraged pairs at equal maximum loss, and test whether a few macro-gap dates explain the result.
 
-### H5 — benchmark-residual relative strength
+### Benchmark-residual relative strength
 
 Freeze this benchmark map before results:
 
@@ -421,7 +421,7 @@ Freeze this benchmark map before results:
 
 At each common decision time:
 
-- calculate target and benchmark `r60` using the exact H1 clock;
+- calculate target and benchmark `r60` using the exact intraday-continuation clock;
 - using the prior 60 valid same-time session pairs only, estimate `beta_t = cov(r_target, r_benchmark) / max(var(r_benchmark), 1e-8)`;
 - apply that frozen-at-`t` beta to the same prior pairs, compute residual mean/standard deviation, and form `residual_z = (r_target_t - beta_t * r_benchmark_t - mu_residual) / max(sigma_residual, 1e-6)`.
 
@@ -431,19 +431,19 @@ Signal:
 - bearish when `residual_z <= -1.25` and target close is below its session IEX VWAP;
 - otherwise `NO_TRADE`.
 
-Set `entry_score = abs(residual_z) / 1.25` and use `TREND_VWAP_OR_60M_V1`. Missing benchmark data invalidates the target decision. SPY is a diagnostic symmetry check and is not promotion-eligible for H5 V1.
+Set `entry_score = abs(residual_z) / 1.25` and use `TREND_VWAP_OR_60M_V1`. Missing benchmark data invalidates the target decision. SPY is a diagnostic symmetry check and is not promotion-eligible for this relative-strength version.
 
 Falsification focus: show raw target momentum beside residual momentum, test beta stability, and verify that TQQQ/SOXL do not win merely because leverage was left unnormalized.
 
-### H6 — intraday compression followed by expansion
+### Intraday compression followed by expansion
 
-H6 starts at `11:00:01 ET`. At decision time `t`, exclude the just-completed decision interval from the compression box:
+Compression breakout starts at `11:00:01 ET`. At decision time `t`, exclude the just-completed decision interval from the compression box:
 
 - the box spans the four completed 15-minute intervals `[t-75m, t-15m)`;
 - `box_range_log = max(log(box_high / box_low), 1e-6)`;
 - `compression_ratio = box_range_log / median_box_range`, where the denominator uses the prior 20 valid sessions at the same decision time;
 - `up_break_fraction = log(close_t / box_high) / box_range_log` and `down_break_fraction = log(box_low / close_t) / box_range_log`;
-- `volume_ratio_t` uses the same definition as H3.
+- `volume_ratio_t` uses the same definition as opening-range breakout.
 
 Signal:
 
@@ -451,20 +451,20 @@ Signal:
 - bearish under the symmetric lower-box and below-VWAP conditions;
 - otherwise `NO_TRADE`.
 
-Set `entry_score = min(0.65 / max(compression_ratio, 1e-6), break_fraction / 0.10, volume_ratio_t / 1.25)`. Permit only the first H6 entry per symbol per session and use `TREND_VWAP_OR_60M_V1`.
+Set `entry_score = min(0.65 / max(compression_ratio, 1e-6), break_fraction / 0.10, volume_ratio_t / 1.25)`. Permit only the first compression-breakout entry per symbol per session and use `TREND_VWAP_OR_60M_V1`.
 
-Falsification focus: prove that the result is not an H3 duplicate, report the overlap in trade timestamps with H1/H3, and require incremental portfolio evidence rather than counting correlated signals as independent discoveries.
+Falsification focus: prove that the result is not an opening-range-breakout duplicate, report the overlap in trade timestamps with intraday-continuation and opening-range-breakout signals, and require incremental portfolio evidence rather than counting correlated signals as independent discoveries.
 
 ### Prescribed stability sensitivities
 
 Sensitivities are diagnostic, run one dimension at a time, and are not per-symbol optimization:
 
-- H1 `abs(momentum_z)` threshold: central `1.00`; diagnostics `0.75`, `1.25`.
-- H2 `abs(deviation_z)` threshold: central `1.50`; diagnostics `1.25`, `1.75`.
-- H3 breakout fraction: central `0.10`; diagnostics `0.05`, `0.15`. Volume ratio: central `1.25`; diagnostics `1.00`, `1.50`.
-- H4 `abs(gap_z)`: central `1.00`; diagnostics `0.75`, `1.25`. Continuation ratio: central `0.25`; diagnostics `0.00`, `0.50`.
-- H5 `abs(residual_z)`: central `1.25`; diagnostics `1.00`, `1.50`.
-- H6 compression ratio: central `0.65`; diagnostics `0.50`, `0.80`. Breakout fraction: central `0.10`; diagnostics `0.05`, `0.15`.
+- Intraday-continuation `abs(momentum_z)` threshold: central `1.00`; diagnostics `0.75`, `1.25`.
+- VWAP-reversion `abs(deviation_z)` threshold: central `1.50`; diagnostics `1.25`, `1.75`.
+- Opening-range-breakout fraction: central `0.10`; diagnostics `0.05`, `0.15`. Volume ratio: central `1.25`; diagnostics `1.00`, `1.50`.
+- Gap-continuation `abs(gap_z)`: central `1.00`; diagnostics `0.75`, `1.25`. Continuation ratio: central `0.25`; diagnostics `0.00`, `0.50`.
+- Relative-strength `abs(residual_z)`: central `1.25`; diagnostics `1.00`, `1.50`.
+- Compression-breakout ratio: central `0.65`; diagnostics `0.50`, `0.80`. Breakout fraction: central `0.10`; diagnostics `0.05`, `0.15`.
 - All families' time exit from confirmed fill: central `60` minutes; diagnostics `45`, `90` minutes.
 
 The central specification is the only promotion-eligible value. Owners publish every prescribed neighbor and may not report only the best run. Any unlisted value is a new candidate and counts in the selection family if its result is viewed.
@@ -533,7 +533,7 @@ Current V1 implementation constraints that every owner must design around:
 - A valid entry uses the bullish call-debit or bearish put-debit tuple unchanged, sets `intent_expires_at = context.as_of + 300 seconds`, and includes exactly one `FEATURE_VECTOR` evidence reference bound to the input vector hash/ID. An unavailable tuple returns `TEMPLATE_NOT_ALLOWED`; it never substitutes another tuple.
 - `DataRequirementsV1.maximum_observation_age_seconds` is exactly `60`, `needs_logical_positions=false`, and `required_feature_keys` are ordered first by frozen symbol order `SPY, QQQ, TQQQ, SMH, SOXL, IGV`, then lexicographically by feature key. Each owner computes the candidate-specific feature-contract hash before outcome P&L and uses it in every context, manifest, and integration proposal.
 - Effective runner limits are two seconds wall time, one CPU second, 256 MiB address space where enforceable, and 128 KiB combined response/diagnostic policy. A strategy should perform only constant-time comparisons over precomputed features.
-- The committed `regime_momentum_v1` is a fixture, not an H1 reference implementation: it ignores most documented H1 logic and must not be copied as research truth.
+- The committed `regime_momentum_v1` is a fixture, not an intraday-continuation reference implementation: it ignores most documented continuation logic and must not be copied as research truth.
 
 ### Feature handoff
 
@@ -722,7 +722,7 @@ Champion, preregistered fallback, symbols, thresholds, expression, selector, and
 
 Walk-forward rules:
 
-- require at least 252 completed experiment-history sessions before the first OOS fold; feature values use the exact preregistered lookback in Section 5—20 valid same-time sessions for H1/H2/H3/H6 and 60 for H4/H5;
+- require at least 252 completed experiment-history sessions before the first OOS fold; feature values use the exact preregistered lookback in Section 5—20 valid same-time sessions for intraday continuation, VWAP reversion, opening-range breakout, and compression breakout; 60 for gap continuation and relative strength;
 - fixed common rule; rolling scale estimates may update;
 - test one calendar quarter at a time;
 - purge observations spanning a boundary and embargo one full session;
@@ -736,7 +736,7 @@ Walk-forward rules:
 
 Frozen null/resampling specification:
 
-- the authorizing test uses complete 2025 OOS daily account returns for every promotion-eligible central H1–H6 × compatible feasible-symbol scope × O2 candidate, plus any variant actually allowed to influence selection; it excludes 2024 calibration and never pools post-selection 2026 results;
+- the authorizing test uses complete 2025 OOS daily account returns for every promotion-eligible central strategy × compatible feasible-symbol scope × O2 candidate, plus any variant actually allowed to influence selection; it excludes 2024 calibration and never pools post-selection 2026 results;
 - align every candidate to the same complete market-date index and include zero-return inactive dates;
 - for each candidate, center its daily OOS return series under the zero-mean null;
 - use NumPy-compatible `PCG64` seed `20260829`, exactly 10,000 synchronized bootstrap replications, and five-session circular moving date blocks; replication IDs are `00000` through `09999` and use the identical sampled date-block indices for every candidate;
@@ -1076,8 +1076,8 @@ telemetry/competition/
 - Complete six historical feasibility cards and sign the blinded global `option_proxy_feasibility_manifest.json` before any result exposure.
 - Remove `RED_REMOVE` symbols.
 - Implement all six pure `signal.py` functions and boundary fixtures against the frozen feature rows.
-- Reproduce the H1 golden underlying run on two native ARM64 machines before opening comparative outcomes.
-- Run H1–H6 central underlying scans on each packet's two owned cells; log every run. Do not call these pair-cell scans full-universe candidates.
+- Reproduce the intraday-continuation golden underlying run on two native ARM64 machines before opening comparative outcomes.
+- Run all six central underlying strategy scans on each packet's two owned cells; log every run. Do not call these pair-cell scans full-universe candidates.
 - Begin point-in-time contract-existence proxy construction.
 - Researchers may implement complete plug-in packages in parallel, but nothing is called `INTEGRATION_READY` until its candidate-specific registry, feature, catalog, output-binding, close-policy, and reviewer evidence passes.
 

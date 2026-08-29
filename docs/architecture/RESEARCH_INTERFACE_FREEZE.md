@@ -30,10 +30,10 @@ The exact Python contract is in [`STRATEGY_API.md`](STRATEGY_API.md). The resear
 | Source snapshot | `cb03a7684fb67c6f0888333f6c3c2145e8645be9` | Stop if the supplied checkout differs. |
 | Dependency lock | `sha256:b846dc0b4d52be240cbb131e8267a5bf5ed4659b21570573b9ea1d48dcc865cf` | Stop if `uv.lock` differs. |
 | Registry schema | `strategy-registry/v1` | Candidate registry files are proposals only and start `research_only`. |
-| Loaded registry hash | `sha256:fdbe412038def1df8b3c1e552cbbfa42c300d4e73e5ac74cd92b4db233893a04` | Proves the current fixture registry authority surface; it does not register an H1–H6 candidate. |
+| Loaded registry hash | `sha256:fdbe412038def1df8b3c1e552cbbfa42c300d4e73e5ac74cd92b4db233893a04` | Proves the current fixture registry authority surface; it does not register any research candidate. |
 | Template catalog schema | `template-catalog/v1` | Research uses call/put debit spreads and the frozen O2 policy below. |
 | Loaded catalog hash | `sha256:74906ee706cef3a52b77cb84e2f7b80c66bbc6b0e63ad3982be9e0ef0e02076e` | Bind this catalog in every run manifest. |
-| Host fixture feature contract | `sha256:3e3cfa8a1047dda69b0c829d0b1153f9258f4356c23ffb1def6a8601ff3445bc` | Fixture evidence only. Do not reuse it for H1–H6 unless the keys and formulas are exactly identical. |
+| Host fixture feature contract | `sha256:3e3cfa8a1047dda69b0c829d0b1153f9258f4356c23ffb1def6a8601ff3445bc` | Fixture evidence only. Do not reuse it for a research strategy unless the keys and formulas are exactly identical. |
 | Arbitration helper | `packages/strategy_sdk/arbitration.py` | Central compatible-symbol replay uses this pure ranking/tie-break implementation. |
 | Arbitration source-file SHA-256 | `864fe5d419717bb424eb10ed54b5ad8ac5095bfc235d3f10a2d894e39826edd5` | Record this with later full-universe replay evidence. |
 | Position-policy implementation | `packages/position_manager/manager.py` | Central research replay may target the two policy IDs below; strategy plug-ins remain entry-only. |
@@ -41,7 +41,7 @@ The exact Python contract is in [`STRATEGY_API.md`](STRATEGY_API.md). The resear
 | Contract schemas | `schemas/v1/*.json` | Generated contract snapshots; drift is checked by `tests/contract/test_schema_export.py`. |
 | Host interface tests | Section 8 command | Baseline host authorization/feature/arbitration evidence at the pinned commit. |
 
-Each H1–H6 owner must define and freeze a candidate-specific `feature_contract.yaml` and its canonical hash **before viewing outcome P&L**. Until then, the integration card records `CANDIDATE_DEFINED_AND_HASHED_BEFORE_OUTCOME_RUN`; this is a required candidate deliverable, not a missing platform release value.
+Each strategy package must define and freeze a candidate-specific `feature_contract.yaml` and its canonical hash **before viewing outcome P&L**. Until then, the integration card records `CANDIDATE_DEFINED_AND_HASHED_BEFORE_OUTCOME_RUN`; this is a required candidate deliverable, not a missing platform release value.
 
 Each owner also freezes their exact `reason_codes.yaml`. There is intentionally no single global strategy reason-code hash; host and registry refusal codes remain platform-owned.
 
@@ -83,7 +83,7 @@ The current catalog is published and loaded. Exact research/runtime parity for e
 - The underlying execution proxy uses the next eligible one-minute observation.
 - A candidate maintains deterministic, schema-limited state and increments sequence exactly once per evaluation.
 - V1 permits no overnight strategy position and at most one nonterminal position/order in the portfolio replay.
-- Trend families bind `TREND_VWAP_OR_60M_V1`; H2 binds `REVERSION_VWAP_TOUCH_OR_60M_V1`.
+- Trend strategies bind `TREND_VWAP_OR_60M_V1`; VWAP reversion binds `REVERSION_VWAP_TOUCH_OR_60M_V1`.
 - The final-Thursday research rule allows no new entry after 13:30 ET, begins flatten by 15:15, and requires flat by 15:30.
 
 The central position manager implements the named policy decisions and reduce-only plan construction at the pinned commit. Durable Postgres fill/position lifecycle, broker-confirmed-flat deadlines, restart/concurrency behavior, and operator authority remain release-owned paper-safety work. Researchers replay the frozen economic exit rules; they do not implement broker exits or claim paper readiness.
@@ -125,7 +125,7 @@ There is no claimed shared historical backtester in this release. Each package m
 
 | Gate | Research status | What still blocks integration or paper use |
 |---|---|---|
-| `G-R1_REGISTRY_AUTHORITY` | **CLOSED for host research interface** | H1–H6 packages are not registered. Candidate source/config/feature/evidence hashes and non-author review must be proposed, independently checked, and centrally merged. |
+| `G-R1_REGISTRY_AUTHORITY` | **CLOSED for host research interface** | Research packages are not registered. Candidate source/config/feature/evidence hashes and non-author review must be proposed, independently checked, and centrally merged. |
 | `G-R2_CATALOG_PARITY` | **PARTIAL; research may start** | Catalog loading/hash authority is present. Candidate-specific OTM tie/outward-strike, fees, quantity, maximum-loss, and refusal parity must still be proven. |
 | `G-R3_OUTPUT_BINDING` | **CLOSED for host baseline** | Every candidate must pass the same golden/negative cases after its registry proposal is reviewed. |
 | `G-R4_FEATURE_CONTRACT` | **CLOSED for host shape; candidate-owned formulas open** | The fixture proves namespaced, hash-bound input enforcement. Each family must publish exact formulas, lookbacks, availability rules, worked examples, key ordering, and its own hash. |
