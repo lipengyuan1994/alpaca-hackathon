@@ -1,0 +1,112 @@
+{
+  "$defs": {
+    "PositionPolicyIdV1": {
+      "enum": [
+        "TREND_VWAP_OR_60M_V1",
+        "REVERSION_VWAP_TOUCH_OR_60M_V1"
+      ],
+      "title": "PositionPolicyIdV1",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "as_of": {
+      "format": "date-time",
+      "title": "As Of",
+      "type": "string"
+    },
+    "content_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Content Hash"
+    },
+    "direction": {
+      "enum": [
+        "BULLISH",
+        "BEARISH"
+      ],
+      "title": "Direction",
+      "type": "string"
+    },
+    "expires_at": {
+      "format": "date-time",
+      "title": "Expires At",
+      "type": "string"
+    },
+    "horizon_bucket": {
+      "const": "INTRADAY_15_60M",
+      "title": "Horizon Bucket",
+      "type": "string"
+    },
+    "intent_id": {
+      "minLength": 1,
+      "title": "Intent Id",
+      "type": "string"
+    },
+    "position_policy_id": {
+      "$ref": "#/$defs/PositionPolicyIdV1"
+    },
+    "risk_tier": {
+      "enum": [
+        "TINY",
+        "STANDARD"
+      ],
+      "title": "Risk Tier",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "trade-intent/v1",
+      "default": "trade-intent/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "strategy_evaluation_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Strategy Evaluation Hash",
+      "type": "string"
+    },
+    "template_id": {
+      "enum": [
+        "CALL_DEBIT_SPREAD_V1",
+        "PUT_DEBIT_SPREAD_V1",
+        "LONG_CALL_V1",
+        "LONG_PUT_V1"
+      ],
+      "title": "Template Id",
+      "type": "string"
+    },
+    "thesis_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Thesis Hash",
+      "type": "string"
+    },
+    "underlying": {
+      "pattern": "^[A-Z]{1,8}$",
+      "title": "Underlying",
+      "type": "string"
+    }
+  },
+  "required": [
+    "intent_id",
+    "as_of",
+    "underlying",
+    "template_id",
+    "direction",
+    "horizon_bucket",
+    "risk_tier",
+    "position_policy_id",
+    "expires_at",
+    "strategy_evaluation_hash",
+    "thesis_hash"
+  ],
+  "title": "TradeIntentV1",
+  "type": "object"
+}

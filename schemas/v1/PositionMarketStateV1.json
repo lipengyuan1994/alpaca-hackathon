@@ -1,0 +1,62 @@
+{
+  "additionalProperties": false,
+  "description": "Completed-bar state used by deterministic central exit policies.",
+  "properties": {
+    "as_of": {
+      "format": "date-time",
+      "title": "As Of",
+      "type": "string"
+    },
+    "competition_flatten_at": {
+      "format": "date-time",
+      "title": "Competition Flatten At",
+      "type": "string"
+    },
+    "completed_bar": {
+      "const": true,
+      "default": true,
+      "title": "Completed Bar",
+      "type": "boolean"
+    },
+    "schema_version": {
+      "const": "position-market-state/v1",
+      "default": "position-market-state/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "session_vwap": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+          "type": "string"
+        }
+      ],
+      "title": "Session Vwap"
+    },
+    "underlying_price": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+          "type": "string"
+        }
+      ],
+      "title": "Underlying Price"
+    }
+  },
+  "required": [
+    "as_of",
+    "underlying_price",
+    "session_vwap",
+    "competition_flatten_at"
+  ],
+  "title": "PositionMarketStateV1",
+  "type": "object"
+}

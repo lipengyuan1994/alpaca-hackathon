@@ -64,6 +64,14 @@
       ],
       "title": "OrderLegV1",
       "type": "object"
+    },
+    "PositionPolicyIdV1": {
+      "enum": [
+        "TREND_VWAP_OR_60M_V1",
+        "REVERSION_VWAP_TOUCH_OR_60M_V1"
+      ],
+      "title": "PositionPolicyIdV1",
+      "type": "string"
     }
   },
   "additionalProperties": false,
@@ -79,7 +87,7 @@
       "type": "integer"
     },
     "client_order_id": {
-      "pattern": "^[a-z0-9-]{8,64}$",
+      "pattern": "^[a-z0-9-]{8,48}$",
       "title": "Client Order Id",
       "type": "string"
     },
@@ -150,6 +158,9 @@
       "title": "Plan Id",
       "type": "string"
     },
+    "position_policy_id": {
+      "$ref": "#/$defs/PositionPolicyIdV1"
+    },
     "position_snapshot_version": {
       "minimum": 0,
       "title": "Position Snapshot Version",
@@ -194,6 +205,7 @@
     "account_id",
     "underlying",
     "template_id",
+    "position_policy_id",
     "legs",
     "quantity",
     "limit_debit",

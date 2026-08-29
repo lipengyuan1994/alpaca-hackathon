@@ -4,19 +4,22 @@ from __future__ import annotations
 
 import argparse
 import json
-import platform
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 from typing import Any
 
+from apps.common import assert_native_developer_runtime
 from packages.agent import fixture_thesis
 from packages.contracts.canonical import canonical_hash
 from packages.contracts.models import (
     AccountSnapshotV1,
+    ControlStateV1,
     EventEnvelopeV1,
     ExecuteApprovedPlanV1,
+    ExecutionBundleV1,
     FeedIdentityV1,
+    MarketClockV1,
     MarketSnapshotV1,
     OperatingModeV1,
     OptionContractV1,
@@ -31,15 +34,19 @@ from packages.contracts.models import (
 )
 from packages.decision_core.registry import default_registry
 from packages.decision_core.resolver import NoTradeRecordedV1, resolve
+from packages.domain import reconciliation_hash
 from packages.ledger import MemoryLedger
-from packages.market_data import compute_feature_vector
+from packages.market_data import compute_feature_vector, load_feature_contract
 from packages.order_planner import build_plan, template_catalog_hash
 from packages.risk_kernel import default_policy, evaluate_risk
-from packages.strategy_runner import run_plugin
+from packages.strategy_runner import PluginAuthorization, run_plugin
 
 FIXTURE_TIME = datetime(2026, 8, 31, 14, 15, tzinfo=UTC)
 RELEASE_HASH = canonical_hash({"release": "fixture-v1"})
 ALLOWLIST_HASH = canonical_hash({"accounts": ["paper-fixture-account"]})
+COMPETITION_ENTRY_CUTOFF = datetime(2026, 9, 3, 17, 30, tzinfo=UTC)
+COMPETITION_FLATTEN_AT = datetime(2026, 9, 3, 19, 15, tzinfo=UTC)
+COMPETITION_FLAT_DEADLINE = datetime(2026, 9, 3, 19, 30, tzinfo=UTC)
 
 
 @dataclass(frozen=True)
@@ -55,11 +62,7 @@ class RunResult:
     account: AccountSnapshotV1 | None = None
     positions: PositionSnapshotV1 | None = None
     order_risk: OrderRiskSnapshotV1 | None = None
-
-
-def assert_native_developer_runtime() -> None:
-    if platform.machine() != "arm64":
-        raise RuntimeError("LOCAL_RUNTIME_MUST_BE_ARM64")
+    control_state: ControlStateV1 | None = None
 
 
 def _event(
@@ -98,22 +101,28 @@ def fixture_inputs(*, momentum: bool = False) -> tuple[
         snapshot_id="market-fixture-1",
         as_of=FIXTURE_TIME,
         feed_identity=FeedIdentityV1(entitlement="alpaca-basic-fixture"),
+        clock=MarketClockV1(
+            is_open=True,
+            as_of=FIXTURE_TIME,
+            next_open=FIXTURE_TIME + timedelta(days=1),
+            next_close=FIXTURE_TIME + timedelta(hours=6),
+        ),
         underlying_quotes={"SPY": quote},
         option_contracts=(
             OptionContractV1(
-                symbol="SPY260915C00600000",
+                symbol="SPY260914C00600000",
                 underlying="SPY",
                 right="CALL",
                 strike="600",
-                expiration=FIXTURE_TIME + timedelta(days=15),
+                expiration=FIXTURE_TIME + timedelta(days=14),
                 quote=QuoteV1(bid="1.80", ask="2.00", event_time=FIXTURE_TIME, available_time=FIXTURE_TIME),
             ),
             OptionContractV1(
-                symbol="SPY260915C00605000",
+                symbol="SPY260914C00605000",
                 underlying="SPY",
                 right="CALL",
                 strike="605",
-                expiration=FIXTURE_TIME + timedelta(days=15),
+                expiration=FIXTURE_TIME + timedelta(days=14),
                 quote=QuoteV1(bid="0.75", ask="0.90", event_time=FIXTURE_TIME, available_time=FIXTURE_TIME),
             ),
         ),
@@ -124,6 +133,7 @@ def fixture_inputs(*, momentum: bool = False) -> tuple[
         version=1,
         as_of=FIXTURE_TIME,
         equity="100000",
+        day_start_equity="100000",
         cash="100000",
         buying_power="100000",
     )
@@ -134,11 +144,16 @@ def fixture_inputs(*, momentum: bool = False) -> tuple[
         snapshot_id="order-risk-fixture-1", account_id=account.account_id, version=1, as_of=FIXTURE_TIME
     )
     config = StrategyConfigV1(values={"momentum_threshold": Decimal("1.0")})
+    feature_contract = load_feature_contract()
     feature = compute_feature_vector(
         market,
         feature_id="features-fixture-1",
-        calculated_at=FIXTURE_TIME,
-        values={"momentum_z": Decimal("1.2") if momentum else Decimal("0.0")},
+        calculated_at=FIXTURE_TIME - timedelta(seconds=1),
+        values={
+            "SPY__momentum_z": Decimal("1.2") if momentum else Decimal("0.0"),
+            "QQQ__momentum_z": Decimal("0.8") if momentum else Decimal("0.0"),
+        },
+        contract=feature_contract,
     )
     registry = default_registry()
     context = StrategyContextV1(
@@ -148,6 +163,8 @@ def fixture_inputs(*, momentum: bool = False) -> tuple[
         market_snapshot_hash=market.content_hash,
         feature_vector_id=feature.feature_id,
         feature_vector_hash=feature.content_hash,
+        feature_contract_hash=feature.feature_contract_hash,
+        feature_available_time=feature.available_time,
         feed_identity=market.feed_identity,
         universe_features=feature.values,
         allowed_intent_tuples=registry.entry("always_no_trade", "1.0.0").allowed_intent_tuples,
@@ -165,22 +182,42 @@ def fixture_inputs(*, momentum: bool = False) -> tuple[
 def _evaluate(plugin_id: str, *, momentum: bool) -> tuple[Any, Any, Any, Any, Any, Any, Any]:
     market, account, positions, order_risk, context, config = fixture_inputs(momentum=momentum)
     registry = default_registry()
-    entry = registry.entry(plugin_id, "1.0.0")
-    if plugin_id == "regime_momentum":
-        context = context.model_copy(
-            update={
-                "prior_state": context.prior_state.model_copy(
-                    update={
-                        "plugin_id": "regime_momentum",
-                        "plugin_version": "1.0.0",
-                        "state_hash": None,
-                    }
-                )
-            }
-        )
-        # Derived hash must change with the substituted prior state.
-        context = StrategyContextV1.model_validate(context.model_dump(exclude={"context_hash"}))
-    evaluation = run_plugin(entrypoint=entry.entrypoint, context=context, config=config)
+    assert config.config_hash is not None
+    entry = registry.authorize(
+        plugin_id,
+        "1.0.0",
+        config_hash=config.config_hash,
+        mode=OperatingModeV1.PAPER_DEMO_ARMED,
+    )
+    context = context.model_copy(
+        update={
+            "allowed_intent_tuples": entry.allowed_intent_tuples,
+            "universe_features": {
+                key: context.universe_features[key]
+                for key in entry.data_requirements.required_feature_keys
+            },
+            "prior_state": context.prior_state.model_copy(
+                update={
+                    "plugin_id": entry.plugin_id,
+                    "plugin_version": entry.plugin_version,
+                    "state_hash": None,
+                }
+            ),
+        }
+    )
+    # Derived hash must change with the registry-projected authority and state.
+    context = StrategyContextV1.model_validate(context.model_dump(exclude={"context_hash"}))
+    authorization = PluginAuthorization(
+        registry_hash=registry.registry_hash,
+        entrypoint=entry.entrypoint,
+        content_hash=entry.content_hash,
+        expected_metadata=entry.expected_metadata,
+        expected_data_requirements=entry.data_requirements,
+        config_hash=entry.config_hash,
+        allowed_underlyings=entry.allowed_underlyings,
+        allowed_intent_tuples=entry.allowed_intent_tuples,
+    )
+    evaluation = run_plugin(authorization=authorization, context=context, config=config)
     thesis = fixture_thesis(context, evaluation)
     return market, account, positions, order_risk, context, config, (evaluation, thesis)
 
@@ -191,7 +228,14 @@ def run_refusal_fixture() -> RunResult:
     ledger = MemoryLedger()
     market, _, _, _, context, _, pair = _evaluate("always_no_trade", momentum=False)
     evaluation, thesis = pair
-    outcome = resolve(evaluation, thesis, context, now=FIXTURE_TIME)
+    entry = default_registry().entry(evaluation.plugin_id, evaluation.plugin_version)
+    outcome = resolve(
+        evaluation,
+        thesis,
+        context,
+        now=FIXTURE_TIME,
+        position_policy_id=entry.position_policy_ref,
+    )
     assert isinstance(outcome, NoTradeRecordedV1)
     ledger.append(_event(event_type="MarketSnapshotRecordedV1", aggregate_id=run_id, version=1, payload=market, run_id=run_id))
     ledger.append(
@@ -212,7 +256,15 @@ def run_approved_fixture() -> RunResult:
     ledger = MemoryLedger()
     market, account, positions, baseline_risk, context, config, pair = _evaluate("regime_momentum", momentum=True)
     evaluation, thesis = pair
-    intent = resolve(evaluation, thesis, context, now=FIXTURE_TIME)
+    registry = default_registry()
+    entry = registry.entry(evaluation.plugin_id, evaluation.plugin_version)
+    intent = resolve(
+        evaluation,
+        thesis,
+        context,
+        now=FIXTURE_TIME,
+        position_policy_id=entry.position_policy_ref,
+    )
     if isinstance(intent, NoTradeRecordedV1):
         raise RuntimeError(f"fixture unexpectedly refused: {intent.reason_code}")
     plan = build_plan(intent, market, account, positions, baseline_risk, now=FIXTURE_TIME)
@@ -233,7 +285,29 @@ def run_approved_fixture() -> RunResult:
             ),
         ),
     )
-    registry = default_registry()
+    prior_control_state = ControlStateV1(
+        account_id=account.account_id,
+        version=1,
+        mode=OperatingModeV1.PAPER_DEMO_ARMED,
+        release_hash=RELEASE_HASH,
+        config_hash=config.config_hash,
+        account_allowlist_hash=ALLOWLIST_HASH,
+        reconciliation_hash=reconciliation_hash(account, positions, baseline_risk),
+        reconciled_at=FIXTURE_TIME,
+    )
+    control_state = ControlStateV1(
+        account_id=account.account_id,
+        version=prior_control_state.version + 1,
+        mode=prior_control_state.mode,
+        release_hash=prior_control_state.release_hash,
+        config_hash=prior_control_state.config_hash,
+        account_allowlist_hash=prior_control_state.account_allowlist_hash,
+        reconciliation_hash=reconciliation_hash(account, positions, prospective_risk),
+        reconciled_at=FIXTURE_TIME,
+    )
+    ledger.initialize_control_state(prior_control_state)
+    ledger.initialize_order_risk_state(baseline_risk)
+    assert control_state.content_hash is not None
     risk_input = RiskInputV1(
         plan=plan,
         market_snapshot_hash=market.content_hash,
@@ -246,10 +320,22 @@ def run_approved_fixture() -> RunResult:
         strategy_config_hash=config.config_hash,
         strategy_content_hash=evaluation.plugin_content_hash,
         mode=OperatingModeV1.PAPER_DEMO_ARMED,
+        control_state_hash=control_state.content_hash,
+        control_state_version=control_state.version,
         account_allowlist_hash=ALLOWLIST_HASH,
         release_hash=RELEASE_HASH,
+        entry_cutoff_at=COMPETITION_ENTRY_CUTOFF,
+        flatten_at=COMPETITION_FLATTEN_AT,
     )
-    approval = evaluate_risk(risk_input, market, account, positions, prospective_risk, now=FIXTURE_TIME)
+    approval = evaluate_risk(
+        risk_input,
+        market,
+        account,
+        positions,
+        prospective_risk,
+        control_state,
+        now=FIXTURE_TIME,
+    )
     command = ExecuteApprovedPlanV1(
         command_id=f"command-{plan.plan_hash.removeprefix('sha256:')[:24]}",
         plan=plan,
@@ -259,11 +345,24 @@ def run_approved_fixture() -> RunResult:
         account_snapshot_version=account.version,
         position_snapshot_version=positions.version,
         order_risk_snapshot_version=prospective_risk.version,
+        control_state_hash=control_state.content_hash,
+        control_state_version=control_state.version,
+    )
+    bundle = ExecutionBundleV1(
+        bundle_id=f"bundle-{command.command_hash.removeprefix('sha256:')[:24]}",
+        command=command,
+        risk_input=risk_input,
+        market=market,
+        account=account,
+        positions=positions,
+        order_risk=prospective_risk,
+        control_state=control_state,
     )
     ledger.reserve_and_enqueue(
-        account_id=account.account_id,
-        approval=approval,
-        command=command,
+        bundle=bundle,
+        prospective_order_risk=prospective_risk,
+        expected_prior_order_risk_version=baseline_risk.version,
+        expected_prior_control_state=prior_control_state,
         event=_event(
             event_type="RiskApprovedAndCapacityReservedV1",
             aggregate_id=run_id,
@@ -288,6 +387,7 @@ def run_approved_fixture() -> RunResult:
         account=account,
         positions=positions,
         order_risk=prospective_risk,
+        control_state=control_state,
     )
 
 

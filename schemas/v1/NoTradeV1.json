@@ -1,0 +1,34 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "kind": {
+      "const": "NO_TRADE",
+      "default": "NO_TRADE",
+      "title": "Kind",
+      "type": "string"
+    },
+    "primary_reason_code": {
+      "pattern": "^[A-Z][A-Z0-9_]{2,95}$",
+      "title": "Primary Reason Code",
+      "type": "string"
+    },
+    "retry_after": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Retry After"
+    }
+  },
+  "required": [
+    "primary_reason_code"
+  ],
+  "title": "NoTradeV1",
+  "type": "object"
+}

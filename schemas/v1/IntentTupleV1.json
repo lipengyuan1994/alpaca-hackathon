@@ -1,0 +1,42 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "horizon_bucket": {
+      "const": "INTRADAY_15_60M",
+      "title": "Horizon Bucket",
+      "type": "string"
+    },
+    "max_intent_ttl_seconds": {
+      "maximum": 300,
+      "minimum": 1,
+      "title": "Max Intent Ttl Seconds",
+      "type": "integer"
+    },
+    "risk_tier": {
+      "enum": [
+        "TINY",
+        "STANDARD"
+      ],
+      "title": "Risk Tier",
+      "type": "string"
+    },
+    "template_id": {
+      "enum": [
+        "CALL_DEBIT_SPREAD_V1",
+        "PUT_DEBIT_SPREAD_V1",
+        "LONG_CALL_V1",
+        "LONG_PUT_V1"
+      ],
+      "title": "Template Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "template_id",
+    "horizon_bucket",
+    "risk_tier",
+    "max_intent_ttl_seconds"
+  ],
+  "title": "IntentTupleV1",
+  "type": "object"
+}

@@ -4,7 +4,10 @@ FROM python:3.12-slim AS api
 ARG TARGETARCH
 RUN test "$TARGETARCH" = "arm64" || test "$TARGETARCH" = "amd64"
 WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
 COPY packages/contracts packages/contracts
+COPY packages/domain packages/domain
 COPY packages/ledger packages/ledger
 COPY apps/api apps/api
 RUN pip install --no-cache-dir "fastapi==0.141.1" "uvicorn==0.41.0" "pydantic==2.13.5"

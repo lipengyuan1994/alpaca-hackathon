@@ -1,10 +1,31 @@
 version: template-catalog/v1
+selector_version: nearest-spot-one-percent-width/v1
+quote_ttl_seconds: 30
+risk_tiers:
+  TINY:
+    max_loss_dollars: 250
+    max_equity_fraction: 0.0025
+  STANDARD:
+    max_loss_dollars: 500
+    max_equity_fraction: 0.005
 templates:
   CALL_DEBIT_SPREAD_V1:
+    enabled: true
     direction: BULLISH
+    right: CALL
     atomic_option_only: true
     max_legs: 2
+    min_dte: 7
+    max_dte: 14
+    target_short_offset_fraction: 0.01
+    standard_deliverable_only: true
   PUT_DEBIT_SPREAD_V1:
+    enabled: true
     direction: BEARISH
+    right: PUT
     atomic_option_only: true
     max_legs: 2
+    min_dte: 7
+    max_dte: 14
+    target_short_offset_fraction: 0.01
+    standard_deliverable_only: true

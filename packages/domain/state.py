@@ -58,4 +58,6 @@ def apply_control_command(
         raise ControlError("CONTROL_TARGET_NOT_PERMITTED")
 
     used_nonces.add(nonce)
-    return state.model_copy(update={"mode": target, "version": state.version + 1})
+    material = state.model_dump(exclude={"content_hash"})
+    material.update({"mode": target, "version": state.version + 1})
+    return ControlStateV1.model_validate(material)

@@ -1,0 +1,53 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "api_version": {
+      "const": "strategy-plugin/v1",
+      "default": "strategy-plugin/v1",
+      "title": "Api Version",
+      "type": "string"
+    },
+    "decision_schema_version": {
+      "const": "strategy-evaluation/v1",
+      "default": "strategy-evaluation/v1",
+      "title": "Decision Schema Version",
+      "type": "string"
+    },
+    "deterministic": {
+      "const": true,
+      "default": true,
+      "title": "Deterministic",
+      "type": "boolean"
+    },
+    "economic_hypothesis_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Economic Hypothesis Id",
+      "type": "string"
+    },
+    "owner": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Owner",
+      "type": "string"
+    },
+    "plugin_id": {
+      "pattern": "^[a-z][a-z0-9_]{1,63}$",
+      "title": "Plugin Id",
+      "type": "string"
+    },
+    "plugin_version": {
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "title": "Plugin Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "plugin_id",
+    "plugin_version",
+    "owner",
+    "economic_hypothesis_id"
+  ],
+  "title": "StrategyMetadataV1",
+  "type": "object"
+}

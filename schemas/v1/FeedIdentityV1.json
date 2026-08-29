@@ -1,0 +1,28 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "entitlement": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Entitlement",
+      "type": "string"
+    },
+    "equity": {
+      "const": "iex",
+      "default": "iex",
+      "title": "Equity",
+      "type": "string"
+    },
+    "options": {
+      "const": "indicative",
+      "default": "indicative",
+      "title": "Options",
+      "type": "string"
+    }
+  },
+  "required": [
+    "entitlement"
+  ],
+  "title": "FeedIdentityV1",
+  "type": "object"
+}

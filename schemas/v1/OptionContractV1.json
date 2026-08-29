@@ -1,0 +1,117 @@
+{
+  "$defs": {
+    "QuoteV1": {
+      "additionalProperties": false,
+      "properties": {
+        "ask": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "title": "Ask"
+        },
+        "available_time": {
+          "format": "date-time",
+          "title": "Available Time",
+          "type": "string"
+        },
+        "bid": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "title": "Bid"
+        },
+        "event_time": {
+          "format": "date-time",
+          "title": "Event Time",
+          "type": "string"
+        }
+      },
+      "required": [
+        "bid",
+        "ask",
+        "event_time",
+        "available_time"
+      ],
+      "title": "QuoteV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "deliverable": {
+      "const": "STANDARD",
+      "default": "STANDARD",
+      "title": "Deliverable",
+      "type": "string"
+    },
+    "expiration": {
+      "format": "date-time",
+      "title": "Expiration",
+      "type": "string"
+    },
+    "multiplier": {
+      "const": 100,
+      "default": 100,
+      "title": "Multiplier",
+      "type": "integer"
+    },
+    "quote": {
+      "$ref": "#/$defs/QuoteV1"
+    },
+    "right": {
+      "enum": [
+        "CALL",
+        "PUT"
+      ],
+      "title": "Right",
+      "type": "string"
+    },
+    "strike": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+          "type": "string"
+        }
+      ],
+      "title": "Strike"
+    },
+    "symbol": {
+      "pattern": "^[A-Z0-9]{1,32}$",
+      "title": "Symbol",
+      "type": "string"
+    },
+    "underlying": {
+      "pattern": "^[A-Z]{1,8}$",
+      "title": "Underlying",
+      "type": "string"
+    }
+  },
+  "required": [
+    "symbol",
+    "underlying",
+    "right",
+    "strike",
+    "expiration",
+    "quote"
+  ],
+  "title": "OptionContractV1",
+  "type": "object"
+}

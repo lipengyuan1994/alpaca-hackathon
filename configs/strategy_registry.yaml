@@ -3,10 +3,51 @@ entries:
   - plugin_id: always_no_trade
     plugin_version: 1.0.0
     entrypoint: strategy_plugins.always_no_trade_v1.plugin:Plugin
+    content_hash: sha256:8b888de1a78048753743106cabb030523a7df0266ca26a92de0b855a19e952d2
     lifecycle: paper_demo_only
     authority: central-registry-only
+    owner: platform
+    reviewer: quant-release
+    economic_hypothesis_id: safe-refusal
+    config_hash: sha256:c3943c8bc3548fde4dc66202a618a9861dfdf20849313debc0c27d660b7894cd
+    promotion_evidence_hash: sha256:009e4e5e27141594e95eea028dca823c6c8d449d7127b1e73ff03ce35178f29c
+    position_policy_ref: TREND_VWAP_OR_60M_V1
+    data_requirements:
+      underlyings: [SPY]
+      feature_schema_version: feature-vector/v1
+      feature_contract_hash: sha256:3e3cfa8a1047dda69b0c829d0b1153f9258f4356c23ffb1def6a8601ff3445bc
+      required_feature_keys: []
+      maximum_observation_age_seconds: 60
+      needs_logical_positions: false
+    allowed_underlyings: [SPY]
+    allowed_intent_tuples:
+      - template_id: CALL_DEBIT_SPREAD_V1
+        horizon_bucket: INTRADAY_15_60M
+        risk_tier: TINY
+        max_intent_ttl_seconds: 300
+
   - plugin_id: regime_momentum
     plugin_version: 1.0.0
     entrypoint: strategy_plugins.regime_momentum_v1.plugin:Plugin
+    content_hash: sha256:d9dfe29c4025f8346b11666b1300223852deead7ec73386b94fb76c89f663153
     lifecycle: paper_demo_only
     authority: central-registry-only
+    owner: research
+    reviewer: quant-release
+    economic_hypothesis_id: H1_NORMALIZED_INTRADAY_CONTINUATION
+    config_hash: sha256:c3943c8bc3548fde4dc66202a618a9861dfdf20849313debc0c27d660b7894cd
+    promotion_evidence_hash: sha256:3676bfbee7bd87abf0b115331e51afe445d5facc6e72c468bbd77a0470aa5e36
+    position_policy_ref: TREND_VWAP_OR_60M_V1
+    data_requirements:
+      underlyings: [SPY, QQQ]
+      feature_schema_version: feature-vector/v1
+      feature_contract_hash: sha256:3e3cfa8a1047dda69b0c829d0b1153f9258f4356c23ffb1def6a8601ff3445bc
+      required_feature_keys: [SPY__momentum_z, QQQ__momentum_z]
+      maximum_observation_age_seconds: 60
+      needs_logical_positions: false
+    allowed_underlyings: [SPY, QQQ]
+    allowed_intent_tuples:
+      - template_id: CALL_DEBIT_SPREAD_V1
+        horizon_bucket: INTRADAY_15_60M
+        risk_tier: TINY
+        max_intent_ttl_seconds: 300

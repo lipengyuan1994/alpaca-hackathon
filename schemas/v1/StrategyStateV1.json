@@ -1,0 +1,56 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "as_of": {
+      "format": "date-time",
+      "title": "As Of",
+      "type": "string"
+    },
+    "payload": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Payload",
+      "type": "object"
+    },
+    "plugin_id": {
+      "title": "Plugin Id",
+      "type": "string"
+    },
+    "plugin_version": {
+      "title": "Plugin Version",
+      "type": "string"
+    },
+    "sequence": {
+      "minimum": 0,
+      "title": "Sequence",
+      "type": "integer"
+    },
+    "state_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "State Hash"
+    },
+    "state_schema_version": {
+      "const": "strategy-state/v1",
+      "default": "strategy-state/v1",
+      "title": "State Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "plugin_id",
+    "plugin_version",
+    "as_of",
+    "sequence"
+  ],
+  "title": "StrategyStateV1",
+  "type": "object"
+}

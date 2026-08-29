@@ -2,9 +2,18 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import Protocol
 
-from packages.contracts.models import BrokerEventV1, OrderPlanV1
+from packages.contracts.models import (
+    AccountSnapshotV1,
+    BrokerEventV1,
+    MarketSnapshotV1,
+    OrderPlanV1,
+    OrderRiskSnapshotV1,
+    PositionSnapshotV1,
+    ReduceOnlyOrderPlanV1,
+)
 
 
 class PaperEndpointError(ValueError):
@@ -12,8 +21,24 @@ class PaperEndpointError(ValueError):
 
 
 class AlpacaExecutionPort(Protocol):
-    def submit_approved_plan(self, plan: OrderPlanV1) -> BrokerEventV1: ...
+    def submit(
+        self,
+        plan: OrderPlanV1 | ReduceOnlyOrderPlanV1,
+        *,
+        now: datetime,
+    ) -> BrokerEventV1: ...
 
-    def reconcile_client_order(self, client_order_id: str) -> BrokerEventV1 | None: ...
+    def reconcile(self, client_order_id: str, *, now: datetime) -> BrokerEventV1 | None: ...
 
-    def cancel_by_client_order_id(self, client_order_id: str) -> BrokerEventV1: ...
+    def cancel(self, client_order_id: str, *, now: datetime) -> BrokerEventV1: ...
+
+    def runtime_state_violations(
+        self,
+        *,
+        account: AccountSnapshotV1,
+        positions: PositionSnapshotV1,
+        order_risk: OrderRiskSnapshotV1,
+        market: MarketSnapshotV1,
+        now: datetime,
+        quote_ttl_seconds: int,
+    ) -> tuple[str, ...]: ...

@@ -1,0 +1,50 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "feature_contract_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Feature Contract Hash",
+      "type": "string"
+    },
+    "feature_schema_version": {
+      "const": "feature-vector/v1",
+      "default": "feature-vector/v1",
+      "title": "Feature Schema Version",
+      "type": "string"
+    },
+    "maximum_observation_age_seconds": {
+      "maximum": 900,
+      "minimum": 1,
+      "title": "Maximum Observation Age Seconds",
+      "type": "integer"
+    },
+    "needs_logical_positions": {
+      "default": false,
+      "title": "Needs Logical Positions",
+      "type": "boolean"
+    },
+    "required_feature_keys": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Required Feature Keys",
+      "type": "array"
+    },
+    "underlyings": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Underlyings",
+      "type": "array"
+    }
+  },
+  "required": [
+    "underlyings",
+    "feature_contract_hash",
+    "maximum_observation_age_seconds"
+  ],
+  "title": "DataRequirementsV1",
+  "type": "object"
+}

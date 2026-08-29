@@ -1,0 +1,87 @@
+{
+  "$defs": {
+    "OperatingModeV1": {
+      "enum": [
+        "DISARMED",
+        "REPLAY",
+        "SHADOW",
+        "PAPER_DEMO_ARMED",
+        "PAPER_ARMED",
+        "FLATTENING",
+        "HALTED"
+      ],
+      "title": "OperatingModeV1",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "account_allowlist_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Account Allowlist Hash",
+      "type": "string"
+    },
+    "account_id": {
+      "title": "Account Id",
+      "type": "string"
+    },
+    "config_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Config Hash",
+      "type": "string"
+    },
+    "content_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Content Hash"
+    },
+    "mode": {
+      "$ref": "#/$defs/OperatingModeV1",
+      "default": "DISARMED"
+    },
+    "reconciled_at": {
+      "format": "date-time",
+      "title": "Reconciled At",
+      "type": "string"
+    },
+    "reconciliation_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Reconciliation Hash",
+      "type": "string"
+    },
+    "release_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Release Hash",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "control-state/v1",
+      "default": "control-state/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "version": {
+      "minimum": 0,
+      "title": "Version",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "account_id",
+    "version",
+    "release_hash",
+    "config_hash",
+    "account_allowlist_hash",
+    "reconciliation_hash",
+    "reconciled_at"
+  ],
+  "title": "ControlStateV1",
+  "type": "object"
+}

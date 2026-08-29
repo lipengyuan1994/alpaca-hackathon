@@ -1,0 +1,33 @@
+{
+  "additionalProperties": false,
+  "description": "Broker-observed market clock; local wall-clock guesses are not authority.",
+  "properties": {
+    "as_of": {
+      "format": "date-time",
+      "title": "As Of",
+      "type": "string"
+    },
+    "is_open": {
+      "title": "Is Open",
+      "type": "boolean"
+    },
+    "next_close": {
+      "format": "date-time",
+      "title": "Next Close",
+      "type": "string"
+    },
+    "next_open": {
+      "format": "date-time",
+      "title": "Next Open",
+      "type": "string"
+    }
+  },
+  "required": [
+    "is_open",
+    "as_of",
+    "next_open",
+    "next_close"
+  ],
+  "title": "MarketClockV1",
+  "type": "object"
+}

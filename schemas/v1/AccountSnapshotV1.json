@@ -50,6 +50,23 @@
       "default": null,
       "title": "Content Hash"
     },
+    "day_start_equity": {
+      "anyOf": [
+        {
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Day Start Equity"
+    },
     "equity": {
       "anyOf": [
         {

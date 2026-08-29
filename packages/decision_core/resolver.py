@@ -9,6 +9,7 @@ from packages.contracts.models import (
     AgentThesisV1,
     EntryTemplateRequestV1,
     NoTradeV1,
+    PositionPolicyIdV1,
     StrategyContextV1,
     StrategyEvaluationV1,
     TradeIntentV1,
@@ -38,6 +39,7 @@ def resolve(
     context: StrategyContextV1,
     *,
     now: datetime,
+    position_policy_id: PositionPolicyIdV1,
 ) -> TradeIntentV1 | NoTradeRecordedV1:
     now = now.astimezone(UTC)
     if thesis.context_hash != context.context_hash or thesis.strategy_evaluation_hash != evaluation.evaluation_hash:
@@ -73,6 +75,7 @@ def resolve(
         direction=direction,
         horizon_bucket=decision.horizon_bucket,
         risk_tier=decision.risk_tier,
+        position_policy_id=position_policy_id,
         expires_at=decision.intent_expires_at,
         strategy_evaluation_hash=evaluation.evaluation_hash,
         thesis_hash=thesis.content_hash,

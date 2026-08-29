@@ -1,0 +1,20 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "quantity": {
+      "title": "Quantity",
+      "type": "integer"
+    },
+    "symbol": {
+      "pattern": "^[A-Z0-9]{1,32}$",
+      "title": "Symbol",
+      "type": "string"
+    }
+  },
+  "required": [
+    "symbol",
+    "quantity"
+  ],
+  "title": "PositionLegV1",
+  "type": "object"
+}

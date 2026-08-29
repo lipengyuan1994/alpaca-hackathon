@@ -1,0 +1,82 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "broker_order_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Broker Order Id"
+    },
+    "client_order_id": {
+      "title": "Client Order Id",
+      "type": "string"
+    },
+    "content_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Content Hash"
+    },
+    "filled_quantity": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Filled Quantity",
+      "type": "integer"
+    },
+    "occurred_at": {
+      "format": "date-time",
+      "title": "Occurred At",
+      "type": "string"
+    },
+    "reason_code": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reason Code"
+    },
+    "schema_version": {
+      "const": "broker-event/v1",
+      "default": "broker-event/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "ACCEPTED",
+        "REJECTED",
+        "UNKNOWN",
+        "PARTIAL",
+        "FILLED",
+        "CANCELLED",
+        "EXPIRED"
+      ],
+      "title": "Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "client_order_id",
+    "status",
+    "occurred_at"
+  ],
+  "title": "BrokerEventV1",
+  "type": "object"
+}

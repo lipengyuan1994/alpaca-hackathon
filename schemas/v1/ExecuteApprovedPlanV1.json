@@ -79,7 +79,7 @@
           "type": "integer"
         },
         "client_order_id": {
-          "pattern": "^[a-z0-9-]{8,64}$",
+          "pattern": "^[a-z0-9-]{8,48}$",
           "title": "Client Order Id",
           "type": "string"
         },
@@ -150,6 +150,9 @@
           "title": "Plan Id",
           "type": "string"
         },
+        "position_policy_id": {
+          "$ref": "#/$defs/PositionPolicyIdV1"
+        },
         "position_snapshot_version": {
           "minimum": 0,
           "title": "Position Snapshot Version",
@@ -194,6 +197,7 @@
         "account_id",
         "underlying",
         "template_id",
+        "position_policy_id",
         "legs",
         "quantity",
         "limit_debit",
@@ -206,6 +210,14 @@
       ],
       "title": "OrderPlanV1",
       "type": "object"
+    },
+    "PositionPolicyIdV1": {
+      "enum": [
+        "TREND_VWAP_OR_60M_V1",
+        "REVERSION_VWAP_TOUCH_OR_60M_V1"
+      ],
+      "title": "PositionPolicyIdV1",
+      "type": "string"
     },
     "RiskDecisionV1": {
       "additionalProperties": false,
@@ -326,6 +338,16 @@
       "title": "Command Id",
       "type": "string"
     },
+    "control_state_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Control State Hash",
+      "type": "string"
+    },
+    "control_state_version": {
+      "minimum": 0,
+      "title": "Control State Version",
+      "type": "integer"
+    },
     "market_snapshot_hash": {
       "pattern": "^sha256:[0-9a-f]{64}$",
       "title": "Market Snapshot Hash",
@@ -364,7 +386,9 @@
     "market_snapshot_hash",
     "account_snapshot_version",
     "position_snapshot_version",
-    "order_risk_snapshot_version"
+    "order_risk_snapshot_version",
+    "control_state_hash",
+    "control_state_version"
   ],
   "title": "ExecuteApprovedPlanV1",
   "type": "object"

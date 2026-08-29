@@ -1,0 +1,102 @@
+{
+  "additionalProperties": false,
+  "description": "Immutable credential-free deployment authority used by execution preflight.",
+  "properties": {
+    "account_allowlist_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Account Allowlist Hash",
+      "type": "string"
+    },
+    "content_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Content Hash"
+    },
+    "entry_cutoff_at": {
+      "format": "date-time",
+      "title": "Entry Cutoff At",
+      "type": "string"
+    },
+    "expected_account_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Expected Account Id",
+      "type": "string"
+    },
+    "flat_deadline_at": {
+      "format": "date-time",
+      "title": "Flat Deadline At",
+      "type": "string"
+    },
+    "flatten_at": {
+      "format": "date-time",
+      "title": "Flatten At",
+      "type": "string"
+    },
+    "paper_base_url": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Paper Base Url",
+      "type": "string"
+    },
+    "release_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Release Hash",
+      "type": "string"
+    },
+    "risk_policy_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Risk Policy Hash",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "execution-deployment/v1",
+      "default": "execution-deployment/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "strategy_config_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Strategy Config Hash",
+      "type": "string"
+    },
+    "strategy_content_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Strategy Content Hash",
+      "type": "string"
+    },
+    "strategy_registry_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Strategy Registry Hash",
+      "type": "string"
+    },
+    "template_catalog_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Template Catalog Hash",
+      "type": "string"
+    }
+  },
+  "required": [
+    "expected_account_id",
+    "paper_base_url",
+    "risk_policy_hash",
+    "template_catalog_hash",
+    "strategy_registry_hash",
+    "strategy_config_hash",
+    "strategy_content_hash",
+    "account_allowlist_hash",
+    "release_hash",
+    "entry_cutoff_at",
+    "flatten_at",
+    "flat_deadline_at"
+  ],
+  "title": "ExecutionDeploymentV1",
+  "type": "object"
+}

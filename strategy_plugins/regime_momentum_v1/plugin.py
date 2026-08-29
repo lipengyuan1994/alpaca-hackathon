@@ -14,6 +14,9 @@ from packages.contracts.models import (
     StrategyEvaluationV1,
     StrategyMetadataV1,
 )
+from packages.strategy_sdk import UNBOUND_PLUGIN_CONTENT_HASH
+
+FEATURE_CONTRACT_HASH = "sha256:3e3cfa8a1047dda69b0c829d0b1153f9258f4356c23ffb1def6a8601ff3445bc"
 
 
 class Plugin:
@@ -27,7 +30,12 @@ class Plugin:
         )
 
     def data_requirements(self, config: StrategyConfigV1) -> DataRequirementsV1:
-        return DataRequirementsV1(underlyings=("SPY", "QQQ"), maximum_observation_age_seconds=60)
+        return DataRequirementsV1(
+            underlyings=("SPY", "QQQ"),
+            feature_contract_hash=FEATURE_CONTRACT_HASH,
+            required_feature_keys=("SPY__momentum_z", "QQQ__momentum_z"),
+            maximum_observation_age_seconds=60,
+        )
 
     def evaluate(self, context: StrategyContextV1, config: StrategyConfigV1) -> StrategyEvaluationV1:
         next_state = context.prior_state.__class__(
@@ -37,7 +45,7 @@ class Plugin:
             sequence=context.prior_state.sequence + 1,
             payload=context.prior_state.payload,
         )
-        if context.quality_flags or context.universe_features.get("momentum_z", 0) < 1:
+        if context.quality_flags or context.universe_features["SPY__momentum_z"] < 1:
             decision = NoTradeV1(primary_reason_code="MOMENTUM_GATE_NOT_MET")
         else:
             tuple_ = next(
@@ -71,7 +79,7 @@ class Plugin:
             evaluation_id=context.evaluation_id,
             plugin_id=self.metadata.plugin_id,
             plugin_version=self.metadata.plugin_version,
-            plugin_content_hash="sha256:" + "1" * 64,
+            plugin_content_hash=UNBOUND_PLUGIN_CONTENT_HASH,
             context_hash=context.context_hash,
             config_hash=context.config_hash,
             decision=decision,

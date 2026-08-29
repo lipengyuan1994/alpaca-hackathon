@@ -1,0 +1,81 @@
+{
+  "$defs": {
+    "PositionLegV1": {
+      "additionalProperties": false,
+      "properties": {
+        "quantity": {
+          "title": "Quantity",
+          "type": "integer"
+        },
+        "symbol": {
+          "pattern": "^[A-Z0-9]{1,32}$",
+          "title": "Symbol",
+          "type": "string"
+        }
+      },
+      "required": [
+        "symbol",
+        "quantity"
+      ],
+      "title": "PositionLegV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "account_id": {
+      "minLength": 1,
+      "title": "Account Id",
+      "type": "string"
+    },
+    "as_of": {
+      "format": "date-time",
+      "title": "As Of",
+      "type": "string"
+    },
+    "content_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Content Hash"
+    },
+    "legs": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/PositionLegV1"
+      },
+      "title": "Legs",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "position-snapshot/v1",
+      "default": "position-snapshot/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "snapshot_id": {
+      "minLength": 1,
+      "title": "Snapshot Id",
+      "type": "string"
+    },
+    "version": {
+      "minimum": 0,
+      "title": "Version",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "snapshot_id",
+    "account_id",
+    "version",
+    "as_of"
+  ],
+  "title": "PositionSnapshotV1",
+  "type": "object"
+}

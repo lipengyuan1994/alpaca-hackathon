@@ -1,0 +1,53 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "allowed": {
+      "title": "Allowed",
+      "type": "boolean"
+    },
+    "checked_at": {
+      "format": "date-time",
+      "title": "Checked At",
+      "type": "string"
+    },
+    "command_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Command Hash",
+      "type": "string"
+    },
+    "content_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Content Hash"
+    },
+    "reason_codes": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Reason Codes",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "execution-preflight/v1",
+      "default": "execution-preflight/v1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "command_hash",
+    "allowed",
+    "reason_codes",
+    "checked_at"
+  ],
+  "title": "ExecutionPreflightDecisionV1",
+  "type": "object"
+}

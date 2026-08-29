@@ -1,0 +1,65 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "expiration": {
+      "format": "date-time",
+      "title": "Expiration",
+      "type": "string"
+    },
+    "multiplier": {
+      "const": 100,
+      "default": 100,
+      "title": "Multiplier",
+      "type": "integer"
+    },
+    "quantity": {
+      "exclusiveMinimum": 0,
+      "title": "Quantity",
+      "type": "integer"
+    },
+    "right": {
+      "enum": [
+        "CALL",
+        "PUT"
+      ],
+      "title": "Right",
+      "type": "string"
+    },
+    "side": {
+      "enum": [
+        "BUY",
+        "SELL"
+      ],
+      "title": "Side",
+      "type": "string"
+    },
+    "strike": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+          "type": "string"
+        }
+      ],
+      "title": "Strike"
+    },
+    "symbol": {
+      "pattern": "^[A-Z0-9]{1,32}$",
+      "title": "Symbol",
+      "type": "string"
+    }
+  },
+  "required": [
+    "symbol",
+    "side",
+    "quantity",
+    "right",
+    "strike",
+    "expiration"
+  ],
+  "title": "OrderLegV1",
+  "type": "object"
+}

@@ -1,0 +1,30 @@
+version: feature-contract/v1
+contract_id: fixture_momentum_features_v1
+feature_schema_version: feature-vector/v1
+features:
+  - key: SPY__momentum_z
+    dtype: decimal
+    unit: z_score
+    source: alpaca_equity_bars
+    feed: iex
+    timeframe: 15m
+    lookback_bars: 4
+    formula_id: trailing_60m_return_z_fixture_v1
+    availability_delay_seconds: 1
+    maximum_age_seconds: 60
+    missing_behavior: NO_TRADE
+    allowed_quality_flags: []
+    worked_example_hash: sha256:7c606701d3541a138d51e65d6af08474592500cfba08b8a64796bb80ed02d2a8
+  - key: QQQ__momentum_z
+    dtype: decimal
+    unit: z_score
+    source: alpaca_equity_bars
+    feed: iex
+    timeframe: 15m
+    lookback_bars: 4
+    formula_id: trailing_60m_return_z_fixture_v1
+    availability_delay_seconds: 1
+    maximum_age_seconds: 60
+    missing_behavior: NO_TRADE
+    allowed_quality_flags: []
+    worked_example_hash: sha256:53b9fb4cc6ff6afecce21e61fe410c4945e203326d929b35e02233ca49435885

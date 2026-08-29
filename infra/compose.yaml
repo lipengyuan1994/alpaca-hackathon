@@ -1,0 +1,74 @@
+name: alpaca-hackathon-paper
+
+x-hardened-service: &hardened-service
+  platform: linux/arm64
+  read_only: true
+  init: true
+  cap_drop:
+    - ALL
+  security_opt:
+    - no-new-privileges:true
+  tmpfs:
+    - /tmp:rw,noexec,nosuid,nodev,size=32m
+  pids_limit: 64
+  deploy:
+    resources:
+      limits:
+        cpus: "1.0"
+        memory: 512M
+
+services:
+  decision:
+    <<: *hardened-service
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.decision
+    network_mode: none
+    environment:
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONUNBUFFERED: "1"
+    restart: "no"
+
+  execution:
+    <<: *hardened-service
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.execution
+    environment:
+      PAPER_ALPACA_API_KEY: ${PAPER_ALPACA_API_KEY:?set in the private deployment secret store}
+      PAPER_ALPACA_API_SECRET: ${PAPER_ALPACA_API_SECRET:?set in the private deployment secret store}
+      PAPER_ACCOUNT_ID: ${PAPER_ACCOUNT_ID:?set the judged paper account identifier}
+      PAPER_API_BASE_URL: https://paper-api.alpaca.markets
+      DATABASE_URL: ${DATABASE_URL:?set the private runtime database URL}
+      RISK_POLICY_HASH: ${RISK_POLICY_HASH:?pin the approved risk policy hash}
+      TEMPLATE_CATALOG_HASH: ${TEMPLATE_CATALOG_HASH:?pin the template catalog hash}
+      STRATEGY_REGISTRY_HASH: ${STRATEGY_REGISTRY_HASH:?pin the strategy registry hash}
+      STRATEGY_CONFIG_HASH: ${STRATEGY_CONFIG_HASH:?pin the strategy config hash}
+      STRATEGY_CONTENT_HASH: ${STRATEGY_CONTENT_HASH:?pin the strategy content hash}
+      ACCOUNT_ALLOWLIST_HASH: ${ACCOUNT_ALLOWLIST_HASH:?pin the paper account allowlist hash}
+      RELEASE_HASH: ${RELEASE_HASH:?pin the immutable release hash}
+      ENTRY_CUTOFF_AT: ${ENTRY_CUTOFF_AT:-2026-09-03T17:30:00Z}
+      FLATTEN_AT: ${FLATTEN_AT:-2026-09-03T19:15:00Z}
+      FLAT_DEADLINE_AT: ${FLAT_DEADLINE_AT:-2026-09-03T19:30:00Z}
+      EXECUTION_WORKER_ID: ${EXECUTION_WORKER_ID:-execution-worker-1}
+      OPTION_QUOTE_TTL_SECONDS: ${OPTION_QUOTE_TTL_SECONDS:-30}
+    networks:
+      - broker-egress
+    restart: unless-stopped
+
+  api:
+    <<: *hardened-service
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.api
+    ports:
+      - "${PUBLIC_API_PORT:-8000}:8000"
+    networks:
+      - public
+    restart: unless-stopped
+
+networks:
+  broker-egress:
+    driver: bridge
+  public:
+    driver: bridge

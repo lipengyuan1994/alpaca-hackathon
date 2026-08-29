@@ -1,0 +1,71 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "approval_ttl_seconds": {
+      "maximum": 300,
+      "minimum": 1,
+      "title": "Approval Ttl Seconds",
+      "type": "integer"
+    },
+    "max_daily_loss": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+          "type": "string"
+        }
+      ],
+      "title": "Max Daily Loss"
+    },
+    "max_per_trade_loss": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+          "type": "string"
+        }
+      ],
+      "title": "Max Per Trade Loss"
+    },
+    "max_total_reserved_loss": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+          "type": "string"
+        }
+      ],
+      "title": "Max Total Reserved Loss"
+    },
+    "policy_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Policy Hash",
+      "type": "string"
+    },
+    "quote_ttl_seconds": {
+      "maximum": 300,
+      "minimum": 1,
+      "title": "Quote Ttl Seconds",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "policy_hash",
+    "max_per_trade_loss",
+    "max_daily_loss",
+    "max_total_reserved_loss",
+    "quote_ttl_seconds",
+    "approval_ttl_seconds"
+  ],
+  "title": "RiskPolicyV1",
+  "type": "object"
+}

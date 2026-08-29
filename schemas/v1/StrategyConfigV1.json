@@ -1,0 +1,52 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "config_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Config Hash"
+    },
+    "schema_version": {
+      "const": "strategy-config/v1",
+      "default": "strategy-config/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "values": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "type": "string"
+          },
+          {
+            "type": "string"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "boolean"
+          }
+        ]
+      },
+      "title": "Values",
+      "type": "object"
+    }
+  },
+  "required": [
+    "values"
+  ],
+  "title": "StrategyConfigV1",
+  "type": "object"
+}

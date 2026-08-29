@@ -1,0 +1,56 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "action": {
+      "enum": [
+        "HOLD",
+        "REDUCE",
+        "CLOSE"
+      ],
+      "title": "Action",
+      "type": "string"
+    },
+    "directive_expires_at": {
+      "format": "date-time",
+      "title": "Directive Expires At",
+      "type": "string"
+    },
+    "kind": {
+      "const": "POSITION_DIRECTIVE",
+      "default": "POSITION_DIRECTIVE",
+      "title": "Kind",
+      "type": "string"
+    },
+    "reason_codes": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Reason Codes",
+      "type": "array"
+    },
+    "strategy_position_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Strategy Position Id",
+      "type": "string"
+    },
+    "urgency": {
+      "enum": [
+        "NORMAL",
+        "RISK_EXIT"
+      ],
+      "title": "Urgency",
+      "type": "string"
+    }
+  },
+  "required": [
+    "strategy_position_id",
+    "action",
+    "urgency",
+    "reason_codes",
+    "directive_expires_at"
+  ],
+  "title": "PositionDirectiveV1",
+  "type": "object"
+}

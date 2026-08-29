@@ -1,0 +1,73 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "available_time": {
+      "format": "date-time",
+      "title": "Available Time",
+      "type": "string"
+    },
+    "calculated_at": {
+      "format": "date-time",
+      "title": "Calculated At",
+      "type": "string"
+    },
+    "content_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Content Hash"
+    },
+    "feature_contract_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Feature Contract Hash",
+      "type": "string"
+    },
+    "feature_id": {
+      "minLength": 1,
+      "title": "Feature Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "feature-vector/v1",
+      "default": "feature-vector/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_market_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Source Market Hash",
+      "type": "string"
+    },
+    "values": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "type": "string"
+          }
+        ]
+      },
+      "title": "Values",
+      "type": "object"
+    }
+  },
+  "required": [
+    "feature_id",
+    "feature_contract_hash",
+    "calculated_at",
+    "available_time",
+    "values",
+    "source_market_hash"
+  ],
+  "title": "FeatureVectorV1",
+  "type": "object"
+}

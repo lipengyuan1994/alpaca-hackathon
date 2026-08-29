@@ -1,0 +1,382 @@
+{
+  "$defs": {
+    "OrderLegV1": {
+      "additionalProperties": false,
+      "properties": {
+        "expiration": {
+          "format": "date-time",
+          "title": "Expiration",
+          "type": "string"
+        },
+        "multiplier": {
+          "const": 100,
+          "default": 100,
+          "title": "Multiplier",
+          "type": "integer"
+        },
+        "quantity": {
+          "exclusiveMinimum": 0,
+          "title": "Quantity",
+          "type": "integer"
+        },
+        "right": {
+          "enum": [
+            "CALL",
+            "PUT"
+          ],
+          "title": "Right",
+          "type": "string"
+        },
+        "side": {
+          "enum": [
+            "BUY",
+            "SELL"
+          ],
+          "title": "Side",
+          "type": "string"
+        },
+        "strike": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "title": "Strike"
+        },
+        "symbol": {
+          "pattern": "^[A-Z0-9]{1,32}$",
+          "title": "Symbol",
+          "type": "string"
+        }
+      },
+      "required": [
+        "symbol",
+        "side",
+        "quantity",
+        "right",
+        "strike",
+        "expiration"
+      ],
+      "title": "OrderLegV1",
+      "type": "object"
+    },
+    "PositionPolicyIdV1": {
+      "enum": [
+        "TREND_VWAP_OR_60M_V1",
+        "REVERSION_VWAP_TOUCH_OR_60M_V1"
+      ],
+      "title": "PositionPolicyIdV1",
+      "type": "string"
+    },
+    "ReduceOnlyDecisionV1": {
+      "additionalProperties": false,
+      "properties": {
+        "allowed": {
+          "title": "Allowed",
+          "type": "boolean"
+        },
+        "control_state_hash": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Control State Hash",
+          "type": "string"
+        },
+        "decision_hash": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Decision Hash"
+        },
+        "decision_id": {
+          "minLength": 1,
+          "title": "Decision Id",
+          "type": "string"
+        },
+        "expires_at": {
+          "format": "date-time",
+          "title": "Expires At",
+          "type": "string"
+        },
+        "managed_position_hash": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Managed Position Hash",
+          "type": "string"
+        },
+        "plan_hash": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Plan Hash",
+          "type": "string"
+        },
+        "position_snapshot_hash": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Position Snapshot Hash",
+          "type": "string"
+        },
+        "reason_codes": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "reduce-only-decision/v1",
+          "default": "reduce-only-decision/v1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "decision_id",
+        "plan_hash",
+        "position_snapshot_hash",
+        "managed_position_hash",
+        "control_state_hash",
+        "allowed",
+        "reason_codes",
+        "expires_at"
+      ],
+      "title": "ReduceOnlyDecisionV1",
+      "type": "object"
+    },
+    "ReduceOnlyOrderPlanV1": {
+      "additionalProperties": false,
+      "description": "Atomic exact-leg close plan that can only reduce a reconciled position.",
+      "properties": {
+        "account_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Account Id",
+          "type": "string"
+        },
+        "account_snapshot_version": {
+          "minimum": 0,
+          "title": "Account Snapshot Version",
+          "type": "integer"
+        },
+        "client_order_id": {
+          "pattern": "^[a-z0-9-]{8,48}$",
+          "title": "Client Order Id",
+          "type": "string"
+        },
+        "close_reason_codes": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Close Reason Codes",
+          "type": "array"
+        },
+        "control_state_version": {
+          "minimum": 0,
+          "title": "Control State Version",
+          "type": "integer"
+        },
+        "legs": {
+          "items": {
+            "$ref": "#/$defs/OrderLegV1"
+          },
+          "maxItems": 4,
+          "minItems": 1,
+          "title": "Legs",
+          "type": "array"
+        },
+        "limit_price": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "title": "Limit Price"
+        },
+        "market_snapshot_hash": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Market Snapshot Hash",
+          "type": "string"
+        },
+        "plan_hash": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Plan Hash"
+        },
+        "plan_id": {
+          "minLength": 1,
+          "title": "Plan Id",
+          "type": "string"
+        },
+        "position_policy_id": {
+          "$ref": "#/$defs/PositionPolicyIdV1"
+        },
+        "position_snapshot_version": {
+          "minimum": 0,
+          "title": "Position Snapshot Version",
+          "type": "integer"
+        },
+        "price_effect": {
+          "enum": [
+            "CREDIT",
+            "DEBIT"
+          ],
+          "title": "Price Effect",
+          "type": "string"
+        },
+        "quantity": {
+          "exclusiveMinimum": 0,
+          "title": "Quantity",
+          "type": "integer"
+        },
+        "reduce_only": {
+          "const": true,
+          "default": true,
+          "title": "Reduce Only",
+          "type": "boolean"
+        },
+        "schema_version": {
+          "const": "reduce-only-order-plan/v1",
+          "default": "reduce-only-order-plan/v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "strategy_position_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Strategy Position Id",
+          "type": "string"
+        },
+        "template_id": {
+          "enum": [
+            "CALL_DEBIT_SPREAD_V1",
+            "PUT_DEBIT_SPREAD_V1",
+            "LONG_CALL_V1",
+            "LONG_PUT_V1"
+          ],
+          "title": "Template Id",
+          "type": "string"
+        },
+        "time_in_force": {
+          "const": "DAY",
+          "default": "DAY",
+          "title": "Time In Force",
+          "type": "string"
+        },
+        "underlying": {
+          "pattern": "^[A-Z]{1,8}$",
+          "title": "Underlying",
+          "type": "string"
+        }
+      },
+      "required": [
+        "plan_id",
+        "strategy_position_id",
+        "account_id",
+        "underlying",
+        "template_id",
+        "legs",
+        "quantity",
+        "limit_price",
+        "price_effect",
+        "client_order_id",
+        "market_snapshot_hash",
+        "account_snapshot_version",
+        "position_snapshot_version",
+        "control_state_version",
+        "position_policy_id",
+        "close_reason_codes"
+      ],
+      "title": "ReduceOnlyOrderPlanV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "account_snapshot_version": {
+      "minimum": 0,
+      "title": "Account Snapshot Version",
+      "type": "integer"
+    },
+    "approval": {
+      "$ref": "#/$defs/ReduceOnlyDecisionV1"
+    },
+    "command_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Command Hash"
+    },
+    "command_id": {
+      "minLength": 1,
+      "title": "Command Id",
+      "type": "string"
+    },
+    "control_state_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Control State Hash",
+      "type": "string"
+    },
+    "control_state_version": {
+      "minimum": 0,
+      "title": "Control State Version",
+      "type": "integer"
+    },
+    "market_snapshot_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Market Snapshot Hash",
+      "type": "string"
+    },
+    "plan": {
+      "$ref": "#/$defs/ReduceOnlyOrderPlanV1"
+    },
+    "position_snapshot_version": {
+      "minimum": 0,
+      "title": "Position Snapshot Version",
+      "type": "integer"
+    },
+    "schema_version": {
+      "const": "execute-reduce-only-plan/v1",
+      "default": "execute-reduce-only-plan/v1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "command_id",
+    "plan",
+    "approval",
+    "market_snapshot_hash",
+    "account_snapshot_version",
+    "position_snapshot_version",
+    "control_state_hash",
+    "control_state_version"
+  ],
+  "title": "ExecuteReduceOnlyPlanV1",
+  "type": "object"
+}

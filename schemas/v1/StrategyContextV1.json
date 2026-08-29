@@ -164,6 +164,16 @@
       "title": "Evaluation Id",
       "type": "string"
     },
+    "feature_available_time": {
+      "format": "date-time",
+      "title": "Feature Available Time",
+      "type": "string"
+    },
+    "feature_contract_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Feature Contract Hash",
+      "type": "string"
+    },
     "feature_vector_hash": {
       "pattern": "^sha256:[0-9a-f]{64}$",
       "title": "Feature Vector Hash",
@@ -248,6 +258,8 @@
     "market_snapshot_hash",
     "feature_vector_id",
     "feature_vector_hash",
+    "feature_contract_hash",
+    "feature_available_time",
     "feed_identity",
     "universe_features",
     "allowed_intent_tuples",

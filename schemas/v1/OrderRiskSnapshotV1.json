@@ -1,0 +1,127 @@
+{
+  "$defs": {
+    "RiskReservationV1": {
+      "additionalProperties": false,
+      "properties": {
+        "expires_at": {
+          "format": "date-time",
+          "title": "Expires At",
+          "type": "string"
+        },
+        "maximum_loss": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "title": "Maximum Loss"
+        },
+        "plan_hash": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Plan Hash",
+          "type": "string"
+        },
+        "remaining_quantity": {
+          "exclusiveMinimum": 0,
+          "title": "Remaining Quantity",
+          "type": "integer"
+        },
+        "reservation_id": {
+          "minLength": 1,
+          "title": "Reservation Id",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "APPROVED",
+            "ACCEPTED",
+            "PARTIAL",
+            "UNKNOWN"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "reservation_id",
+        "plan_hash",
+        "maximum_loss",
+        "remaining_quantity",
+        "expires_at",
+        "status"
+      ],
+      "title": "RiskReservationV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "account_id": {
+      "minLength": 1,
+      "title": "Account Id",
+      "type": "string"
+    },
+    "as_of": {
+      "format": "date-time",
+      "title": "As Of",
+      "type": "string"
+    },
+    "content_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Content Hash"
+    },
+    "reservations": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/RiskReservationV1"
+      },
+      "title": "Reservations",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "order-risk-snapshot/v1",
+      "default": "order-risk-snapshot/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "snapshot_id": {
+      "minLength": 1,
+      "title": "Snapshot Id",
+      "type": "string"
+    },
+    "version": {
+      "minimum": 0,
+      "title": "Version",
+      "type": "integer"
+    },
+    "working_client_order_ids": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Working Client Order Ids",
+      "type": "array"
+    }
+  },
+  "required": [
+    "snapshot_id",
+    "account_id",
+    "version",
+    "as_of"
+  ],
+  "title": "OrderRiskSnapshotV1",
+  "type": "object"
+}

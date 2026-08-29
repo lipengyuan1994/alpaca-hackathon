@@ -1,0 +1,39 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "artifact_type": {
+      "enum": [
+        "FEATURE_VECTOR",
+        "RESEARCH_REPORT",
+        "DATASET",
+        "MODEL_OUTPUT"
+      ],
+      "title": "Artifact Type",
+      "type": "string"
+    },
+    "content_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Content Hash",
+      "type": "string"
+    },
+    "record_id": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Record Id"
+    }
+  },
+  "required": [
+    "artifact_type",
+    "content_hash"
+  ],
+  "title": "ArtifactRefV1",
+  "type": "object"
+}

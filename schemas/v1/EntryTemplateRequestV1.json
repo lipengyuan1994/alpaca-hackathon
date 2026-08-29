@@ -1,0 +1,121 @@
+{
+  "$defs": {
+    "ArtifactRefV1": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_type": {
+          "enum": [
+            "FEATURE_VECTOR",
+            "RESEARCH_REPORT",
+            "DATASET",
+            "MODEL_OUTPUT"
+          ],
+          "title": "Artifact Type",
+          "type": "string"
+        },
+        "content_hash": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Content Hash",
+          "type": "string"
+        },
+        "record_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Record Id"
+        }
+      },
+      "required": [
+        "artifact_type",
+        "content_hash"
+      ],
+      "title": "ArtifactRefV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "entry_reason_codes": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Entry Reason Codes",
+      "type": "array"
+    },
+    "evidence_refs": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/ArtifactRefV1"
+      },
+      "title": "Evidence Refs",
+      "type": "array"
+    },
+    "horizon_bucket": {
+      "const": "INTRADAY_15_60M",
+      "title": "Horizon Bucket",
+      "type": "string"
+    },
+    "intent_expires_at": {
+      "format": "date-time",
+      "title": "Intent Expires At",
+      "type": "string"
+    },
+    "kind": {
+      "const": "ENTRY_TEMPLATE_REQUEST",
+      "default": "ENTRY_TEMPLATE_REQUEST",
+      "title": "Kind",
+      "type": "string"
+    },
+    "risk_tier": {
+      "enum": [
+        "TINY",
+        "STANDARD"
+      ],
+      "title": "Risk Tier",
+      "type": "string"
+    },
+    "signal_strength_bucket": {
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ],
+      "title": "Signal Strength Bucket",
+      "type": "string"
+    },
+    "template_id": {
+      "enum": [
+        "CALL_DEBIT_SPREAD_V1",
+        "PUT_DEBIT_SPREAD_V1",
+        "LONG_CALL_V1",
+        "LONG_PUT_V1"
+      ],
+      "title": "Template Id",
+      "type": "string"
+    },
+    "underlying": {
+      "pattern": "^[A-Z]{1,8}$",
+      "title": "Underlying",
+      "type": "string"
+    }
+  },
+  "required": [
+    "underlying",
+    "template_id",
+    "horizon_bucket",
+    "risk_tier",
+    "signal_strength_bucket",
+    "intent_expires_at",
+    "entry_reason_codes"
+  ],
+  "title": "EntryTemplateRequestV1",
+  "type": "object"
+}

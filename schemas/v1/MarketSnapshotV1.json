@@ -28,6 +28,39 @@
       "title": "FeedIdentityV1",
       "type": "object"
     },
+    "MarketClockV1": {
+      "additionalProperties": false,
+      "description": "Broker-observed market clock; local wall-clock guesses are not authority.",
+      "properties": {
+        "as_of": {
+          "format": "date-time",
+          "title": "As Of",
+          "type": "string"
+        },
+        "is_open": {
+          "title": "Is Open",
+          "type": "boolean"
+        },
+        "next_close": {
+          "format": "date-time",
+          "title": "Next Close",
+          "type": "string"
+        },
+        "next_open": {
+          "format": "date-time",
+          "title": "Next Open",
+          "type": "string"
+        }
+      },
+      "required": [
+        "is_open",
+        "as_of",
+        "next_open",
+        "next_close"
+      ],
+      "title": "MarketClockV1",
+      "type": "object"
+    },
     "OptionContractV1": {
       "additionalProperties": false,
       "properties": {
@@ -150,6 +183,17 @@
       "format": "date-time",
       "title": "As Of",
       "type": "string"
+    },
+    "clock": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/MarketClockV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     },
     "content_hash": {
       "anyOf": [

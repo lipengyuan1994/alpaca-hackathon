@@ -1,5 +1,6 @@
-"""Private typed adapter boundary. Real MCP transport is deliberately absent in fixtures."""
+"""Private typed paper adapter boundary; credentials remain execution-zone only."""
 
+from .alpaca_py_adapter import AlpacaPaperExecutionAdapter
 from .port import AlpacaExecutionPort, PaperEndpointError
 
-__all__ = ["AlpacaExecutionPort", "PaperEndpointError"]
+__all__ = ["AlpacaExecutionPort", "AlpacaPaperExecutionAdapter", "PaperEndpointError"]

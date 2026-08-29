@@ -4,9 +4,13 @@ FROM python:3.12-slim AS decision
 ARG TARGETARCH
 RUN test "$TARGETARCH" = "arm64" || test "$TARGETARCH" = "amd64"
 WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+COPY configs configs
 COPY packages/contracts packages/contracts
 COPY packages/domain packages/domain
 COPY packages/strategy_sdk packages/strategy_sdk
+COPY packages/plugin_integrity packages/plugin_integrity
 COPY packages/strategy_runner packages/strategy_runner
 COPY packages/decision_core packages/decision_core
 COPY packages/agent packages/agent
@@ -15,6 +19,9 @@ COPY packages/order_planner packages/order_planner
 COPY packages/risk_kernel packages/risk_kernel
 COPY packages/ledger packages/ledger
 COPY strategy_plugins strategy_plugins
+COPY apps/common apps/common
 COPY apps/decision_worker apps/decision_worker
-RUN pip install --no-cache-dir "pydantic==2.13.5"
+RUN pip install --no-cache-dir \
+    "pydantic==2.13.5" \
+    "PyYAML==6.0.3"
 CMD ["python", "-m", "apps.decision_worker.main"]
