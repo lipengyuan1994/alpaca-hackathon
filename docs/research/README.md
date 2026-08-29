@@ -6,26 +6,23 @@ Pinned implementation: `cb03a7684fb67c6f0888333f6c3c2145e8645be9`
 
 Pinned `uv.lock` SHA-256: `b846dc0b4d52be240cbb131e8267a5bf5ed4659b21570573b9ea1d48dcc865cf`
 
-This page is the front door for the six strategy researchers. Each person owns exactly one economic hypothesis and returns an integration-shaped strategy package plus reproducible evidence. Researchers do not need Alpaca credentials, a broker account, deployment access, or permission to trade.
+This page is the front door for three research owners. Each owner receives one packet, researches both strategy families in that packet, and returns two separately versioned integration-shaped packages plus reproducible evidence. Researchers do not need Alpaca credentials, a broker account, deployment access, or permission to trade.
 
 ## 1. Assignments
 
-| Owner | Packet | Owned family | Required pair cells | Cross-review |
-|---|---|---|---|---|
-| Person 1 / A1 | Group A | H1 `h1_intraday_continuation_v1` | SPY, QQQ | Review H2 |
-| Person 2 / A2 | Group A | H2 `h2_vwap_reversion_v1` | SPY, QQQ | Review H1 |
-| Person 3 / B1 | Group B | H3 `h3_opening_range_breakout_v1` | SMH, SOXL | Review H4 |
-| Person 4 / B2 | Group B | H4 `h4_gap_continuation_v1` | SMH, SOXL | Review H3 |
-| Person 5 / C1 | Group C | H5 `h5_relative_strength_residual_v1` | TQQQ, IGV, with immutable QQQ controls | Review H6 |
-| Person 6 / C2 | Group C | H6 `h6_compression_breakout_v1` | TQQQ, IGV | Review H5 |
+| Packet recipient | Owned families | Required pair cells | Independent review |
+|---|---|---|---|
+| Group A research owner | H1 `h1_intraday_continuation_v1`; H2 `h2_vwap_reversion_v1` | SPY, QQQ | Group B research owner reviews both packages |
+| Group B research owner | H3 `h3_opening_range_breakout_v1`; H4 `h4_gap_continuation_v1` | SMH, SOXL | Group C research owner reviews both packages |
+| Group C research owner | H5 `h5_relative_strength_residual_v1`; H6 `h6_compression_breakout_v1` | TQQQ, IGV, with immutable QQQ controls for H5 | Group A research owner reviews both packages |
 
-Send each pair this page plus its packet:
+Send each research owner this page plus exactly one packet:
 
 - [Group A — SPY and QQQ](GROUP_A_BROAD_TECH_PLAN.md)
 - [Group B — SMH and SOXL](GROUP_B_SEMICONDUCTOR_PLAN.md)
 - [Group C — TQQQ and IGV](GROUP_C_LEVERAGED_SOFTWARE_PLAN.md)
 
-Every owner must also follow the normative [strategy research protocol](../plans/STRATEGY_RESEARCH_PLAN.md), [strategy API](../architecture/STRATEGY_API.md), and [published research interface freeze](../architecture/RESEARCH_INTERFACE_FREEZE.md). If a packet conflicts with those documents, stop and ask the release owner.
+Every packet owner must also follow the normative [strategy research protocol](../plans/STRATEGY_RESEARCH_PLAN.md), [strategy API](../architecture/STRATEGY_API.md), and [published research interface freeze](../architecture/RESEARCH_INTERFACE_FREEZE.md). If a packet conflicts with those documents, stop and ask the release owner.
 
 ## 2. What the platform/data owner must supply first
 
@@ -40,22 +37,22 @@ Researchers start outcome-bearing work only after receiving:
 
 The data steward collects once for the team. Researchers must not build private downloaders, request competition credentials, switch vendors/feeds, hand-fill missing data, or search for a more favorable sample. A missing prerequisite is a visible failed gate, not permission to improvise.
 
-## 3. Required workflow for each owner
+## 3. Required workflow for each packet owner
 
 1. Verify native `arm64`, the source commit, and lock hash.
-2. Before viewing outcome P&L, freeze `strategy_card.md`, `hypothesis.yaml`, `feature_contract.yaml`, central config, sensitivities, reason codes, state schema, compatible symbol set, option-expression policy, exit-policy ID, cost policy, and falsification conditions.
-3. Compute and record the candidate-specific feature-contract hash. Do not reuse the host fixture feature hash unless the complete formulas and keys truly match.
-4. Implement the economic rule once in pure `signal.py`; both the offline adapter and `Plugin.evaluate()` call that same function.
-5. Run the prescribed pair cells, folds, null, costs, sensitivities, and falsifications. Preserve all attempted trials, including failures.
-6. Build the canonical plug-in package, golden contexts/evaluations, negative/boundary tests, and deterministic `scripts/reproduce.sh`.
-7. Ask the assigned non-author reviewer to reproduce hashes, metrics, and at least one negative fixture. The reviewer reports defects but does not tune the reviewed rule after seeing outcomes.
-8. Return the package with one truthful state: `REJECTED`, `RESEARCH_COMPLETE`, or a request for central integration review. Do not declare `PAPER_ENABLED`.
+2. For each assigned family, and before viewing its outcome P&L, separately freeze `strategy_card.md`, `hypothesis.yaml`, `feature_contract.yaml`, central config, sensitivities, reason codes, state schema, compatible symbol set, option-expression policy, exit-policy ID, cost policy, and falsification conditions.
+3. Compute and record a distinct candidate-specific feature-contract hash for each family. Do not reuse the host fixture feature hash unless the complete formulas and keys truly match.
+4. Implement each economic rule once in its own pure `signal.py`; its offline adapter and `Plugin.evaluate()` call that same function.
+5. Run the prescribed pair cells, folds, null, costs, sensitivities, and falsifications for both families. Preserve all attempted trials, including failures.
+6. Build two canonical plug-in packages, each with golden contexts/evaluations, negative/boundary tests, and deterministic `scripts/reproduce.sh`.
+7. Ask the designated owner of another packet to reproduce both packages' hashes, metrics, and at least one negative fixture per package. The reviewer reports defects but does not tune a reviewed rule after seeing outcomes.
+8. Return both packages, each with one truthful state: `REJECTED`, `RESEARCH_COMPLETE`, or a request for central integration review. Do not declare `PAPER_ENABLED`.
 
 Pair-cell work does not choose a symbol winner. After all six families are frozen, the central quant/release owner alone runs each unchanged family over its compatible universe and applies the common arbitration, cluster/concurrency constraints, exact option selector/sizer, multiple-testing controls, and central exit policy.
 
 ## 4. Exact return package
 
-Each owner returns both trees below.
+Each packet owner returns the two trees below once per assigned family.
 
 ```text
 strategy_plugins/<plugin_id>_v1/

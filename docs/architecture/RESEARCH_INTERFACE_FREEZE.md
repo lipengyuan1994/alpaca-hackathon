@@ -8,7 +8,7 @@ Implementation commit: `cb03a7684fb67c6f0888333f6c3c2145e8645be9`
 
 Dependency lock: `uv.lock` SHA-256 `b846dc0b4d52be240cbb131e8267a5bf5ed4659b21570573b9ea1d48dcc865cf`
 
-This release is sufficient for the six researchers to preregister hypotheses, implement pure signal packages, run offline pair-cell research from centrally supplied immutable data, and return reproducible evidence. It does **not** certify the judged-account runtime, authorize broker credentials, or permit a candidate to self-promote.
+This release is sufficient for three packet owners to preregister all six assigned hypotheses, implement pure signal packages, run offline pair-cell research from centrally supplied immutable data, and return reproducible evidence. It does **not** certify the judged-account runtime, authorize broker credentials, or permit a candidate to self-promote.
 
 ## 1. What is frozen
 
@@ -90,7 +90,7 @@ The central position manager implements the named policy decisions and reduce-on
 
 ## 6. Canonical researcher handoff
 
-Each person returns one importable package:
+Each packet owner returns one importable package per assigned strategy family, for two packages total:
 
 ```text
 strategy_plugins/<plugin_id>_v1/

@@ -6,7 +6,7 @@ Implementation commit: `cb03a7684fb67c6f0888333f6c3c2145e8645be9`
 
 Dependency-lock hash: `sha256:b846dc0b4d52be240cbb131e8267a5bf5ed4659b21570573b9ea1d48dcc865cf`
 
-Assigned capacity: two independent family owners who cross-review without co-authoring
+Assigned capacity: one packet owner responsible for two independently versioned strategy families
 
 Primary symbol cells: `TQQQ`, `IGV`
 
@@ -24,14 +24,14 @@ A profitable report cannot self-promote. `integration/registry_candidate.yaml` i
 
 The signal plug-in never calls an LLM. Any advisory AI may leave a frozen deterministic proposal unchanged or veto it to `NO_TRADE`; it cannot change direction, family, symbol ranking, template, horizon, strike policy, size, executable fields, or lifecycle.
 
-## 2. Team split and exact returns
+## 2. Packet ownership and exact returns
 
-- **Person 5 / C1 — H5 owner:** owns only `h5_relative_strength_residual_v1`. Freeze H5 before outcome access; implement its feature contract, pure signal, canonical plug-in, package-local offline reproduction script, TQQQ/IGV pair-cell evidence with immutable QQQ controls, prescribed sensitivities, option-proxy status, falsifications, and complete artifact tree. Independently review H6 only after Person 6 freezes it.
-- **Person 6 / C2 — H6 owner:** owns only `h6_compression_breakout_v1`. Freeze H6 before outcome access; implement its feature contract, pure signal, canonical plug-in, package-local offline reproduction script, TQQQ/IGV pair-cell evidence, prescribed sensitivities, option-proxy status, falsifications, and complete artifact tree. Independently review H5 only after Person 5 freezes it.
+- **H5 deliverable:** `h5_relative_strength_residual_v1`, including its feature contract, pure signal, canonical plug-in, package-local offline reproduction script, TQQQ/IGV pair-cell evidence with immutable QQQ controls, prescribed sensitivities, option-proxy status, falsifications, and complete artifact tree.
+- **H6 deliverable:** `h6_compression_breakout_v1`, including its separate feature contract, pure signal, canonical plug-in, package-local offline reproduction script, TQQQ/IGV pair-cell evidence, prescribed sensitivities, option-proxy status, falsifications, and complete artifact tree.
 
-Each person authors one family and signs the other's `pair_cell_review.json`. A reviewer may report a defect but cannot tune or directly repair the reviewed family's economic rule after seeing P&L; the owner versions any outcome-changing correction and repeats affected runs. If one person is unavailable, the remaining person may finish only their own family and must obtain a non-author reviewer from another packet.
+The Group C packet owner authors both families but freezes both specifications before viewing outcome P&L for either family. The Group A packet owner independently reviews both returned packages and signs each `pair_cell_review.json`. The reviewer may report a defect but cannot tune or directly repair a reviewed economic rule after seeing P&L; the Group C owner versions any outcome-changing correction and repeats affected runs. If the designated reviewer is unavailable, obtain another non-author reviewer outside Group C.
 
-Neither member may modify the authoritative registry, install broker credentials, run private market-data downloads, enable paper mode, or approve their own promotion. Stop before work if the checkout or `uv.lock` differs from the pinned values above.
+The packet owner may not modify the authoritative registry, install broker credentials, run private market-data downloads, enable paper mode, review their own packages, or approve their own promotion. Stop before work if the checkout or `uv.lock` differs from the pinned values above.
 
 ## 3. Exact universe and controls
 
@@ -57,7 +57,7 @@ The full H5 benchmark map, frozen before outcome P&L, is:
 | IGV | QQQ |
 | SPY diagnostic | QQQ |
 
-This packet returns two separate family packages and their TQQQ/IGV `pair_cell_metrics.json` files; H5 also binds immutable QQQ control rows. Those files are diagnostic evidence only: neither owner may select TQQQ versus IGV, declare a champion/fallback, or claim the pair is the complete `CandidateSpecV1`. After all six families freeze, the central quant/release owner expands H5/H6 unchanged to their compatible feasible universe and writes `central_full_universe_replay.json`. That later replay alone applies cross-symbol arbitration and the family-wide selection test. QQQ inputs are centrally published immutable control data and cannot be tuned or backfilled.
+This packet returns two separate family packages and their TQQQ/IGV `pair_cell_metrics.json` files; H5 also binds immutable QQQ control rows. Those files are diagnostic evidence only: the packet owner may not select TQQQ versus IGV, declare a champion/fallback, or claim the pair is the complete `CandidateSpecV1`. After all six families freeze, the central quant/release owner expands H5/H6 unchanged to their compatible feasible universe and writes `central_full_universe_replay.json`. That later replay alone applies cross-symbol arbitration and the family-wide selection test. QQQ inputs are centrally published immutable control data and cannot be tuned or backfilled.
 
 Before any alpha outcome is viewed, the data steward must sign `research/shared/selection/option_proxy_feasibility_manifest.json`, ranking all six symbols from blinded entitlement, completeness, timestamp, standard-contract, simultaneous-leg, and corporate-action fields. The global `selected_symbols` list has at most three symbols. TQQQ or IGV absent from it still receives full underlying research, but its option artifacts are empty schema-valid tables plus `option_proxy_not_selected.json` with exact status `NOT_SELECTED_BY_FEASIBILITY`. QQQ is a required H5 benchmark input, not automatically an option-proxy selection. Group C cannot swap, rerank, or fill a slot after seeing results.
 
@@ -218,7 +218,7 @@ Each entry states type, unit, exact formula, lookback, source/feed, event/availa
 
 ## 9. Exact package and integration handoff
 
-Each owner returns one canonical package. Substitute their assigned plug-in ID in this tree; do not use the flat fixture layout currently present elsewhere in the repository:
+The packet owner returns one canonical package per family, for two packages total. Substitute the corresponding plug-in ID in each tree; do not use the flat fixture layout currently present elsewhere in the repository:
 
 ```text
 strategy_plugins/<plugin_id>_v1/
@@ -251,19 +251,19 @@ The separate research evidence tree is `research/candidates/<candidate_id>/` and
 
 ### 9.1 Frozen integration cards
 
-| Field | H5 owner: Person 5 | H6 owner: Person 6 |
+| Field | H5 package | H6 package |
 |---|---|---|
 | `plugin_id` / version | `h5_relative_strength_residual` / `1.0.0` | `h6_compression_breakout` / `1.0.0` |
 | entry point | `h5_relative_strength_residual_v1.plugin:Plugin` | `h6_compression_breakout_v1.plugin:Plugin` |
 | hypothesis ID | `H5_RELATIVE_STRENGTH_RESIDUAL` | `H6_COMPRESSION_BREAKOUT` |
-| owner / reviewer | `person_5` / `person_6` | `person_6` / `person_5` |
+| owner / reviewer | assigned Group C owner / independent Group A reviewer | assigned Group C owner / independent Group A reviewer |
 | pair-cell evidence | ordered targets `[TQQQ, IGV]`, immutable `QQQ` control | ordered `[TQQQ, IGV]` |
 | later compatibility | ordered `[QQQ, TQQQ, SMH, SOXL, IGV]` | ordered `[SPY, QQQ, TQQQ, SMH, SOXL, IGV]` |
 | position policy | `TREND_VWAP_OR_60M_V1` | `TREND_VWAP_OR_60M_V1` |
 | allowed entry tuples | bullish call-debit and bearish put-debit; `INTRADAY_15_60M`, `TINY`, max TTL `300` | same |
 | data requirements | `feature-vector/v1`; hash `CANDIDATE_DEFINED_AND_HASHED_BEFORE_OUTCOME_RUN`; maximum age `60`; logical positions `false` | same |
 
-Both manifests use `api_version: strategy-plugin/v1`, `decision_schema_version: strategy-evaluation/v1`, `deterministic: true`, and `network_access: false`. Required feature keys are ordered by `SPY, QQQ, TQQQ, SMH, SOXL, IGV`, then lexicographically within symbol. H5 requires target/benchmark `r60`, frozen benchmark binding, beta, residual mean/std/z, completed close, session VWAP, and paired-quality keys from Section 8. H6 requires compression box high/low/range, same-time median, compression ratio, up/down break, volume ratio, completed close, and session VWAP. Each owner freezes and hashes the complete candidate-specific contract before outcome P&L; the release owner validates the key list and hash before integration review.
+Both manifests use `api_version: strategy-plugin/v1`, `decision_schema_version: strategy-evaluation/v1`, `deterministic: true`, and `network_access: false`. Required feature keys are ordered by `SPY, QQQ, TQQQ, SMH, SOXL, IGV`, then lexicographically within symbol. H5 requires target/benchmark `r60`, frozen benchmark binding, beta, residual mean/std/z, completed close, session VWAP, and paired-quality keys from Section 8. H6 requires compression box high/low/range, same-time median, compression ratio, up/down break, volume ratio, completed close, and session VWAP. The packet owner freezes and hashes both complete candidate-specific contracts before viewing outcome P&L for either one; the release owner validates the key lists and hashes before integration review.
 
 `central_config.json` is a canonical rendering of flat `StrategyConfigV1.values`. Exact H5 keys/values are `residual_z_threshold="1.25"`, `beta_lookback_sessions=60`, `benchmark_variance_floor="0.00000001"`, `residual_std_floor="0.000001"`, `benchmark_map_version="H5_BENCHMARK_MAP_V1"`, `decision_start_et="10:30:01"`, `decision_end_et="14:30:01"`, `decision_step_minutes=30`, `max_entries_per_symbol_session=1`, `time_exit_minutes=60`, `risk_tier="TINY"`, and `intent_ttl_seconds=300`. Exact H6 keys/values are `compression_ratio_max="0.65"`, `break_fraction_threshold="0.10"`, `volume_ratio_threshold="1.25"`, `box_interval_count=4`, `same_time_lookback_sessions=20`, `range_floor="0.000001"`, `decision_start_et="11:00:01"`, `decision_end_et="14:30:01"`, `decision_step_minutes=30`, `max_entries_per_symbol_session=1`, `time_exit_minutes=60`, `risk_tier="TINY"`, and `intent_ttl_seconds=300`. Decimal thresholds are strings in JSON and become `Decimal` values in `StrategyConfigV1`.
 
@@ -277,7 +277,7 @@ Common `NO_TRADE` codes are exactly `DATA_MISSING`, `DATA_STALE`, `DATA_QUALITY_
 
 ### 9.3 Truthful reproduction command
 
-No central historical backtester is claimed. Each owner must implement an executable, offline `scripts/reproduce.sh` accepting exactly `--data-manifest PATH --feasibility-manifest PATH --output PATH`; it refuses nonempty output, validates commit/lock/data/config hashes, runs package tests, and emits deterministically ordered evidence. The package README contains:
+No central historical backtester is claimed. Each of the two packages must implement an executable, offline `scripts/reproduce.sh` accepting exactly `--data-manifest PATH --feasibility-manifest PATH --output PATH`; it refuses nonempty output, validates commit/lock/data/config hashes, runs package tests, and emits deterministically ordered evidence. The package README contains:
 
 ```zsh
 ./scripts/reproduce.sh \
@@ -392,7 +392,7 @@ Family-wise adjusted evidence that does not pass is labeled `suggestive`, shadow
 
 | Gate | Required evidence | Failure result |
 |---|---|---|
-| `C0_HANDOFF` | Baseline, native lock, immutable target/benchmark refs, C1/C2 roles, candidate IDs, and reviewer recorded | Do not start outcome runs |
+| `C0_HANDOFF` | Baseline, native lock, immutable target/benchmark refs, Group C owner, both candidate IDs, and external reviewer recorded | Do not start outcome runs |
 | `C1_DATA` | TQQQ/IGV/QQQ feasibility cards, at least 99% expected 15-minute bars, exact pair coverage, zero duplicates/OHLC failures, complete TQQQ split audit | Remove affected symbol or stop |
 | `C2_SPEC_FREEZE` | Candidate cards, benchmark map, features, central/sensitivity configs, exits, costs, trial entries, and hashes frozen before P&L | New candidate/version required |
 | `C3_SIGNAL` | Common-engine H5/H6 runs, next-observation behavior, diagnostics, minimum sample/fold/concentration gates | `REJECTED` or `RESEARCH_COMPLETE` only |
@@ -406,6 +406,6 @@ Passing Group C gates never authorizes paper trading. The release/risk/execution
 
 ## 15. Definition of done
 
-Group C is done when both independently authored packages are complete and reproducible, every prescribed pair-cell central/diagnostic result is published, benchmark and cluster dependence are explicit, feasibility exclusions and open integration gates remain visible, Person 6 signs H5, and Person 5 signs H6. Each card has exactly one truthful terminal state: `REJECTED`, `RESEARCH_COMPLETE`, `INTEGRATION_READY`, `PAPER_SHADOW`, `PAPER_DEMO_ONLY`, or `PAPER_CANDIDATE`. Neither owner may declare `PAPER_ENABLED` or produce the central full-universe replay.
+Group C is done when both independently versioned packages are complete and reproducible, every prescribed pair-cell central/diagnostic result is published, benchmark and cluster dependence are explicit, feasibility exclusions and open integration gates remain visible, and the independent Group A reviewer signs both packages. Each card has exactly one truthful terminal state: `REJECTED`, `RESEARCH_COMPLETE`, `INTEGRATION_READY`, `PAPER_SHADOW`, `PAPER_DEMO_ONLY`, or `PAPER_CANDIDATE`. The packet owner may not declare `PAPER_ENABLED` or produce the central full-universe replay.
 
 Normative references: [`../plans/STRATEGY_RESEARCH_PLAN.md`](../plans/STRATEGY_RESEARCH_PLAN.md), [`../architecture/STRATEGY_API.md`](../architecture/STRATEGY_API.md), and [`../architecture/RESEARCH_INTERFACE_FREEZE.md`](../architecture/RESEARCH_INTERFACE_FREEZE.md).

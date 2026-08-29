@@ -283,8 +283,8 @@ api_version: strategy-plugin/v1
 plugin_id: regime_momentum
 plugin_version: 1.0.0
 entrypoint: regime_momentum_v1.plugin:Plugin
-owner: person_3
-reviewer: person_4
+owner: assigned_group_a_research_owner
+reviewer: independent_group_b_research_reviewer
 allowed_underlyings: [SPY, QQQ, TQQQ, SMH, SOXL, IGV]
 allowed_templates: [CALL_DEBIT_SPREAD_V1, PUT_DEBIT_SPREAD_V1]
 required_feature_schema: feature-vector/v1

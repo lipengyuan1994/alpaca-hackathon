@@ -27,14 +27,14 @@ These are not interchangeable:
 
 ### How each researcher uses this document
 
-Each owner receives one strategy family from Section 3 and follows this sequence:
+Each of the three packet owners receives two strategy families from Section 3 and follows this sequence for both:
 
 1. Copy the assigned strategy card into `research/candidates/<candidate_id>/strategy_card.md` and freeze the economic hypothesis, central parameters, owned symbol cells, feature contract, exit-policy ID, and falsification conditions **before viewing outcome P&L**.
 2. Use only centrally collected, immutable Alpaca datasets. Do not create a private downloader, substitute vendor data, or fork the frozen clock, selector, cost, or marking semantics.
 3. Implement exactly one assigned strategy family and its canonical plug-in package. Each package must ship its own offline `scripts/reproduce.sh`; this repository does not claim that a central research backtester exists.
 4. Run the central specification on the packet's two owned symbol cells and publish every prescribed sensitivity. A pair-cell result is diagnostic research evidence, not a complete deployable `CandidateSpecV1` and not permission to choose the better of the two symbols.
-5. Return the complete research, plug-in, golden-fixture, and parity package in Section 12. A notebook, chart, Sharpe ratio, or `plugin.py` by itself is not a deliverable.
-6. Have the paired non-author reviewer reproduce the run from hashes and sign the promotion card. The reviewer must not alter the family they review after seeing outcomes, and the owner cannot promote their own lifecycle state.
+5. Return one complete research, plug-in, golden-fixture, and parity package per assigned family as defined in Section 12. A notebook, chart, Sharpe ratio, or `plugin.py` by itself is not a deliverable.
+6. Have the designated owner of another packet reproduce both runs from hashes and sign both promotion cards. The reviewer must not alter a family they review after seeing outcomes, and the packet owner cannot promote their own lifecycle state.
 7. After all six pair-cell packages are frozen, the central quant/release owner alone runs the compatible-symbol, cross-family, and full-universe replay using one frozen arbitration implementation. That later replay creates the portfolio-level candidate and cannot silently modify the researcher's signal function.
 8. Stop at the first failed gate. `NO_TRADE`, `REJECTED`, `NOT_SELECTED_BY_FEASIBILITY`, and `INSUFFICIENT_EVIDENCE` are valid results and must remain visible.
 
@@ -64,7 +64,7 @@ Researchers need no judged-account credentials and receive no broker/order autho
 
 Paper enablement has additional non-research blockers: independently recompute defined maximum loss, use an exact paper-host allowlist, enforce daily loss/buying power/market clock/option quote freshness, bind current control state, implement durable reservation/outbox/inbox/CAS and reconciliation, implement Alpaca MCP transport, and prove close/flatten/restart behavior. Passing a strategy backtest cannot waive any of them.
 
-The platform/release owner has published the dated `RESEARCH_INTERFACE_FREEZE` with the host registry/catalog/fixture-feature values, position-policy references, conformance commands, and implementation commit. A general repository test command is not a research backtester. Each researcher owns and returns the offline reproduction script and candidate-specific feature/reason hashes for their family; the release owner validates them before central replay.
+The platform/release owner has published the dated `RESEARCH_INTERFACE_FREEZE` with the host registry/catalog/fixture-feature values, position-policy references, conformance commands, and implementation commit. A general repository test command is not a research backtester. Each packet owner returns a separate offline reproduction script and candidate-specific feature/reason hashes for each assigned family; the release owner validates them before central replay.
 
 ## 2. Hard data and entitlement boundary
 
@@ -88,44 +88,41 @@ Current free-tier assumptions to verify with a recorded entitlement probe:
 
 Every request that accepts a feed parameter specifies it explicitly and consumes all pagination tokens. For historical option bars/trades, record the sentinel `requested_feed=N/A_ENDPOINT_HAS_NO_FEED_PARAM`, endpoint schema hash, and observed entitlement instead. An invalid invented parameter, undocumented fallback, entitlement upgrade, mixed feed, or missing page is a failed data gate.
 
-One designated data steward performs and caches shared downloads. Credentials remain with the collector; the six researchers consume immutable hashed artifacts. No researcher retrieves the same range independently or places any order through a research task.
+One designated data steward performs and caches shared downloads. Credentials remain with the collector; the three packet owners consume immutable hashed artifacts. No researcher retrieves the same range independently or places any order through a research task.
 
-## 3. Six-member strategy-family assignment
+## 3. Three-packet strategy-family assignment
 
-The team is searching across **strategy families**, not asking six people to optimize six tickers. Every owner uses the same immutable data, decision clock, folds, option selector, sizing, cost stresses, metrics, artifact schemas, and promotion gates. A member owns one economic hypothesis, one pure signal implementation, one canonical plug-in package, and one deterministic offline reproduction script—not a personalized winning parameter or data downloader.
+The team is searching across **strategy families**, not asking three people to optimize three symbol pairs. Each packet owner receives two separately versioned hypotheses and uses the same immutable data, decision clock, folds, option selector, sizing, cost stresses, metrics, artifact schemas, and promotion gates. Each family still has its own economic hypothesis, pure signal implementation, canonical plug-in package, deterministic offline reproduction script, candidate identity, and outcome state.
 
-| Member | Candidate ID / family | Core question | Compatible initial universe | Required reviewer |
+| Packet recipient | Candidate families | Core questions | Required pair cells | Independent reviewer |
 |---|---|---|---|---|
-| Person 1 | `h1_intraday_continuation_v1` | Do unusually large same-time 60-minute moves continue when aligned with IEX VWAP? | Packet A cells: SPY, QQQ; later central compatibility: all six | Person 2 |
-| Person 2 | `h2_vwap_reversion_v1` | Do unusually large VWAP deviations revert when short-horizon trend is weak? | Packet A cells: SPY, QQQ; later central compatibility: SPY, QQQ, SMH, IGV | Person 1 |
-| Person 3 | `h3_opening_range_breakout_v1` | Does a confirmed break of the first 30-minute range continue intraday? | Packet B cells: SMH, SOXL; later central compatibility: all six | Person 4 |
-| Person 4 | `h4_gap_continuation_v1` | Does a standardized overnight gap continue after first-hour confirmation? | Packet B cells: SMH, SOXL; later central compatibility: all six | Person 3 |
-| Person 5 | `h5_relative_strength_residual_v1` | Does a target-specific move persist after removing its frozen benchmark relationship? | Packet C cells: TQQQ, IGV with QQQ control; later central compatibility: QQQ, TQQQ, SMH, SOXL, IGV | Person 6 |
-| Person 6 | `h6_compression_breakout_v1` | Does low intraday range followed by price/volume expansion predict continuation? | Packet C cells: TQQQ, IGV; later central compatibility: all six | Person 5 |
+| Group A research owner | H1 `h1_intraday_continuation_v1`; H2 `h2_vwap_reversion_v1` | Continuation after unusually large same-time moves; reversion after unusually large VWAP deviations in a weak-trend regime | SPY, QQQ | Group B research owner reviews both packages |
+| Group B research owner | H3 `h3_opening_range_breakout_v1`; H4 `h4_gap_continuation_v1` | Continuation after a confirmed opening-range break; continuation after a standardized overnight gap and first-hour confirmation | SMH, SOXL | Group C research owner reviews both packages |
+| Group C research owner | H5 `h5_relative_strength_residual_v1`; H6 `h6_compression_breakout_v1` | Persistence of benchmark-residual strength; continuation after intraday compression and price/volume expansion | TQQQ, IGV, with immutable QQQ controls for H5 | Group A research owner reviews both packages |
 
-Sections H1–H6 define the central rules. Owners may propose a correction **before outcome-bearing runs**, but the quant lead and reviewer must version and freeze it; after results are viewed, a rule change is a new candidate and enters the trial ledger. Pairing means reciprocal review, not shared authorship: Persons 1/2, 3/4, and 5/6 must develop their own family without copying the partner's outcome-driven changes.
+Sections H1–H6 define the central rules. A packet owner must freeze both assigned families before viewing outcome P&L for either one; this prevents the first result from driving changes to the second. Corrections made after results are viewed create new candidates and enter the trial ledger. Review follows the external ring above rather than self-review within a packet.
 
 Primary engineering ownership still applies. The research sprint adds these shared duties so “common” work has an accountable owner:
 
-| Person | Shared research duty | Concrete handoff | Reviewer |
+| Role | Shared research duty | Concrete handoff | Reviewer role |
 |---|---|---|---|
-| Person 1 | Candidate registry, fold calendar, trial budget, bootstrap/multiplicity, final selection | Frozen candidate/selection manifests and full comparison table | Person 6 |
-| Person 2 | Alpaca entitlement probe, pagination, raw/normalized cache, symbol feasibility | Immutable shared dataset manifests and six feasibility cards | Person 3 |
-| Person 3 | Feature registry, common signal/backtest adapter, plug-in conformance | Two-machine H1 golden run and shared parity command | Person 2 |
-| Person 4 | O1/O2 selector, option proxy, fee/max-loss arithmetic | Catalog-parity fixtures and option-coverage report | Person 5 |
-| Person 5 | Portfolio replay, quote stress, risk/position-policy integration | Base/severe portfolio replay and integration gate report | Person 4 |
-| Person 6 | Standard plots/cards, limitations, judge-facing evidence package | Comparable report bundle and promotion-card generator | Person 1 |
+| Release/quant lead | Candidate registry, fold calendar, trial budget, bootstrap/multiplicity, final selection | Frozen candidate/selection manifests and full comparison table | Evidence/submission owner |
+| Data steward | Alpaca entitlement probe, pagination, raw/normalized cache, symbol feasibility | Immutable shared dataset manifests and six feasibility cards | Feature/platform owner |
+| Feature/platform owner | Feature registry, common signal/backtest adapter, plug-in conformance | Two-machine H1 golden run and shared parity command | Data steward |
+| Options/risk quant | O1/O2 selector, option proxy, fee/max-loss arithmetic | Catalog-parity fixtures and option-coverage report | Portfolio/risk integration owner |
+| Portfolio/risk integration owner | Portfolio replay, quote stress, risk/position-policy integration | Base/severe portfolio replay and integration gate report | Options/risk quant |
+| Evidence/submission owner | Standard plots/cards, limitations, judge-facing evidence package | Comparable report bundle and promotion-card generator | Release/quant lead |
 
 ### Pair-cell evidence versus central candidate identity
 
-Each researcher returns a `PairCellEvidenceV1`-equivalent package for the two symbols assigned by their packet. It answers whether the frozen family is reproducible on those cells. It must retain both symbols and may not declare a winner, deployment universe, champion, fallback, or `PAPER_ENABLED` state.
+Each packet owner returns one `PairCellEvidenceV1`-equivalent package per assigned family for the packet's two symbol cells. Each package answers whether that frozen family is reproducible on those cells. It must retain both symbols and may not declare a winner, deployment universe, champion, fallback, or `PAPER_ENABLED` state.
 
 Only the central quant/release owner constructs a `CandidateSpecV1` after all six packages are frozen. That job expands each family to its complete compatible feasible universe, runs the frozen cross-symbol arbitration, records every suppressed row, applies the common family-wise test, and selects at most one champion plus one preregistered fallback. A researcher must therefore use these labels exactly:
 
 | Artifact | Producer | Scope | Authority |
 |---|---|---|---|
 | `pair_cell_metrics.json` | Family owner | Two assigned symbols, central and prescribed diagnostics | Research evidence only |
-| `pair_cell_review.json` | Paired reviewer | Independent reproduction of the same cells | Review evidence only |
+| `pair_cell_review.json` | Designated external packet reviewer | Independent reproduction of the same cells | Review evidence only |
 | `central_full_universe_replay.json` | Central quant/release owner | All compatible feasible symbols and frozen arbitration | Selection evidence, still non-authorizing |
 | `registry_candidate.yaml` | Family owner proposes; release owner validates | Requested plug-in capability | Lifecycle must remain `research_only` |
 
@@ -174,7 +171,7 @@ Resource limits for the sprint:
 
 - at most three symbols enter expensive full historical option-proxy retrieval, selected on feasibility rather than P&L;
 - at most two symbols enter the final competition deployment allowlist;
-- each owner has one central candidate and only the sensitivities explicitly listed in Section 5;
+- each strategy family has one central candidate and only the sensitivities explicitly listed in Section 5;
 - one plug-in becomes champion and at most one genuinely independent plug-in becomes an operational fallback; fallback is not intraday P&L switching.
 
 ## 4. Standard one-symbol feasibility scan
@@ -310,7 +307,7 @@ Record the full ranking and input hashes in `research/shared/selection/feasibili
 
 ## 5. Common hypotheses
 
-The initial scan excludes LLM output, news, IV, Greeks, and member-specific features.
+The initial scan excludes LLM output, news, IV, Greeks, and packet-owner-specific features.
 
 All rolling calculations are produced upstream by the shared point-in-time feature builder. A runtime plug-in receives schema-validated Decimal features, not bars, DataFrames, Alpaca clients, or a clock. Universe keys use `<SYMBOL>__<feature_name>` (for example, `QQQ__momentum_z_60m_same_time_v1`); units, formula, lookback, availability, and missing-data behavior live in the candidate's `feature_contract.yaml`. Any absent, stale, nonfinite, or schema-mismatched required feature produces `NO_TRADE`.
 
@@ -370,7 +367,7 @@ Signal:
 
 Set `entry_score = abs(deviation_z) / 1.5`. Use central exit policy `REVERSION_VWAP_TOUCH_OR_60M_V1`: exit on a completed-close VWAP touch in the convergence direction or at the common hard-time deadline.
 
-H2 is a standalone challenger, not an H1 overlay or simultaneous fallback signal. All six owners may write strategy cards in parallel, but no outcome-bearing comparison begins until the shared H1 golden run reproduces on two native ARM64 machines.
+H2 is a standalone challenger, not an H1 overlay or simultaneous fallback signal. All three packet owners may write their two strategy cards in parallel, but no outcome-bearing comparison begins until every packet has frozen both assigned families and the shared H1 golden run reproduces on two native ARM64 machines.
 
 ### H3 — opening-range breakout with participation confirmation
 
@@ -1072,7 +1069,7 @@ telemetry/competition/
 - Freeze feed, timestamp, contract, and proxy rules.
 - Publish the common scanner outputs and artifact schema. Each family package implements the same frozen clock/metric rules in its required offline reproduction script; parity fixtures expose semantic drift.
 - Bulk-fetch the six underlying histories once.
-- Assign one strategy family per Section 3. Each owner writes `strategy_card.md`, `hypothesis.yaml`, `feature_contract.yaml`, and central/sensitivity configs without viewing result P&L.
+- Assign one packet per Section 3. Each packet owner writes two separate sets of `strategy_card.md`, `hypothesis.yaml`, `feature_contract.yaml`, and central/sensitivity configs before viewing P&L for either family.
 
 ### Saturday afternoon
 
@@ -1095,7 +1092,7 @@ telemetry/competition/
 ### Sunday afternoon
 
 - Named reviewers independently reproduce candidate manifests, hashes, central metrics, at least one negative fixture, and catalog parity.
-- Quant lead compares complete portfolio candidates—not per-member headline metrics—and records the full selection table.
+- Quant lead compares complete portfolio candidates—not per-packet-owner headline metrics—and records the full selection table.
 - Using data through 2025 only, freeze one champion and at most one operational fallback by 18:00 ET, including its explicit session-boundary failover condition.
 - Only after that freeze, open 2026 once for accept/reject validation; do not tune, reorder, or designate a new fallback from that result.
 - If none passes, use `NO_TRADE` or separately authorized minimum-risk `paper_demo_only` without an alpha claim.

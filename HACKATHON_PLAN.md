@@ -475,18 +475,15 @@ Notebooks may explore; only tested package code may enter either competition wor
 
 ### Parallel candidate workstreams
 
-Round 0 remains a standardized six-symbol **data feasibility** scan owned by the data steward. Alpha research is now delegated by economic hypothesis rather than ticker: every owner evaluates one frozen strategy family over every compatible feasible symbol through one shared backtester.
+Round 0 remains a standardized six-symbol **data feasibility** scan owned by the data steward. Alpha research is delegated through three independently shareable packets. Each packet owner evaluates two separately frozen strategy families over the packet's pair cells and returns one package per family; later central replay expands each unchanged family over every compatible feasible symbol.
 
-| Research owner | Strategy family | Common expression |
-|---|---|---|
-| Person 1 | Same-time normalized 60-minute continuation plus VWAP confirmation | Debit vertical |
-| Person 2 | Normalized VWAP reversion in a weak-trend regime | Debit vertical |
-| Person 3 | First-30-minute opening-range breakout with volume/VWAP confirmation | Debit vertical |
-| Person 4 | Standardized overnight-gap continuation after first-hour confirmation | Debit vertical |
-| Person 5 | Benchmark-residual relative strength across the ETF clusters | Debit vertical |
-| Person 6 | Intraday range-compression breakout with volume/VWAP confirmation | Debit vertical |
+| Packet recipient | Pair cells | Strategy families | Independent reviewer |
+|---|---|---|---|
+| Group A research owner | SPY, QQQ | H1 same-time normalized continuation; H2 normalized VWAP reversion | Group B research owner |
+| Group B research owner | SMH, SOXL | H3 opening-range breakout; H4 standardized gap continuation | Group C research owner |
+| Group C research owner | TQQQ, IGV, with immutable QQQ controls for H5 | H5 benchmark-residual relative strength; H6 compression breakout | Group A research owner |
 
-These research assignments are secondary hats and do not replace the primary engineering ownership in Section 7. Owners share immutable Alpaca data, features, costs, folds, selector/sizer, portfolio constraints, artifacts, and conformance tests. They may not create six private engines or optimize a separate threshold per ticker.
+These research assignments are secondary hats and do not replace the primary engineering ownership in Section 7. Each packet owner freezes both assigned candidates before viewing P&L for either one. Owners share immutable Alpaca data, features, costs, folds, selector/sizer, portfolio constraints, artifacts, and conformance tests. They may not create private engines or optimize a separate threshold per ticker.
 
 After the feasibility scan, select at most three symbols for expensive option-history work and at most two for the competition allowlist using blinded data/coverage/liquidity fields, not P&L. All viewed strategy × symbol variants remain in the selection-adjustment family. The detailed formulas, interface-readiness blockers, artifact schemas, tests, and promotion gates in [`docs/plans/STRATEGY_RESEARCH_PLAN.md`](docs/plans/STRATEGY_RESEARCH_PLAN.md) are normative.
 
@@ -712,7 +709,7 @@ Only armed modes permit entries or exposure increases. A hard stop with open ord
 
 ## 7. Six-person ownership and delegation
 
-Replace Person 1–6 with names after the team wakes up.
+Replace the six numbered role placeholders with names after the team wakes up.
 
 | Person | Primary ownership | First integrated deliverable | Required reviewer |
 |---|---|---|---|

@@ -60,13 +60,11 @@ Contract schemas generated from code are the executable host-interface source of
 
 | Area | Owner | Required reviewer | Update trigger |
 |---|---|---|---|
-| Competition decisions and submission | Person 1 | Person 6 | Rule clarification, scope or schedule change |
-| Architecture and event contracts | Person 2 | Persons 4 and 5 for risk/execution boundaries | Interface or deployment change |
-| Strategy API and registry | Person 1 | Persons 3 and 4 | Plug-in or promotion-policy change |
-| Implementation plan | Person 1 | Module owner affected by the change | Gate completion or delivery replan |
-| Research protocol and evidence | Person 3 | Person 4 or another non-author quant | Data, metric, hypothesis, or promotion change |
-
-Replace Person 1–6 with names once responsibilities are assigned.
+| Competition decisions and submission | Release captain | Evidence/submission owner | Rule clarification, scope or schedule change |
+| Architecture and event contracts | Platform architect | Risk and execution owners | Interface or deployment change |
+| Strategy API and registry | Quant/release owner | Platform and risk reviewers | Plug-in or promotion-policy change |
+| Implementation plan | Release captain | Module owner affected by the change | Gate completion or delivery replan |
+| Research protocol and evidence | Quant/research lead | Independent non-author research reviewer | Data, metric, hypothesis, or promotion change |
 
 ## Documentation rules
 
