@@ -1,0 +1,744 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Formal physical, logical, and data-flow architecture design for the RegimeSwitch paper-only options-agent platform.">
+  <title>RegimeSwitch — Formal Architecture Design</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172033;
+      --muted: #5c687a;
+      --navy: #0d2a4a;
+      --blue: #2463a9;
+      --teal: #0f7b78;
+      --green: #3c7a57;
+      --amber: #a35b12;
+      --red: #a83b3b;
+      --violet: #6750a4;
+      --paper: #ffffff;
+      --canvas: #eef2f6;
+      --line: #cbd5e1;
+      --soft-blue: #eaf2fb;
+      --soft-teal: #e7f5f3;
+      --soft-green: #eaf5ee;
+      --soft-amber: #fff4e5;
+      --soft-red: #fcecec;
+      --soft-violet: #f1edfa;
+      --shadow: 0 18px 48px rgba(13, 42, 74, 0.10);
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--canvas);
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+    a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    a:hover { color: var(--navy); }
+    code, .mono { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; }
+
+    .document-shell {
+      display: grid;
+      grid-template-columns: 255px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 28px 22px;
+      color: #dbe8f5;
+      background: linear-gradient(180deg, #0b2744 0%, #102f50 58%, #0b223a 100%);
+      overflow-y: auto;
+    }
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255,255,255,.24);
+      border-radius: 10px;
+      background: rgba(255,255,255,.08);
+      font-weight: 800;
+      letter-spacing: .04em;
+    }
+    .sidebar h1 { margin: 0; color: #fff; font-size: 1rem; line-height: 1.3; }
+    .sidebar .subtitle { margin: 7px 0 24px; color: #a9c2db; font-size: .78rem; }
+    .sidebar nav { border-top: 1px solid rgba(255,255,255,.12); padding-top: 15px; }
+    .sidebar nav a {
+      display: block;
+      padding: 7px 9px;
+      color: #c6d8e9;
+      border-left: 2px solid transparent;
+      text-decoration: none;
+      font-size: .82rem;
+    }
+    .sidebar nav a:hover { color: #fff; border-left-color: #66c7c3; background: rgba(255,255,255,.05); }
+    .classification {
+      margin-top: 26px;
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 8px;
+      color: #bcd0e2;
+      font-size: .7rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    main { min-width: 0; }
+    .masthead {
+      padding: 54px clamp(28px, 5vw, 72px) 45px;
+      color: #fff;
+      background:
+        radial-gradient(circle at 82% 16%, rgba(50, 178, 170, .25), transparent 28%),
+        linear-gradient(120deg, #0e2f52 0%, #173f68 68%, #175a62 100%);
+    }
+    .eyebrow { margin: 0 0 10px; color: #a8dcd8; font-size: .72rem; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; }
+    .masthead h2 { margin: 0; max-width: 900px; font-size: clamp(2rem, 4vw, 3.7rem); line-height: 1.08; letter-spacing: -.035em; }
+    .masthead .lead { max-width: 860px; margin: 20px 0 0; color: #d7e6f2; font-size: 1.02rem; }
+    .status-line { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 26px; }
+    .status-chip {
+      padding: 7px 10px;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      color: #eef7ff;
+      font-size: .72rem;
+      font-weight: 700;
+    }
+    .status-chip.critical { border-color: rgba(255, 212, 134, .55); color: #ffe1a8; }
+
+    .content { max-width: 1320px; margin: 0 auto; padding: 34px clamp(22px, 4vw, 58px) 80px; }
+    section { scroll-margin-top: 20px; }
+    .section { margin-top: 44px; }
+    .section-label { color: var(--teal); font-size: .7rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+    h2.section-title { margin: 6px 0 8px; color: var(--navy); font-size: 1.75rem; line-height: 1.2; letter-spacing: -.02em; }
+    .section-intro { max-width: 930px; margin: 0 0 20px; color: var(--muted); }
+    h3 { color: var(--navy); font-size: 1.05rem; }
+
+    .card {
+      background: var(--paper);
+      border: 1px solid #dbe3ec;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .card-pad { padding: 24px; }
+    .control-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1px;
+      overflow: hidden;
+      background: var(--line);
+    }
+    .control-item { min-height: 104px; padding: 18px; background: #fff; }
+    .control-item dt { margin-bottom: 7px; color: var(--muted); font-size: .66rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
+    .control-item dd { margin: 0; color: var(--navy); font-size: .9rem; font-weight: 700; }
+
+    .principles { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; margin-top: 18px; }
+    .principle { padding: 19px; border-top: 4px solid var(--teal); }
+    .principle strong { display: block; margin-bottom: 7px; color: var(--navy); font-size: .88rem; }
+    .principle p { margin: 0; color: var(--muted); font-size: .78rem; }
+
+    .notice {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      align-items: start;
+      margin: 18px 0;
+      padding: 16px 18px;
+      border: 1px solid #efd49f;
+      border-left: 5px solid var(--amber);
+      border-radius: 10px;
+      background: var(--soft-amber);
+    }
+    .notice-mark { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; background: var(--amber); color: #fff; font-weight: 800; }
+    .notice p { margin: 0; color: #67421e; font-size: .84rem; }
+
+    .diagram-card { margin: 20px 0 32px; padding: 16px; overflow: hidden; }
+    .diagram-header { display: flex; justify-content: space-between; gap: 16px; align-items: end; margin: 4px 7px 14px; }
+    .diagram-header h3 { margin: 0; font-size: 1.1rem; }
+    .diagram-header p { margin: 3px 0 0; color: var(--muted); font-size: .76rem; }
+    .legend { display: flex; flex-wrap: wrap; gap: 11px; color: var(--muted); font-size: .68rem; }
+    .legend span { display: inline-flex; align-items: center; gap: 5px; }
+    .swatch { width: 12px; height: 8px; border-radius: 2px; background: var(--soft-blue); border: 1px solid var(--blue); }
+    .swatch.advisory { background: var(--soft-violet); border-color: var(--violet); }
+    .swatch.data { background: var(--soft-teal); border-color: var(--teal); }
+    .swatch.execution { background: var(--soft-amber); border-color: var(--amber); }
+    .swatch.refusal { background: var(--soft-red); border-color: var(--red); }
+    .diagram-scroll { overflow-x: auto; border: 1px solid #e2e8f0; border-radius: 10px; background: #fbfdff; }
+    svg.architecture { display: block; width: 100%; min-width: 900px; height: auto; }
+    svg text { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    .svg-zone { fill: #f8fafc; stroke: #b8c5d3; stroke-width: 1.5; }
+    .svg-zone-label { fill: #607084; font-size: 13px; font-weight: 800; letter-spacing: .08em; }
+    .svg-node { fill: #fff; stroke: #2463a9; stroke-width: 1.7; rx: 9; }
+    .svg-node.data { fill: #e7f5f3; stroke: #0f7b78; }
+    .svg-node.advisory { fill: #f1edfa; stroke: #6750a4; }
+    .svg-node.execution { fill: #fff4e5; stroke: #a35b12; }
+    .svg-node.public { fill: #eaf2fb; stroke: #2463a9; }
+    .svg-node.refusal { fill: #fcecec; stroke: #a83b3b; }
+    .svg-node.target { fill: #fff; stroke: #64748b; stroke-dasharray: 6 4; }
+    .svg-title { fill: #172033; font-size: 15px; font-weight: 800; }
+    .svg-sub { fill: #566478; font-size: 11px; }
+    .svg-small { fill: #657386; font-size: 10px; }
+    .svg-step { fill: #0d2a4a; }
+    .svg-step-text { fill: #fff; font-size: 10px; font-weight: 800; text-anchor: middle; dominant-baseline: middle; }
+    .svg-arrow { fill: none; stroke: #42566f; stroke-width: 1.7; marker-end: url(#arrow); }
+    .svg-arrow.data { stroke: #0f7b78; marker-end: url(#arrow-teal); }
+    .svg-arrow.advisory { stroke: #6750a4; marker-end: url(#arrow-violet); }
+    .svg-arrow.execution { stroke: #a35b12; marker-end: url(#arrow-amber); }
+    .svg-arrow.refusal { stroke: #a83b3b; stroke-dasharray: 5 4; marker-end: url(#arrow-red); }
+    .svg-arrow.target { stroke: #64748b; stroke-dasharray: 6 5; marker-end: url(#arrow); }
+    .svg-label { fill: #415066; font-size: 10px; font-weight: 700; }
+    .svg-trust { fill: none; stroke: #94a3b8; stroke-width: 1.2; stroke-dasharray: 8 5; }
+
+    .table-wrap { overflow-x: auto; border: 1px solid #dbe3ec; border-radius: 12px; background: #fff; box-shadow: var(--shadow); }
+    table { width: 100%; border-collapse: collapse; font-size: .78rem; }
+    th { padding: 12px 14px; color: #fff; background: var(--navy); text-align: left; font-size: .68rem; letter-spacing: .06em; text-transform: uppercase; }
+    td { padding: 12px 14px; border-bottom: 1px solid #e6ecf2; vertical-align: top; }
+    tbody tr:last-child td { border-bottom: 0; }
+    tbody tr:nth-child(even) { background: #f8fafc; }
+    .contract { color: var(--navy); font-weight: 800; white-space: nowrap; }
+    .tag { display: inline-block; padding: 3px 7px; border-radius: 999px; font-size: .62rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+    .tag.impl { color: #1e5e43; background: var(--soft-green); }
+    .tag.external { color: #7c4616; background: var(--soft-amber); }
+    .tag.target { color: #536071; background: #edf1f5; }
+    .tag.blocked { color: #8d2e2e; background: var(--soft-red); }
+
+    .two-col { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; }
+    .boundary-card { padding: 21px; }
+    .boundary-card h3 { margin: 0 0 10px; }
+    .boundary-card ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: .8rem; }
+    .boundary-card li + li { margin-top: 7px; }
+
+    .decision-list { display: grid; gap: 10px; counter-reset: adr; }
+    .decision {
+      display: grid;
+      grid-template-columns: 46px 1fr auto;
+      gap: 14px;
+      align-items: center;
+      padding: 14px 16px;
+      background: #fff;
+      border: 1px solid #dbe3ec;
+      border-radius: 10px;
+    }
+    .decision::before { counter-increment: adr; content: "AD-" counter(adr, decimal-leading-zero); color: var(--teal); font: 800 .72rem "SFMono-Regular", Consolas, monospace; }
+    .decision strong { display: block; color: var(--navy); font-size: .84rem; }
+    .decision span { color: var(--muted); font-size: .73rem; }
+    .decision .tag { justify-self: end; }
+
+    footer { margin-top: 56px; padding-top: 22px; border-top: 1px solid var(--line); color: var(--muted); font-size: .72rem; }
+    .footer-row { display: flex; justify-content: space-between; gap: 20px; }
+
+    @media (max-width: 1050px) {
+      .document-shell { grid-template-columns: 1fr; }
+      .sidebar { position: relative; height: auto; }
+      .sidebar nav { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); }
+      .classification { display: none; }
+      .control-grid, .principles { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+    @media (max-width: 680px) {
+      .masthead { padding: 38px 22px 34px; }
+      .content { padding-inline: 14px; }
+      .sidebar nav { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .control-grid, .principles, .two-col { grid-template-columns: 1fr; }
+      .diagram-header, .footer-row { display: block; }
+      .legend { margin-top: 10px; }
+      .decision { grid-template-columns: 42px 1fr; }
+      .decision .tag { grid-column: 2; justify-self: start; }
+    }
+    @media print {
+      @page { size: A4 landscape; margin: 12mm; }
+      body { background: #fff; font-size: 9pt; }
+      .document-shell { display: block; }
+      .sidebar { display: none; }
+      .masthead { padding: 16mm 12mm; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .content { max-width: none; padding: 8mm 4mm; }
+      .card, .table-wrap { box-shadow: none; }
+      .diagram-card, .table-wrap, .two-col, .decision-list { break-inside: avoid; }
+      .section { break-before: page; margin-top: 0; }
+      .section:first-of-type { break-before: auto; }
+      svg.architecture { min-width: 0; }
+      a { color: inherit; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="document-shell">
+    <aside class="sidebar" aria-label="Document navigation">
+      <div class="brand-mark" aria-hidden="true">RS</div>
+      <h1>RegimeSwitch Architecture</h1>
+      <p class="subtitle">Paper-only options-agent platform</p>
+      <nav>
+        <a href="#control">Document control</a>
+        <a href="#executive">Executive view</a>
+        <a href="#physical">Physical architecture</a>
+        <a href="#logical">Logical architecture</a>
+        <a href="#dataflow">Data-flow architecture</a>
+        <a href="#data">Data architecture</a>
+        <a href="#security">Security boundaries</a>
+        <a href="#operations">Operations &amp; resilience</a>
+        <a href="#decisions">Architecture decisions</a>
+        <a href="#acceptance">Acceptance criteria</a>
+      </nav>
+      <div class="classification">Internal architecture record<br>Paper execution only</div>
+    </aside>
+
+    <main>
+      <header class="masthead">
+        <p class="eyebrow">Formal Architecture Design · Version 1.1</p>
+        <h2>RegimeSwitch Paper Options-Agent Platform</h2>
+        <p class="lead">A bounded, auditable architecture for deterministic signal generation, constrained LLM review, defined-risk option planning, independent preflight, and Alpaca paper execution.</p>
+        <div class="status-line" aria-label="Architecture status">
+          <span class="status-chip">Implementation aligned</span>
+          <span class="status-chip">Fail-closed</span>
+          <span class="status-chip">Hash-bound contracts</span>
+          <span class="status-chip">PostgreSQL source of truth</span>
+          <span class="status-chip critical">No live-trading path</span>
+        </div>
+      </header>
+
+      <div class="content">
+        <section id="control" aria-labelledby="control-title">
+          <span class="section-label">01 · Governance</span>
+          <h2 class="section-title" id="control-title">Document control</h2>
+          <dl class="card control-grid">
+            <div class="control-item"><dt>Document ID</dt><dd>RS-ARC-001</dd></div>
+            <div class="control-item"><dt>Status</dt><dd>Implementation-aligned baseline</dd></div>
+            <div class="control-item"><dt>Effective date</dt><dd>30 August 2026</dd></div>
+            <div class="control-item"><dt>Scope</dt><dd>Hackathon paper runtime</dd></div>
+            <div class="control-item"><dt>Architecture style</dt><dd>Modular monolith, isolated roles</dd></div>
+            <div class="control-item"><dt>Primary platform</dt><dd>Docker Compose / Linux ARM64</dd></div>
+            <div class="control-item"><dt>System of record</dt><dd>PostgreSQL 18</dd></div>
+            <div class="control-item"><dt>Authority boundary</dt><dd>Execution worker only</dd></div>
+          </dl>
+        </section>
+
+        <section class="section" id="executive" aria-labelledby="executive-title">
+          <span class="section-label">02 · Context</span>
+          <h2 class="section-title" id="executive-title">Executive architecture view</h2>
+          <p class="section-intro">The platform separates public visibility, deterministic decisioning, LLM advice, economic-context collection, durable control, and credentialed execution into distinct process and network boundaries. Every permitted order originates as a deterministic semantic signal and remains unchanged through both advisory gates.</p>
+
+          <div class="principles">
+            <article class="card principle"><strong>Deterministic authority</strong><p>Strategy, planning, risk, and execution preflight own executable fields. LLM output is never order authority.</p></article>
+            <article class="card principle"><strong>Two constrained vetoes</strong><p>The market thesis and economic assessment may return only <span class="mono">ALLOW_UNCHANGED</span> or <span class="mono">VETO</span>.</p></article>
+            <article class="card principle"><strong>Fail-closed operation</strong><p>Missing, stale, mismatched, unavailable, uncertain, or unreconciled state ends in refusal without broker mutation.</p></article>
+            <article class="card principle"><strong>Auditable effects</strong><p>Canonical hashes, immutable commands, transactional outbox/inbox, and broker-event projections preserve decision lineage.</p></article>
+          </div>
+
+          <div class="notice" role="note">
+            <div class="notice-mark" aria-hidden="true">!</div>
+            <p><strong>Scope boundary.</strong> This design has no <span class="mono">LIVE</span> mode, live hostname, or live credential route. Alpaca economic inputs are market/news proxy context, not official CPI, employment, GDP, or central-bank release data.</p>
+          </div>
+        </section>
+
+        <section class="section" id="physical" aria-labelledby="physical-title">
+          <span class="section-label">03 · Deployment</span>
+          <h2 class="section-title" id="physical-title">Physical architecture</h2>
+          <p class="section-intro">The implemented deployment uses hardened role-specific containers, file-mounted secrets, private bridge networks, and one internal PostgreSQL service. Solid lines are implemented paths; dashed lines identify external scheduling or a controlled future read-model connection.</p>
+
+          <figure class="card diagram-card">
+            <figcaption class="diagram-header">
+              <div><h3>Physical deployment and trust zones</h3><p>Container, network, secret, and external-service boundaries</p></div>
+              <div class="legend" aria-label="Diagram legend">
+                <span><i class="swatch"></i> deterministic/public</span>
+                <span><i class="swatch advisory"></i> advisory</span>
+                <span><i class="swatch data"></i> data</span>
+                <span><i class="swatch execution"></i> execution</span>
+              </div>
+            </figcaption>
+            <div class="diagram-scroll">
+              <svg class="architecture" viewBox="0 0 1280 760" role="img" aria-labelledby="physical-svg-title physical-svg-desc">
+                <title id="physical-svg-title">RegimeSwitch physical architecture</title>
+                <desc id="physical-svg-desc">External users, scheduler, model provider, Alpaca data and paper endpoints connect to isolated Docker services and an internal PostgreSQL database.</desc>
+                <defs>
+                  <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#42566f"/></marker>
+                  <marker id="arrow-teal" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#0f7b78"/></marker>
+                  <marker id="arrow-violet" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#6750a4"/></marker>
+                  <marker id="arrow-amber" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#a35b12"/></marker>
+                </defs>
+
+                <text x="50" y="33" class="svg-zone-label">EXTERNAL SERVICES / ACTORS</text>
+                <rect x="50" y="53" width="180" height="70" class="svg-node public"/>
+                <text x="140" y="80" text-anchor="middle" class="svg-title">Judge / Operator</text>
+                <text x="140" y="101" text-anchor="middle" class="svg-sub">HTTPS · private control CLI</text>
+                <rect x="280" y="53" width="180" height="70" class="svg-node target"/>
+                <text x="370" y="80" text-anchor="middle" class="svg-title">Session Scheduler</text>
+                <text x="370" y="101" text-anchor="middle" class="svg-sub">08:45 ET one-shot trigger</text>
+                <rect x="510" y="53" width="180" height="70" class="svg-node advisory"/>
+                <text x="600" y="80" text-anchor="middle" class="svg-title">Pinned LLM Provider</text>
+                <text x="600" y="101" text-anchor="middle" class="svg-sub">Structured JSON · no tools</text>
+                <rect x="740" y="53" width="180" height="70" class="svg-node data"/>
+                <text x="830" y="80" text-anchor="middle" class="svg-title">Alpaca Data + News</text>
+                <text x="830" y="101" text-anchor="middle" class="svg-sub">IEX bars · headline metadata</text>
+                <rect x="970" y="53" width="220" height="70" class="svg-node execution"/>
+                <text x="1080" y="80" text-anchor="middle" class="svg-title">Alpaca Paper Trading</text>
+                <text x="1080" y="101" text-anchor="middle" class="svg-sub">paper-api.alpaca.markets only</text>
+
+                <rect x="30" y="155" width="1220" height="540" rx="18" class="svg-zone"/>
+                <text x="55" y="185" class="svg-zone-label">DOCKER COMPOSE · ALPACA-HACKATHON-PAPER · DEFAULT LINUX/ARM64</text>
+
+                <rect x="52" y="210" width="190" height="205" rx="13" fill="#f2f7fc" stroke="#8db2d8"/>
+                <text x="68" y="236" class="svg-zone-label">PUBLIC NETWORK</text>
+                <rect x="72" y="260" width="150" height="90" class="svg-node public"/>
+                <text x="147" y="289" text-anchor="middle" class="svg-title">api</text>
+                <text x="147" y="310" text-anchor="middle" class="svg-sub">Credential-free</text>
+                <text x="147" y="329" text-anchor="middle" class="svg-sub">Read-only replay/status</text>
+                <rect x="72" y="367" width="150" height="30" rx="15" fill="#eaf2fb" stroke="#8db2d8"/>
+                <text x="147" y="387" text-anchor="middle" class="svg-small">host port :8000</text>
+
+                <rect x="262" y="210" width="250" height="205" rx="13" fill="#f4f8fc" stroke="#8db2d8"/>
+                <text x="278" y="236" class="svg-zone-label">DECISION ZONE</text>
+                <rect x="282" y="260" width="210" height="116" class="svg-node"/>
+                <text x="387" y="287" text-anchor="middle" class="svg-title">decision-worker</text>
+                <text x="387" y="309" text-anchor="middle" class="svg-sub">strategy · resolver · economic gate</text>
+                <text x="387" y="329" text-anchor="middle" class="svg-sub">planner · risk · outbox producer</text>
+                <text x="387" y="351" text-anchor="middle" class="svg-small">secret: database DSN only</text>
+
+                <rect x="532" y="210" width="210" height="205" rx="13" fill="#f6f3fb" stroke="#ac9ad1"/>
+                <text x="548" y="236" class="svg-zone-label">ADVISORY ZONE</text>
+                <rect x="552" y="260" width="170" height="116" class="svg-node advisory"/>
+                <text x="637" y="287" text-anchor="middle" class="svg-title">agent-worker</text>
+                <text x="637" y="309" text-anchor="middle" class="svg-sub">thesis + economics assessment</text>
+                <text x="637" y="329" text-anchor="middle" class="svg-sub">ALLOW_UNCHANGED | VETO</text>
+                <text x="637" y="351" text-anchor="middle" class="svg-small">secret: provider key only</text>
+
+                <rect x="762" y="210" width="220" height="205" rx="13" fill="#eff9f7" stroke="#7cb9b4"/>
+                <text x="778" y="236" class="svg-zone-label">DATA COLLECTION</text>
+                <rect x="782" y="260" width="180" height="116" class="svg-node data"/>
+                <text x="872" y="287" text-anchor="middle" class="svg-title">economic-context</text>
+                <text x="872" y="309" text-anchor="middle" class="svg-sub">one immutable capture/day</text>
+                <text x="872" y="329" text-anchor="middle" class="svg-sub">market/news client only</text>
+                <text x="872" y="351" text-anchor="middle" class="svg-small">secrets: data key + DB DSN</text>
+
+                <rect x="1002" y="210" width="218" height="205" rx="13" fill="#fff8ed" stroke="#d7aa71"/>
+                <text x="1018" y="236" class="svg-zone-label">EXECUTION ZONE</text>
+                <rect x="1022" y="260" width="178" height="116" class="svg-node execution"/>
+                <text x="1111" y="287" text-anchor="middle" class="svg-title">execution-worker</text>
+                <text x="1111" y="309" text-anchor="middle" class="svg-sub">preflight · broker adapter</text>
+                <text x="1111" y="329" text-anchor="middle" class="svg-sub">submit · reconcile</text>
+                <text x="1111" y="351" text-anchor="middle" class="svg-small">paper key + account + DB DSN</text>
+
+                <rect x="262" y="448" width="958" height="214" rx="13" fill="#f3f8f7" stroke="#8eb8b4"/>
+                <text x="278" y="476" class="svg-zone-label">DATABASE-INTERNAL · PRIVATE CONTROL AND EVIDENCE PLANE</text>
+                <rect x="342" y="505" width="375" height="115" class="svg-node data"/>
+                <text x="529" y="533" text-anchor="middle" class="svg-title">PostgreSQL 18 · regimeswitch</text>
+                <text x="529" y="555" text-anchor="middle" class="svg-sub">events · jobs · outbox/inbox · risk/control</text>
+                <text x="529" y="575" text-anchor="middle" class="svg-sub">daily_economic_context_v1 · signal_decision_audit_v1</text>
+                <text x="529" y="598" text-anchor="middle" class="svg-small">non-superuser runtime role · no host port</text>
+                <rect x="770" y="505" width="280" height="115" class="svg-node data"/>
+                <text x="910" y="536" text-anchor="middle" class="svg-title">postgres_data</text>
+                <text x="910" y="558" text-anchor="middle" class="svg-sub">named persistent volume</text>
+                <text x="910" y="581" text-anchor="middle" class="svg-small">retained audit evidence</text>
+
+                <path d="M140 123 L147 260" class="svg-arrow"/>
+                <path d="M370 123 C500 155 770 148 872 260" class="svg-arrow target"/>
+                <path d="M637 260 L612 124" class="svg-arrow advisory"/>
+                <path d="M872 260 L837 124" class="svg-arrow data"/>
+                <path d="M1111 260 L1085 124" class="svg-arrow execution"/>
+                <path d="M492 300 L552 300" class="svg-arrow advisory"/>
+                <path d="M552 340 L492 340" class="svg-arrow advisory"/>
+                <path d="M387 376 L480 505" class="svg-arrow data"/>
+                <path d="M872 376 L650 505" class="svg-arrow data"/>
+                <path d="M1111 376 L1015 505" class="svg-arrow execution"/>
+                <path d="M717 562 L770 562" class="svg-arrow data"/>
+                <path d="M342 600 C250 625 180 520 150 415" class="svg-arrow target"/>
+
+                <text x="503" y="288" class="svg-label">sanitized HTTP</text>
+                <text x="645" y="417" class="svg-label">daily cache</text>
+                <text x="1042" y="430" class="svg-label">transactional claims</text>
+                <text x="180" y="565" class="svg-label">target read-model feed</text>
+              </svg>
+            </div>
+          </figure>
+
+          <div class="two-col">
+            <article class="card boundary-card"><h3>Container hardening</h3><ul><li>Read-only root filesystem; bounded writable <span class="mono">tmpfs</span>.</li><li>All Linux capabilities dropped; <span class="mono">no-new-privileges</span> enforced.</li><li>CPU, memory, and process-count limits declared per service.</li><li>Role-specific images exclude forbidden packages and credentials.</li></ul></article>
+            <article class="card boundary-card"><h3>Network intent</h3><ul><li>Agent and database networks are internal Docker bridges.</li><li>Public API, model egress, data egress, and broker egress are separate.</li><li>Bridge names express trust intent; production still requires FQDN egress enforcement.</li><li>PostgreSQL publishes no host port.</li></ul></article>
+          </div>
+        </section>
+
+        <section class="section" id="logical" aria-labelledby="logical-title">
+          <span class="section-label">04 · Components</span>
+          <h2 class="section-title" id="logical-title">Logical architecture</h2>
+          <p class="section-intro">The logical design keeps strategy semantics, advice, exact order construction, authorization, and external effects in separate modules joined by versioned contracts. The central invariant is that advisory output can veto but cannot transform executable intent.</p>
+
+          <figure class="card diagram-card">
+            <figcaption class="diagram-header"><div><h3>Layered component model</h3><p>Responsibilities, dependency direction, and authority boundaries</p></div></figcaption>
+            <div class="diagram-scroll">
+              <svg class="architecture" viewBox="0 0 1260 780" role="img" aria-labelledby="logical-svg-title logical-svg-desc">
+                <title id="logical-svg-title">RegimeSwitch logical architecture</title>
+                <desc id="logical-svg-desc">Five logical layers show inputs, decisioning, authorization, execution, and evidence with one-way dependency flow.</desc>
+                <defs>
+                  <marker id="arrow-l" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#42566f"/></marker>
+                  <marker id="arrow-lv" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#6750a4"/></marker>
+                  <marker id="arrow-la" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#a35b12"/></marker>
+                  <marker id="arrow-lt" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#0f7b78"/></marker>
+                </defs>
+
+                <rect x="25" y="30" width="1210" height="112" rx="13" fill="#f4f8fc" stroke="#a8bdd2"/>
+                <text x="45" y="58" class="svg-zone-label">L1 · NORMALIZED INPUTS AND CONTRACTS</text>
+                <rect x="190" y="76" width="190" height="48" class="svg-node public"/><text x="285" y="105" text-anchor="middle" class="svg-title">Market / Account State</text>
+                <rect x="420" y="76" width="190" height="48" class="svg-node public"/><text x="515" y="105" text-anchor="middle" class="svg-title">FeatureVectorV1</text>
+                <rect x="650" y="76" width="220" height="48" class="svg-node data"/><text x="760" y="105" text-anchor="middle" class="svg-title">DailyEconomicContextV1</text>
+                <rect x="910" y="76" width="190" height="48" class="svg-node"/><text x="1005" y="105" text-anchor="middle" class="svg-title">Registry + Config</text>
+
+                <rect x="25" y="166" width="1210" height="216" rx="13" fill="#fbfcfe" stroke="#a8bdd2"/>
+                <text x="45" y="194" class="svg-zone-label">L2 · SEMANTIC DECISION AND ADVISORY</text>
+                <rect x="80" y="226" width="190" height="76" class="svg-node"/>
+                <text x="175" y="254" text-anchor="middle" class="svg-title">Strategy Runner</text><text x="175" y="276" text-anchor="middle" class="svg-sub">isolated deterministic plug-in</text>
+                <rect x="315" y="226" width="190" height="76" class="svg-node advisory"/>
+                <text x="410" y="254" text-anchor="middle" class="svg-title">Thesis Adapter</text><text x="410" y="276" text-anchor="middle" class="svg-sub">ALLOW_UNCHANGED | VETO</text>
+                <rect x="550" y="226" width="190" height="76" class="svg-node"/>
+                <text x="645" y="254" text-anchor="middle" class="svg-title">Resolver</text><text x="645" y="276" text-anchor="middle" class="svg-sub">semantic TradeIntentV1</text>
+                <rect x="785" y="226" width="190" height="76" class="svg-node advisory"/>
+                <text x="880" y="254" text-anchor="middle" class="svg-title">Economics Adapter</text><text x="880" y="276" text-anchor="middle" class="svg-sub">support | veto only</text>
+                <rect x="1020" y="226" width="160" height="76" class="svg-node"/>
+                <text x="1100" y="254" text-anchor="middle" class="svg-title">Economic Gate</text><text x="1100" y="276" text-anchor="middle" class="svg-sub">original intent or refusal</text>
+                <rect x="430" y="326" width="400" height="36" rx="18" fill="#fcecec" stroke="#a83b3b"/>
+                <text x="630" y="349" text-anchor="middle" class="svg-title">NO_TRADE is a complete, durable decision</text>
+
+                <rect x="25" y="406" width="1210" height="126" rx="13" fill="#fffaf2" stroke="#d4b281"/>
+                <text x="45" y="434" class="svg-zone-label">L3 · EXACT PLANNING AND AUTHORIZATION</text>
+                <rect x="300" y="454" width="240" height="56" class="svg-node execution"/><text x="420" y="487" text-anchor="middle" class="svg-title">Order Planner</text>
+                <rect x="610" y="454" width="240" height="56" class="svg-node execution"/><text x="730" y="487" text-anchor="middle" class="svg-title">Risk Kernel</text>
+                <rect x="920" y="454" width="240" height="56" class="svg-node execution"/><text x="1040" y="487" text-anchor="middle" class="svg-title">Approved Command Bundle</text>
+
+                <rect x="25" y="556" width="760" height="178" rx="13" fill="#fff8ed" stroke="#d4b281"/>
+                <text x="45" y="584" class="svg-zone-label">L4 · CREDENTIALED EXECUTION</text>
+                <rect x="70" y="622" width="190" height="70" class="svg-node execution"/><text x="165" y="650" text-anchor="middle" class="svg-title">Outbox Consumer</text><text x="165" y="671" text-anchor="middle" class="svg-sub">lease + deduplication</text>
+                <rect x="300" y="622" width="210" height="70" class="svg-node execution"/><text x="405" y="650" text-anchor="middle" class="svg-title">Independent Preflight</text><text x="405" y="671" text-anchor="middle" class="svg-sub">recompute hard invariants</text>
+                <rect x="550" y="622" width="190" height="70" class="svg-node execution"/><text x="645" y="650" text-anchor="middle" class="svg-title">Paper Broker Port</text><text x="645" y="671" text-anchor="middle" class="svg-sub">submit + reconcile</text>
+
+                <rect x="810" y="556" width="425" height="178" rx="13" fill="#eff9f7" stroke="#7cb9b4"/>
+                <text x="830" y="584" class="svg-zone-label">L5 · DURABLE EVIDENCE AND READ MODELS</text>
+                <rect x="845" y="616" width="165" height="78" class="svg-node data"/><text x="927" y="645" text-anchor="middle" class="svg-title">Event Ledger</text><text x="927" y="667" text-anchor="middle" class="svg-sub">outbox · inbox · jobs</text>
+                <rect x="1035" y="616" width="165" height="78" class="svg-node data"/><text x="1117" y="645" text-anchor="middle" class="svg-title">Audit Projection</text><text x="1117" y="667" text-anchor="middle" class="svg-sub">signal + placement state</text>
+
+                <path d="M285 124 C245 165 185 175 175 226" fill="none" stroke="#42566f" stroke-width="1.7" marker-end="url(#arrow-l)"/>
+                <path d="M515 124 C470 170 235 172 195 226" fill="none" stroke="#42566f" stroke-width="1.7" marker-end="url(#arrow-l)"/>
+                <path d="M760 124 C820 164 858 182 875 226" fill="none" stroke="#0f7b78" stroke-width="1.7" marker-end="url(#arrow-lt)"/>
+                <path d="M1005 124 C830 164 685 175 660 226" fill="none" stroke="#42566f" stroke-width="1.7" marker-end="url(#arrow-l)"/>
+                <path d="M270 264 L315 264" fill="none" stroke="#6750a4" stroke-width="1.7" marker-end="url(#arrow-lv)"/>
+                <path d="M505 264 L550 264" fill="none" stroke="#6750a4" stroke-width="1.7" marker-end="url(#arrow-lv)"/>
+                <path d="M740 264 L785 264" fill="none" stroke="#6750a4" stroke-width="1.7" marker-end="url(#arrow-lv)"/>
+                <path d="M975 264 L1020 264" fill="none" stroke="#6750a4" stroke-width="1.7" marker-end="url(#arrow-lv)"/>
+                <path d="M645 302 L645 326" fill="none" stroke="#a83b3b" stroke-width="1.5" stroke-dasharray="5 4"/>
+                <path d="M1100 302 C1100 390 420 380 420 454" fill="none" stroke="#a35b12" stroke-width="1.7" marker-end="url(#arrow-la)"/>
+                <path d="M540 482 L610 482" fill="none" stroke="#a35b12" stroke-width="1.7" marker-end="url(#arrow-la)"/>
+                <path d="M850 482 L920 482" fill="none" stroke="#a35b12" stroke-width="1.7" marker-end="url(#arrow-la)"/>
+                <path d="M1040 510 C1000 555 210 550 165 622" fill="none" stroke="#a35b12" stroke-width="1.7" marker-end="url(#arrow-la)"/>
+                <path d="M260 657 L300 657" fill="none" stroke="#a35b12" stroke-width="1.7" marker-end="url(#arrow-la)"/>
+                <path d="M510 657 L550 657" fill="none" stroke="#a35b12" stroke-width="1.7" marker-end="url(#arrow-la)"/>
+                <path d="M740 657 L845 657" fill="none" stroke="#0f7b78" stroke-width="1.7" marker-end="url(#arrow-lt)"/>
+                <path d="M1010 657 L1035 657" fill="none" stroke="#0f7b78" stroke-width="1.7" marker-end="url(#arrow-lt)"/>
+              </svg>
+            </div>
+          </figure>
+        </section>
+
+        <section class="section" id="dataflow" aria-labelledby="dataflow-title">
+          <span class="section-label">05 · Behavior</span>
+          <h2 class="section-title" id="dataflow-title">Data-flow architecture</h2>
+          <p class="section-intro">Two coordinated flows operate at different cadences: one pre-market economic-context capture per trading date, and a per-signal decision/execution flow. Every refusal converges on the durable signal audit without producing an order.</p>
+
+          <figure class="card diagram-card">
+            <figcaption class="diagram-header"><div><h3>End-to-end data flow with refusal branches</h3><p>Morning context lane, per-signal lane, and broker evidence loop</p></div></figcaption>
+            <div class="diagram-scroll">
+              <svg class="architecture" viewBox="0 0 1540 900" role="img" aria-labelledby="dataflow-svg-title dataflow-svg-desc">
+                <title id="dataflow-svg-title">RegimeSwitch end-to-end data-flow architecture</title>
+                <desc id="dataflow-svg-desc">Alpaca data is captured once each morning. Each strategy signal passes through advisory, economic, planning, risk, and execution gates with no-trade branches recorded in PostgreSQL.</desc>
+                <defs>
+                  <marker id="arrow-d" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#42566f"/></marker>
+                  <marker id="arrow-dt" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#0f7b78"/></marker>
+                  <marker id="arrow-da" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#a35b12"/></marker>
+                  <marker id="arrow-dr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#a83b3b"/></marker>
+                  <marker id="arrow-dv" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#6750a4"/></marker>
+                </defs>
+
+                <rect x="24" y="30" width="1492" height="216" rx="14" fill="#eff9f7" stroke="#7cb9b4"/>
+                <text x="47" y="60" class="svg-zone-label">A · PRE-MARKET CONTEXT FLOW · ONCE PER TRADING DATE · 08:45–09:25 ET</text>
+                <rect x="80" y="100" width="210" height="78" class="svg-node data"/><text x="185" y="130" text-anchor="middle" class="svg-title">Alpaca Data + News</text><text x="185" y="153" text-anchor="middle" class="svg-sub">daily IEX bars + headlines</text>
+                <rect x="390" y="100" width="220" height="78" class="svg-node data"/><text x="500" y="130" text-anchor="middle" class="svg-title">Claim Date</text><text x="500" y="153" text-anchor="middle" class="svg-sub">atomic one-row collection lock</text>
+                <rect x="710" y="100" width="240" height="78" class="svg-node data"/><text x="830" y="130" text-anchor="middle" class="svg-title">Normalize + Hash</text><text x="830" y="153" text-anchor="middle" class="svg-sub">bounded proxy observations</text>
+                <rect x="1050" y="100" width="330" height="78" class="svg-node data"/><text x="1215" y="130" text-anchor="middle" class="svg-title">daily_economic_context_v1</text><text x="1215" y="153" text-anchor="middle" class="svg-sub">READY | FAILED · immutable daily payload</text>
+                <path d="M290 139 L390 139" fill="none" stroke="#0f7b78" stroke-width="2" marker-end="url(#arrow-dt)"/>
+                <path d="M610 139 L710 139" fill="none" stroke="#0f7b78" stroke-width="2" marker-end="url(#arrow-dt)"/>
+                <path d="M950 139 L1050 139" fill="none" stroke="#0f7b78" stroke-width="2" marker-end="url(#arrow-dt)"/>
+                <text x="333" y="127" class="svg-label">1 call window</text><text x="641" y="127" class="svg-label">CLAIMED</text><text x="975" y="127" class="svg-label">canonical V1</text>
+
+                <rect x="24" y="274" width="1492" height="470" rx="14" fill="#fbfcfe" stroke="#a8bdd2"/>
+                <text x="47" y="304" class="svg-zone-label">B · PER-SIGNAL DECISION AND AUTHORIZATION FLOW</text>
+
+                <rect x="55" y="354" width="160" height="78" class="svg-node public"/><text x="135" y="383" text-anchor="middle" class="svg-title">Frozen Inputs</text><text x="135" y="406" text-anchor="middle" class="svg-sub">market · feature · state</text>
+                <circle cx="68" cy="357" r="13" class="svg-step"/><text x="68" y="357" class="svg-step-text">1</text>
+
+                <rect x="255" y="354" width="180" height="78" class="svg-node"/><text x="345" y="383" text-anchor="middle" class="svg-title">Strategy Evaluation</text><text x="345" y="406" text-anchor="middle" class="svg-sub">semantic candidate / refusal</text>
+                <circle cx="268" cy="357" r="13" class="svg-step"/><text x="268" y="357" class="svg-step-text">2</text>
+
+                <rect x="475" y="354" width="180" height="78" class="svg-node advisory"/><text x="565" y="383" text-anchor="middle" class="svg-title">LLM Thesis Gate</text><text x="565" y="406" text-anchor="middle" class="svg-sub">allow unchanged / veto</text>
+                <circle cx="488" cy="357" r="13" class="svg-step"/><text x="488" y="357" class="svg-step-text">3</text>
+
+                <rect x="695" y="354" width="160" height="78" class="svg-node"/><text x="775" y="383" text-anchor="middle" class="svg-title">Resolver</text><text x="775" y="406" text-anchor="middle" class="svg-sub">TradeIntentV1</text>
+                <circle cx="708" cy="357" r="13" class="svg-step"/><text x="708" y="357" class="svg-step-text">4</text>
+
+                <rect x="895" y="340" width="210" height="106" class="svg-node advisory"/><text x="1000" y="372" text-anchor="middle" class="svg-title">Economic Assessment</text><text x="1000" y="395" text-anchor="middle" class="svg-sub">daily context + semantic signal</text><text x="1000" y="418" text-anchor="middle" class="svg-sub">allow unchanged / veto</text>
+                <circle cx="908" cy="343" r="13" class="svg-step"/><text x="908" y="343" class="svg-step-text">5</text>
+
+                <rect x="1145" y="354" width="170" height="78" class="svg-node"/><text x="1230" y="383" text-anchor="middle" class="svg-title">Economic Gate</text><text x="1230" y="406" text-anchor="middle" class="svg-sub">binding + TTL checks</text>
+                <circle cx="1158" cy="357" r="13" class="svg-step"/><text x="1158" y="357" class="svg-step-text">6</text>
+
+                <path d="M215 393 L255 393" fill="none" stroke="#42566f" stroke-width="1.8" marker-end="url(#arrow-d)"/>
+                <path d="M435 393 L475 393" fill="none" stroke="#6750a4" stroke-width="1.8" marker-end="url(#arrow-dv)"/>
+                <path d="M655 393 L695 393" fill="none" stroke="#6750a4" stroke-width="1.8" marker-end="url(#arrow-dv)"/>
+                <path d="M855 393 L895 393" fill="none" stroke="#6750a4" stroke-width="1.8" marker-end="url(#arrow-dv)"/>
+                <path d="M1105 393 L1145 393" fill="none" stroke="#6750a4" stroke-width="1.8" marker-end="url(#arrow-dv)"/>
+                <path d="M1215 178 C1215 250 1000 260 1000 340" fill="none" stroke="#0f7b78" stroke-width="2" marker-end="url(#arrow-dt)"/>
+                <text x="1060" y="269" class="svg-label">cached context reused all day</text>
+
+                <rect x="270" y="522" width="180" height="78" class="svg-node execution"/><text x="360" y="551" text-anchor="middle" class="svg-title">Order Planner</text><text x="360" y="574" text-anchor="middle" class="svg-sub">exact legs · qty · debit</text>
+                <circle cx="283" cy="525" r="13" class="svg-step"/><text x="283" y="525" class="svg-step-text">7</text>
+                <rect x="500" y="522" width="180" height="78" class="svg-node execution"/><text x="590" y="551" text-anchor="middle" class="svg-title">Risk Kernel</text><text x="590" y="574" text-anchor="middle" class="svg-sub">hash-bound approval</text>
+                <circle cx="513" cy="525" r="13" class="svg-step"/><text x="513" y="525" class="svg-step-text">8</text>
+                <rect x="730" y="522" width="180" height="78" class="svg-node data"/><text x="820" y="551" text-anchor="middle" class="svg-title">Transactional Outbox</text><text x="820" y="574" text-anchor="middle" class="svg-sub">reserve + enqueue atomically</text>
+                <circle cx="743" cy="525" r="13" class="svg-step"/><text x="743" y="525" class="svg-step-text">9</text>
+                <rect x="960" y="522" width="180" height="78" class="svg-node execution"/><text x="1050" y="551" text-anchor="middle" class="svg-title">Execution Preflight</text><text x="1050" y="574" text-anchor="middle" class="svg-sub">latest broker state replay</text>
+                <circle cx="973" cy="525" r="13" class="svg-step"/><text x="973" y="525" class="svg-step-text">10</text>
+                <rect x="1190" y="522" width="180" height="78" class="svg-node execution"/><text x="1280" y="551" text-anchor="middle" class="svg-title">Alpaca Paper</text><text x="1280" y="574" text-anchor="middle" class="svg-sub">submit · reconcile</text>
+                <circle cx="1203" cy="525" r="13" class="svg-step"/><text x="1203" y="525" class="svg-step-text">11</text>
+
+                <path d="M1230 432 C1230 485 360 470 360 522" fill="none" stroke="#a35b12" stroke-width="1.8" marker-end="url(#arrow-da)"/>
+                <path d="M450 561 L500 561" fill="none" stroke="#a35b12" stroke-width="1.8" marker-end="url(#arrow-da)"/>
+                <path d="M680 561 L730 561" fill="none" stroke="#a35b12" stroke-width="1.8" marker-end="url(#arrow-da)"/>
+                <path d="M910 561 L960 561" fill="none" stroke="#a35b12" stroke-width="1.8" marker-end="url(#arrow-da)"/>
+                <path d="M1140 561 L1190 561" fill="none" stroke="#a35b12" stroke-width="1.8" marker-end="url(#arrow-da)"/>
+
+                <rect x="445" y="650" width="650" height="62" class="svg-node refusal"/>
+                <text x="770" y="676" text-anchor="middle" class="svg-title">NO_TRADE / RISK_REJECTED / PREFLIGHT_REJECTED</text>
+                <text x="770" y="697" text-anchor="middle" class="svg-sub">durable reason code · zero broker mutation</text>
+                <path d="M345 432 C345 480 520 610 570 650" fill="none" stroke="#a83b3b" stroke-width="1.7" stroke-dasharray="5 4" marker-end="url(#arrow-dr)"/>
+                <path d="M565 432 C565 500 620 610 660 650" fill="none" stroke="#a83b3b" stroke-width="1.7" stroke-dasharray="5 4" marker-end="url(#arrow-dr)"/>
+                <path d="M775 432 C775 510 770 610 770 650" fill="none" stroke="#a83b3b" stroke-width="1.7" stroke-dasharray="5 4" marker-end="url(#arrow-dr)"/>
+                <path d="M1230 432 C1230 500 1020 610 950 650" fill="none" stroke="#a83b3b" stroke-width="1.7" stroke-dasharray="5 4" marker-end="url(#arrow-dr)"/>
+                <path d="M590 600 L690 650" fill="none" stroke="#a83b3b" stroke-width="1.7" stroke-dasharray="5 4" marker-end="url(#arrow-dr)"/>
+                <path d="M1050 600 L900 650" fill="none" stroke="#a83b3b" stroke-width="1.7" stroke-dasharray="5 4" marker-end="url(#arrow-dr)"/>
+
+                <rect x="24" y="770" width="1492" height="100" rx="14" fill="#eff9f7" stroke="#7cb9b4"/>
+                <text x="47" y="800" class="svg-zone-label">C · EVIDENCE PROJECTION</text>
+                <rect x="350" y="815" width="330" height="40" class="svg-node data"/><text x="515" y="840" text-anchor="middle" class="svg-title">signal_decision_audit_v1</text>
+                <rect x="850" y="815" width="330" height="40" class="svg-node data"/><text x="1015" y="840" text-anchor="middle" class="svg-title">broker_events_v1 + reconciliation</text>
+                <path d="M770 712 C770 758 600 780 515 815" fill="none" stroke="#0f7b78" stroke-width="1.8" marker-end="url(#arrow-dt)"/>
+                <path d="M1280 600 C1280 745 1100 770 1015 815" fill="none" stroke="#0f7b78" stroke-width="1.8" marker-end="url(#arrow-dt)"/>
+                <path d="M1015 815 C910 780 670 780 600 815" fill="none" stroke="#0f7b78" stroke-width="1.5" marker-end="url(#arrow-dt)"/>
+              </svg>
+            </div>
+          </figure>
+        </section>
+
+        <section class="section" id="data" aria-labelledby="data-title">
+          <span class="section-label">06 · Information</span>
+          <h2 class="section-title" id="data-title">Data architecture and contract ownership</h2>
+          <p class="section-intro">All decision and execution payloads are strict V1 contracts with canonical content hashes. PostgreSQL stores operational truth; JSON Schema snapshots are committed for integration and replay.</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Information object</th><th>Authoritative producer</th><th>Persistence / cadence</th><th>Primary binding or invariant</th><th>Consumers</th></tr></thead>
+              <tbody>
+                <tr><td class="contract">MarketSnapshotV1</td><td>Execution-zone ingress or frozen exporter</td><td>Per decision snapshot</td><td>Feed identity, timestamps, quality flags, content hash</td><td>Features, planner, risk, replay</td></tr>
+                <tr><td class="contract">StrategyEvaluationV1</td><td>Isolated registered plug-in</td><td>Per signal</td><td>Registry-pinned plug-in/config/content identity</td><td>Resolver, advisory, audit</td></tr>
+                <tr><td class="contract">AgentThesisV1</td><td>Agent worker</td><td>Per signal, TTL-bound</td><td>Context, evaluation, model-input, model and prompt hashes</td><td>Deterministic resolver</td></tr>
+                <tr><td class="contract">DailyEconomicContextV1</td><td>Economic-context worker</td><td>Once per trading date</td><td>Collection config, source request, causality, expiry</td><td>Economics advisory gate</td></tr>
+                <tr><td class="contract">EconomicAssessmentV1</td><td>Agent worker</td><td>Per semantic intent, TTL-bound</td><td>Daily context, evaluation, trade intent, model-input hash</td><td>Economic gate, audit</td></tr>
+                <tr><td class="contract">TradeIntentV1</td><td>Deterministic resolver</td><td>Per allowed signal</td><td>Original semantic tuple; advisory may not alter it</td><td>Order planner</td></tr>
+                <tr><td class="contract">OrderPlanV1</td><td>Order planner</td><td>Per exact order proposal</td><td>Exact legs, quantity, debit, TIF, deterministic client ID</td><td>Risk, preflight, execution</td></tr>
+                <tr><td class="contract">RiskInputV1 / RiskDecisionV1</td><td>Decision worker / risk kernel</td><td>Per plan, short TTL</td><td>Plan plus all market/account/control/release hashes</td><td>Outbox, execution preflight</td></tr>
+                <tr><td class="contract">ExecuteApprovedPlanV1</td><td>Decision worker</td><td>Transactional outbox</td><td>Immutable command and identical risk-input binding</td><td>Execution worker inbox</td></tr>
+                <tr><td class="contract">BrokerEventV1</td><td>Execution worker</td><td>Append-only per observed transition</td><td>Client order ID, broker state, occurrence time</td><td>Reconciler, reservations, audit projection</td></tr>
+                <tr><td class="contract">SignalDecisionAuditV1</td><td>Decision worker; execution projection</td><td>One logical row per signal</td><td>Decision reason, economic lineage, conservative placement state</td><td>Operators, read models, evidence review</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="section" id="security" aria-labelledby="security-title">
+          <span class="section-label">07 · Assurance</span>
+          <h2 class="section-title" id="security-title">Security and authority boundaries</h2>
+          <div class="two-col">
+            <article class="card boundary-card"><h3>Decision boundary</h3><ul><li>No Alpaca package or competition credential in the decision container.</li><li>Strategy plug-ins receive no network, filesystem, database, account, model, or broker object.</li><li>LLM requests exclude account, exact contract, quantity, price, risk, and execution state.</li><li>Only the unchanged deterministic intent can pass an advisory gate.</li></ul></article>
+            <article class="card boundary-card"><h3>Execution boundary</h3><ul><li>Only the execution worker receives the competition paper key and expected account ID.</li><li>Preflight revalidates hashes, TTLs, quotes, control mode, release, allowlist, and reconciliation.</li><li>Uncertain submission is reconciled by deterministic client order ID before retry.</li><li>Unknown broker state retains conservative risk reservation.</li></ul></article>
+            <article class="card boundary-card"><h3>Data-collection boundary</h3><ul><li>A separate Alpaca data key is mounted only into the one-shot collector.</li><li>The collector image has no planner, risk kernel, execution core, or broker adapter.</li><li>One claim is made before any provider call; same-day retry is prohibited after failure.</li><li>Market/news proxies are never represented as official economic releases.</li></ul></article>
+            <article class="card boundary-card"><h3>Persistence boundary</h3><ul><li>PostgreSQL is internal, has no host port, and uses a non-superuser runtime role.</li><li>Risk reservation and outbox enqueue are committed atomically.</li><li>Decision job completion and signal audit persistence are atomic.</li><li>Public read models must use a separately provisioned SELECT-only identity.</li></ul></article>
+          </div>
+        </section>
+
+        <section class="section" id="operations" aria-labelledby="operations-title">
+          <span class="section-label">08 · Quality attributes</span>
+          <h2 class="section-title" id="operations-title">Operations, resilience, and observability</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Quality attribute</th><th>Design mechanism</th><th>Safe degraded behavior</th><th>Evidence</th></tr></thead>
+              <tbody>
+                <tr><td class="contract">Safety</td><td>Closed operating modes, bounded-risk templates, hash-bound approvals, independent preflight</td><td>Reject or <span class="mono">NO_TRADE</span>; no live fallback</td><td>Risk and security tests; decision tape</td></tr>
+                <tr><td class="contract">Availability</td><td>Durable jobs, leases, outbox/inbox, deterministic client IDs</td><td>Retry only internal work; reconcile uncertain external effects</td><td>Job/outbox state and broker events</td></tr>
+                <tr><td class="contract">Consistency</td><td>PostgreSQL transactions, compare-and-swap versions, advisory locks</td><td>Fail conflicting approval or lease claim</td><td>Versioned snapshots and reservation rows</td></tr>
+                <tr><td class="contract">Auditability</td><td>Canonical hashes, frozen V1 artifacts, supplemental reason metadata</td><td>Preserve refusal as a first-class result</td><td><span class="mono">signal_decision_audit_v1</span></td></tr>
+                <tr><td class="contract">Performance</td><td>Economic context fetched once each morning and reused all day</td><td>Missing cache produces no order rather than intraday refresh</td><td>Daily context status and request hash</td></tr>
+                <tr><td class="contract">Recoverability</td><td>Persistent PostgreSQL volume, append-only broker events, reconciliation-first restart</td><td>Hold reservation and remain non-entry-capable until known</td><td>Reconciliation state and terminal event</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Failure-mode policy</h3>
+          <div class="two-col">
+            <article class="card boundary-card"><h3>Before outbox enqueue</h3><ul><li>Strategy, model, economic context, binding, TTL, planning, or risk failure produces a durable refusal.</li><li>No exact broker command is created for semantic or economic vetoes.</li><li>Failed morning collection remains terminal for the date.</li></ul></article>
+            <article class="card boundary-card"><h3>After outbox enqueue</h3><ul><li>Execution replays independent preflight against latest reconciled state.</li><li>Submission-start fencing prevents blind duplicate broker effects.</li><li>Terminal broker evidence updates the same signal audit and is not rewritten by stale events.</li></ul></article>
+          </div>
+        </section>
+
+        <section class="section" id="decisions" aria-labelledby="decisions-title">
+          <span class="section-label">09 · Rationale</span>
+          <h2 class="section-title" id="decisions-title">Key architecture decisions</h2>
+          <div class="decision-list">
+            <div class="decision"><div><strong>Modular monolith with role-specific deployment images</strong><span>Preserves delivery speed while enforcing process and credential boundaries.</span></div><span class="tag impl">Adopted</span></div>
+            <div class="decision"><div><strong>PostgreSQL transactional outbox and inbox</strong><span>Coordinates risk reservation, command publication, deduplication, and durable retries.</span></div><span class="tag impl">Adopted</span></div>
+            <div class="decision"><div><strong>LLM as veto-only advisor</strong><span>Uses model synthesis without delegating executable order authority.</span></div><span class="tag impl">Adopted</span></div>
+            <div class="decision"><div><strong>One immutable economic proxy context per date</strong><span>Reduces latency and provider calls while preventing intraday context drift.</span></div><span class="tag impl">Adopted</span></div>
+            <div class="decision"><div><strong>Independent execution-side preflight</strong><span>Rejects stale or tampered commands even after decision-side approval.</span></div><span class="tag impl">Adopted</span></div>
+            <div class="decision"><div><strong>Separate paper broker and data credentials</strong><span>Limits credential propagation; external egress policy remains required.</span></div><span class="tag external">Deployment control</span></div>
+            <div class="decision"><div><strong>No equity-plus-option protective-put workflow in V1</strong><span>Alpaca does not provide atomic mixed equity/option multi-leg submission; orphan exposure is not accepted.</span></div><span class="tag blocked">Deferred</span></div>
+          </div>
+        </section>
+
+        <section class="section" id="acceptance" aria-labelledby="acceptance-title">
+          <span class="section-label">10 · Verification</span>
+          <h2 class="section-title" id="acceptance-title">Architecture acceptance criteria</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Control objective</th><th>Required evidence</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>Advisory output cannot alter direction, template, horizon, size, contract, price, or risk</td><td>Contract validation and resolver/economic-gate tests</td><td><span class="tag impl">Implemented</span></td></tr>
+                <tr><td>Economic veto occurs before order planning and outbox publication</td><td>Deterministic veto fixture and durable-worker test</td><td><span class="tag impl">Implemented</span></td></tr>
+                <tr><td>Every generated signal records decision and actual-placement state</td><td>Signal audit schema, atomic persistence, broker-event projection test</td><td><span class="tag impl">Implemented</span></td></tr>
+                <tr><td>Daily economic input is captured once and reused</td><td>One-claim storage invariant and cache behavior tests</td><td><span class="tag impl">Implemented</span></td></tr>
+                <tr><td>Execution is restricted to paper endpoint and expected account</td><td>Deployment configuration and execution preflight tests</td><td><span class="tag impl">Implemented</span></td></tr>
+                <tr><td>Production FQDN egress allowlists match logical network intent</td><td>Deployment firewall policy and connectivity evidence</td><td><span class="tag external">Operator-owned</span></td></tr>
+                <tr><td>Public read API uses SELECT-only projections from PostgreSQL</td><td>Read-model DB identity and negative mutation tests</td><td><span class="tag target">Target</span></td></tr>
+                <tr><td>Container topology executes successfully in Docker</td><td>Compose build, migration, health, and role-connectivity run</td><td><span class="tag target">Environment pending</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <footer>
+          <div class="footer-row"><span>RegimeSwitch · RS-ARC-001 · Version 1.1</span><span>Paper-only architecture · Generated from repository implementation and normative design</span></div>
+        </footer>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
