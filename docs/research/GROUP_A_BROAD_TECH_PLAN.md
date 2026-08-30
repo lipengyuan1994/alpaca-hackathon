@@ -65,7 +65,7 @@ The pair-cell reproduction script records both per-symbol rows and does not arbi
 
 ## 4. Alpaca free-tier data rules
 
-The data steward collects and hashes all inputs. Group A consumes immutable artifacts only.
+The data steward collects and hashes all inputs using the [read-only Alpaca collector](ALPACA_DATA_COLLECTOR.md) and its frozen shared specification. Group A consumes only reviewed, attested immutable artifacts; a collector output with `status=COLLECTED_UNATTESTED` is a failed handoff gate, not a dataset.
 
 Do not begin outcome-bearing work until `research/shared/entitlement_probe.json` confirms the approved free-tier endpoints, IEX/indicative feed behavior, requested dates, pagination, and access result. An unavailable or mismatched probe fails the data gate; it does not cause the researcher to request credentials or try another source.
 
@@ -359,7 +359,7 @@ Both candidates fail promotion when any of these occurs:
 
 | Gate | Required evidence | Failure result |
 |---|---|---|
-| `A0_HANDOFF` | Baseline, native lock, immutable data refs, Group A owner, both candidate IDs, and external reviewer recorded | Do not start outcome runs |
+| `A0_HANDOFF` | Baseline, native lock, attested collector `data_manifest.json`/`entitlement_probe.json`, immutable data refs, Group A owner, both candidate IDs, and external reviewer recorded | Do not start outcome runs |
 | `A1_DATA` | SPY/QQQ feasibility cards, at least 99% expected 15-minute bars, zero duplicates/OHLC failures, explained raw/split discontinuities | Remove affected symbol or stop |
 | `A2_SPEC_FREEZE` | Strategy cards, feature contracts, central/sensitivity configs, costs, exits, and trial entries hashed before P&L | New candidate/version required |
 | `A3_SIGNAL` | Common-engine runs for both strategies, next-observation behavior, prescribed diagnostics, minimum sample/fold/concentration gates | `REJECTED` or `RESEARCH_COMPLETE` only |

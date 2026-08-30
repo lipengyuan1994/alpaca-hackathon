@@ -78,7 +78,7 @@ The pair-cell reproduction script records both per-symbol rows and does not arbi
 
 ## 4. Alpaca free-tier data rules
 
-The data steward collects and hashes all inputs. Group C consumes immutable artifacts only.
+The data steward collects and hashes all inputs using the [read-only Alpaca collector](ALPACA_DATA_COLLECTOR.md) and its frozen shared specification. Group C consumes only reviewed, attested immutable artifacts; a collector output with `status=COLLECTED_UNATTESTED` is a failed handoff gate, not a dataset.
 
 Do not begin outcome-bearing work until `research/shared/entitlement_probe.json` confirms the approved free-tier endpoints, IEX/indicative feed behavior, requested dates, pagination, and access result. An unavailable or mismatched probe fails the data gate; it does not cause the researcher to request credentials or try another source.
 
@@ -392,7 +392,7 @@ Family-wise adjusted evidence that does not pass is labeled `suggestive`, shadow
 
 | Gate | Required evidence | Failure result |
 |---|---|---|
-| `C0_HANDOFF` | Baseline, native lock, immutable target/benchmark refs, Group C owner, both candidate IDs, and external reviewer recorded | Do not start outcome runs |
+| `C0_HANDOFF` | Baseline, native lock, attested collector `data_manifest.json`/`entitlement_probe.json`, immutable target/benchmark refs, Group C owner, both candidate IDs, and external reviewer recorded | Do not start outcome runs |
 | `C1_DATA` | TQQQ/IGV/QQQ feasibility cards, at least 99% expected 15-minute bars, exact pair coverage, zero duplicates/OHLC failures, complete TQQQ split audit | Remove affected symbol or stop |
 | `C2_SPEC_FREEZE` | Candidate cards, benchmark map, features, central/sensitivity configs, exits, costs, trial entries, and hashes frozen before P&L | New candidate/version required |
 | `C3_SIGNAL` | Common-engine runs for both strategies, next-observation behavior, diagnostics, minimum sample/fold/concentration gates | `REJECTED` or `RESEARCH_COMPLETE` only |

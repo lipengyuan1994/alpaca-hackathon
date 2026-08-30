@@ -37,7 +37,7 @@ Researchers start outcome-bearing work only after receiving:
 
 The data steward collects once for the team. Researchers must not build private downloaders, request competition credentials, switch vendors/feeds, hand-fill missing data, or search for a more favorable sample. A missing prerequisite is a visible failed gate, not permission to improvise.
 
-The data steward uses the repository's read-only collector from an approved credential runtime. It writes raw provider pages, normalized Parquet, a canonical `data_manifest.json`, and an unattested entitlement probe to a new empty directory. The separate review/attestation step remains mandatory before researchers consume the manifest.
+The data steward uses the repository's [read-only Alpaca collector](ALPACA_DATA_COLLECTOR.md) from an approved credential runtime. It writes raw provider pages, normalized Parquet, a canonical `data_manifest.json`, and an unattested entitlement probe to a new empty directory. The separate review/attestation step remains mandatory before researchers consume the manifest.
 
 ```text
 research-data-collect \

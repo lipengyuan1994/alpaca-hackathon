@@ -49,7 +49,7 @@ Each owner also freezes their exact `reason_codes.yaml`. There is intentionally 
 
 ## 3. Research data and evidence boundary
 
-- The data steward, not individual researchers, collects the shared Alpaca data once and publishes immutable manifests and hashes.
+- The data steward, not individual researchers, collects the shared Alpaca data once through the [read-only collector](../research/ALPACA_DATA_COLLECTOR.md) and publishes immutable manifests and hashes. `COLLECTED_UNATTESTED` is a collection result, not an approved research input; data-steward and non-author-reviewer attestations are required before outcome access.
 - Underlying history is explicitly Alpaca stock bars with `feed=iex`.
 - Current options readiness uses the free indicative feed only where the endpoint accepts a feed argument.
 - Historical option bars/trades are labeled non-executable proxies. They are not reconstructed OPRA/NBBO quotes or fill evidence.
