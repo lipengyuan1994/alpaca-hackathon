@@ -10,6 +10,7 @@ requires-python = ">=3.12,<3.13"
 dependencies = [
   "alpaca-py>=0.42,<1",
   "fastapi>=0.141,<0.142",
+  "httpx>=0.28,<0.29",
   "pydantic>=2.13,<3",
   "psycopg[binary]>=3.2,<4",
   "PyYAML>=6,<7",
@@ -19,13 +20,13 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-  "httpx>=0.28,<0.29",
   "pytest>=8.4,<9",
   "ruff>=0.16,<0.17",
 ]
 
 [project.scripts]
 paper-api = "apps.api.main:run"
+paper-agent-worker = "apps.agent_worker.main:main"
 paper-decision-worker = "apps.decision_worker.main:main"
 paper-execution-worker = "apps.execution_worker.main:main"
 paper-operator = "apps.operator_cli.main:main"

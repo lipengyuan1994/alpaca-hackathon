@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from datetime import timedelta
 
+from packages.contracts.agent_input import agent_request_from_strategy, sanitized_model_input
 from packages.contracts.canonical import canonical_hash
 from packages.contracts.models import (
     AgentNarrativeV1,
@@ -45,7 +46,9 @@ def fixture_thesis(
         thesis_id=f"thesis-{evaluation.evaluation_hash.removeprefix('sha256:')[:24]}",
         context_hash=context.context_hash,
         strategy_evaluation_hash=evaluation.evaluation_hash,
-        model_input_hash=canonical_hash({"context_hash": context.context_hash}),
+        model_input_hash=canonical_hash(
+            sanitized_model_input(agent_request_from_strategy(context, evaluation))
+        ),
         model_version="fixture-provider/v1",
         prompt_version="frozen/v1",
         raw_output_hash=raw_hash,

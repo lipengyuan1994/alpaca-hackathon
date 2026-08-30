@@ -28,6 +28,11 @@ from packages.execution_core import (
     preflight_and_submit_reduce_only,
 )
 from packages.ledger import PostgresRuntimeLedger
+from packages.runtime_secrets import (
+    SecretConfigurationError,
+    require_file_secret,
+    require_yaml_file_secret,
+)
 
 
 @dataclass(frozen=True)
@@ -368,7 +373,6 @@ class ExecutionWorker:
 
 def deployment_from_environment() -> ExecutionDeploymentV1:
     required = {
-        "expected_account_id": "PAPER_ACCOUNT_ID",
         "risk_policy_hash": "RISK_POLICY_HASH",
         "template_catalog_hash": "TEMPLATE_CATALOG_HASH",
         "strategy_registry_hash": "STRATEGY_REGISTRY_HASH",
@@ -382,6 +386,12 @@ def deployment_from_environment() -> ExecutionDeploymentV1:
     }
     values = {field: os.environ.get(env_name) for field, env_name in required.items()}
     missing = [env_name for field, env_name in required.items() if not values[field]]
+    try:
+        values["expected_account_id"] = require_yaml_file_secret(
+            "PAPER_ACCOUNT_ID", key_path=("paper_account_id",)
+        )
+    except SecretConfigurationError:
+        missing.append("PAPER_ACCOUNT_ID_FILE")
     if missing:
         raise RuntimeError(f"EXECUTION_DEPLOYMENT_ENV_MISSING:{','.join(sorted(missing))}")
     return ExecutionDeploymentV1(
@@ -391,9 +401,10 @@ def deployment_from_environment() -> ExecutionDeploymentV1:
 
 
 def main() -> None:
-    database_url = os.environ.get("DATABASE_URL")
-    if not database_url:
-        raise SystemExit("DATABASE_URL is required for the durable execution worker")
+    try:
+        database_url = require_file_secret("DATABASE_URL")
+    except SecretConfigurationError as exc:
+        raise SystemExit("DATABASE_URL_FILE is required for the durable execution worker") from exc
     worker_id = os.environ.get("EXECUTION_WORKER_ID", "execution-worker-1")
     deployment = deployment_from_environment()
     ledger = PostgresRuntimeLedger.from_dsn(database_url)

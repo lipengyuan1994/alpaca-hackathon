@@ -1,0 +1,36 @@
+schema_version: advisory-model-catalog/v1
+default_model_id: gemini_3_6_flash
+models:
+  gemini_3_6_flash:
+    model_id: gemini_3_6_flash
+    provider: GEMINI
+    request_protocol: GEMINI_INTERACTIONS
+    model_name: gemini-3.6-flash
+    api_base_url: https://generativelanguage.googleapis.com
+    enabled: true
+    prompt_version: advisory_json_v1
+    max_output_tokens: 400
+    timeout_seconds: 12
+    thesis_ttl_seconds: 300
+  gemini_2_5_flash_lite:
+    model_id: gemini_2_5_flash_lite
+    provider: GEMINI
+    request_protocol: GEMINI_GENERATE_CONTENT
+    model_name: gemini-2.5-flash-lite
+    api_base_url: https://generativelanguage.googleapis.com
+    enabled: true
+    prompt_version: advisory_json_v1
+    max_output_tokens: 400
+    timeout_seconds: 12
+    thesis_ttl_seconds: 300
+  deepseek_v4_flash:
+    model_id: deepseek_v4_flash
+    provider: OPENAI_COMPATIBLE
+    request_protocol: OPENAI_CHAT_COMPLETIONS
+    model_name: deepseek-v4-flash
+    api_base_url: https://api.deepseek.com
+    enabled: true
+    prompt_version: advisory_json_v1
+    max_output_tokens: 400
+    timeout_seconds: 12
+    thesis_ttl_seconds: 300
