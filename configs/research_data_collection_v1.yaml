@@ -1,7 +1,9 @@
 collection_id: alpaca_research_shared_v1
 symbols: [SPY, QQQ, TQQQ, SMH, SOXL, IGV]
 stock_history:
-  start: '2017-01-03T14:30:00Z'
+  # Alpaca free-tier IEX evidence observed in the 2026-08-29 probe begins on
+  # 2020-07-27. The synchronized coverage exception applies to every packet.
+  start: '2020-07-27T13:30:00Z'
   end: '2026-08-27T20:00:00Z'
 option_history:
   start: '2024-02-01T14:30:00Z'

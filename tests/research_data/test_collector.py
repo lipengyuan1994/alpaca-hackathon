@@ -44,7 +44,7 @@ def test_collector_writes_hashed_manifest_and_provenance(tmp_path: Path) -> None
     )
     manifest = collector.collect(spec=_spec(), spec_path=spec_path, output=tmp_path / "out")
     payload = json.loads(manifest.read_text(encoding="utf-8"))
-    assert payload["status"] == "COLLECTED_UNATTESTED"
+    assert payload["status"] == "COLLECTED"
     assert payload["manifest_hash"].startswith("sha256:")
     assert (manifest.parent / "entitlement_probe.json").is_file()
     assert payload["entitlement_probe"]["probe_hash"].startswith("sha256:")
@@ -86,3 +86,83 @@ def test_collector_uses_indicative_only_for_current_option_quotes(tmp_path: Path
     payload = json.loads(manifest.read_text(encoding="utf-8"))
     assert any(item["dataset_id"] == "option_quotes_indicative" for item in payload["datasets"])
     assert "feed=indicative" in transport.urls[-1]
+
+
+def test_option_only_collector_binds_to_immutable_base_manifest(tmp_path: Path) -> None:
+    spec_path = tmp_path / "spec.yaml"
+    spec_path.write_text("x", encoding="utf-8")
+    base_transport = FakeTransport(
+        [
+            {"bars": {"SPY": [_bar("2025-01-02T14:30:00Z")]}},
+            {"bars": {"SPY": [_bar("2025-01-02T14:30:00Z")]}},
+            [],
+            {"option_contracts": []},
+            {"option_contracts": []},
+        ]
+    )
+    base = ResearchDataCollector(
+        ReadOnlyAlpacaClient(headers={}, transport=base_transport), now=lambda: datetime(2025, 1, 3, tzinfo=UTC)
+    ).collect(spec=_spec(), spec_path=spec_path, output=tmp_path / "base")
+    requests = tmp_path / "requests.json"
+    requests.write_text(
+        '{"requests":[{"request_id":"000001","symbols":["SPY250117C00600000"],"start":"2025-01-02T14:30:00Z","end":"2025-01-02T21:00:00Z"}]}',
+        encoding="utf-8",
+    )
+    option_transport = FakeTransport(
+        [
+            {"bars": {"SPY250117C00600000": [_bar("2025-01-02T14:30:00Z")]}},
+            {"trades": {"SPY250117C00600000": [{"t": "2025-01-02T14:30:00Z", "p": 1, "s": 2}]}},
+        ]
+    )
+    manifest = ResearchDataCollector(
+        ReadOnlyAlpacaClient(headers={}, transport=option_transport), now=lambda: datetime(2025, 1, 3, tzinfo=UTC)
+    ).collect_option_observations_only(
+        spec=_spec(),
+        spec_path=spec_path,
+        base_data_manifest_path=base,
+        option_request_path=requests,
+        output=tmp_path / "options",
+    )
+    payload = json.loads(manifest.read_text(encoding="utf-8"))
+    base_payload = json.loads(base.read_text(encoding="utf-8"))
+    assert payload["status"] == "COLLECTED"
+    assert payload["base_data_manifest_hash"] == base_payload["manifest_hash"]
+    assert {item["dataset_id"] for item in payload["datasets"]} == {
+        "option_bars_000001",
+        "option_trades_000001",
+    }
+
+
+def test_staged_collection_is_resumable_and_finalizes_only_after_all_stages(tmp_path: Path) -> None:
+    spec_path = tmp_path / "spec.yaml"
+    spec_path.write_text(
+        "collection_id: fixture\nsymbols: [SPY]\nstock_history: {start: '2025-01-02T14:30:00Z', end: '2025-01-02T21:00:00Z'}\noption_history: {start: '2025-01-02T14:30:00Z', end: '2025-01-02T21:00:00Z'}\n",
+        encoding="utf-8",
+    )
+    collector = ResearchDataCollector(
+        ReadOnlyAlpacaClient(
+            headers={},
+            transport=FakeTransport(
+                [
+                    {"bars": {"SPY": [_bar("2025-01-02T14:30:00Z")]}},
+                    {"bars": {"SPY": [_bar("2025-01-02T14:30:00Z")]}},
+                    {"calendar": []},
+                    {"option_contracts": []},
+                    {"option_contracts": []},
+                ]
+            ),
+        ),
+        now=lambda: datetime(2025, 1, 3, tzinfo=UTC),
+    )
+    output = tmp_path / "staged"
+    collector.collect_base_stage(spec=_spec(), spec_path=spec_path, output=output, stage="stock_raw")
+    with pytest.raises(Exception, match="RESEARCH_COLLECTION_STAGES_INCOMPLETE"):
+        collector.finalize_base_collection(spec_path=spec_path, output=output)
+    for stage in ("stock_split", "calendar", "contracts"):
+        collector.collect_base_stage(spec=_spec(), spec_path=spec_path, output=output, stage=stage)
+    manifest = collector.finalize_base_collection(spec_path=spec_path, output=output)
+    payload = json.loads(manifest.read_text(encoding="utf-8"))
+    assert payload["status"] == "COLLECTED"
+    assert {dataset["dataset_id"] for dataset in payload["datasets"]} == {
+        "stock_bars_raw", "stock_bars_split", "calendar", "option_contracts"
+    }

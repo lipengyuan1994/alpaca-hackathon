@@ -1,0 +1,10 @@
+hypothesis_id: NORMALIZED_VWAP_REVERSION
+frozen_before_outcomes: true
+statement: >-
+  An unusually far completed same-time deviation from completed session IEX VWAP
+  mean-reverts over the next 15 to 60 minutes only in the preregistered
+  low-trend region.
+expression: debit_vertical_only
+bullish_template: CALL_DEBIT_SPREAD_V1
+bearish_template: PUT_DEBIT_SPREAD_V1
+non_authorizing: true

@@ -167,3 +167,9 @@ cython_debug/
 
 # Local AI/editor integration state
 .ai/
+.DS_Store
+
+# Immutable local Alpaca collection artifacts are content-addressed evidence,
+# not source-controlled files. Their manifests/hashes are referenced by research
+# packages and reviewed independently.
+data/alpaca/

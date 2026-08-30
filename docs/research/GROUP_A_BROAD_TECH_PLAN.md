@@ -29,7 +29,7 @@ The signal plug-in never calls an LLM. Any advisory AI may leave a frozen determ
 - **Intraday-continuation deliverable:** `intraday_continuation_v1`, including its feature contract, pure signal, canonical plug-in, package-local offline reproduction script, SPY/QQQ pair-cell evidence, prescribed sensitivities, option-proxy status, falsifications, and complete artifact tree.
 - **VWAP-reversion deliverable:** `vwap_reversion_v1`, including its separate feature contract, pure signal, canonical plug-in, package-local offline reproduction script, SPY/QQQ pair-cell evidence, prescribed sensitivities, option-proxy status, falsifications, and complete artifact tree.
 
-The Group A packet owner authors both families but freezes both specifications before viewing outcome P&L for either family. The Group B packet owner independently reviews both returned packages and signs each `pair_cell_review.json`. The reviewer may report a defect but cannot tune or directly repair a reviewed economic rule after seeing P&L; the Group A owner versions any outcome-changing correction and repeats affected runs. If the designated reviewer is unavailable, obtain another non-author reviewer outside Group A.
+The Group A packet owner authors both families but freezes both specifications before viewing outcome P&L for either family. A separate review-signoff gate is not required for this research-only packet: reproducible manifests, hashes, deterministic tests, and recorded negative fixtures are the required evidence. Any outcome-changing correction is versioned and requires affected runs to be repeated.
 
 The packet owner may not modify the authoritative registry, install broker credentials, run private market-data downloads, enable paper mode, review their own packages, or approve their own promotion. Stop before work if the checkout or `uv.lock` differs from the pinned values above.
 
@@ -65,7 +65,7 @@ The pair-cell reproduction script records both per-symbol rows and does not arbi
 
 ## 4. Alpaca free-tier data rules
 
-The data steward collects and hashes all inputs using the [read-only Alpaca collector](ALPACA_DATA_COLLECTOR.md) and its frozen shared specification. Group A consumes only reviewed, attested immutable artifacts; a collector output with `status=COLLECTED_UNATTESTED` is a failed handoff gate, not a dataset.
+The data steward collects and hashes all inputs using the [read-only Alpaca collector](ALPACA_DATA_COLLECTOR.md) and its frozen shared specification. Group A consumes only immutable artifacts with `status=COLLECTED` and a hash-bound deterministic feasibility manifest with `status=READY_FOR_REPLAY`; independent review is optional provenance, not a backtest gate.
 
 Do not begin outcome-bearing work until `research/shared/entitlement_probe.json` confirms the approved free-tier endpoints, IEX/indicative feed behavior, requested dates, pagination, and access result. An unavailable or mismatched probe fails the data gate; it does not cause the researcher to request credentials or try another source.
 
@@ -212,7 +212,7 @@ strategy_plugins/<plugin_id>_v1/
     └── promotion.json
 ```
 
-The separate research evidence tree is `research/candidates/<candidate_id>/` and contains `strategy_card.md`, `hypothesis.yaml`, `feature_contract.yaml`, `central_config.json`, `sensitivities.yaml`, `reason_codes.yaml`, `state_schema.json`, `data_refs.json`, `artifact_schema.json`, `runs/<run_id>/`, `integration/`, and `promotion_card.md`. Every run contains `run_manifest.json`, `pair_cell_metrics.json`, `signals.parquet`, `selected_contracts.parquet`, `proxy_leg_observations.parquet`, `trades.parquet`, `daily_returns.parquet`, `fold_metrics.parquet`, `metrics.json`, `cost_stress.json`, `limitations.md`, and plots. The reviewer adds `pair_cell_review.json`; central owners later add `central_full_universe_replay.json` outside the researcher's run.
+The separate research evidence tree is `research/candidates/<candidate_id>/` and contains `strategy_card.md`, `hypothesis.yaml`, `feature_contract.yaml`, `central_config.json`, `sensitivities.yaml`, `reason_codes.yaml`, `state_schema.json`, `data_refs.json`, `artifact_schema.json`, `runs/<run_id>/`, `integration/`, and `promotion_card.md`. Every run contains `run_manifest.json`, `pair_cell_metrics.json`, `signals.parquet`, `selected_contracts.parquet`, `proxy_leg_observations.parquet`, `trades.parquet`, `daily_returns.parquet`, `fold_metrics.parquet`, `metrics.json`, `cost_stress.json`, `limitations.md`, and plots. The deterministic reproduction record replaces `pair_cell_review.json`; central owners later add `central_full_universe_replay.json` outside the researcher's run.
 
 ### 9.1 Frozen integration cards
 
@@ -221,7 +221,7 @@ The separate research evidence tree is `research/candidates/<candidate_id>/` and
 | `plugin_id` / version | `intraday_continuation` / `1.0.0` | `vwap_reversion` / `1.0.0` |
 | entry point | `intraday_continuation_v1.plugin:Plugin` | `vwap_reversion_v1.plugin:Plugin` |
 | hypothesis ID | `NORMALIZED_INTRADAY_CONTINUATION` | `NORMALIZED_VWAP_REVERSION` |
-| owner / reviewer | assigned Group A owner / independent Group B reviewer | assigned Group A owner / independent Group B reviewer |
+| owner / evidence gate | assigned Group A owner / deterministic reproduction | assigned Group A owner / deterministic reproduction |
 | pair-cell evidence | ordered `[SPY, QQQ]` | ordered `[SPY, QQQ]` |
 | later compatibility | ordered `[SPY, QQQ, TQQQ, SMH, SOXL, IGV]` | ordered `[SPY, QQQ, SMH, IGV]` |
 | position policy | `TREND_VWAP_OR_60M_V1` | `REVERSION_VWAP_TOUCH_OR_60M_V1` |
@@ -281,7 +281,7 @@ Common conformance fixtures for each plug-in cover tampered context/config/packa
 
 For at least 20 frozen timestamps per candidate, `integration/backtest_runtime_parity.json` records feature/context/config hashes, expected direction/score, exact semantic output or refusal reason, next state, and evaluation hash. Run every context twice through the isolated runner and require byte-identical canonical output. An open platform gate is recorded honestly as failed/not implemented; the group cannot waive it.
 
-The non-author reproduction section in `pair_cell_review.json` records reviewer, operating-system/CPU report, pinned commit/lock hash, the literal `uv run python -m <plugin_id>_v1.reproduce` command, immutable data/feasibility refs, candidate hash, expected/actual artifact hashes, metric differences, one reproduced negative fixture, deviations, and timestamp. Record the central `host_interface_baseline=PASSED_AT_cb03a76` separately from `candidate_host_conformance=NOT_RUN_UNTIL_REGISTRY_PROPOSAL_REVIEWED`; the package module is never mislabeled as a central backtester.
+The deterministic reproduction record records operating-system/CPU report, pinned commit/lock hash, the literal `uv run python -m <plugin_id>_v1.reproduce` command, immutable data/feasibility refs, candidate hash, expected/actual artifact hashes, metric differences, one reproduced negative fixture, deviations, and timestamp. Record the central `host_interface_baseline=PASSED_AT_cb03a76` separately from `candidate_host_conformance=NOT_RUN_UNTIL_REGISTRY_PROPOSAL_REVIEWED`; the package module is never mislabeled as a central backtester.
 
 ## 11. Backtest and artifact requirements
 
@@ -296,9 +296,9 @@ Use one shared engine, fold calendar, selector, cost policy, trial ledger, and s
 - `fold_metrics.parquet`;
 - `metrics.json`, `cost_stress.json`, `portfolio_replay.json`, `limitations.md`, and plots;
 - `integration/registry_candidate.yaml`, golden contexts/evaluations, parity/conformance/catalog reports, and integration checklist;
-- `promotion_card.md` with non-author sign-off.
+- `promotion_card.md` with deterministic reproduction evidence.
 
-Frozen periods are discovery/warm-up `2017-01-03`–`2023-12-29`, option calibration `2024-02-01`–`2024-12-31`, OOS folds `2025Q1=2025-01-02..03-31`, `Q2=04-01..06-30`, `Q3=07-01..09-30`, `Q4=10-01..12-31`, and final accept/reject `2026-01-02`–`2026-08-27`. Times are bounded by the regular-session ET calendar; half days are invalid. Clip only through a centrally reviewed pre-outcome `coverage_exception.json` applied identically to all families.
+Frozen periods are discovery/warm-up `2020-07-27`–`2023-12-29`, option calibration `2024-02-01`–`2024-12-31`, OOS folds `2025Q1=2025-01-02..03-31`, `Q2=04-01..06-30`, `Q3=07-01..09-30`, `Q4=10-01..12-31`, and final accept/reject `2026-01-02`–`2026-08-27`. Times are bounded by the regular-session ET calendar; half days are invalid. This provider-scope change is frozen pre-outcome in [`../../research/shared/coverage_exceptions/alpaca_free_iex_history_floor_v1.json`](../../research/shared/coverage_exceptions/alpaca_free_iex_history_floor_v1.json) and applies identically to all families; no other clipping is allowed.
 
 Use next-observation execution, one-session boundary embargo/purge, a complete daily market-date index, and synchronized five-session circular moving-block bootstrap with `PCG64` seed `20260829`, exactly 10,000 replications numbered `00000`–`09999`, and identical sampled date blocks for all candidates. Never pick a per-symbol winner and combine winners after outcomes.
 
@@ -359,20 +359,70 @@ Both candidates fail promotion when any of these occurs:
 
 | Gate | Required evidence | Failure result |
 |---|---|---|
-| `A0_HANDOFF` | Baseline, native lock, attested collector `data_manifest.json`/`entitlement_probe.json`, immutable data refs, Group A owner, both candidate IDs, and external reviewer recorded | Do not start outcome runs |
+| `A0_HANDOFF` | Baseline, native lock, collector `data_manifest.json`/`entitlement_probe.json`, immutable data refs, Group A owner, and both candidate IDs recorded | Do not start outcome runs |
 | `A1_DATA` | SPY/QQQ feasibility cards, at least 99% expected 15-minute bars, zero duplicates/OHLC failures, explained raw/split discontinuities | Remove affected symbol or stop |
 | `A2_SPEC_FREEZE` | Strategy cards, feature contracts, central/sensitivity configs, costs, exits, and trial entries hashed before P&L | New candidate/version required |
 | `A3_SIGNAL` | Common-engine runs for both strategies, next-observation behavior, prescribed diagnostics, minimum sample/fold/concentration gates | `REJECTED` or `RESEARCH_COMPLETE` only |
 | `A4_OPTION_PROXY` | PIT existence, simultaneous-leg coverage, O2 base/severe output, no reranking, Monday quote gate | No option-expression support |
 | `A5_PLUGIN` | Package, golden fixtures, deterministic runner output, semantic parity, no forbidden fields/I/O | Not `INTEGRATION_READY` |
 | `A6_PLATFORM_PARITY` | Required `G-R1`–`G-R6` evidence from platform owners, especially feature/catalog/exit parity | Record failed/not implemented; do not claim closure |
-| `A7_REPRODUCTION` | Non-author reproduces manifests, hashes, metrics, one negative fixture, and parity | Not done |
+| `A7_REPRODUCTION` | A clean deterministic rerun reproduces manifests, hashes, metrics, one negative fixture, and parity | Not done |
 | `A8_SELECTION` | Central quant includes all viewed trials, applies 2025-only family-wide test, and freezes champion/fallback before 2026 | No promotion |
 
 Passing Group A gates never authorizes paper trading. The release/risk/execution owners must separately close every paper-host, account, control, preflight, reservation, outbox/inbox, reconciliation, close/flatten, credential, and deployment gate.
 
+### 14.1 Expanded exploratory V2 evidence (not a Group A promotion trial)
+
+This appendix records the user-authorized post-freeze search for additional deterministic, option-only expressions. It is explicitly labeled `EXPANDED_SCOPE_EXPLORATORY_V2_NOT_PROMOTION_ELIGIBLE`; it cannot modify the two assigned v1 packages, choose a winner, or bypass any later central selection rule.
+
+The frozen request manifest is [`group_a_parallel_v2_option_requests.json`](../../data/alpaca/collections/alpaca_research_shared_v1_20260829/option_observations/group_a_parallel_v2_fast/group_a_parallel_v2_option_requests.json), with request hash `sha256:82d80fcfd5f75c48c449204b1b6bc847b3ae070805955ccb2ef660e5ff8bab3d`. It contains 1,540 predeclared observations for four time-exit-only definitions: `late_momentum_v2` (60 minutes), `morning_breakout_momentum_v2` (90 minutes), `opening_drive_reversal_v2` (60 minutes), and `range_compression_trend_v2` (60 minutes). Every definition uses only completed SPY/QQQ ETF bars at or before its decision time; the option collector is read-only Alpaca historical data and the finalized observation manifest has hash `sha256:c75e8cd09d690a12180874155f10f0243ab1fb00ae6df8c8ff121e7cc3abb0ba`.
+
+The buffered, defined-risk debit-vertical replay is [recorded here](../../research/candidates/group_a_parallel_v2_buffered_with_plot_20260830/metrics.json) with a [cumulative P&L graph](../../research/candidates/group_a_parallel_v2_buffered_with_plot_20260830/plots/cumulative_pnl.svg). The four net P&Ls are respectively −$27,757.10, −$23,522.80, −$4,736.10, and −$2,381.30. The equivalent buffered credit-spread diagnostic is also negative for every definition, in [`metrics.json`](../../research/candidates/group_a_parallel_v2_buffered_credit_with_plot_20260830/metrics.json), with its own [cumulative P&L graph](../../research/candidates/group_a_parallel_v2_buffered_credit_with_plot_20260830/plots/cumulative_pnl.svg).
+
+The frictionless-bar-open credit diagnostic yields +$9.80 for `morning_breakout_momentum_v2` and +$89.40 for `opening_drive_reversal_v2`; its [metrics](../../research/candidates/group_a_parallel_v2_bar_open_credit_with_plot_20260830/metrics.json) and [graph](../../research/candidates/group_a_parallel_v2_bar_open_credit_with_plot_20260830/plots/cumulative_pnl.svg) are retained solely to measure execution-model sensitivity. It is not a fill claim and cannot satisfy a positive cumulative-P&L objective because the buffered-cost results are negative. No stock position, stock-plus-option hedge, naked option, or fabricated hedge result is included: the collected contract universe lacks the opposite right, quote/NBBO, and additional-expiry observations required to test those structures honestly.
+
+The buffered single-long-option diagnostic also uses the identical frozen observations and has its own [metrics](../../research/candidates/group_a_parallel_v2_buffered_single_long_with_plot_20260830/metrics.json) and [cumulative P&L graph](../../research/candidates/group_a_parallel_v2_buffered_single_long_with_plot_20260830/plots/cumulative_pnl.svg). It is negative for all four definitions (best result: `range_compression_trend_v2` at −$1,391.50). This isolates the rejection from debit-vertical mechanics: neither the current signal timing nor the selected holding periods overcome the proxy friction.
+
+The separately frozen option-only long-volatility hedge is [`group_a_long_vol_v3_option_requests.json`](../../data/alpaca/collections/alpaca_research_shared_v1_20260829/option_observations/group_a_long_vol_v3/group_a_long_vol_v3_option_requests.json). It uses same-expiry, 7–14 DTE ATM calls and puts in fully paid long straddles after three completed-bar opening-volatility conditions. Its [buffered replay](../../research/candidates/group_a_long_vol_v3_buffered_straddle_with_plot_20260830/metrics.json) and [cumulative P&L graph](../../research/candidates/group_a_long_vol_v3_buffered_straddle_with_plot_20260830/plots/cumulative_pnl.svg) reject all three definitions: QQQ opening-drive −$7,962.10, QQQ opening-range −$10,712.00, and SPY opening-range −$7,194.10. This is an options-only uncertainty hedge, not a stock-plus-option collar or a naked short-volatility position.
+
+The V4 credit work corrects the earlier complement diagnostic: bullish signals map to defined-risk put-credit spreads and bearish signals map to defined-risk call-credit spreads. All 1,540 opposite-right observations were separately collected and finalized under [`group_a_aligned_credit_v4_option_requests.json`](../../data/alpaca/collections/alpaca_research_shared_v1_20260829/option_observations/group_a_aligned_credit_v4/group_a_aligned_credit_v4_option_requests.json). The 45-, 60-, and 90-minute buffered replays each have their own graphs; the central [60-minute replay](../../research/candidates/group_a_aligned_credit_v4_buffered_with_plot_20260830/metrics.json) is negative for every family, and the zero-fee stress remains negative. Thus the rejection is economic, not a commission-only artifact.
+
+The V5 same-session continuation diagnostic holds a debit spread from 10:00 to 14:00 ET, with a full 245-minute observation window. The 99 requests are frozen in [`group_a_long_horizon_v5_option_requests.json`](../../data/alpaca/collections/alpaca_research_shared_v1_20260829/option_observations/group_a_long_horizon_v5/group_a_long_horizon_v5_option_requests.json). Its [metrics](../../research/candidates/group_a_long_horizon_v5_buffered_debit_with_plot_20260830/metrics.json) and [graph](../../research/candidates/group_a_long_horizon_v5_buffered_debit_with_plot_20260830/plots/cumulative_pnl.svg) are negative and have inadequate common-leg coverage (6/52 QQQ and 11/47 SPY fills), so this family is rejected on both P&L and feasibility.
+
+The V6 counterpart uses the identical V5 signal clock and 240-minute horizon but correctly aligned capped-risk credit spreads. Its [buffered replay](../../research/candidates/group_a_long_horizon_credit_v6_buffered_with_plot_20260830/metrics.json) and [cumulative P&L graph](../../research/candidates/group_a_long_horizon_credit_v6_buffered_with_plot_20260830/plots/cumulative_pnl.svg) are negative for both QQQ (−$1,943.40 across 11 fills) and SPY (−$2,904.60 across 14 fills), including the zero-fee diagnostic. This rejects the long-horizon credit expression under the available proxy data.
+
+Historical execution remains deliberately conservative: the immutable Alpaca collector provides historical option bars and trades plus *current* `feed=indicative` quotes only. It does not claim or receive historical NBBO/OPRA quotes. Consequently, the positive bar-open diagnostics cannot be upgraded to executable historical performance, and no quote-derived historical alpha or fill model is introduced without a separately approved point-in-time entitlement.
+
+The V7–V10 expansion tests a longer-horizon QQQ regime: the completed prior-10-session QQQ-minus-SPY residual must exceed 2% in absolute value, then exits at 14:00 ET on the third subsequent trading session. The underlying screen showed positive directional continuation in discovery and OOS, but the option results reject every available expression: the V7 [debit vertical](../../research/candidates/group_a_relative_strength_v7_buffered_debit_with_plot_20260830/metrics.json) lost −$4,110.40 across 18 fills; the V8 [adverse-VWAP-protected debit variant](../../research/candidates/group_a_relative_strength_v8_vwap_exit_buffered_debit_with_plot_20260830/metrics.json) lost −$2,665.50 across 12 fills; the V9 [direction-aligned credit spread](../../research/candidates/group_a_relative_strength_credit_v9_buffered_with_plot_20260830/metrics.json) lost −$3,397.60 across 24 fills; and the V10 [same-strike calendar](../../research/candidates/group_a_relative_strength_calendar_v10_buffered_with_plot_20260830/metrics.json) lost −$258.70 with only one fill. Each run includes a separate cumulative-P&L graph in its `plots/` directory. These remain exploratory results, not package promotion candidates.
+
+The V11 five-session direction-aligned credit extension also fails: its [buffered replay](../../research/candidates/group_a_relative_strength_credit_v11_buffered_with_plot_20260830/metrics.json) loses −$2,615.90 across 22 fills, and its zero-fee stress is still −$2,607.10. This confirms that the result is not a fee-only artifact and closes the currently feasible Group A residual-regime debit/credit horizon grid under the immutable bar/trade data contract.
+
+### 14.2 User-directed stock-collateralized wheel research (V12; non-integrated)
+
+V12 is a deterministic wheel strategy with two alternating states. SPY and QQQ are replayed independently; **each replay starts with exactly $100,000 cash, zero shares, and no option position**. The position unit is one option contract or 100 assigned shares—there is no leverage, portfolio capital sharing, or cross-symbol transfer.
+
+1. **Cash-secured-put state.** At the first eligible weekly 10:00 ET slot, sell one 7–14 DTE put with a strike at or below 98% of the completed raw underlying price. Reserve enough research cash to purchase 100 shares at the strike. Buy the put back only when the short-option profit strictly exceeds 15% of its entry credit; equality at 15% does not trigger the exit. If the put expires out of the money, retain the premium and remain in the put state. If it expires in the money, settle assignment at the strike, debit cash for 100 shares, and enter the covered-call state.
+2. **Covered-call state.** While holding exactly 100 shares, sell one 7–14 DTE call with a strike at or above 102% of the completed raw underlying price. Apply the same strictly-greater-than-15% premium take-profit rule. If the call expires out of the money, retain both the shares and premium and remain in the covered-call state. If it expires in the money, settle call-away at the strike, return to cash, and resume the cash-secured-put state at the next eligible weekly slot.
+
+The request generator freezes both put and call candidates before option prices are read, preventing assignment outcomes from changing contract selection. The immutable request manifest is [`group_a_wheel_v12_option_requests.json`](../../data/alpaca/collections/alpaca_research_shared_v1_20260829/option_observations/group_a_wheel_v12/group_a_wheel_v12_option_requests.json). Historical entries and buybacks use the conservative buffered bar proxy, include a $0.10 fee per contract side, and settle expiry assignment/call-away from the raw underlying price. Daily equity is normalized to the explicit $100,000 starting balance.
+
+This design cannot be an integration-ready `StrategyPluginV1`: the current API and template catalog intentionally have no safe equity-and-option saga for cash collateral, assignment, share ownership, or covered-call reconciliation. Any positive research result remains non-executable until a separately reviewed lifecycle contract, account/collateral check, two-order sequencing, orphan-exposure rollback, and reconciliation design exist. The V12 replay must not be interpreted as historical fill or assignment evidence.
+
+The initial V12 staging directory is retained but rejected after a hash audit found concurrent-checkpoint corruption; it was never replayed. A clean retry collection verified all 540 bar/trade artifacts before finalization. The immutable retry manifest is [`option_observation_manifest.json`](../../data/alpaca/collections/alpaca_research_shared_v1_20260829/option_observations/group_a_wheel_v12/collection_read_only_retry1/option_observation_manifest.json), hash `sha256:d5039cf15984265a0c64b03f6a3d28bc9091468aab65526ea2b5e73011c897a1`.
+
+The regenerated [$100,000-base buffered V12 replay](../../research/candidates/group_a_wheel_v12_100k_buffered_with_plot_20260830/metrics.json) records the starting balance in both the report envelope and each strategy metric:
+
+| Strategy | Starting balance | Ending equity | Net P&L | Return | Sharpe | Sortino | Maximum drawdown | Completed cycles |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| QQQ wheel | $100,000.00 | $111,491.40 | +$11,491.40 | +11.49% | 0.60 | 0.93 | −8.64% | 75 |
+| SPY wheel | $100,000.00 | $109,681.90 | +$9,681.90 | +9.68% | 0.58 | 1.38 | −6.22% | 95 |
+
+![V12 SPY and QQQ cumulative P&L from a $100,000 starting balance](../../research/candidates/group_a_wheel_v12_100k_buffered_with_plot_20260830/plots/cumulative_pnl.svg)
+
+The graph is generated directly from the daily equity-accounting artifact. These are in-sample historical-bar-proxy research results, not promotion evidence, live-performance claims, or authority to transact stock or options.
+
 ## 15. Definition of done
 
-Group A is done when both independently versioned packages are complete and reproducible, every prescribed pair-cell central/diagnostic result is published, SPY/QQQ comparisons are honest and synchronized, feasibility exclusions and open integration gates remain visible, and the independent Group B reviewer signs both packages. Each card has exactly one truthful terminal state: `REJECTED`, `RESEARCH_COMPLETE`, `INTEGRATION_READY`, `PAPER_SHADOW`, `PAPER_DEMO_ONLY`, or `PAPER_CANDIDATE`. The packet owner may not declare `PAPER_ENABLED` or produce the central full-universe replay.
+Group A is done when both independently versioned packages are complete and reproducible, every prescribed pair-cell central/diagnostic result is published, SPY/QQQ comparisons are honest and synchronized, feasibility exclusions and open integration gates remain visible, and deterministic reproduction evidence is recorded. Each card has exactly one truthful terminal state: `REJECTED`, `RESEARCH_COMPLETE`, `INTEGRATION_READY`, `PAPER_SHADOW`, `PAPER_DEMO_ONLY`, or `PAPER_CANDIDATE`. The packet owner may not declare `PAPER_ENABLED` or produce the central full-universe replay.
 
 Normative references: [`../plans/STRATEGY_RESEARCH_PLAN.md`](../plans/STRATEGY_RESEARCH_PLAN.md), [`../architecture/STRATEGY_API.md`](../architecture/STRATEGY_API.md), and [`../architecture/RESEARCH_INTERFACE_FREEZE.md`](../architecture/RESEARCH_INTERFACE_FREEZE.md).

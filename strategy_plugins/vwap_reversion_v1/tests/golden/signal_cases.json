@@ -1,0 +1,1 @@
+[{"deviation_z":"-1.50","expected":"BUY","momentum_z":"0.49"},{"deviation_z":"1.50","expected":"SELL","momentum_z":"-0.49"},{"deviation_z":"-1.50","expected":"NO_TRADE","momentum_z":"0.50"}]

@@ -1,0 +1,12 @@
+hypothesis_id: NORMALIZED_INTRADAY_CONTINUATION
+candidate_id: intraday_continuation__all_feasible__o2_v1
+frozen_before_outcomes: true
+economic_statement: >-
+  A 60-minute same-time normalized move that remains aligned with completed
+  session IEX VWAP continues directionally over the next 15 to 60 minutes.
+expression: O2_DEBIT_VERTICAL_ONLY
+bullish_template: CALL_DEBIT_SPREAD_V1
+bearish_template: PUT_DEBIT_SPREAD_V1
+eligible_symbols: [SPY, QQQ, TQQQ, SMH, SOXL, IGV]
+pair_cell_symbols: [SPY, QQQ]
+terminal_state: RESEARCH_NOT_RUN

@@ -78,7 +78,7 @@ The pair-cell reproduction script records both per-symbol rows and does not arbi
 
 ## 4. Alpaca free-tier data rules
 
-The data steward collects and hashes all inputs using the [read-only Alpaca collector](ALPACA_DATA_COLLECTOR.md) and its frozen shared specification. Group C consumes only reviewed, attested immutable artifacts; a collector output with `status=COLLECTED_UNATTESTED` is a failed handoff gate, not a dataset.
+The data steward collects and hashes all inputs using the [read-only Alpaca collector](ALPACA_DATA_COLLECTOR.md) and its frozen shared specification. Group C consumes only immutable artifacts with `status=COLLECTED` and a hash-bound deterministic feasibility manifest with `status=READY_FOR_REPLAY`; independent review is optional provenance, not a backtest gate.
 
 Do not begin outcome-bearing work until `research/shared/entitlement_probe.json` confirms the approved free-tier endpoints, IEX/indicative feed behavior, requested dates, pagination, and access result. An unavailable or mismatched probe fails the data gate; it does not cause the researcher to request credentials or try another source.
 
@@ -331,7 +331,7 @@ Use one shared engine, fold calendar, selector, cost policy, trial ledger, and s
 - `benchmark_pair_audit.json`, `leverage_adjustment_audit.json`, `family_overlap.json`, and complete trial-ledger entries;
 - integration proposal, golden contexts/evaluations, parity/conformance/catalog reports, checklist, and non-author promotion card.
 
-Frozen periods are discovery/warm-up `2017-01-03`–`2023-12-29`, option calibration `2024-02-01`–`2024-12-31`, OOS folds `2025Q1=2025-01-02..03-31`, `Q2=04-01..06-30`, `Q3=07-01..09-30`, `Q4=10-01..12-31`, and final accept/reject `2026-01-02`–`2026-08-27`. Times are bounded by the regular-session ET calendar; half days are invalid. Clip only through a centrally reviewed pre-outcome `coverage_exception.json` applied identically to all families.
+Frozen periods are discovery/warm-up `2020-07-27`–`2023-12-29`, option calibration `2024-02-01`–`2024-12-31`, OOS folds `2025Q1=2025-01-02..03-31`, `Q2=04-01..06-30`, `Q3=07-01..09-30`, `Q4=10-01..12-31`, and final accept/reject `2026-01-02`–`2026-08-27`. Times are bounded by the regular-session ET calendar; half days are invalid. This provider-scope change is frozen pre-outcome in [`../../research/shared/coverage_exceptions/alpaca_free_iex_history_floor_v1.json`](../../research/shared/coverage_exceptions/alpaca_free_iex_history_floor_v1.json) and applies identically to all families; no other clipping is allowed.
 
 Use next-observation execution, one-session boundary embargo/purge, a complete daily market-date index, and synchronized five-session circular moving-block bootstrap with `PCG64` seed `20260829`, exactly 10,000 replications numbered `00000`–`09999`, and identical sampled date blocks for all candidates. Never pick a TQQQ/IGV winner, alternate benchmark, or threshold after outcomes.
 

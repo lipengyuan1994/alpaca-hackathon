@@ -1,0 +1,8 @@
+frozen_before_outcomes: true
+central:
+  momentum_threshold: '1.00'
+  time_exit_minutes: 60
+diagnostics:
+  momentum_threshold: ['0.75', '1.25']
+  time_exit_minutes: [45, 90]
+forbidden: [symbol_specific_thresholds, regime_overlays, news, iv, greeks, extra_feature_search]

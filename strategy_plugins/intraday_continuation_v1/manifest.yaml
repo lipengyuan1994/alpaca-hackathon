@@ -1,0 +1,14 @@
+api_version: strategy-plugin/v1
+plugin_id: intraday_continuation
+plugin_version: 1.0.0
+entrypoint: strategy_plugins.intraday_continuation_v1.plugin:Plugin
+owner: assigned_group_a_research_owner
+reviewer: independent_group_b_research_reviewer
+economic_hypothesis_id: NORMALIZED_INTRADAY_CONTINUATION
+allowed_underlyings: [SPY, QQQ, TQQQ, SMH, SOXL, IGV]
+allowed_templates: [CALL_DEBIT_SPREAD_V1, PUT_DEBIT_SPREAD_V1]
+required_feature_schema: feature-vector/v1
+feature_contract_hash: sha256:ed712e3f612ecf5f45a89f9f4977d693dfc64c1a006bf17a9a516349aa513190
+network_access: false
+deterministic: true
+lifecycle: research_only

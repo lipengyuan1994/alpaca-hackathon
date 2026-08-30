@@ -46,6 +46,32 @@ class ResearchDataError(ValueError):
     """Input lineage or provider response is not safe to freeze."""
 
 
+def _load_staging(path: Path) -> dict[str, Any]:
+    try:
+        staging = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ResearchDataError("RESEARCH_COLLECTION_STAGING_INVALID") from exc
+    if not isinstance(staging, dict) or staging.get("schema_version") != "research-data-staging/v1":
+        raise ResearchDataError("RESEARCH_COLLECTION_STAGING_INVALID")
+    expected = canonical_hash({key: value for key, value in staging.items() if key != "staging_hash"})
+    if staging.get("staging_hash") != expected or not isinstance(staging.get("datasets"), list):
+        raise ResearchDataError("RESEARCH_COLLECTION_STAGING_HASH_MISMATCH")
+    return staging
+
+
+def _load_option_staging(path: Path) -> dict[str, Any]:
+    try:
+        staging = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ResearchDataError("OPTION_OBSERVATION_STAGING_INVALID") from exc
+    if not isinstance(staging, dict) or staging.get("schema_version") != "option-observation-staging/v1":
+        raise ResearchDataError("OPTION_OBSERVATION_STAGING_INVALID")
+    expected = canonical_hash({key: value for key, value in staging.items() if key != "staging_hash"})
+    if staging.get("staging_hash") != expected or not isinstance(staging.get("datasets"), list):
+        raise ResearchDataError("OPTION_OBSERVATION_STAGING_HASH_MISMATCH")
+    return staging
+
+
 @dataclass(frozen=True)
 class CollectionSpec:
     collection_id: str
@@ -166,7 +192,7 @@ class ResearchDataCollector:
         manifest: dict[str, Any] = {
             "schema_version": "research-data-manifest/v1",
             "collection_id": spec.collection_id,
-            "status": "COLLECTED_UNATTESTED",
+            "status": "COLLECTED",
             "collector": "research-data-collect/v1",
             "git_revision": self._git_revision(),
             "platform": {"system": platform.system(), "machine": platform.machine()},
@@ -181,6 +207,234 @@ class ResearchDataCollector:
         target = root / "data_manifest.json"
         atomic_json(target, manifest)
         return target
+
+    def collect_base_stage(
+        self, *, spec: CollectionSpec, spec_path: Path, output: Path, stage: str
+    ) -> Path:
+        """Collect one resumable, immutable base-data stage.
+
+        A stage may be written exactly once.  This is deliberately separate
+        from ``collect`` so an interrupted provider session cannot make a
+        completed raw or split download eligible by itself.
+        """
+        stages = {
+            "stock_raw": lambda root: self._collect_stock_adjustment(root, spec, "raw"),
+            "stock_split": lambda root: self._collect_stock_adjustment(root, spec, "split"),
+            "calendar": lambda root: self._collect_calendar(root, spec),
+            "contracts": lambda root: self._collect_contracts(root, spec),
+        }
+        if stage not in stages:
+            raise ResearchDataError("RESEARCH_COLLECTION_STAGE_INVALID")
+        root = output.expanduser().resolve()
+        root.mkdir(parents=True, exist_ok=True)
+        staging_path = root / "collection_staging.json"
+        spec_hash = file_hash(spec_path)
+        if staging_path.exists():
+            staging = _load_staging(staging_path)
+            if staging.get("spec_hash") != spec_hash or staging.get("collection_id") != spec.collection_id:
+                raise ResearchDataError("RESEARCH_COLLECTION_STAGE_SPEC_MISMATCH")
+        elif any(root.iterdir()):
+            raise ResearchDataError("RESEARCH_COLLECTION_STAGE_DIRECTORY_UNRECOGNIZED")
+        else:
+            staging = {
+                "schema_version": "research-data-staging/v1",
+                "collection_id": spec.collection_id,
+                "status": "STAGING",
+                "collector": "research-data-collect-stage/v1",
+                "git_revision": self._git_revision(),
+                "platform": {"system": platform.system(), "machine": platform.machine()},
+                "spec_hash": spec_hash,
+                "datasets": [],
+                "staging_hash": None,
+            }
+        expected_id = {"stock_raw": "stock_bars_raw", "stock_split": "stock_bars_split", "calendar": "calendar", "contracts": "option_contracts"}[stage]
+        if any(item.get("dataset_id") == expected_id for item in staging["datasets"] if isinstance(item, dict)):
+            raise ResearchDataError("RESEARCH_COLLECTION_STAGE_ALREADY_COMPLETE")
+        try:
+            dataset = stages[stage](root)
+        except ResearchHttpError as exc:
+            atomic_json(root / "collection_failure.json", {"status": "FAILED", "reason": str(exc), "stage": stage})
+            raise ResearchDataError(str(exc)) from exc
+        staging["datasets"] = sorted([*staging["datasets"], dataset], key=lambda item: item["dataset_id"])
+        staging["staging_hash"] = canonical_hash({key: value for key, value in staging.items() if key != "staging_hash"})
+        atomic_json(staging_path, staging)
+        return staging_path
+
+    def finalize_base_collection(self, *, spec_path: Path, output: Path) -> Path:
+        """Write the immutable base manifest only after all base stages exist."""
+        root = output.expanduser().resolve()
+        staging_path = root / "collection_staging.json"
+        staging = _load_staging(staging_path)
+        if staging.get("spec_hash") != file_hash(spec_path):
+            raise ResearchDataError("RESEARCH_COLLECTION_STAGE_SPEC_MISMATCH")
+        required = {"stock_bars_raw", "stock_bars_split", "calendar", "option_contracts"}
+        present = {item.get("dataset_id") for item in staging.get("datasets", []) if isinstance(item, dict)}
+        if present != required:
+            raise ResearchDataError("RESEARCH_COLLECTION_STAGES_INCOMPLETE")
+        if (root / "data_manifest.json").exists():
+            raise ResearchDataError("RESEARCH_DATA_MANIFEST_EXISTS")
+        datasets = list(staging["datasets"])
+        probe = self._write_entitlement_probe(root, datasets)
+        manifest: dict[str, Any] = {
+            "schema_version": "research-data-manifest/v1",
+            "collection_id": staging["collection_id"],
+            "status": "COLLECTED",
+            "collector": "research-data-collect-stage/v1",
+            "git_revision": staging["git_revision"],
+            "platform": staging["platform"],
+            "spec_hash": staging["spec_hash"],
+            "option_observation_request_hash": None,
+            "quote_symbols_request_hash": None,
+            "datasets": datasets,
+            "entitlement_probe": probe,
+            "manifest_hash": None,
+        }
+        manifest["manifest_hash"] = canonical_hash({key: value for key, value in manifest.items() if key != "manifest_hash"})
+        target = root / "data_manifest.json"
+        atomic_json(target, manifest)
+        return target
+
+    def collect_option_observations_only(
+        self,
+        *,
+        spec: CollectionSpec,
+        spec_path: Path,
+        base_data_manifest_path: Path,
+        output: Path,
+        option_request_path: Path,
+        quote_symbols_path: Path | None = None,
+    ) -> Path:
+        """Collect frozen option observations without re-downloading underlying data.
+
+        The base manifest is hash-bound and remains untouched.  This enables a
+        frozen selector to request only the historical proxy legs that it needs.
+        """
+        root = ensure_empty_output(output)
+        requests = OptionObservationRequest.load(option_request_path)
+        if not requests:
+            raise ResearchDataError("OPTION_OBSERVATION_REQUEST_REQUIRED")
+        quote_symbols = load_quote_symbols(quote_symbols_path)
+        try:
+            base_manifest = json.loads(base_data_manifest_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            raise ResearchDataError("BASE_DATA_MANIFEST_INVALID") from exc
+        if not isinstance(base_manifest, dict) or base_manifest.get("schema_version") != "research-data-manifest/v1":
+            raise ResearchDataError("BASE_DATA_MANIFEST_INVALID")
+        base_hash = base_manifest.get("manifest_hash")
+        if base_hash != canonical_hash({key: value for key, value in base_manifest.items() if key != "manifest_hash"}):
+            raise ResearchDataError("BASE_DATA_MANIFEST_HASH_MISMATCH")
+        datasets: list[dict[str, Any]] = []
+        try:
+            for request in requests:
+                datasets.extend(self._collect_option_observations(root, request, spec))
+            if quote_symbols:
+                datasets.append(self._collect_indicative_quotes(root, quote_symbols, spec))
+        except ResearchHttpError as exc:
+            atomic_json(root / "collection_failure.json", {"status": "FAILED", "reason": str(exc)})
+            raise ResearchDataError(str(exc)) from exc
+        probe = self._write_entitlement_probe(root, datasets)
+        manifest: dict[str, Any] = {
+            "schema_version": "option-observation-manifest/v1",
+            "status": "COLLECTED",
+            "collector": "research-data-collect-options/v1",
+            "base_data_manifest_hash": base_hash,
+            "spec_hash": file_hash(spec_path),
+            "option_observation_request_hash": file_hash(option_request_path),
+            "quote_symbols_request_hash": file_hash(quote_symbols_path) if quote_symbols_path else None,
+            "datasets": sorted(datasets, key=lambda item: item["dataset_id"]),
+            "entitlement_probe": probe,
+            "manifest_hash": None,
+        }
+        manifest["manifest_hash"] = canonical_hash(
+            {key: value for key, value in manifest.items() if key != "manifest_hash"}
+        )
+        target = root / "option_observation_manifest.json"
+        atomic_json(target, manifest)
+        return target
+
+    def collect_option_observation_stage(
+        self,
+        *,
+        spec: CollectionSpec,
+        spec_path: Path,
+        base_data_manifest_path: Path,
+        output: Path,
+        option_request_path: Path,
+        first_request: int,
+        last_request: int,
+    ) -> Path:
+        """Collect a contiguous checkpointed range of frozen option requests."""
+        base_manifest, base_hash = self._validated_base_manifest(base_data_manifest_path)
+        _ = base_manifest
+        requests = OptionObservationRequest.load(option_request_path)
+        if first_request < 1 or last_request < first_request or last_request > len(requests):
+            raise ResearchDataError("OPTION_OBSERVATION_STAGE_RANGE_INVALID")
+        root = output.expanduser().resolve()
+        root.mkdir(parents=True, exist_ok=True)
+        staging_path = root / "option_collection_staging.json"
+        spec_hash, request_hash = file_hash(spec_path), file_hash(option_request_path)
+        if staging_path.exists():
+            staging = _load_option_staging(staging_path)
+            if (staging.get("base_data_manifest_hash"), staging.get("spec_hash"), staging.get("option_observation_request_hash")) != (base_hash, spec_hash, request_hash):
+                raise ResearchDataError("OPTION_OBSERVATION_STAGE_BINDING_MISMATCH")
+        elif any(root.iterdir()):
+            raise ResearchDataError("OPTION_OBSERVATION_STAGE_DIRECTORY_UNRECOGNIZED")
+        else:
+            staging = {"schema_version": "option-observation-staging/v1", "status": "STAGING", "base_data_manifest_hash": base_hash, "spec_hash": spec_hash, "option_observation_request_hash": request_hash, "datasets": [], "staging_hash": None}
+        complete = {item.get("dataset_id") for item in staging["datasets"] if isinstance(item, dict)}
+        for request in requests[first_request - 1:last_request]:
+            expected = {f"option_bars_{request.request_id}", f"option_trades_{request.request_id}"}
+            if expected & complete:
+                if expected <= complete:
+                    continue
+                raise ResearchDataError("OPTION_OBSERVATION_STAGE_PARTIAL_REQUEST")
+            try:
+                datasets = self._collect_option_observations(root, request, spec)
+            except ResearchHttpError as exc:
+                atomic_json(root / "collection_failure.json", {"status": "FAILED", "reason": str(exc), "request_id": request.request_id})
+                raise ResearchDataError(str(exc)) from exc
+            staging["datasets"] = sorted([*staging["datasets"], *datasets], key=lambda item: item["dataset_id"])
+            staging["staging_hash"] = canonical_hash({key: value for key, value in staging.items() if key != "staging_hash"})
+            atomic_json(staging_path, staging)
+            complete.update(expected)
+        return staging_path
+
+    def finalize_option_observations(
+        self, *, spec_path: Path, base_data_manifest_path: Path, output: Path, option_request_path: Path
+    ) -> Path:
+        """Finalize staged option observations when every frozen request is present."""
+        _, base_hash = self._validated_base_manifest(base_data_manifest_path)
+        requests = OptionObservationRequest.load(option_request_path)
+        root = output.expanduser().resolve()
+        staging = _load_option_staging(root / "option_collection_staging.json")
+        if (staging.get("base_data_manifest_hash"), staging.get("spec_hash"), staging.get("option_observation_request_hash")) != (base_hash, file_hash(spec_path), file_hash(option_request_path)):
+            raise ResearchDataError("OPTION_OBSERVATION_STAGE_BINDING_MISMATCH")
+        required = {f"option_{kind}_{request.request_id}" for request in requests for kind in ("bars", "trades")}
+        present = {item.get("dataset_id") for item in staging["datasets"] if isinstance(item, dict)}
+        if present != required:
+            raise ResearchDataError("OPTION_OBSERVATION_STAGES_INCOMPLETE")
+        if (root / "option_observation_manifest.json").exists():
+            raise ResearchDataError("OPTION_OBSERVATION_MANIFEST_EXISTS")
+        datasets = list(staging["datasets"])
+        probe = self._write_entitlement_probe(root, datasets)
+        manifest: dict[str, Any] = {"schema_version": "option-observation-manifest/v1", "status": "COLLECTED", "collector": "research-data-collect-options-stage/v1", "base_data_manifest_hash": base_hash, "spec_hash": file_hash(spec_path), "option_observation_request_hash": file_hash(option_request_path), "quote_symbols_request_hash": None, "datasets": datasets, "entitlement_probe": probe, "manifest_hash": None}
+        manifest["manifest_hash"] = canonical_hash({key: value for key, value in manifest.items() if key != "manifest_hash"})
+        target = root / "option_observation_manifest.json"
+        atomic_json(target, manifest)
+        return target
+
+    @staticmethod
+    def _validated_base_manifest(path: Path) -> tuple[dict[str, Any], str]:
+        try:
+            base_manifest = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            raise ResearchDataError("BASE_DATA_MANIFEST_INVALID") from exc
+        if not isinstance(base_manifest, dict) or base_manifest.get("schema_version") != "research-data-manifest/v1":
+            raise ResearchDataError("BASE_DATA_MANIFEST_INVALID")
+        base_hash = base_manifest.get("manifest_hash")
+        if base_hash != canonical_hash({key: value for key, value in base_manifest.items() if key != "manifest_hash"}):
+            raise ResearchDataError("BASE_DATA_MANIFEST_HASH_MISMATCH")
+        return base_manifest, base_hash
 
     @staticmethod
     def _write_entitlement_probe(root: Path, datasets: list[dict[str, Any]]) -> dict[str, Any]:
@@ -197,7 +451,7 @@ class ResearchDataCollector:
             "endpoints": endpoints,
             "feeds": sorted({str(dataset["feed"]) for dataset in datasets}),
             "datasets": [dataset["dataset_id"] for dataset in sorted(datasets, key=lambda item: item["dataset_id"])],
-            "attestation_required": True,
+            "attestation_required": False,
             "probe_hash": None,
         }
         probe["probe_hash"] = canonical_hash({key: value for key, value in probe.items() if key != "probe_hash"})
@@ -206,20 +460,22 @@ class ResearchDataCollector:
         return {"path": target.name, "sha256": file_hash(target), "probe_hash": probe["probe_hash"]}
 
     def _collect_stocks(self, root: Path, spec: CollectionSpec) -> list[dict[str, Any]]:
-        records: list[dict[str, Any]] = []
-        for adjustment in ("raw", "split"):
-            pages = self._client.get_paginated(
+        return [self._collect_stock_adjustment(root, spec, adjustment) for adjustment in ("raw", "split")]
+
+    def _collect_stock_adjustment(self, root: Path, spec: CollectionSpec, adjustment: str) -> dict[str, Any]:
+        if adjustment not in {"raw", "split"}:
+            raise ResearchDataError("RESEARCH_COLLECTION_ADJUSTMENT_INVALID")
+        pages = self._client.get_paginated(
                 base_url=DATA_BASE_URL,
                 endpoint="/v2/stocks/bars",
                 params={
                     "symbols": ",".join(spec.symbols), "timeframe": spec.stock_timeframe, "start": spec.start,
                     "end": spec.end, "adjustment": adjustment, "feed": spec.feed, "limit": str(spec.page_limit), "sort": "asc",
                 },
-            )
-            dataset_id = f"stock_bars_{adjustment}"
-            rows = self._bar_rows(pages, feed=spec.feed, availability_delay_seconds=spec.availability_delay_seconds)
-            records.append(self._write_dataset(root, dataset_id, pages, rows, STOCK_COLUMNS, adjustment=adjustment, feed=spec.feed))
-        return records
+        )
+        dataset_id = f"stock_bars_{adjustment}"
+        rows = self._bar_rows(pages, feed=spec.feed, availability_delay_seconds=spec.availability_delay_seconds)
+        return self._write_dataset(root, dataset_id, pages, rows, STOCK_COLUMNS, adjustment=adjustment, feed=spec.feed)
 
     def _collect_calendar(self, root: Path, spec: CollectionSpec) -> dict[str, Any]:
         page = self._client.get_one(

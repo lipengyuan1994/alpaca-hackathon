@@ -1,0 +1,13 @@
+plugin_id: intraday_continuation
+plugin_version: 1.0.0
+entrypoint: strategy_plugins.intraday_continuation_v1.plugin:Plugin
+content_hash: sha256:1fa23931132785668c33dbf1359ad6f2b887e29f837fbeb8f220a7b282313bf0
+lifecycle: research_only
+authority: central-registry-only
+owner: assigned_group_a_research_owner
+reviewer: independent_group_b_research_reviewer
+economic_hypothesis_id: NORMALIZED_INTRADAY_CONTINUATION
+position_policy_ref: TREND_VWAP_OR_60M_V1
+required_feature_schema: feature-vector/v1
+feature_contract_hash: sha256:ed712e3f612ecf5f45a89f9f4977d693dfc64c1a006bf17a9a516349aa513190
+status: PROPOSAL_ONLY_NOT_REGISTERED

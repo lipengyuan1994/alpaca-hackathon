@@ -1,0 +1,11 @@
+base:
+  expression: debit_vertical_proxy
+  opening_fee_per_contract_leg: '0.10'
+  reserved_exit_fee_per_contract_leg: '0.10'
+  entry_proxy: first_common_1min_within_5m
+  buy_buffer: max(0.05, 0.10*bar_open, 0.25*(bar_high-bar_low))
+  sell_proxy: max(0, bar_open-buy_buffer)
+stress:
+  fees_per_contract_leg: ['0.00', '0.25']
+  severe: buy_high_plus_0.05_sell_low_minus_0.05_doubled_fees_missing_exit_zero
+limitations: historical_option_observations_are_non_executable_proxies
