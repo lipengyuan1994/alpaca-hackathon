@@ -37,6 +37,16 @@ Researchers start outcome-bearing work only after receiving:
 
 The data steward collects once for the team. Researchers must not build private downloaders, request competition credentials, switch vendors/feeds, hand-fill missing data, or search for a more favorable sample. A missing prerequisite is a visible failed gate, not permission to improvise.
 
+The data steward uses the repository's read-only collector from an approved credential runtime. It writes raw provider pages, normalized Parquet, a canonical `data_manifest.json`, and an unattested entitlement probe to a new empty directory. The separate review/attestation step remains mandatory before researchers consume the manifest.
+
+```text
+research-data-collect \
+  --spec configs/research_data_collection_v1.yaml \
+  --output /absolute/path/to/empty-collection-directory
+```
+
+Historical option observations are supplied only through a frozen, ordered request manifest; current option readiness uses a separate sorted contract-symbol request and explicit `feed=indicative`. Neither request accepts credentials or enables trading.
+
 ## 3. Required workflow for each packet owner
 
 1. Verify Python 3.12, the source commit, and lock hash; record operating system and CPU architecture in the run manifest. Windows, Linux, and non-ARM macOS are supported for offline research.
