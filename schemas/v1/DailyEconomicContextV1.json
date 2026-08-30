@@ -1,0 +1,247 @@
+{
+  "$defs": {
+    "EconomicMarketObservationV1": {
+      "additionalProperties": false,
+      "description": "One normalized, point-in-time market proxy from Alpaca market data.\n\nAlpaca does not publish official macroeconomic releases.  ``MACRO`` is\ntherefore explicitly limited to configured liquid market proxies, while\n``MICRO`` identifies the strategy-underlying context.  Keeping the two\ncategories explicit prevents a model prompt from presenting proxy prices as\nofficial economic statistics.",
+      "properties": {
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "category": {
+          "enum": [
+            "MICRO",
+            "MACRO"
+          ],
+          "title": "Category",
+          "type": "string"
+        },
+        "close": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "title": "Close"
+        },
+        "observed_at": {
+          "format": "date-time",
+          "title": "Observed At",
+          "type": "string"
+        },
+        "previous_close": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "title": "Previous Close"
+        },
+        "return_bps": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "title": "Return Bps"
+        },
+        "session_date": {
+          "format": "date",
+          "title": "Session Date",
+          "type": "string"
+        },
+        "source": {
+          "const": "ALPACA_MARKET_DATA",
+          "default": "ALPACA_MARKET_DATA",
+          "title": "Source",
+          "type": "string"
+        },
+        "symbol": {
+          "pattern": "^[A-Z]{1,8}$",
+          "title": "Symbol",
+          "type": "string"
+        }
+      },
+      "required": [
+        "category",
+        "symbol",
+        "session_date",
+        "close",
+        "previous_close",
+        "return_bps",
+        "observed_at",
+        "available_at"
+      ],
+      "title": "EconomicMarketObservationV1",
+      "type": "object"
+    },
+    "EconomicNewsHeadlineV1": {
+      "additionalProperties": false,
+      "description": "Bounded, untrusted Alpaca news metadata retained for advisory context.\n\nThe body is deliberately excluded.  Headlines are untrusted data and the\neconomic advisory prompt treats them as data rather than instructions.",
+      "properties": {
+        "headline": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Headline",
+          "type": "string"
+        },
+        "news_id": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "News Id",
+          "type": "string"
+        },
+        "published_at": {
+          "format": "date-time",
+          "title": "Published At",
+          "type": "string"
+        },
+        "source": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Source",
+          "type": "string"
+        },
+        "symbols": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Symbols",
+          "type": "array"
+        },
+        "updated_at": {
+          "format": "date-time",
+          "title": "Updated At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "news_id",
+        "headline",
+        "source",
+        "published_at",
+        "updated_at"
+      ],
+      "title": "EconomicNewsHeadlineV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "One immutable pre-market Alpaca-sourced economic proxy snapshot.",
+  "properties": {
+    "collected_at": {
+      "format": "date-time",
+      "title": "Collected At",
+      "type": "string"
+    },
+    "collection_config_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Collection Config Hash",
+      "type": "string"
+    },
+    "content_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Content Hash"
+    },
+    "context_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Context Id",
+      "type": "string"
+    },
+    "expires_at": {
+      "format": "date-time",
+      "title": "Expires At",
+      "type": "string"
+    },
+    "macro_observations": {
+      "items": {
+        "$ref": "#/$defs/EconomicMarketObservationV1"
+      },
+      "maxItems": 32,
+      "minItems": 1,
+      "title": "Macro Observations",
+      "type": "array"
+    },
+    "micro_observations": {
+      "items": {
+        "$ref": "#/$defs/EconomicMarketObservationV1"
+      },
+      "maxItems": 64,
+      "minItems": 1,
+      "title": "Micro Observations",
+      "type": "array"
+    },
+    "news_headlines": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/EconomicNewsHeadlineV1"
+      },
+      "maxItems": 64,
+      "title": "News Headlines",
+      "type": "array"
+    },
+    "quality_flags": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 32,
+      "title": "Quality Flags",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "daily-economic-context/v1",
+      "default": "daily-economic-context/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_request_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Source Request Hash",
+      "type": "string"
+    },
+    "trading_date": {
+      "format": "date",
+      "title": "Trading Date",
+      "type": "string"
+    }
+  },
+  "required": [
+    "context_id",
+    "trading_date",
+    "collected_at",
+    "expires_at",
+    "collection_config_hash",
+    "source_request_hash",
+    "macro_observations",
+    "micro_observations"
+  ],
+  "title": "DailyEconomicContextV1",
+  "type": "object"
+}

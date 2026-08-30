@@ -73,6 +73,8 @@ def test_fixture_replay_covers_decision_to_fake_fill_and_public_tape() -> None:
         "FeatureVectorComputedV1",
         "StrategyDecisionProducedV1",
         "AgentThesisFrozenV1",
+        "DailyEconomicContextBoundV1",
+        "EconomicAssessmentFrozenV1",
         "TradeIntentResolvedV1",
         "OrderPlanCreatedV1",
         "RiskApprovedAndCapacityReservedV1",

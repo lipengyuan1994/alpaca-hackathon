@@ -28,6 +28,7 @@ dev = [
 paper-api = "apps.api.main:run"
 paper-agent-worker = "apps.agent_worker.main:main"
 paper-decision-worker = "apps.decision_worker.main:main"
+paper-economic-context-worker = "apps.economic_context_worker.main:main"
 paper-execution-worker = "apps.execution_worker.main:main"
 paper-operator = "apps.operator_cli.main:main"
 schema-export = "packages.contracts.schema_export:main"

@@ -44,20 +44,26 @@ def test_decision_image_contains_configs_and_exact_schema_dependencies() -> None
     assert "COPY apps/common apps/common" in source
     assert "COPY packages/plugin_integrity packages/plugin_integrity" in source
     assert "COPY packages/agent/frozen.py packages/agent/frozen.py" in source
+    assert "COPY packages/economic_context/store.py packages/economic_context/store.py" in source
     assert "COPY packages/agent packages/agent" not in source
     assert f'"pydantic=={locked["pydantic"]}"' in source
     assert f'"PyYAML=={locked["pyyaml"]}"' in source
     assert "packages/alpaca_execution_mcp" not in source
     assert "packages/execution_core" not in source
     assert "alpaca-py" not in source
-    assert "psycopg[binary]" not in source
+    assert f'"psycopg[binary]=={locked["psycopg"]}"' in source
     assert "httpx" not in source
 
 
-def test_decision_service_has_only_the_internal_advisory_route_and_hardening() -> None:
+def test_decision_service_has_only_internal_advisory_and_database_routes_and_hardening() -> None:
     decision = _compose()["services"]["decision"]  # type: ignore[index]
     networks = _compose()["networks"]  # type: ignore[index]
-    assert decision["networks"] == ["agent-internal"]
+    assert decision["networks"] == ["agent-internal", "database-internal"]
+    assert decision["secrets"] == ["execution_database_url"]
+    assert decision["environment"]["DATABASE_URL_FILE"] == "/run/secrets/execution_database_url"
+    assert decision["environment"]["AGENT_INTERNAL_BASE_URL"] == "http://agent:8081"
+    assert decision["command"] == ["python", "-m", "apps.decision_worker.main", "--service"]
+    assert decision["depends_on"]["postgres"]["condition"] == "service_healthy"
     assert networks["agent-internal"]["internal"] is True
     assert decision["read_only"] is True
     assert decision["cap_drop"] == ["ALL"]
@@ -106,6 +112,27 @@ def test_file_secrets_are_scoped_to_one_credentialed_role() -> None:
         assert direct_credential_keys.isdisjoint(service.get("environment", {})), name
         assert "env_file" not in service, name
 
+    # The decision role receives only the private database DSN and can reach
+    # only the constrained agent service plus the database. It cannot receive
+    # an Alpaca key or an advisory-provider key.
+    assert services["decision"]["secrets"] == ["execution_database_url"]
+    assert {"PAPER_ALPACA_API_KEY_FILE", "PAPER_ALPACA_API_SECRET_FILE"}.isdisjoint(
+        services["decision"]["environment"]
+    )
+    assert "AGENT_MODEL_API_KEY_FILE" not in services["decision"]["environment"]
+
+    # The one-shot collector is the only non-execution role with dedicated
+    # read-only market-data credentials; it has no broker-execution network.
+    economic = services["economic-context"]
+    assert set(economic["secrets"]) == {
+        "economic_alpaca_api_key",
+        "economic_alpaca_api_secret",
+        "execution_database_url",
+    }
+    assert economic["networks"] == ["market-data-egress", "database-internal"]
+    assert "broker-egress" not in economic["networks"]
+    assert economic["restart"] == "no"
+
 
 def test_agent_service_has_one_model_secret_and_no_public_port() -> None:
     services = _compose()["services"]  # type: ignore[index]
@@ -135,6 +162,14 @@ def test_compose_secret_sources_share_the_local_external_secret_directory() -> N
     assert secrets["paper_alpaca_api_secret"]["file"] == alpaca_bundle
     assert secrets["paper_account_id"]["file"] == alpaca_bundle
     assert secrets["execution_database_url"]["file"] == f"{secret_directory}/execution_database_url"
+    assert (
+        secrets["economic_alpaca_api_key"]["file"]
+        == f"{secret_directory}/alpaca/economic_data_api_key.yaml"
+    )
+    assert (
+        secrets["economic_alpaca_api_secret"]["file"]
+        == f"{secret_directory}/alpaca/economic_data_api_key.yaml"
+    )
     assert (
         secrets["postgres_bootstrap_password"]["file"]
         == f"{secret_directory}/postgres/bootstrap_password"
@@ -169,6 +204,7 @@ def test_postgres_service_is_internal_and_initializes_the_runtime_schema() -> No
     assert "postgres:18.3-bookworm@sha256:" in source
     assert "001_initial.sql" in source
     assert "002_runtime_safety.sql" in source
+    assert "003_economic_context.sql" in source
     grants = (ROOT / "infra" / "postgres" / "999_grant_execution_role.sh").read_text(
         encoding="utf-8"
     )
@@ -186,8 +222,18 @@ def test_postgres_service_is_internal_and_initializes_the_runtime_schema() -> No
     assert "NOBYPASSRLS" in role
 
     assert "database-internal" not in services["agent"]["networks"]
-    assert "database-internal" not in services["decision"]["networks"]
     assert "database-internal" not in services["api"]["networks"]
+
+
+def test_economic_context_image_has_only_market_data_and_cache_dependencies() -> None:
+    source = _dockerfile("Dockerfile.economic_context")
+    assert "alpaca-py" in source
+    assert "psycopg[binary]" in source
+    assert "packages/alpaca_execution_mcp" not in source
+    assert "packages/execution_core" not in source
+    assert "packages/agent" not in source
+    assert "packages/order_planner" not in source
+    assert "packages/risk_kernel" not in source
 
 
 def test_local_runtime_rejects_non_arm64_darwin(monkeypatch: pytest.MonkeyPatch) -> None:

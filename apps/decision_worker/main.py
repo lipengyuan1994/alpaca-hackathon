@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import time
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from decimal import Decimal
@@ -32,9 +34,14 @@ from packages.contracts.models import (
     StrategyContextV1,
     StrategyStateV1,
 )
+from packages.decision_core import apply_economic_gate
 from packages.decision_core.registry import default_registry
 from packages.decision_core.resolver import NoTradeRecordedV1, resolve
 from packages.domain import reconciliation_hash
+from packages.economic_context.frozen import (
+    fixture_daily_economic_context,
+    fixture_economic_assessment,
+)
 from packages.ledger import MemoryLedger
 from packages.market_data import compute_feature_vector, load_feature_contract
 from packages.order_planner import build_plan, template_catalog_hash
@@ -97,13 +104,15 @@ def _append_decision_trace(
     evaluation: Any,
     thesis: Any,
     outcome: Any,
+    economic_context: Any | None = None,
+    economic_assessment: Any | None = None,
 ) -> int:
     """Persist the public, replayable part of a decision before any order exists.
 
     The tape carries only normalized/frozen artifacts.  In particular, it has
     no broker client, credential, account-secret, or mutable model response.
     """
-    records = (
+    records: list[tuple[str, Any]] = [
         ("MarketSnapshotRecordedV1", market),
         (
             "FeatureVectorComputedV1",
@@ -117,10 +126,16 @@ def _append_decision_trace(
         ),
         ("StrategyDecisionProducedV1", evaluation),
         ("AgentThesisFrozenV1", thesis),
+    ]
+    if economic_context is not None:
+        records.append(("DailyEconomicContextBoundV1", economic_context))
+    if economic_assessment is not None:
+        records.append(("EconomicAssessmentFrozenV1", economic_assessment))
+    records.append(
         (
             "NoTradeRecordedV1" if isinstance(outcome, NoTradeRecordedV1) else "TradeIntentResolvedV1",
             outcome.__dict__ if isinstance(outcome, NoTradeRecordedV1) else outcome,
-        ),
+        )
     )
     for version, (event_type, payload) in enumerate(records, start=1):
         ledger.append(
@@ -322,6 +337,17 @@ def run_approved_fixture() -> RunResult:
     )
     if isinstance(intent, NoTradeRecordedV1):
         raise RuntimeError(f"fixture unexpectedly refused: {intent.reason_code}")
+    economic_context = fixture_daily_economic_context(collected_at=FIXTURE_TIME - timedelta(hours=1, minutes=30))
+    economic_assessment = fixture_economic_assessment(economic_context, evaluation, intent)
+    intent = apply_economic_gate(
+        evaluation,
+        intent,
+        economic_context,
+        economic_assessment,
+        now=FIXTURE_TIME,
+    )
+    if isinstance(intent, NoTradeRecordedV1):
+        raise RuntimeError(f"fixture unexpectedly failed economic gate: {intent.reason_code}")
     tape_version = _append_decision_trace(
         ledger,
         run_id=run_id,
@@ -330,6 +356,8 @@ def run_approved_fixture() -> RunResult:
         evaluation=evaluation,
         thesis=thesis,
         outcome=intent,
+        economic_context=economic_context,
+        economic_assessment=economic_assessment,
     )
     plan = build_plan(intent, market, account, positions, baseline_risk, now=FIXTURE_TIME)
     tape_version += 1
@@ -465,11 +493,102 @@ def run_approved_fixture() -> RunResult:
     )
 
 
+def run_economic_veto_fixture() -> RunResult:
+    """Show a generated entry signal becoming a logged NO_TRADE before planning."""
+    run_id = "run-fixture-economic-veto"
+    ledger = MemoryLedger()
+    market, _, _, _, context, _, pair = _evaluate("regime_momentum", momentum=True)
+    evaluation, thesis = pair
+    entry = default_registry().entry(evaluation.plugin_id, evaluation.plugin_version)
+    intent = resolve(
+        evaluation,
+        thesis,
+        context,
+        now=FIXTURE_TIME,
+        position_policy_id=entry.position_policy_ref,
+    )
+    if isinstance(intent, NoTradeRecordedV1):
+        raise RuntimeError(f"fixture unexpectedly refused: {intent.reason_code}")
+    economic_context = fixture_daily_economic_context(collected_at=FIXTURE_TIME - timedelta(hours=1, minutes=30))
+    economic_assessment = fixture_economic_assessment(economic_context, evaluation, intent, veto=True)
+    outcome = apply_economic_gate(
+        evaluation,
+        intent,
+        economic_context,
+        economic_assessment,
+        now=FIXTURE_TIME,
+    )
+    if not isinstance(outcome, NoTradeRecordedV1):  # pragma: no cover - fixture invariant
+        raise RuntimeError("fixture unexpectedly passed economic veto")
+    _append_decision_trace(
+        ledger,
+        run_id=run_id,
+        market=market,
+        context=context,
+        evaluation=evaluation,
+        thesis=thesis,
+        outcome=outcome,
+        economic_context=economic_context,
+        economic_assessment=economic_assessment,
+    )
+    return RunResult(
+        status="NO_TRADE",
+        run_id=run_id,
+        ledger=ledger,
+        tape=ledger.decision_tape(run_id),
+        details={
+            "reason_code": outcome.reason_code,
+            "evaluation_hash": evaluation.evaluation_hash,
+            "economic_context_hash": economic_context.content_hash,
+            "economic_assessment_hash": economic_assessment.content_hash,
+        },
+    )
+
+
 def main() -> None:
     assert_native_developer_runtime()
     parser = argparse.ArgumentParser(description="Run frozen paper-system fixtures; no network or broker credentials.")
     parser.add_argument("--approved", action="store_true", help="run the fake-broker fixture path")
+    parser.add_argument(
+        "--service",
+        action="store_true",
+        help="consume durable decision jobs through the private internal agent and PostgreSQL only",
+    )
+    parser.add_argument("--once", action="store_true", help="with --service, process at most one job")
     args = parser.parse_args()
+    if args.service:
+        if args.approved:
+            parser.error("--approved cannot be combined with --service")
+        from apps.decision_worker.agent_gateway import InternalAdvisoryClient
+        from apps.decision_worker.runtime import DurableDecisionWorker
+        from packages.economic_context.store import PostgresEconomicContextStore
+        from packages.ledger import PostgresRuntimeLedger
+        from packages.runtime_secrets import require_file_secret
+
+        dsn = require_file_secret("DATABASE_URL")
+        worker = DurableDecisionWorker(
+            ledger=PostgresRuntimeLedger.from_dsn(dsn),
+            audit_store=PostgresEconomicContextStore.from_dsn(dsn),
+            advisory=InternalAdvisoryClient(os.environ.get("AGENT_INTERNAL_BASE_URL", "http://agent:8081")),
+            worker_id=os.environ.get("DECISION_WORKER_ID", "decision-worker-1"),
+        )
+        while True:
+            outcome = worker.process_once(now=datetime.now(UTC))
+            print(
+                json.dumps(
+                    {
+                        "job_id": outcome.job_id,
+                        "status": outcome.status,
+                        "record_id": outcome.record_id,
+                        "reason_code": outcome.reason_code,
+                    },
+                    sort_keys=True,
+                ),
+                flush=True,
+            )
+            if args.once:
+                return
+            time.sleep(1 if outcome.status != "IDLE" else 5)
     result = run_approved_fixture() if args.approved else run_refusal_fixture()
     print(json.dumps({"status": result.status, "run_id": result.run_id, "details": result.details}, sort_keys=True))
 

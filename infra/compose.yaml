@@ -26,8 +26,42 @@ services:
     environment:
       PYTHONDONTWRITEBYTECODE: "1"
       PYTHONUNBUFFERED: "1"
+      DATABASE_URL_FILE: /run/secrets/execution_database_url
+      AGENT_INTERNAL_BASE_URL: http://agent:8081
+      DECISION_WORKER_ID: ${DECISION_WORKER_ID:-decision-worker-1}
+    command: ["python", "-m", "apps.decision_worker.main", "--service"]
+    secrets:
+      - execution_database_url
+    depends_on:
+      postgres:
+        condition: service_healthy
+      agent:
+        condition: service_started
     networks:
       - agent-internal
+      - database-internal
+    restart: unless-stopped
+
+  economic-context:
+    <<: *hardened-service
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.economic_context
+    environment:
+      ECONOMIC_CONTEXT_CONFIG_PATH: /app/configs/economic_context.yaml
+      ECONOMIC_ALPACA_API_KEY_FILE: /run/secrets/economic_alpaca_api_key
+      ECONOMIC_ALPACA_API_SECRET_FILE: /run/secrets/economic_alpaca_api_secret
+      DATABASE_URL_FILE: /run/secrets/execution_database_url
+    secrets:
+      - economic_alpaca_api_key
+      - economic_alpaca_api_secret
+      - execution_database_url
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - market-data-egress
+      - database-internal
     restart: "no"
 
   agent:
@@ -142,6 +176,8 @@ networks:
     internal: true
   agent-egress:
     driver: bridge
+  market-data-egress:
+    driver: bridge
   broker-egress:
     driver: bridge
   database-internal:
@@ -164,6 +200,10 @@ secrets:
     file: "${REGIMESWITCH_SECRETS_DIR:-/Users/lipengyuan/.config/great_secrets}/alpaca/alpaca_api_key.yaml"
   execution_database_url:
     file: "${REGIMESWITCH_SECRETS_DIR:-/Users/lipengyuan/.config/great_secrets}/execution_database_url"
+  economic_alpaca_api_key:
+    file: "${REGIMESWITCH_SECRETS_DIR:-/Users/lipengyuan/.config/great_secrets}/alpaca/economic_data_api_key.yaml"
+  economic_alpaca_api_secret:
+    file: "${REGIMESWITCH_SECRETS_DIR:-/Users/lipengyuan/.config/great_secrets}/alpaca/economic_data_api_key.yaml"
   postgres_bootstrap_password:
     file: "${REGIMESWITCH_SECRETS_DIR:-/Users/lipengyuan/.config/great_secrets}/postgres/bootstrap_password"
   postgres_execution_password:

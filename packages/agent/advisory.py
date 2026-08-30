@@ -181,16 +181,31 @@ class AdvisoryModelClient:
             narrative=parsed.narrative,
         )
 
-    def _call_provider(self, model_input_json: str) -> tuple[dict[str, Any], str, str | None]:
+    def _call_provider(
+        self,
+        model_input_json: str,
+        *,
+        system_prompt: str = _SYSTEM_PROMPT,
+        interaction_response_schema: dict[str, Any] = _INTERACTION_RESPONSE_SCHEMA,
+    ) -> tuple[dict[str, Any], str, str | None]:
         if self._profile.request_protocol == AdvisoryRequestProtocolV1.GEMINI_GENERATE_CONTENT:
-            return self._call_gemini(model_input_json)
+            return self._call_gemini(model_input_json, system_prompt=system_prompt)
         if self._profile.request_protocol == AdvisoryRequestProtocolV1.GEMINI_INTERACTIONS:
-            return self._call_gemini_interactions(model_input_json)
+            return self._call_gemini_interactions(
+                model_input_json,
+                system_prompt=system_prompt,
+                interaction_response_schema=interaction_response_schema,
+            )
         if self._profile.request_protocol == AdvisoryRequestProtocolV1.OPENAI_CHAT_COMPLETIONS:
-            return self._call_openai_compatible(model_input_json)
+            return self._call_openai_compatible(model_input_json, system_prompt=system_prompt)
         raise ValueError("ADVISORY_REQUEST_PROTOCOL_UNSUPPORTED")
 
-    def _call_gemini(self, model_input_json: str) -> tuple[dict[str, Any], str, str | None]:
+    def _call_gemini(
+        self,
+        model_input_json: str,
+        *,
+        system_prompt: str,
+    ) -> tuple[dict[str, Any], str, str | None]:
         url = (
             f"{self._profile.api_base_url}/v1beta/models/"
             f"{self._profile.model_name}:generateContent"
@@ -199,7 +214,7 @@ class AdvisoryModelClient:
             url,
             headers={"x-goog-api-key": self._api_key},
             json={
-                "systemInstruction": {"parts": [{"text": _SYSTEM_PROMPT}]},
+                "systemInstruction": {"parts": [{"text": system_prompt}]},
                 "contents": [
                     {
                         "role": "user",
@@ -229,7 +244,11 @@ class AdvisoryModelClient:
         return body, text, reported_model if isinstance(reported_model, str) else None
 
     def _call_gemini_interactions(
-        self, model_input_json: str
+        self,
+        model_input_json: str,
+        *,
+        system_prompt: str,
+        interaction_response_schema: dict[str, Any],
     ) -> tuple[dict[str, Any], str, str | None]:
         """Call Gemini 3-series through its explicit, tool-free Interactions API."""
 
@@ -238,7 +257,7 @@ class AdvisoryModelClient:
             headers={"x-goog-api-key": self._api_key},
             json={
                 "model": self._profile.model_name,
-                "system_instruction": _SYSTEM_PROMPT,
+                "system_instruction": system_prompt,
                 "input": "<normalized_input>\n"
                 f"{model_input_json}\n"
                 "</normalized_input>",
@@ -251,7 +270,7 @@ class AdvisoryModelClient:
                 "response_format": {
                     "type": "text",
                     "mime_type": "application/json",
-                    "schema": _INTERACTION_RESPONSE_SCHEMA,
+                    "schema": interaction_response_schema,
                 },
             },
         )
@@ -284,12 +303,15 @@ class AdvisoryModelClient:
         raise ValueError("GEMINI_INTERACTION_EMPTY_RESPONSE")
 
     def _call_openai_compatible(
-        self, model_input_json: str
+        self,
+        model_input_json: str,
+        *,
+        system_prompt: str,
     ) -> tuple[dict[str, Any], str, str | None]:
         payload: dict[str, Any] = {
             "model": self._profile.model_name,
             "messages": [
-                {"role": "system", "content": _SYSTEM_PROMPT},
+                {"role": "system", "content": system_prompt},
                 {
                     "role": "user",
                     "content": "<normalized_input>\n"

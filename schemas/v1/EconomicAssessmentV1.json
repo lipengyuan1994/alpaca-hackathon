@@ -1,0 +1,150 @@
+{
+  "$defs": {
+    "AgentNarrativeV1": {
+      "additionalProperties": false,
+      "description": "Display-only explanation from the advisory model.\n\nThe resolver never reads these fields.  They are retained in the frozen\nthesis artifact so a public replay can explain an allow or veto without\nallowing prose to alter any executable semantic field.",
+      "properties": {
+        "counter_thesis": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Counter Thesis",
+          "type": "string"
+        },
+        "explanation": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Explanation",
+          "type": "string"
+        },
+        "market_thesis": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Market Thesis",
+          "type": "string"
+        }
+      },
+      "required": [
+        "market_thesis",
+        "counter_thesis",
+        "explanation"
+      ],
+      "title": "AgentNarrativeV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Advisory-only economic support/veto bound to one semantic trade intent.",
+  "properties": {
+    "assessment_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Assessment Id",
+      "type": "string"
+    },
+    "content_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Content Hash"
+    },
+    "diagnostic_confidence": {
+      "anyOf": [
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+          "type": "string"
+        }
+      ],
+      "title": "Diagnostic Confidence"
+    },
+    "economic_context_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Economic Context Hash",
+      "type": "string"
+    },
+    "expires_at": {
+      "format": "date-time",
+      "title": "Expires At",
+      "type": "string"
+    },
+    "model_input_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Model Input Hash",
+      "type": "string"
+    },
+    "model_version": {
+      "minLength": 1,
+      "title": "Model Version",
+      "type": "string"
+    },
+    "narrative": {
+      "$ref": "#/$defs/AgentNarrativeV1"
+    },
+    "prompt_version": {
+      "minLength": 1,
+      "title": "Prompt Version",
+      "type": "string"
+    },
+    "raw_output_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Raw Output Hash",
+      "type": "string"
+    },
+    "reason_code": {
+      "pattern": "^[A-Z][A-Z0-9_]{2,95}$",
+      "title": "Reason Code",
+      "type": "string"
+    },
+    "recommendation": {
+      "enum": [
+        "ALLOW_UNCHANGED",
+        "VETO"
+      ],
+      "title": "Recommendation",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "economic-assessment/v1",
+      "default": "economic-assessment/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "strategy_evaluation_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Strategy Evaluation Hash",
+      "type": "string"
+    },
+    "trade_intent_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Trade Intent Hash",
+      "type": "string"
+    }
+  },
+  "required": [
+    "assessment_id",
+    "economic_context_hash",
+    "strategy_evaluation_hash",
+    "trade_intent_hash",
+    "model_input_hash",
+    "model_version",
+    "prompt_version",
+    "raw_output_hash",
+    "recommendation",
+    "diagnostic_confidence",
+    "expires_at",
+    "reason_code",
+    "narrative"
+  ],
+  "title": "EconomicAssessmentV1",
+  "type": "object"
+}
