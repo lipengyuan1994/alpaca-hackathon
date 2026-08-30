@@ -1,0 +1,21 @@
+# syntax=docker/dockerfile:1
+# This image intentionally excludes decision, planner, risk, and broker packages.
+FROM python:3.12-slim AS agent
+ARG TARGETARCH
+RUN test "$TARGETARCH" = "arm64" || test "$TARGETARCH" = "amd64"
+WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+COPY configs/advisory_models.yaml configs/advisory_models.yaml
+COPY packages/__init__.py packages/__init__.py
+COPY packages/runtime_secrets.py packages/runtime_secrets.py
+COPY packages/contracts packages/contracts
+COPY packages/agent packages/agent
+COPY apps/agent_worker apps/agent_worker
+RUN pip install --no-cache-dir \
+    "fastapi==0.141.1" \
+    "httpx==0.28.1" \
+    "pydantic==2.13.5" \
+    "PyYAML==6.0.3" \
+    "uvicorn==0.41.0"
+CMD ["python", "-m", "apps.agent_worker.main"]

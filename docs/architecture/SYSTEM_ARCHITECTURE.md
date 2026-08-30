@@ -6,11 +6,12 @@ Scope: hackathon paper system; no live-trading path
 
 ## 1. Architectural outcome
 
-Build a modular monolith from one repository and deploy it as four isolated roles:
+Build a modular monolith from one repository and deploy it as isolated roles:
 
 - `web`: credential-free, read-only judge dashboard.
 - `api`: public read models and replay endpoints plus server-sent events or WebSocket updates; no mutation route, broker secret, or control authority.
-- `decision-worker`: deterministic strategy/agent/order-planning/risk pipeline; no competition broker secret and no order tools.
+- `decision-worker`: deterministic strategy/order-planning/risk pipeline; no competition broker secret and no order tools.
+- `agent-worker`: internal-only advisory adapter; it receives a sanitized semantic context/evaluation pair plus one provider key, and may return only a frozen allow-unchanged/veto thesis.
 - `execution-worker`: sole Alpaca-credentialed role; collects broker-authoritative snapshots, submits only immutable approved plans, and reconciles orders/positions.
 - `operator-cli`: a private, one-shot administrative client used only by named operators to arm or halt; it is not deployed in the public API or judge UI.
 
@@ -47,13 +48,16 @@ flowchart LR
         API[api: read models and replay]
     end
 
-    subgraph Decision[Uncredentialed decision zone]
+    subgraph Decision[Deterministic decision zone]
         DW[decision-worker]
         PLUG[registered strategy plug-ins]
-        AGENT[advisory AI adapter]
         RESOLVE[deterministic resolver]
         PLAN[order planner]
         RISK[risk kernel]
+    end
+
+    subgraph Advisory[Advisory egress zone]
+        AGENT[agent-worker]
     end
 
     subgraph Data[Durable control plane]
@@ -73,7 +77,7 @@ flowchart LR
     EW -->|sanitized market/account/position snapshots| PG
     PG --> DW
     DW --> PLUG
-    DW --> AGENT
+    DW -->|sanitized AgentRequestV1 only| AGENT
     PLUG -->|StrategyEvaluationV1| RESOLVE
     AGENT -->|AgentThesisV1| RESOLVE
     RESOLVE -->|TradeIntentV1 or NO_TRADE| PLAN
@@ -93,6 +97,7 @@ Alpaca Trading API credentials also authenticate market data and are not proven 
 ```text
 strategy_plugins → strategy_sdk → contracts
 agent ─────────────────────────→ contracts
+agent_worker → agent + contracts
 decision_core → strategy_sdk + agent + contracts
 strategy_runner → strategy_sdk + contracts
 order_planner → contracts + domain
@@ -108,7 +113,7 @@ decision_worker -X-> alpaca_execution_mcp / competition credentials
 operator_cli -X-> outbox / execution adapter / broker credentials / arbitrary database writes
 ```
 
-Enforce forbidden edges with architecture/import tests and distinct dependency sets. The decision-worker container image must not contain the execution adapter; the execution-worker image must not contain model or strategy packages. A strategy plug-in executes only through `strategy_runner`: a separate process with canonical JSON stdin/stdout, a cleared environment, no network namespace, a minimal read-only filesystem, no inherited file descriptors, and CPU, memory, output-size, and wall-time limits. V1 loads only repository-owned, registry-pinned plug-ins; failure to establish this isolation is a deployment blocker, not a warning.
+Enforce forbidden edges with architecture/import tests and distinct dependency sets. The decision-worker container image must not contain a provider client, execution adapter, or competition secret; the agent-worker image must not contain planner, risk, or broker packages; the execution-worker image must not contain model or strategy packages. A strategy plug-in executes only through `strategy_runner`: a separate process with canonical JSON stdin/stdout, a cleared environment, no network namespace, a minimal read-only filesystem, no inherited file descriptors, and CPU, memory, output-size, and wall-time limits. V1 loads only repository-owned, registry-pinned plug-ins; failure to establish this isolation is a deployment blocker, not a warning.
 
 ## 5. Target repository structure
 
@@ -289,12 +294,12 @@ Preferred hackathon deployment:
 ```text
 Vercel web
     ↓ HTTPS/SSE
-container PaaS: api + decision-worker + execution-worker as separate roles/images
+container PaaS: api + decision-worker + agent-worker + execution-worker as separate roles/images
     ↓
 managed Postgres + S3-compatible persistent object storage
 ```
 
-The exact container PaaS is an implementation choice. Requirements are public HTTPS, persistent secrets, independent role scaling/restart, health checks, outbound Alpaca access, managed database connectivity, and logs. The public app is credential-free and read-only; replay mode works while markets are closed. Its database identity has `SELECT` only on dedicated read-model views and no access to event, outbox, inbox, credential, or control tables. Arming and halting use the private `operator-cli` or a one-shot private job with the command/procedure boundary above; there is no control endpoint in the public API deployment. Negative authorization tests must prove the public role cannot insert, update, delete, call privileged procedures, or reach the execution network.
+The exact container PaaS is an implementation choice. Requirements are public HTTPS, persistent file-mounted secrets, independent role scaling/restart, health checks, provider-only advisory egress, outbound Alpaca paper access, managed database connectivity, and logs. The public app is credential-free and read-only; replay mode works while markets are closed. Its database identity has `SELECT` only on dedicated read-model views and no access to event, outbox, inbox, credential, or control tables. Arming and halting use the private `operator-cli` or a one-shot private job with the command/procedure boundary above; there is no control endpoint in the public API deployment. Negative authorization tests must prove the public role cannot insert, update, delete, call privileged procedures, or reach the execution network.
 
 ## 12. Scaling path
 
@@ -314,6 +319,7 @@ The skeleton is acceptable only when all are true:
 - Forbidden import edges fail CI.
 - Strategy plug-ins compile/test without any Alpaca package or credential and execute only through the resource-limited, no-network `strategy_runner` boundary.
 - Decision image contains no execution adapter or competition secret.
+- Agent image contains only the provider adapter, contracts, and one file-mounted provider key; it has no execution, planner, risk, or broker dependency.
 - Execution image contains no LLM or strategy plug-in package.
 - Public API runs with a `SELECT`-only read-model database role; negative tests prove it cannot arm, halt, mutate control state, or enqueue work.
 - Operator CLI has only control-projection `SELECT` plus exact procedure `EXECUTE`; stale, replayed, wrong-account/release/config, illegal-mode, and concurrent control commands fail.

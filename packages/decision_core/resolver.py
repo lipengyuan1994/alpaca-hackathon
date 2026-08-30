@@ -5,7 +5,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import UTC, datetime
 
-from packages.contracts.canonical import hash_without
+from pydantic import ValidationError
+
+from packages.contracts.agent_input import agent_request_from_strategy, sanitized_model_input
+from packages.contracts.canonical import canonical_hash, hash_without
 from packages.contracts.models import (
     AgentThesisV1,
     EntryTemplateRequestV1,
@@ -65,6 +68,14 @@ def resolve(
         return _refusal(evaluation, thesis, "STRATEGY_EVALUATION_BINDING_MISMATCH")
     if thesis.context_hash != context.context_hash or thesis.strategy_evaluation_hash != evaluation.evaluation_hash:
         return _refusal(evaluation, thesis, "THESIS_BINDING_MISMATCH")
+    try:
+        expected_model_input_hash = canonical_hash(
+            sanitized_model_input(agent_request_from_strategy(context, evaluation))
+        )
+    except (ValidationError, ValueError):
+        return _refusal(evaluation, thesis, "THESIS_MODEL_INPUT_BINDING_MISMATCH")
+    if thesis.model_input_hash != expected_model_input_hash:
+        return _refusal(evaluation, thesis, "THESIS_MODEL_INPUT_BINDING_MISMATCH")
     if now >= thesis.expires_at:
         return _refusal(evaluation, thesis, "THESIS_EXPIRED")
     if thesis.recommendation == "VETO":

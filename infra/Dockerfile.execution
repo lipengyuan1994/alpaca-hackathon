@@ -7,6 +7,7 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 COPY packages/contracts packages/contracts
+COPY packages/runtime_secrets.py packages/runtime_secrets.py
 COPY packages/domain packages/domain
 COPY packages/risk_kernel packages/risk_kernel
 COPY packages/market_data packages/market_data

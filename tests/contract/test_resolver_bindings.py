@@ -75,6 +75,19 @@ def test_resolver_treats_the_expiry_boundary_as_expired() -> None:
     assert outcome.reason_code == "THESIS_EXPIRED"
 
 
+def test_resolver_rejects_a_thesis_bound_to_a_different_model_input() -> None:
+    context, evaluation, thesis = _entry_fixture()
+    rebound = AgentThesisV1.model_validate(
+        thesis.model_dump(mode="json", exclude={"content_hash"})
+        | {"model_input_hash": "sha256:" + "f" * 64}
+    )
+
+    outcome = _resolve(evaluation, rebound, context)
+
+    assert isinstance(outcome, NoTradeRecordedV1)
+    assert outcome.reason_code == "THESIS_MODEL_INPUT_BINDING_MISMATCH"
+
+
 def test_resolver_rejects_a_tampered_allow_verdict_before_it_can_authorize() -> None:
     context, evaluation, thesis = _entry_fixture()
     veto = AgentThesisV1.model_validate(

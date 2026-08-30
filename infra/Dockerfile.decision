@@ -13,7 +13,8 @@ COPY packages/strategy_sdk packages/strategy_sdk
 COPY packages/plugin_integrity packages/plugin_integrity
 COPY packages/strategy_runner packages/strategy_runner
 COPY packages/decision_core packages/decision_core
-COPY packages/agent packages/agent
+COPY packages/agent/__init__.py packages/agent/__init__.py
+COPY packages/agent/frozen.py packages/agent/frozen.py
 COPY packages/market_data packages/market_data
 COPY packages/order_planner packages/order_planner
 COPY packages/risk_kernel packages/risk_kernel

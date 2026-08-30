@@ -19,6 +19,7 @@ htmlcov
 .env.*
 !.env.example
 secrets
+.secrets
 *.key
 *.pem
 *.p12

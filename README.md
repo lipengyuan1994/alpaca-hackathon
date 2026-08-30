@@ -2,7 +2,7 @@
 
 This is the executable modular-monolith skeleton defined in the
 [system architecture](docs/architecture/SYSTEM_ARCHITECTURE.md). It has no
-live-trading mode, endpoint, or credential path.
+live-trading mode, endpoint, or live credential path.
 
 The following are **core-platform macOS/ARM64** fixture paths. They run without network or broker credentials:
 
@@ -28,6 +28,13 @@ not the Mac-specific executable path above.
 `apps/api` exposes credential-free read-only replay endpoints. `apps/operator_cli`
 only validates one-shot control command payloads; it has no broker or public
 API integration. Role-specific Dockerfiles are in [infra](infra).
+
+The paper runtime uses file-mounted Compose secrets.  Provision the external
+secret directory and role boundaries described in
+[the Compose secret runbook](docs/deployment/COMPOSE_SECRETS.md); do not put
+secret values in `.env`, source, tests, documentation, or the public dashboard.
+For the durable local database that backs the paper-only execution ledger, use
+the [local Docker PostgreSQL runbook](docs/deployment/LOCAL_POSTGRES.md).
 
 Start with the [documentation index](docs/index.md). The competition strategy,
 risk posture, ownership model, and delivery gates remain in

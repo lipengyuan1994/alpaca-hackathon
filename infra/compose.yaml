@@ -10,12 +10,12 @@ x-hardened-service: &hardened-service
     - no-new-privileges:true
   tmpfs:
     - /tmp:rw,noexec,nosuid,nodev,size=32m
-  pids_limit: 64
   deploy:
     resources:
       limits:
         cpus: "1.0"
         memory: 512M
+        pids: 64
 
 services:
   decision:
@@ -23,11 +23,68 @@ services:
     build:
       context: ..
       dockerfile: infra/Dockerfile.decision
-    network_mode: none
     environment:
       PYTHONDONTWRITEBYTECODE: "1"
       PYTHONUNBUFFERED: "1"
+    networks:
+      - agent-internal
     restart: "no"
+
+  agent:
+    <<: *hardened-service
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.agent
+    environment:
+      AGENT_MODEL_CONFIG_PATH: /app/configs/advisory_models.yaml
+      AGENT_MODEL_ID: ${AGENT_MODEL_ID:-gemini_3_6_flash}
+      AGENT_MODEL_API_KEY_FILE: /run/secrets/agent_model_api_key
+      AGENT_PORT: "8081"
+    expose:
+      - "8081"
+    secrets:
+      - agent_model_api_key
+    networks:
+      - agent-internal
+      - agent-egress
+    restart: unless-stopped
+
+  postgres:
+    platform: ${REGIMESWITCH_DOCKER_PLATFORM:-linux/arm64}
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.postgres
+    environment:
+      POSTGRES_USER: regimeswitch_postgres_admin
+      POSTGRES_DB: regimeswitch
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_bootstrap_password
+      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256 --auth-local=trust
+      PGDATA: /var/lib/postgresql/data/pgdata
+      REGIMESWITCH_EXECUTION_ROLE: regimeswitch_execution
+      REGIMESWITCH_EXECUTION_PASSWORD_FILE: /run/secrets/postgres_execution_password
+    secrets:
+      - postgres_bootstrap_password
+      - postgres_execution_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - database-internal
+    read_only: true
+    init: true
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=32m
+      - /var/run/postgresql:rw,nosuid,nodev,size=8m
+    shm_size: 128mb
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready --username=$${POSTGRES_USER} --dbname=$${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 5s
+    stop_grace_period: 30s
+    restart: unless-stopped
 
   execution:
     <<: *hardened-service
@@ -35,11 +92,11 @@ services:
       context: ..
       dockerfile: infra/Dockerfile.execution
     environment:
-      PAPER_ALPACA_API_KEY: ${PAPER_ALPACA_API_KEY:?set in the private deployment secret store}
-      PAPER_ALPACA_API_SECRET: ${PAPER_ALPACA_API_SECRET:?set in the private deployment secret store}
-      PAPER_ACCOUNT_ID: ${PAPER_ACCOUNT_ID:?set the judged paper account identifier}
+      PAPER_ALPACA_API_KEY_FILE: /run/secrets/paper_alpaca_api_key
+      PAPER_ALPACA_API_SECRET_FILE: /run/secrets/paper_alpaca_api_secret
+      PAPER_ACCOUNT_ID_FILE: /run/secrets/paper_account_id
       PAPER_API_BASE_URL: https://paper-api.alpaca.markets
-      DATABASE_URL: ${DATABASE_URL:?set the private runtime database URL}
+      DATABASE_URL_FILE: /run/secrets/execution_database_url
       RISK_POLICY_HASH: ${RISK_POLICY_HASH:?pin the approved risk policy hash}
       TEMPLATE_CATALOG_HASH: ${TEMPLATE_CATALOG_HASH:?pin the template catalog hash}
       STRATEGY_REGISTRY_HASH: ${STRATEGY_REGISTRY_HASH:?pin the strategy registry hash}
@@ -52,8 +109,17 @@ services:
       FLAT_DEADLINE_AT: ${FLAT_DEADLINE_AT:-2026-09-03T19:30:00Z}
       EXECUTION_WORKER_ID: ${EXECUTION_WORKER_ID:-execution-worker-1}
       OPTION_QUOTE_TTL_SECONDS: ${OPTION_QUOTE_TTL_SECONDS:-30}
+    secrets:
+      - paper_alpaca_api_key
+      - paper_alpaca_api_secret
+      - paper_account_id
+      - execution_database_url
+    depends_on:
+      postgres:
+        condition: service_healthy
     networks:
       - broker-egress
+      - database-internal
     restart: unless-stopped
 
   api:
@@ -68,7 +134,34 @@ services:
     restart: unless-stopped
 
 networks:
+  agent-internal:
+    driver: bridge
+    internal: true
+  agent-egress:
+    driver: bridge
   broker-egress:
     driver: bridge
+  database-internal:
+    driver: bridge
+    internal: true
   public:
     driver: bridge
+
+volumes:
+  postgres_data:
+
+secrets:
+  agent_model_api_key:
+    file: "${REGIMESWITCH_SECRETS_DIR:-/Users/lipengyuan/.config/great_secrets}/llm/model_api_key.yaml"
+  paper_alpaca_api_key:
+    file: "${REGIMESWITCH_SECRETS_DIR:-/Users/lipengyuan/.config/great_secrets}/alpaca/alpaca_api_key.yaml"
+  paper_alpaca_api_secret:
+    file: "${REGIMESWITCH_SECRETS_DIR:-/Users/lipengyuan/.config/great_secrets}/alpaca/alpaca_api_key.yaml"
+  paper_account_id:
+    file: "${REGIMESWITCH_SECRETS_DIR:-/Users/lipengyuan/.config/great_secrets}/alpaca/alpaca_api_key.yaml"
+  execution_database_url:
+    file: "${REGIMESWITCH_SECRETS_DIR:-/Users/lipengyuan/.config/great_secrets}/execution_database_url"
+  postgres_bootstrap_password:
+    file: "${REGIMESWITCH_SECRETS_DIR:-/Users/lipengyuan/.config/great_secrets}/postgres/bootstrap_password"
+  postgres_execution_password:
+    file: "${REGIMESWITCH_SECRETS_DIR:-/Users/lipengyuan/.config/great_secrets}/postgres/execution_password"

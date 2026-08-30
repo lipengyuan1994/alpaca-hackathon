@@ -16,6 +16,7 @@ from packages.contracts.models import (
     PositionSnapshotV1,
     ReduceOnlyOrderPlanV1,
 )
+from packages.runtime_secrets import SecretConfigurationError, require_yaml_file_secret
 
 from .port import PaperEndpointError
 
@@ -55,13 +56,20 @@ class AlpacaPaperExecutionAdapter:
 
     @classmethod
     def from_environment(cls) -> "AlpacaPaperExecutionAdapter":
-        """Construct only from the private execution environment; no live-mode switch exists."""
-        key = os.environ.get("PAPER_ALPACA_API_KEY")
-        secret = os.environ.get("PAPER_ALPACA_API_SECRET")
-        account_id = os.environ.get("PAPER_ACCOUNT_ID")
+        """Construct only from file-mounted execution secrets; no live-mode switch exists."""
+        try:
+            key = require_yaml_file_secret(
+                "PAPER_ALPACA_API_KEY", key_path=("paper_alpaca_api_key",)
+            )
+            secret = require_yaml_file_secret(
+                "PAPER_ALPACA_API_SECRET", key_path=("paper_alpaca_api_secret",)
+            )
+            account_id = require_yaml_file_secret(
+                "PAPER_ACCOUNT_ID", key_path=("paper_account_id",)
+            )
+        except SecretConfigurationError as exc:
+            raise PaperEndpointError("PAPER_EXECUTION_CREDENTIALS_MISSING") from exc
         base_url = os.environ.get("PAPER_API_BASE_URL", "https://paper-api.alpaca.markets")
-        if not key or not secret or not account_id:
-            raise PaperEndpointError("PAPER_EXECUTION_CREDENTIALS_MISSING")
         if base_url != "https://paper-api.alpaca.markets":
             raise PaperEndpointError("PAPER_EXECUTION_ORIGIN_NOT_EXACT")
         try:
