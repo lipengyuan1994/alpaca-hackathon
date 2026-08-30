@@ -92,6 +92,16 @@ def test_file_secrets_are_scoped_to_one_credentialed_role() -> None:
     }
     assert services["execution"]["networks"] == ["broker-egress", "database-internal"]
     assert services["execution"]["depends_on"]["postgres"]["condition"] == "service_healthy"
+    for name in (
+        "RISK_POLICY_HASH",
+        "TEMPLATE_CATALOG_HASH",
+        "STRATEGY_REGISTRY_HASH",
+        "STRATEGY_CONFIG_HASH",
+        "STRATEGY_CONTENT_HASH",
+        "ACCOUNT_ALLOWLIST_HASH",
+        "RELEASE_HASH",
+    ):
+        assert services["execution"]["environment"][name] == f"${{{name}:-}}"
     for name, service in services.items():
         assert direct_credential_keys.isdisjoint(service.get("environment", {})), name
         assert "env_file" not in service, name
