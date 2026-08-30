@@ -97,13 +97,16 @@ services:
       PAPER_ACCOUNT_ID_FILE: /run/secrets/paper_account_id
       PAPER_API_BASE_URL: https://paper-api.alpaca.markets
       DATABASE_URL_FILE: /run/secrets/execution_database_url
-      RISK_POLICY_HASH: ${RISK_POLICY_HASH:?pin the approved risk policy hash}
-      TEMPLATE_CATALOG_HASH: ${TEMPLATE_CATALOG_HASH:?pin the template catalog hash}
-      STRATEGY_REGISTRY_HASH: ${STRATEGY_REGISTRY_HASH:?pin the strategy registry hash}
-      STRATEGY_CONFIG_HASH: ${STRATEGY_CONFIG_HASH:?pin the strategy config hash}
-      STRATEGY_CONTENT_HASH: ${STRATEGY_CONTENT_HASH:?pin the strategy content hash}
-      ACCOUNT_ALLOWLIST_HASH: ${ACCOUNT_ALLOWLIST_HASH:?pin the paper account allowlist hash}
-      RELEASE_HASH: ${RELEASE_HASH:?pin the immutable release hash}
+      # Blank defaults let non-execution roles start without release material.
+      # deployment_from_environment() rejects these empty values before the
+      # worker can construct a broker adapter or submit an order.
+      RISK_POLICY_HASH: ${RISK_POLICY_HASH:-}
+      TEMPLATE_CATALOG_HASH: ${TEMPLATE_CATALOG_HASH:-}
+      STRATEGY_REGISTRY_HASH: ${STRATEGY_REGISTRY_HASH:-}
+      STRATEGY_CONFIG_HASH: ${STRATEGY_CONFIG_HASH:-}
+      STRATEGY_CONTENT_HASH: ${STRATEGY_CONTENT_HASH:-}
+      ACCOUNT_ALLOWLIST_HASH: ${ACCOUNT_ALLOWLIST_HASH:-}
+      RELEASE_HASH: ${RELEASE_HASH:-}
       ENTRY_CUTOFF_AT: ${ENTRY_CUTOFF_AT:-2026-09-03T17:30:00Z}
       FLATTEN_AT: ${FLATTEN_AT:-2026-09-03T19:15:00Z}
       FLAT_DEADLINE_AT: ${FLAT_DEADLINE_AT:-2026-09-03T19:30:00Z}
