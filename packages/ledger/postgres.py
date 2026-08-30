@@ -20,6 +20,9 @@ from packages.contracts.models import (
     ManagedPositionV1,
     OrderRiskSnapshotV1,
     PositionSnapshotV1,
+    SignalDecisionAuditV1,
+    SignalDecisionStatusV1,
+    SignalPlacementStateV1,
 )
 from packages.domain import (
     apply_control_command as transition_control_state,
@@ -27,6 +30,7 @@ from packages.domain import (
 from packages.domain import (
     reconciliation_hash,
 )
+from packages.economic_context.store import upsert_signal_audit_row
 
 from .store import LedgerError
 
@@ -74,6 +78,9 @@ class PostgresRuntimeLedger:
         expected_prior_order_risk_version: int,
         expected_prior_control_state: ControlStateV1,
         event: EventEnvelopeV1,
+        signal_audit: SignalDecisionAuditV1 | None = None,
+        decision_job_id: str | None = None,
+        decision_worker_id: str | None = None,
     ) -> str:
         """CAS risk capacity and persist reservation/event/outbox in one transaction."""
         if not isinstance(bundle.command, ExecuteApprovedPlanV1):
@@ -84,6 +91,17 @@ class PostgresRuntimeLedger:
             raise LedgerError("POSTGRES_ORDER_RISK_ACCOUNT_MISMATCH")
         if bundle.positions.account_id != account_id or bundle.account.account_id != account_id:
             raise LedgerError("POSTGRES_CROSS_ACCOUNT_BUNDLE")
+        if (decision_job_id is None) != (decision_worker_id is None):
+            raise LedgerError("POSTGRES_DECISION_JOB_COMPLETION_BINDING_REQUIRED")
+        if signal_audit is not None:
+            if (
+                signal_audit.decision_status != SignalDecisionStatusV1.APPROVED_AND_ENQUEUED
+                or signal_audit.placement_state != SignalPlacementStateV1.ENQUEUED
+                or signal_audit.order_placed
+                or signal_audit.plan_hash != command.plan.plan_hash
+                or signal_audit.client_order_id != command.plan.client_order_id
+            ):
+                raise LedgerError("POSTGRES_SIGNAL_AUDIT_NOT_BOUND_TO_ENQUEUED_PLAN")
         with self._connection.transaction():
             self._connection.execute(
                 "SELECT pg_advisory_xact_lock(hashtextextended(%s, 0))",
@@ -208,6 +226,21 @@ class PostgresRuntimeLedger:
                 """,
                 (message_id, command.command_hash, self._json(bundle)),
             )
+            if signal_audit is not None:
+                upsert_signal_audit_row(self._connection, signal_audit)
+            if decision_job_id is not None and decision_worker_id is not None:
+                completed = self._connection.execute(
+                    """
+                    UPDATE decision_jobs_v1
+                    SET processed_at = now(), result_status = 'APPROVED_AND_ENQUEUED',
+                        lease_owner = NULL, lease_until = NULL, last_error = NULL
+                    WHERE job_id = %s AND lease_owner = %s AND processed_at IS NULL
+                    RETURNING job_id
+                    """,
+                    (decision_job_id, decision_worker_id),
+                ).fetchone()
+                if completed is None:
+                    raise LedgerError("POSTGRES_DECISION_JOB_CLAIM_MISMATCH")
         return message_id
 
     def enqueue_decision_job(self, job: DecisionJobV1) -> str:
@@ -664,6 +697,7 @@ class PostgresRuntimeLedger:
                     self._json(broker_event),
                 ),
             )
+            self._update_signal_audit_from_broker_event(broker_event)
             self._apply_terminal_projection(bundle, broker_event)
             self._connection.execute(
                 "INSERT INTO inbox_v1(message_id) VALUES (%s) ON CONFLICT DO NOTHING",
@@ -889,7 +923,79 @@ class PostgresRuntimeLedger:
                 self._json(broker_event),
             ),
         )
+        self._update_signal_audit_from_broker_event(broker_event)
         self._connection.commit()
+
+    @staticmethod
+    def _placement_state_for_broker_event(status: str) -> SignalPlacementStateV1:
+        mapping = {
+            "ACCEPTED": SignalPlacementStateV1.ACCEPTED,
+            "PARTIAL": SignalPlacementStateV1.PARTIAL,
+            "FILLED": SignalPlacementStateV1.FILLED,
+            "REJECTED": SignalPlacementStateV1.REJECTED,
+            "CANCELLED": SignalPlacementStateV1.CANCELLED,
+            "EXPIRED": SignalPlacementStateV1.EXPIRED,
+            "UNKNOWN": SignalPlacementStateV1.UNKNOWN,
+        }
+        return mapping.get(status, SignalPlacementStateV1.UNKNOWN)
+
+    def _update_signal_audit_from_broker_event(self, broker_event: BrokerEventV1) -> None:
+        """Project observed broker state without erasing the economic decision log."""
+
+        row = self._connection.execute(
+            """
+            SELECT payload FROM signal_decision_audit_v1
+            WHERE client_order_id = %s
+            FOR UPDATE
+            """,
+            (broker_event.client_order_id,),
+        ).fetchone()
+        if row is None:
+            return
+        try:
+            prior = SignalDecisionAuditV1.model_validate(row[0])
+        except Exception as exc:
+            raise LedgerError("POSTGRES_SIGNAL_AUDIT_PAYLOAD_INVALID") from exc
+        if prior.decision_status != SignalDecisionStatusV1.APPROVED_AND_ENQUEUED:
+            raise LedgerError("POSTGRES_SIGNAL_AUDIT_EXECUTION_STATE_INVALID")
+        placement_state = self._placement_state_for_broker_event(broker_event.status)
+        terminal_states = {
+            SignalPlacementStateV1.FILLED,
+            SignalPlacementStateV1.REJECTED,
+            SignalPlacementStateV1.CANCELLED,
+            SignalPlacementStateV1.EXPIRED,
+        }
+        # Broker events can be duplicated or arrive out of order.  Once this
+        # audit projection is terminal, retain the first terminal observation
+        # rather than letting a later stale event rewrite whether the order was
+        # actually placed.
+        if prior.placement_state in terminal_states:
+            return
+        supplemental = dict(prior.supplemental)
+        supplemental.update(
+            {
+                "last_broker_event_hash": broker_event.content_hash,
+                "last_broker_status": broker_event.status,
+                "last_broker_reason_code": broker_event.reason_code,
+            }
+        )
+        updated = SignalDecisionAuditV1.model_validate(
+            prior.model_dump(mode="json", exclude={"content_hash"})
+            | {
+                "recorded_at": broker_event.occurred_at,
+                "placement_state": placement_state,
+                "order_placed": placement_state
+                in {
+                    SignalPlacementStateV1.ACCEPTED,
+                    SignalPlacementStateV1.PARTIAL,
+                    SignalPlacementStateV1.FILLED,
+                    SignalPlacementStateV1.CANCELLED,
+                    SignalPlacementStateV1.EXPIRED,
+                },
+                "supplemental": supplemental,
+            }
+        )
+        upsert_signal_audit_row(self._connection, updated)
 
     def mark_submission_started(
         self,

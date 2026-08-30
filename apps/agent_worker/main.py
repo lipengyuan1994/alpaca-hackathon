@@ -9,12 +9,18 @@ import uvicorn
 from fastapi import FastAPI
 
 from packages.agent.advisory import AdvisoryModelClient
+from packages.agent.economic import EconomicAdvisoryModelClient
 from packages.contracts.agent_input import AgentRequestV1
-from packages.contracts.models import AgentThesisV1
+from packages.contracts.economic_input import EconomicAssessmentRequestV1
+from packages.contracts.models import AgentThesisV1, EconomicAssessmentV1
 
 
-def create_app(client: AdvisoryModelClient) -> FastAPI:
+def create_app(
+    client: AdvisoryModelClient,
+    economic_client: EconomicAdvisoryModelClient | None = None,
+) -> FastAPI:
     app = FastAPI(title="RegimeSwitch advisory worker", version="v1", docs_url=None, redoc_url=None)
+    economics = economic_client or EconomicAdvisoryModelClient(client)
 
     @app.get("/healthz")
     def healthz() -> dict[str, str]:
@@ -23,6 +29,10 @@ def create_app(client: AdvisoryModelClient) -> FastAPI:
     @app.post("/internal/v1/theses", response_model=AgentThesisV1)
     def create_thesis(request: AgentRequestV1) -> AgentThesisV1:
         return client.create_thesis(request)
+
+    @app.post("/internal/v1/economic-assessments", response_model=EconomicAssessmentV1)
+    def create_economic_assessment(request: EconomicAssessmentRequestV1) -> EconomicAssessmentV1:
+        return economics.create_assessment(request)
 
     return app
 

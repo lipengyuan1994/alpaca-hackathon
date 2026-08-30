@@ -35,6 +35,9 @@ secret directory and role boundaries described in
 secret values in `.env`, source, tests, documentation, or the public dashboard.
 For the durable local database that backs the paper-only execution ledger, use
 the [local Docker PostgreSQL runbook](docs/deployment/LOCAL_POSTGRES.md).
+The one-capture-per-day economic support/veto gate, its PostgreSQL audit table,
+and its external morning scheduler trigger are described in the
+[daily economic-context runbook](docs/deployment/ECONOMIC_CONTEXT.md).
 
 Start with the [documentation index](docs/index.md). The competition strategy,
 risk posture, ownership model, and delivery gates remain in

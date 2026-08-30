@@ -1,0 +1,193 @@
+{
+  "$defs": {
+    "SignalDecisionStatusV1": {
+      "enum": [
+        "NO_TRADE",
+        "RISK_REJECTED",
+        "APPROVED_AND_ENQUEUED"
+      ],
+      "title": "SignalDecisionStatusV1",
+      "type": "string"
+    },
+    "SignalPlacementStateV1": {
+      "enum": [
+        "NOT_PLACED",
+        "ENQUEUED",
+        "ACCEPTED",
+        "PARTIAL",
+        "FILLED",
+        "REJECTED",
+        "CANCELLED",
+        "EXPIRED",
+        "UNKNOWN"
+      ],
+      "title": "SignalPlacementStateV1",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Durable per-signal decision and actual-placement projection.",
+  "properties": {
+    "agent_thesis_hash": {
+      "anyOf": [
+        {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Agent Thesis Hash"
+    },
+    "client_order_id": {
+      "anyOf": [
+        {
+          "pattern": "^[a-z0-9-]{8,48}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Client Order Id"
+    },
+    "content_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Content Hash"
+    },
+    "decision_status": {
+      "$ref": "#/$defs/SignalDecisionStatusV1"
+    },
+    "economic_assessment_hash": {
+      "anyOf": [
+        {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Economic Assessment Hash"
+    },
+    "economic_context_hash": {
+      "anyOf": [
+        {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Economic Context Hash"
+    },
+    "order_placed": {
+      "title": "Order Placed",
+      "type": "boolean"
+    },
+    "placement_state": {
+      "$ref": "#/$defs/SignalPlacementStateV1"
+    },
+    "plan_hash": {
+      "anyOf": [
+        {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Plan Hash"
+    },
+    "reason_code": {
+      "pattern": "^[A-Z][A-Z0-9_]{2,95}$",
+      "title": "Reason Code",
+      "type": "string"
+    },
+    "record_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Record Id",
+      "type": "string"
+    },
+    "recorded_at": {
+      "format": "date-time",
+      "title": "Recorded At",
+      "type": "string"
+    },
+    "run_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Run Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "signal-decision-audit/v1",
+      "default": "signal-decision-audit/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "signal_payload": {
+      "additionalProperties": true,
+      "title": "Signal Payload",
+      "type": "object"
+    },
+    "strategy_evaluation_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Strategy Evaluation Hash",
+      "type": "string"
+    },
+    "supplemental": {
+      "additionalProperties": true,
+      "title": "Supplemental",
+      "type": "object"
+    },
+    "trade_intent_hash": {
+      "anyOf": [
+        {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Trade Intent Hash"
+    },
+    "trading_date": {
+      "format": "date",
+      "title": "Trading Date",
+      "type": "string"
+    }
+  },
+  "required": [
+    "record_id",
+    "run_id",
+    "trading_date",
+    "recorded_at",
+    "strategy_evaluation_hash",
+    "decision_status",
+    "placement_state",
+    "order_placed",
+    "reason_code"
+  ],
+  "title": "SignalDecisionAuditV1",
+  "type": "object"
+}

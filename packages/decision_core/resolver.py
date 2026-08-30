@@ -26,6 +26,8 @@ class NoTradeRecordedV1:
     reason_code: str
     strategy_evaluation_hash: str
     thesis_hash: str
+    economic_context_hash: str | None = None
+    economic_assessment_hash: str | None = None
 
 
 def _refusal(evaluation: StrategyEvaluationV1, thesis: AgentThesisV1, reason: str) -> NoTradeRecordedV1:

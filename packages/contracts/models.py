@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import re
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 from decimal import Decimal
 from enum import StrEnum
 from typing import Annotated, Any, Literal, Union
@@ -444,6 +444,188 @@ class AgentThesisV1(TimestampedModel):
         expected = hash_without(self, "content_hash")
         if self.content_hash is not None and self.content_hash != expected:
             raise ContractError("agent thesis content_hash mismatch")
+        object.__setattr__(self, "content_hash", expected)
+        return self
+
+
+class EconomicMarketObservationV1(TimestampedModel):
+    """One normalized, point-in-time market proxy from Alpaca market data.
+
+    Alpaca does not publish official macroeconomic releases.  ``MACRO`` is
+    therefore explicitly limited to configured liquid market proxies, while
+    ``MICRO`` identifies the strategy-underlying context.  Keeping the two
+    categories explicit prevents a model prompt from presenting proxy prices as
+    official economic statistics.
+    """
+
+    category: Literal["MICRO", "MACRO"]
+    symbol: str = Field(pattern=r"^[A-Z]{1,8}$")
+    session_date: date
+    close: Decimal = Field(gt=0)
+    previous_close: Decimal = Field(gt=0)
+    return_bps: Decimal
+    observed_at: datetime
+    available_at: datetime
+    source: Literal["ALPACA_MARKET_DATA"] = "ALPACA_MARKET_DATA"
+
+    @model_validator(mode="after")
+    def _availability_is_causal(self) -> "EconomicMarketObservationV1":
+        if not self.return_bps.is_finite():
+            raise ContractError("economic market return must be finite")
+        if self.available_at < self.observed_at:
+            raise ContractError("economic market observation is not yet available")
+        return self
+
+
+class EconomicNewsHeadlineV1(TimestampedModel):
+    """Bounded, untrusted Alpaca news metadata retained for advisory context.
+
+    The body is deliberately excluded.  Headlines are untrusted data and the
+    economic advisory prompt treats them as data rather than instructions.
+    """
+
+    news_id: str = Field(min_length=1, max_length=256)
+    headline: str = Field(min_length=1, max_length=1_000)
+    source: str = Field(min_length=1, max_length=128)
+    symbols: tuple[str, ...] = Field(default=(), max_length=32)
+    published_at: datetime
+    updated_at: datetime
+
+    @model_validator(mode="after")
+    def _news_is_ordered(self) -> "EconomicNewsHeadlineV1":
+        if self.updated_at < self.published_at:
+            raise ContractError("economic news update precedes publication")
+        if any(re.fullmatch(r"[A-Z]{1,8}", symbol) is None for symbol in self.symbols):
+            raise ContractError("economic news symbol is invalid")
+        return self
+
+
+class DailyEconomicContextV1(TimestampedModel):
+    """One immutable pre-market Alpaca-sourced economic proxy snapshot."""
+
+    schema_version: Literal["daily-economic-context/v1"] = "daily-economic-context/v1"
+    context_id: str = Field(min_length=1, max_length=128)
+    trading_date: date
+    collected_at: datetime
+    expires_at: datetime
+    collection_config_hash: str = Field(pattern=r"^sha256:[0-9a-f]{64}$")
+    source_request_hash: str = Field(pattern=r"^sha256:[0-9a-f]{64}$")
+    macro_observations: tuple[EconomicMarketObservationV1, ...] = Field(min_length=1, max_length=32)
+    micro_observations: tuple[EconomicMarketObservationV1, ...] = Field(min_length=1, max_length=64)
+    news_headlines: tuple[EconomicNewsHeadlineV1, ...] = Field(default=(), max_length=64)
+    quality_flags: tuple[str, ...] = Field(default=(), max_length=32)
+    content_hash: str | None = None
+
+    @model_validator(mode="after")
+    def _context_is_bounded_and_hashed(self) -> "DailyEconomicContextV1":
+        if self.expires_at <= self.collected_at:
+            raise ContractError("economic context expiry must follow collection")
+        if any(item.category != "MACRO" for item in self.macro_observations):
+            raise ContractError("economic macro context contains a non-macro observation")
+        if any(item.category != "MICRO" for item in self.micro_observations):
+            raise ContractError("economic micro context contains a non-micro observation")
+        observations = self.macro_observations + self.micro_observations
+        if any(item.available_at > self.collected_at for item in observations):
+            raise ContractError("economic context includes data unavailable at collection")
+        if any(item.updated_at > self.collected_at for item in self.news_headlines):
+            raise ContractError("economic context includes news unavailable at collection")
+        expected = hash_without(self, "content_hash")
+        if self.content_hash is not None and self.content_hash != expected:
+            raise ContractError("daily economic context content_hash mismatch")
+        object.__setattr__(self, "content_hash", expected)
+        return self
+
+
+class EconomicAssessmentV1(TimestampedModel):
+    """Advisory-only economic support/veto bound to one semantic trade intent."""
+
+    schema_version: Literal["economic-assessment/v1"] = "economic-assessment/v1"
+    assessment_id: str = Field(min_length=1, max_length=128)
+    economic_context_hash: str = Field(pattern=r"^sha256:[0-9a-f]{64}$")
+    strategy_evaluation_hash: str = Field(pattern=r"^sha256:[0-9a-f]{64}$")
+    trade_intent_hash: str = Field(pattern=r"^sha256:[0-9a-f]{64}$")
+    model_input_hash: str = Field(pattern=r"^sha256:[0-9a-f]{64}$")
+    model_version: str = Field(min_length=1)
+    prompt_version: str = Field(min_length=1)
+    raw_output_hash: str = Field(pattern=r"^sha256:[0-9a-f]{64}$")
+    recommendation: Literal["ALLOW_UNCHANGED", "VETO"]
+    diagnostic_confidence: Decimal = Field(ge=0, le=1)
+    expires_at: datetime
+    reason_code: str = Field(pattern=r"^[A-Z][A-Z0-9_]{2,95}$")
+    narrative: AgentNarrativeV1
+    content_hash: str | None = None
+
+    @model_validator(mode="after")
+    def _hash_matches(self) -> "EconomicAssessmentV1":
+        expected = hash_without(self, "content_hash")
+        if self.content_hash is not None and self.content_hash != expected:
+            raise ContractError("economic assessment content_hash mismatch")
+        object.__setattr__(self, "content_hash", expected)
+        return self
+
+
+class SignalDecisionStatusV1(StrEnum):
+    NO_TRADE = "NO_TRADE"
+    RISK_REJECTED = "RISK_REJECTED"
+    APPROVED_AND_ENQUEUED = "APPROVED_AND_ENQUEUED"
+
+
+class SignalPlacementStateV1(StrEnum):
+    NOT_PLACED = "NOT_PLACED"
+    ENQUEUED = "ENQUEUED"
+    ACCEPTED = "ACCEPTED"
+    PARTIAL = "PARTIAL"
+    FILLED = "FILLED"
+    REJECTED = "REJECTED"
+    CANCELLED = "CANCELLED"
+    EXPIRED = "EXPIRED"
+    UNKNOWN = "UNKNOWN"
+
+
+class SignalDecisionAuditV1(TimestampedModel):
+    """Durable per-signal decision and actual-placement projection."""
+
+    schema_version: Literal["signal-decision-audit/v1"] = "signal-decision-audit/v1"
+    record_id: str = Field(min_length=1, max_length=128)
+    run_id: str = Field(min_length=1, max_length=128)
+    trading_date: date
+    recorded_at: datetime
+    strategy_evaluation_hash: str = Field(pattern=r"^sha256:[0-9a-f]{64}$")
+    agent_thesis_hash: str | None = Field(default=None, pattern=r"^sha256:[0-9a-f]{64}$")
+    trade_intent_hash: str | None = Field(default=None, pattern=r"^sha256:[0-9a-f]{64}$")
+    economic_context_hash: str | None = Field(default=None, pattern=r"^sha256:[0-9a-f]{64}$")
+    economic_assessment_hash: str | None = Field(default=None, pattern=r"^sha256:[0-9a-f]{64}$")
+    decision_status: SignalDecisionStatusV1
+    placement_state: SignalPlacementStateV1
+    order_placed: bool
+    reason_code: str = Field(pattern=r"^[A-Z][A-Z0-9_]{2,95}$")
+    plan_hash: str | None = Field(default=None, pattern=r"^sha256:[0-9a-f]{64}$")
+    client_order_id: str | None = Field(default=None, pattern=r"^[a-z0-9-]{8,48}$")
+    signal_payload: dict[str, Any] = Field(default_factory=dict)
+    supplemental: dict[str, Any] = Field(default_factory=dict)
+    content_hash: str | None = None
+
+    @model_validator(mode="after")
+    def _placement_is_consistent_and_hashed(self) -> "SignalDecisionAuditV1":
+        states_with_a_broker_accepted_order = {
+            SignalPlacementStateV1.ACCEPTED,
+            SignalPlacementStateV1.PARTIAL,
+            SignalPlacementStateV1.FILLED,
+            SignalPlacementStateV1.CANCELLED,
+            SignalPlacementStateV1.EXPIRED,
+        }
+        if self.order_placed != (self.placement_state in states_with_a_broker_accepted_order):
+            raise ContractError("signal audit order_placed does not match placement state")
+        if self.decision_status == SignalDecisionStatusV1.NO_TRADE:
+            if self.placement_state != SignalPlacementStateV1.NOT_PLACED:
+                raise ContractError("no-trade signal audit cannot have an order placement state")
+            if self.plan_hash is not None or self.client_order_id is not None:
+                raise ContractError("no-trade signal audit cannot bind an order plan")
+        if self.placement_state != SignalPlacementStateV1.NOT_PLACED and self.client_order_id is None:
+            raise ContractError("placed or enqueued signal audit requires client order id")
+        expected = hash_without(self, "content_hash")
+        if self.content_hash is not None and self.content_hash != expected:
+            raise ContractError("signal decision audit content_hash mismatch")
         object.__setattr__(self, "content_hash", expected)
         return self
 

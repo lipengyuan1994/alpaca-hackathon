@@ -15,14 +15,21 @@ COPY packages/strategy_runner packages/strategy_runner
 COPY packages/decision_core packages/decision_core
 COPY packages/agent/__init__.py packages/agent/__init__.py
 COPY packages/agent/frozen.py packages/agent/frozen.py
+COPY packages/economic_context/__init__.py packages/economic_context/__init__.py
+COPY packages/economic_context/collector.py packages/economic_context/collector.py
+COPY packages/economic_context/config.py packages/economic_context/config.py
+COPY packages/economic_context/frozen.py packages/economic_context/frozen.py
+COPY packages/economic_context/store.py packages/economic_context/store.py
 COPY packages/market_data packages/market_data
 COPY packages/order_planner packages/order_planner
 COPY packages/risk_kernel packages/risk_kernel
 COPY packages/ledger packages/ledger
+COPY packages/runtime_secrets.py packages/runtime_secrets.py
 COPY strategy_plugins strategy_plugins
 COPY apps/common apps/common
 COPY apps/decision_worker apps/decision_worker
 RUN pip install --no-cache-dir \
     "pydantic==2.13.5" \
+    "psycopg[binary]==3.3.4" \
     "PyYAML==6.0.3"
 CMD ["python", "-m", "apps.decision_worker.main"]
