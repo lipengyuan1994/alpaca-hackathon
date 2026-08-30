@@ -1,0 +1,13 @@
+plugin_id: vwap_reversion
+plugin_version: 1.0.0
+entrypoint: strategy_plugins.vwap_reversion_v1.plugin:Plugin
+content_hash: sha256:3c43c22dc567d228c6336011a38217a53ae06b147070e3d52f4fb9dcb99e35ec
+lifecycle: research_only
+authority: central-registry-only
+owner: assigned_group_a_research_owner
+reviewer: independent_group_b_research_reviewer
+economic_hypothesis_id: NORMALIZED_VWAP_REVERSION
+position_policy_ref: REVERSION_VWAP_TOUCH_OR_60M_V1
+required_feature_schema: feature-vector/v1
+feature_contract_hash: sha256:bed7fb8429134110c1c6f9f2b1020d306b50910fd8d58b9900096995b2b566a3
+status: PROPOSAL_ONLY_NOT_REGISTERED

@@ -1,0 +1,24 @@
+schema_version: feature-contract/v1
+candidate_id: vwap_reversion__spy_qqq_smh_igv__o2_v1
+source: alpaca_iex_1min_completed_v1
+symbols: [SPY, QQQ, SMH, IGV]
+features:
+  deviation_z_same_time_v1:
+    type: decimal
+    unit: z_score
+    formula: (log(close_t/session_iex_vwap_t)-mean_prior_20_same_time_deviation)/max(sample_std_prior_20_same_time_deviation,0.000001)
+    source_feed: iex_split_adjusted
+    event_rule: completed_interval_end
+    availability_rule: interval_end_plus_1_second
+    maximum_age_seconds: 60
+    missing_behavior: NO_TRADE
+  momentum_z_60m_same_time_v1:
+    type: decimal
+    unit: z_score
+    formula: (log(close_t/close_t_minus_60m)-mean_prior_20_same_time_r60)/max(sample_std_prior_20_same_time_r60,0.000001)
+    source_feed: iex_split_adjusted
+    event_rule: completed_interval_end
+    availability_rule: interval_end_plus_1_second
+    maximum_age_seconds: 60
+    missing_behavior: NO_TRADE
+quality_flags: [FULL_XNYS_SESSION, IEX_COMPLETE, NO_DUPLICATE_BARS, OHLC_VALID]

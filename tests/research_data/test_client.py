@@ -39,3 +39,16 @@ def test_client_rejects_non_success_or_repeated_token() -> None:
     loop = ReadOnlyAlpacaClient(headers={}, transport=FakeTransport([_response({"next_page_token": "loop"}), _response({"next_page_token": "loop"})]))
     with pytest.raises(ResearchHttpError, match="ALPACA_PAGINATION_TOKEN_REPEATED"):
         loop.get_paginated(base_url="https://data.example", endpoint="/bars", params={})
+
+
+def test_client_retries_only_the_same_request_after_rate_limit(monkeypatch: pytest.MonkeyPatch) -> None:
+    waited: list[int] = []
+    monkeypatch.setattr("packages.research_data.client.time.sleep", waited.append)
+    throttled = HttpResponse(429, {"retry-after": "2"}, b"{}")
+    transport = FakeTransport([throttled, _response({"bars": {}})])
+    pages = ReadOnlyAlpacaClient(headers={}, transport=transport).get_paginated(
+        base_url="https://data.example", endpoint="/bars", params={"symbols": "SPY"}
+    )
+    assert len(pages) == 1
+    assert waited == [2]
+    assert transport.urls == [transport.urls[0], transport.urls[0]]

@@ -1,0 +1,10 @@
+frozen_before_outcomes: true
+central:
+  deviation_threshold: '1.50'
+  momentum_neutral_abs_max: '0.50'
+  time_exit_minutes: 60
+diagnostics:
+  deviation_threshold: ['1.25', '1.75']
+  time_exit_minutes: [45, 90]
+  remove_momentum_neutral_gate: falsification_only
+forbidden: [symbol_specific_thresholds, regime_overlays, news, iv, greeks, extra_feature_search]

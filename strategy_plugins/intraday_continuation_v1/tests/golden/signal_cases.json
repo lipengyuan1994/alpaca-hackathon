@@ -1,0 +1,1 @@
+[{"close":"101","expected":"BUY","momentum_z":"1.00","session_vwap":"100"},{"close":"99","expected":"SELL","momentum_z":"-1.00","session_vwap":"100"},{"close":"100","expected":"NO_TRADE","momentum_z":"1.00","session_vwap":"100"}]

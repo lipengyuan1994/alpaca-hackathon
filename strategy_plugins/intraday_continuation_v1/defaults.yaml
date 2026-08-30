@@ -1,0 +1,11 @@
+momentum_threshold: '1.00'
+same_time_lookback_sessions: 20
+std_floor: '0.000001'
+vwap_alignment_required: true
+decision_start_et: '10:30:01'
+decision_end_et: '14:30:01'
+decision_step_minutes: 30
+max_entries_per_symbol_session: 1
+time_exit_minutes: 60
+risk_tier: TINY
+intent_ttl_seconds: 300

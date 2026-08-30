@@ -1,0 +1,1 @@
+{"decision_end_et":"14:30:01","decision_start_et":"10:30:01","decision_step_minutes":30,"deviation_threshold":"1.50","intent_ttl_seconds":300,"max_entries_per_symbol_session":1,"momentum_neutral_abs_max":"0.50","risk_tier":"TINY","same_time_lookback_sessions":20,"std_floor":"0.000001","time_exit_minutes":60}

@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from dataclasses import dataclass
@@ -38,6 +40,12 @@ class UrllibTransport:
                     headers={key.lower(): value for key, value in response.headers.items()},
                     body=response.read(),
                 )
+        except urllib.error.HTTPError as exc:  # pragma: no cover - provider-dependent
+            return HttpResponse(
+                status_code=int(exc.code),
+                headers={key.lower(): value for key, value in exc.headers.items()},
+                body=exc.read(),
+            )
         except Exception as exc:  # pragma: no cover - depends on provider/network
             raise ResearchHttpError(f"READ_ONLY_ALPACA_REQUEST_FAILED: {exc}") from exc
 
@@ -59,6 +67,23 @@ class ReadOnlyAlpacaClient:
 
     headers: Mapping[str, str]
     transport: HttpTransport = UrllibTransport()
+    max_rate_limit_retries: int = 3
+
+    def _get(self, url: str) -> HttpResponse:
+        """Retry only the exact same GET after an explicit provider throttle."""
+        for attempt in range(self.max_rate_limit_retries + 1):
+            response = self.transport.get(url, headers=self.headers)
+            if response.status_code != 429:
+                return response
+            if attempt == self.max_rate_limit_retries:
+                return response
+            retry_after = response.headers.get("retry-after", "60")
+            try:
+                seconds = min(60, max(1, int(float(retry_after))))
+            except ValueError:
+                seconds = 60
+            time.sleep(seconds)
+        raise AssertionError("unreachable")
 
     def get_paginated(
         self,
@@ -79,7 +104,7 @@ class ReadOnlyAlpacaClient:
                 request_params["page_token"] = page_token
             query = urllib.parse.urlencode(request_params)
             url = f"{base_url.rstrip('/')}{endpoint}?{query}" if query else f"{base_url.rstrip('/')}{endpoint}"
-            response = self.transport.get(url, headers=self.headers)
+            response = self._get(url)
             if response.status_code != 200:
                 raise ResearchHttpError(f"ALPACA_HTTP_{response.status_code}")
             decoded = self._decode_object(response.body)
@@ -111,7 +136,7 @@ class ReadOnlyAlpacaClient:
         request_params = {str(key): str(value) for key, value in params.items()}
         query = urllib.parse.urlencode(request_params)
         url = f"{base_url.rstrip('/')}{endpoint}?{query}" if query else f"{base_url.rstrip('/')}{endpoint}"
-        response = self.transport.get(url, headers=self.headers)
+        response = self._get(url)
         if response.status_code != 200:
             raise ResearchHttpError(f"ALPACA_HTTP_{response.status_code}")
         payload = self._decode_response(response.body)

@@ -1,0 +1,12 @@
+hypothesis_id: NORMALIZED_VWAP_REVERSION
+candidate_id: vwap_reversion__spy_qqq_smh_igv__o2_v1
+frozen_before_outcomes: true
+economic_statement: >-
+  A same-time normalized completed deviation from session IEX VWAP mean-reverts
+  over the next 15 to 60 minutes only when 60-minute momentum is near neutral.
+expression: O2_DEBIT_VERTICAL_ONLY
+bullish_template: CALL_DEBIT_SPREAD_V1
+bearish_template: PUT_DEBIT_SPREAD_V1
+eligible_symbols: [SPY, QQQ, SMH, IGV]
+pair_cell_symbols: [SPY, QQQ]
+terminal_state: RESEARCH_NOT_RUN
