@@ -1,0 +1,12 @@
+collection_id: alpaca_research_shared_v1
+symbols: [SPY, QQQ, TQQQ, SMH, SOXL, IGV]
+stock_history:
+  start: '2017-01-03T14:30:00Z'
+  end: '2026-08-27T20:00:00Z'
+option_history:
+  start: '2024-02-01T14:30:00Z'
+  end: '2026-08-27T20:00:00Z'
+stock_timeframe: 1Min
+stock_feed: iex
+page_limit: 10000
+availability_delay_seconds: 1
