@@ -526,12 +526,19 @@ class AlpacaPaperWheelBroker:
         symbols = sorted(str(item.symbol) for item in tradable)
         if not symbols:
             return ()
-        try:
-            quotes = self._option_data.get_option_latest_quote(
-                OptionLatestQuoteRequest(symbol_or_symbols=symbols, feed=OptionsFeed.INDICATIVE)
-            )
-        except Exception as exc:
-            raise PaperBrokerError("PAPER_OPTION_QUOTES_UNAVAILABLE") from exc
+        quotes: dict[str, Any] = {}
+        for start in range(0, len(symbols), 100):
+            batch = symbols[start : start + 100]
+            try:
+                response = self._option_data.get_option_latest_quote(
+                    OptionLatestQuoteRequest(
+                        symbol_or_symbols=batch,
+                        feed=OptionsFeed.INDICATIVE,
+                    )
+                )
+            except Exception as exc:
+                raise PaperBrokerError("PAPER_OPTION_QUOTES_UNAVAILABLE") from exc
+            quotes.update(response)
         results = []
         for item in tradable:
             option_symbol = str(item.symbol)
