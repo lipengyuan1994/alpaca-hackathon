@@ -72,6 +72,7 @@ class WheelRiskConfig(StrictModel):
     minimum_unreserved_cash_usd: Decimal = Field(default=Decimal("25000"), ge=0)
     maximum_daily_drawdown_fraction: Decimal = Field(default=Decimal("0.02"), gt=0, le=Decimal("0.10"))
     maximum_quote_age_seconds: int = Field(default=15, ge=1, le=60)
+    maximum_clock_skew_seconds: int = Field(default=2, ge=0, le=5)
     maximum_relative_spread: Decimal = Field(default=Decimal("0.25"), gt=0, le=Decimal("1"))
     minimum_option_bid: Decimal = Field(default=Decimal("0.05"), gt=0)
     allowed_symbols: tuple[str, ...] = ("QQQ",)

@@ -27,6 +27,8 @@ cd "${project_root}"
 "${native_python}" -m packages.paper_wheel.cli verify-arm --config "${config_path}"
 
 /bin/mkdir -p "${launch_agents_dir}" "${runtime_root}"
+/usr/bin/touch "${runtime_root}/launchd.stdout.log" "${runtime_root}/launchd.stderr.log"
+/bin/chmod 600 "${runtime_root}/launchd.stdout.log" "${runtime_root}/launchd.stderr.log"
 /usr/bin/sed "s|__PROJECT_ROOT__|${project_root}|g" "${template}" > "${rendered_plist}"
 /usr/bin/plutil -lint "${rendered_plist}"
 /bin/mv "${rendered_plist}" "${target_plist}"

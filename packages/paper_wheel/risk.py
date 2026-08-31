@@ -15,12 +15,15 @@ def quote_violations(
     *,
     now: datetime,
     maximum_age_seconds: int,
+    maximum_future_skew_seconds: int,
     maximum_relative_spread: Decimal,
     minimum_bid: Decimal,
 ) -> tuple[str, ...]:
     reasons: list[str] = []
     normalized_now = now.astimezone(UTC)
-    if quote.timestamp > normalized_now or normalized_now - quote.timestamp > timedelta(seconds=maximum_age_seconds):
+    if quote.timestamp > normalized_now + timedelta(seconds=maximum_future_skew_seconds) or (
+        normalized_now - quote.timestamp > timedelta(seconds=maximum_age_seconds)
+    ):
         reasons.append("WHEEL_QUOTE_STALE")
     if quote.bid < minimum_bid or quote.ask <= 0 or quote.ask < quote.bid:
         reasons.append("WHEEL_QUOTE_INVALID")
@@ -43,7 +46,10 @@ def account_violations(account: PaperAccount, clock: PaperClock, *, now: datetim
         if drawdown <= -config.risk.maximum_daily_drawdown_fraction:
             reasons.append("WHEEL_DAILY_DRAWDOWN_LIMIT")
     observed = clock.timestamp.astimezone(UTC)
-    if observed > now.astimezone(UTC) or now.astimezone(UTC) - observed > timedelta(seconds=config.risk.maximum_quote_age_seconds):
+    normalized_now = now.astimezone(UTC)
+    if observed > normalized_now + timedelta(seconds=config.risk.maximum_clock_skew_seconds) or (
+        normalized_now - observed > timedelta(seconds=config.risk.maximum_quote_age_seconds)
+    ):
         reasons.append("WHEEL_BROKER_CLOCK_STALE")
     return tuple(reasons)
 

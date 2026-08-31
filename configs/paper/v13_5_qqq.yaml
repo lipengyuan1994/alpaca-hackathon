@@ -36,6 +36,7 @@ risk:
   minimum_unreserved_cash_usd: 25000
   maximum_daily_drawdown_fraction: 0.02
   maximum_quote_age_seconds: 15
+  maximum_clock_skew_seconds: 2
   maximum_relative_spread: 0.25
   minimum_option_bid: 0.05
   allowed_symbols: [QQQ]

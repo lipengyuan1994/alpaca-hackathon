@@ -459,6 +459,7 @@ class PaperWheelRuntime:
                 quote,
                 now=now,
                 maximum_age_seconds=self.config.risk.maximum_quote_age_seconds,
+                maximum_future_skew_seconds=self.config.risk.maximum_clock_skew_seconds,
                 maximum_relative_spread=self.config.risk.maximum_relative_spread,
                 minimum_bid=Decimal("0"),
             )
@@ -539,6 +540,7 @@ class PaperWheelRuntime:
             underlying_quote,
             now=now,
             maximum_age_seconds=self.config.risk.maximum_quote_age_seconds,
+            maximum_future_skew_seconds=self.config.risk.maximum_clock_skew_seconds,
             maximum_relative_spread=self.config.risk.maximum_relative_spread,
             minimum_bid=Decimal("0.01"),
         )
@@ -563,6 +565,7 @@ class PaperWheelRuntime:
                 item.quote,
                 now=now,
                 maximum_age_seconds=self.config.risk.maximum_quote_age_seconds,
+                maximum_future_skew_seconds=self.config.risk.maximum_clock_skew_seconds,
                 maximum_relative_spread=self.config.risk.maximum_relative_spread,
                 minimum_bid=self.config.risk.minimum_option_bid,
             )

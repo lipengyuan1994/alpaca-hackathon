@@ -1,10 +1,12 @@
-from datetime import date
+from datetime import UTC, date, datetime, timedelta
 from decimal import Decimal
 from pathlib import Path
 
 import pytest
 
+from packages.paper_wheel.broker import PaperQuote
 from packages.paper_wheel.config import load_config
+from packages.paper_wheel.risk import quote_violations
 from packages.paper_wheel.strategy import should_take_profit, target_strike_fraction, trend_is_up
 
 
@@ -56,3 +58,30 @@ def test_config_rejects_live_origin_and_unbounded_activation(tmp_path: Path) -> 
     long.write_text(source.replace("end_date: 2026-09-04", "end_date: 2026-09-30"), encoding="utf-8")
     with pytest.raises(ValueError, match="WHEEL_ACTIVATION_WINDOW_TOO_LONG"):
         load_config(long)
+
+
+def test_quote_future_skew_tolerance_has_strict_boundary() -> None:
+    now = datetime(2026, 8, 31, 13, 30, tzinfo=UTC)
+    common = {
+        "now": now,
+        "maximum_age_seconds": 15,
+        "maximum_future_skew_seconds": 2,
+        "maximum_relative_spread": Decimal("0.25"),
+        "minimum_bid": Decimal("0.05"),
+    }
+
+    accepted = quote_violations(
+        PaperQuote(bid=Decimal("1.00"), ask=Decimal("1.10"), timestamp=now + timedelta(seconds=2)),
+        **common,
+    )
+    rejected = quote_violations(
+        PaperQuote(
+            bid=Decimal("1.00"),
+            ask=Decimal("1.10"),
+            timestamp=now + timedelta(seconds=2, microseconds=1),
+        ),
+        **common,
+    )
+
+    assert accepted == ()
+    assert rejected == ("WHEEL_QUOTE_STALE",)
