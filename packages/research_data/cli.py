@@ -17,6 +17,8 @@ from .group_a_option_requests import GroupARequestError, generate_requests
 from .group_a_parallel_v2_option_requests import generate_requests as generate_parallel_v2_requests
 from .group_a_sensitivity_option_requests import generate_requests as generate_sensitivity_requests
 from .group_a_wheel_v12_option_requests import generate_requests as generate_wheel_v12_requests
+from .group_a_wheel_v13_option_requests import generate_requests as generate_wheel_v13_requests
+from .group_a_wheel_v13_variants_backtest import run as run_wheel_v13
 
 _DEFAULT_SECRETS_DIRECTORY = Path("/Users/lipengyuan/.config/great_secrets")
 _SECRETS_DIRECTORY_ENV = "REGIMESWITCH_SECRETS_DIR"
@@ -187,6 +189,38 @@ def group_a_wheel_v12_option_requests_main() -> int:
         target = generate_wheel_v12_requests(data_manifest_path=args.data_manifest, output_path=args.output)
     except GroupARequestError as exc:
         raise SystemExit(str(exc)) from exc
+    print(target)
+    return 0
+
+
+def group_a_wheel_v13_option_requests_main() -> int:
+    """Generate the shared frozen request set for five QQQ V13 wheel variants."""
+    parser = argparse.ArgumentParser(description=group_a_wheel_v13_option_requests_main.__doc__)
+    parser.add_argument("--data-manifest", required=True, type=Path)
+    parser.add_argument("--output", required=True, type=Path)
+    args = parser.parse_args()
+    try:
+        target = generate_wheel_v13_requests(data_manifest_path=args.data_manifest, output_path=args.output)
+    except GroupARequestError as exc:
+        raise SystemExit(str(exc)) from exc
+    print(target)
+    return 0
+
+
+def group_a_wheel_v13_backtest_main() -> int:
+    """Replay all five V13 variants from one finalized option manifest."""
+    parser = argparse.ArgumentParser(description=group_a_wheel_v13_backtest_main.__doc__)
+    parser.add_argument("--option-manifest", required=True, type=Path)
+    parser.add_argument("--request-manifest", required=True, type=Path)
+    parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--base-data-manifest", type=Path)
+    args = parser.parse_args()
+    target = run_wheel_v13(
+        option_manifest_path=args.option_manifest,
+        request_path=args.request_manifest,
+        output=args.output,
+        base_data_manifest_path=args.base_data_manifest,
+    )
     print(target)
     return 0
 

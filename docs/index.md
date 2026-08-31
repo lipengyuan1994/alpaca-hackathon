@@ -16,6 +16,7 @@ This directory is the navigation hub for the Alpaca hackathon project. The root 
 | [`deployment/LOCAL_POSTGRES.md`](deployment/LOCAL_POSTGRES.md) | Local ARM64 Docker PostgreSQL, migration bootstrap, role isolation, and judge reproduction | Platform and release owner | Local runtime runbook |
 | [`deployment/ECONOMIC_CONTEXT.md`](deployment/ECONOMIC_CONTEXT.md) | One daily pre-market Alpaca proxy capture, economics support/veto gate, audit rows, and scheduler contract | Platform, agent, execution, release | Paper runtime runbook |
 | [`deployment/judge-reproduce.md`](deployment/judge-reproduce.md) | Credential-free judge replay, optional Gemini advisory setup, and paper-only safety boundaries | Judges, demo owner, release owner | Submission reproduction runbook |
+| [`deployment/PAPER_WHEEL_V13_5.md`](deployment/PAPER_WHEEL_V13_5.md) | QQQ V13.5 Alpaca paper-only preflight, arm, launchd schedule, reconciliation, halt, and recovery | Execution owner and paper operator | Bounded paper-canary runbook; never live authority |
 | [`plans/STRATEGY_RESEARCH_PLAN.md`](plans/STRATEGY_RESEARCH_PLAN.md) | Architecture-readiness gates, six delegated strategy families, common free-Alpaca research protocol, plug-in/parity deliverables, validation, metrics, and promotion gates | Six researchers, platform owner, quant lead, risk reviewer | Normative research and integration handoff protocol |
 | [`research/README.md`](research/README.md) | Routes the six symbols and six strategy families into three independently shareable, credential-free research packets | Research owners and reviewers | Delegation index; subordinate to the normative research protocol |
 | [`research/ALPACA_DATA_COLLECTOR.md`](research/ALPACA_DATA_COLLECTOR.md) | Read-only data-steward collection, immutable Alpaca artifacts, option request files, and attestation boundary | Data steward and research reviewers | Operational runbook; subordinate to the normative research protocol |
@@ -90,6 +91,6 @@ The skeleton plan schedules the following as implementation artifacts; they shou
 - JSON Schema snapshots and event catalog.
 - Architecture decision records for the modular monolith, credential boundary, outbox/inbox, plug-in API, and frozen replay.
 - Native ARM64 bootstrap runbook.
-- Paper arming, reconciliation-unknown, orphan-leg remediation, and final-flatten runbooks.
+- Orphan-leg remediation and final-flatten runbooks beyond the bounded V13.5 paper-wheel canary.
 - Security policy and dependency-boundary matrix.
 - Demo and submission runbook.

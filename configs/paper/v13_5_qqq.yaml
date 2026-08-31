@@ -1,0 +1,48 @@
+schema_version: paper-wheel-config/v1
+
+runtime:
+  mode: paper
+  paper_base_url: https://paper-api.alpaca.markets
+  submission_enabled: true
+  runtime_root: artifacts/paper_wheel/v13_5_qqq
+  client_order_prefix: rs-v135
+
+strategy:
+  strategy_id: v13.5
+  symbols: [QQQ]
+  minimum_dte: 7
+  maximum_dte: 14
+  trend_sessions: 50
+  uptrend_put_otm_fraction: 0.01
+  uptrend_call_otm_fraction: 0.03
+  downtrend_put_otm_fraction: 0.03
+  downtrend_call_otm_fraction: 0.01
+  take_profit_fraction: 0.15
+
+schedule:
+  timezone: America/New_York
+  entry_time: "10:00"
+  entry_window_minutes: 5
+  no_new_entries_after: "15:15"
+  first_eligible_session_per_iso_week: true
+  poll_seconds: 60
+  order_cancel_after_seconds: 180
+  cancel_confirmation_grace_seconds: 120
+  lifecycle_settlement_grace_minutes: 30
+
+risk:
+  max_contracts_per_symbol: 1
+  max_assignment_notional_usd: 60000
+  minimum_unreserved_cash_usd: 25000
+  maximum_daily_drawdown_fraction: 0.02
+  maximum_quote_age_seconds: 15
+  maximum_relative_spread: 0.25
+  minimum_option_bid: 0.05
+  allowed_symbols: [QQQ]
+  allow_unmanaged_positions: false
+  allow_unmanaged_open_orders: false
+
+activation:
+  start_date: 2026-08-31
+  end_date: 2026-09-04
+  require_operator_arm: true

@@ -356,3 +356,20 @@ The skeleton is acceptable only when all are true:
 - Public replay renders the complete decision tape without credentials.
 
 Implementation sequencing is defined in [`../plans/SKELETON_IMPLEMENTATION_PLAN.md`](../plans/SKELETON_IMPLEMENTATION_PLAN.md); the strategy boundary is defined in [`STRATEGY_API.md`](STRATEGY_API.md).
+
+## 14. Bounded V13.5 wheel paper canary
+
+The QQQ V13.5 wheel uses a private one-shot execution process while the general
+equity-assignment contracts are not yet part of `StrategyPluginV1`. Its pure
+strategy and risk functions remain separated from `AlpacaPaperWheelBroker`; only
+the private process loads the paper credential. It has no API route, public
+control surface, LLM input, live hostname, generic broker mode, or paper-to-live
+promotion switch.
+
+This canary adds hash-bound local state, a hash-chain journal, deterministic
+client IDs, reconcile-before-retry, explicit assignment/expiration activities,
+cash/share collateral gates, operator arming/halt, and a single-process lease.
+It is not a replacement for the durable Postgres outbox/inbox architecture and
+must not be generalized by weakening its single-account or paper-only checks.
+Its exact operational boundary is documented in
+[`../deployment/PAPER_WHEEL_V13_5.md`](../deployment/PAPER_WHEEL_V13_5.md).
