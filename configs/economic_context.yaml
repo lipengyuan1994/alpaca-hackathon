@@ -1,0 +1,13 @@
+schema_version: economic-context-config/v1
+# The window is deliberately after common 08:30 ET releases but before the
+# regular 09:30 ET session. A cache miss outside it is a terminal no-trade
+# condition rather than an intraday data refresh.
+collection_window_start_et: "08:45:00"
+collection_window_end_et: "09:25:00"
+lookback_calendar_days: 10
+news_lookback_hours: 24
+maximum_news_headlines: 16
+# These are liquid market proxies, not official macroeconomic indicators.
+macro_proxy_symbols: [SPY, QQQ, IWM, TLT]
+# The current registered strategy universe. Extend only with reviewed symbols.
+micro_context_symbols: [SPY, QQQ]

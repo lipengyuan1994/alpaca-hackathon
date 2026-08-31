@@ -11,6 +11,7 @@ COPY packages/runtime_secrets.py packages/runtime_secrets.py
 COPY packages/domain packages/domain
 COPY packages/risk_kernel packages/risk_kernel
 COPY packages/market_data packages/market_data
+COPY packages/economic_context packages/economic_context
 COPY packages/ledger packages/ledger
 COPY packages/position_manager packages/position_manager
 COPY packages/execution_core packages/execution_core

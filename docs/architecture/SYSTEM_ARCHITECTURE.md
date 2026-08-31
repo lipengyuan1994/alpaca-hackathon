@@ -10,9 +10,10 @@ Build a modular monolith from one repository and deploy it as isolated roles:
 
 - `web`: credential-free, read-only judge dashboard.
 - `api`: public read models and replay endpoints plus server-sent events or WebSocket updates; no mutation route, broker secret, or control authority.
-- `decision-worker`: deterministic strategy/order-planning/risk pipeline; no competition broker secret and no order tools.
+- `decision-worker`: deterministic strategy/order-planning/risk pipeline; it reads the frozen daily economic context, requests a constrained support/veto assessment, and has no competition broker secret or order tools.
 - `agent-worker`: internal-only advisory adapter; it receives a sanitized semantic context/evaluation pair plus one provider key, and may return only a frozen allow-unchanged/veto thesis.
-- `execution-worker`: sole Alpaca-credentialed role; collects broker-authoritative snapshots, submits only immutable approved plans, and reconciles orders/positions.
+- `economic-context-worker`: one-shot pre-market Alpaca Market Data/news collector. It persists one immutable market-proxy context per trading date and has no execution adapter or order path.
+- `execution-worker`: sole competition-paper Alpaca credential holder; collects broker-authoritative snapshots, submits only immutable approved plans, and reconciles orders/positions.
 - `operator-cli`: a private, one-shot administrative client used only by named operators to arm or halt; it is not deployed in the public API or judge UI.
 
 The monolith keeps the delivery surface small while package and process boundaries make future extraction possible. Scalability comes from stable contracts, idempotent consumers, immutable artifacts, and replaceable adapters—not from adding microservices during a seven-day build.
@@ -21,7 +22,7 @@ The monolith keeps the delivery surface small while package and process boundari
 
 1. There is no `LIVE` mode, live hostname, or live credential in the system.
 2. Strategy plug-ins never receive network, filesystem, model, database, account, or broker objects.
-3. An AI output is advisory. Competition V1 can only leave a deterministic proposal unchanged or veto it; confidence is diagnostic and cannot alter executable fields. AI cannot create exact legs, prices, quantities, templates, horizons, or risk limits.
+3. An AI output is advisory. Both the signal thesis and the economic-support assessment can only leave a deterministic proposal unchanged or veto it; confidence is diagnostic and cannot alter executable fields. AI cannot create exact legs, prices, quantities, templates, horizons, or risk limits.
 4. Authorization order is:
 
    ```text
@@ -34,7 +35,7 @@ The monolith keeps the delivery surface small while package and process boundari
 
 5. Changing any leg, quantity, price, time in force, account/snapshot version, or client order ID creates a new plan hash and requires new approval.
 6. An uncertain submission is reconciled by deterministic `client_order_id` before any retry.
-7. Only the execution worker holds the competition Alpaca key/secret. Tool filtering is defense in depth, not the credential boundary.
+7. Only the execution worker holds the competition Alpaca paper key/secret. The separate economic collector uses a dedicated data key and only Alpaca market-data/news clients; code and egress boundaries still treat every Alpaca key as potentially sensitive. Tool filtering is defense in depth, not the credential boundary.
 8. Every transition is append-only and traceable to frozen inputs. `NO_TRADE` is a valid, visible result.
 9. Stale/missing/crossed data, entitlement mismatch, unknown broker state, or reconciliation drift fails closed.
 10. Research, shadow, Alpaca account-reported paper, and conservative shadow evidence remain separate. No layer is called the official contest score without an organizer formula.
@@ -60,6 +61,10 @@ flowchart LR
         AGENT[agent-worker]
     end
 
+    subgraph Economic[Morning market-data zone]
+        EC[economic-context-worker]
+    end
+
     subgraph Data[Durable control plane]
         PG[(Postgres event store + outbox/inbox)]
         OBJ[(content-addressed object storage)]
@@ -70,17 +75,22 @@ flowchart LR
         MCP[private pinned Alpaca MCP adapter]
     end
 
-    ALPACA[Alpaca paper Trading + Basic market data]
+    ALPACA[Alpaca paper Trading]
+    ALPACA_DATA[Alpaca Market Data + News]
 
     ALPACA <--> MCP
     MCP <--> EW
+    ALPACA_DATA --> EC
+    EC -->|DailyEconomicContextV1 once per date| PG
     EW -->|sanitized market/account/position snapshots| PG
     PG --> DW
     DW --> PLUG
     DW -->|sanitized AgentRequestV1 only| AGENT
+    DW -->|frozen context + semantic signal only| AGENT
     PLUG -->|StrategyEvaluationV1| RESOLVE
     AGENT -->|AgentThesisV1| RESOLVE
-    RESOLVE -->|TradeIntentV1 or NO_TRADE| PLAN
+    RESOLVE -->|TradeIntentV1 or NO_TRADE| ECON_GATE[economic support/veto gate]
+    ECON_GATE -->|unchanged intent or NO_TRADE| PLAN
     PLAN --> RISK
     RISK -->|risk-approved exact plan through outbox| PG
     PG --> EW
@@ -98,22 +108,25 @@ Alpaca Trading API credentials also authenticate market data and are not proven 
 strategy_plugins → strategy_sdk → contracts
 agent ─────────────────────────→ contracts
 agent_worker → agent + contracts
+economic_context → contracts + runtime_secrets
 decision_core → strategy_sdk + agent + contracts
 strategy_runner → strategy_sdk + contracts
 order_planner → contracts + domain
 risk_kernel → contracts + domain
 operator_cli → contracts + domain + least-privilege control procedure
 
-decision_worker → decision_core + strategy_runner + order_planner + risk_kernel + ledger
+decision_worker → decision_core + strategy_runner + order_planner + risk_kernel + ledger + economic_context
+economic_context_worker → economic_context + contracts + runtime_secrets
 execution_worker → execution_core + risk_kernel + market_data + object_store + alpaca_execution_mcp + ledger
 
 execution_worker -X-> agent / strategy_sdk / strategy_plugins / order_planner
 strategy_plugins -X-> adapters / risk_kernel / execution / apps / databases
 decision_worker -X-> alpaca_execution_mcp / competition credentials
+economic_context_worker -X-> execution_core / alpaca_execution_mcp / competition credentials
 operator_cli -X-> outbox / execution adapter / broker credentials / arbitrary database writes
 ```
 
-Enforce forbidden edges with architecture/import tests and distinct dependency sets. The decision-worker container image must not contain a provider client, execution adapter, or competition secret; the agent-worker image must not contain planner, risk, or broker packages; the execution-worker image must not contain model or strategy packages. A strategy plug-in executes only through `strategy_runner`: a separate process with canonical JSON stdin/stdout, a cleared environment, no network namespace, a minimal read-only filesystem, no inherited file descriptors, and CPU, memory, output-size, and wall-time limits. V1 loads only repository-owned, registry-pinned plug-ins; failure to establish this isolation is a deployment blocker, not a warning.
+Enforce forbidden edges with architecture/import tests and distinct dependency sets. The decision-worker container image must not contain a provider client, execution adapter, or competition secret; the agent-worker image must not contain planner, risk, or broker packages; the economic-context image must not contain an execution adapter, planner, risk package, or provider client; and the execution-worker image must not contain model or strategy packages. A strategy plug-in executes only through `strategy_runner`: a separate process with canonical JSON stdin/stdout, a cleared environment, no network namespace, a minimal read-only filesystem, no inherited file descriptors, and CPU, memory, output-size, and wall-time limits. V1 loads only repository-owned, registry-pinned plug-ins; failure to establish this isolation is a deployment blocker, not a warning.
 
 ## 5. Target repository structure
 
@@ -122,6 +135,7 @@ Enforce forbidden edges with architecture/import tests and distinct dependency s
 ├── apps/
 │   ├── api/
 │   ├── decision_worker/
+│   ├── economic_context_worker/
 │   ├── execution_worker/
 │   ├── operator_cli/              # private one-shot arm/halt client
 │   └── web/
@@ -132,6 +146,7 @@ Enforce forbidden edges with architecture/import tests and distinct dependency s
 │   ├── strategy_runner/           # isolated canonical-JSON plug-in process
 │   ├── decision_core/             # strategy + advisory resolver
 │   ├── agent/                     # frozen AgentThesisV1 adapter
+│   ├── economic_context/           # morning market/news context + PostgreSQL cache
 │   ├── order_planner/             # exact contract/quantity/limit planning
 │   ├── risk_kernel/               # pure risk decisions and hard preflight
 │   ├── market_data/               # normalized snapshot contracts/adapters
@@ -182,6 +197,8 @@ Core immutable payloads:
 | `FeatureVectorV1` | Feature package | Strategy plug-in | Exact inputs, availability time, calculation version and hash |
 | `StrategyEvaluationV1` containing `StrategyDecisionV1` | Isolated registered plug-in | Deterministic resolver | Semantic `NO_TRADE`, template request, or logical position directive plus provenance; never an exact order |
 | `AgentThesisV1` | Agent adapter | Deterministic resolver | Frozen allow-unchanged/veto artifact bound to context, strategy evaluation, model input, and expiry; its structured market thesis/counter-thesis/explanation is display-only and confidence is diagnostic only |
+| `DailyEconomicContextV1` | One-shot economic-context worker | Economic advisory gate | Immutable pre-market Alpaca market/news proxy context; macro proxy labels never represent official macro releases |
+| `EconomicAssessmentV1` | Agent adapter | Economic advisory gate | Frozen allow-unchanged/veto assessment bound to one daily context, strategy evaluation, and semantic intent; it cannot change the intent |
 | `TradeIntentV1` | Resolver | Order planner | Allowed semantic direction/template/risk request and provenance |
 | `OrderPlanV1` | Order planner | Risk, execution | Exact legs, quantity, limit, TIF, deterministic ID and canonical hash |
 | `RiskInputV1` | Decision worker | Risk kernel/execution preflight | Canonical plan, market/account/position/order-risk hashes, risk policy, template catalog, strategy registry/config/content, mode, account allowlist, and release hash |
@@ -190,6 +207,7 @@ Core immutable payloads:
 | `ExecutionPreflightDecisionV1` | Execution worker | Ledger/broker adapter | Independent allow/reject decision bound to command hash and latest reconciled state immediately before submission |
 | `ArmCommandV1` / `HaltCommandV1` | Private operator CLI | Least-privilege control procedure | Single-use CAS transition bound to nonce, expiry, expected mode/version, account, release, config/policy hashes, and operator identity |
 | `BrokerEventV1` | Execution worker | Ledger/read model/reconciler | Accepted/rejected/unknown/partial/fill/cancel/expiry with leg data |
+| `SignalDecisionAuditV1` | Decision worker; execution-worker projection | Operator/read model | One row per generated signal with decision reason, economic hashes, plan binding, supplemental facts, and conservative actual-placement state |
 | `RunManifestV1` | Orchestrator | Evidence/replay | Git/config/schema/plugin/data/model hashes and result status |
 
 Every event is wrapped in `EventEnvelopeV1` with `event_id`, `event_type`, `schema_version`, `aggregate_id`, monotonic `aggregate_version`, `occurred_at`, `received_at`, `producer`, `run_id`, `correlation_id`, `causation_id`, and payload.
@@ -205,6 +223,9 @@ EvaluationRequested
 → StrategyDecisionProduced
 → AgentThesisFrozen
 → TradeIntentResolved | NoTradeRecorded
+→ DailyEconomicContextBound
+→ EconomicAssessmentFrozen
+→ EconomicSupportAllowed | NoTradeRecorded
 → OrderPlanCreated
 → RiskRejected | RiskApprovedAndCapacityReserved
 → ExecuteApprovedPlanEnqueued

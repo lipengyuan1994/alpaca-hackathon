@@ -1,0 +1,90 @@
+{
+  "additionalProperties": false,
+  "description": "One normalized, point-in-time market proxy from Alpaca market data.\n\nAlpaca does not publish official macroeconomic releases.  ``MACRO`` is\ntherefore explicitly limited to configured liquid market proxies, while\n``MICRO`` identifies the strategy-underlying context.  Keeping the two\ncategories explicit prevents a model prompt from presenting proxy prices as\nofficial economic statistics.",
+  "properties": {
+    "available_at": {
+      "format": "date-time",
+      "title": "Available At",
+      "type": "string"
+    },
+    "category": {
+      "enum": [
+        "MICRO",
+        "MACRO"
+      ],
+      "title": "Category",
+      "type": "string"
+    },
+    "close": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+          "type": "string"
+        }
+      ],
+      "title": "Close"
+    },
+    "observed_at": {
+      "format": "date-time",
+      "title": "Observed At",
+      "type": "string"
+    },
+    "previous_close": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+          "type": "string"
+        }
+      ],
+      "title": "Previous Close"
+    },
+    "return_bps": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+          "type": "string"
+        }
+      ],
+      "title": "Return Bps"
+    },
+    "session_date": {
+      "format": "date",
+      "title": "Session Date",
+      "type": "string"
+    },
+    "source": {
+      "const": "ALPACA_MARKET_DATA",
+      "default": "ALPACA_MARKET_DATA",
+      "title": "Source",
+      "type": "string"
+    },
+    "symbol": {
+      "pattern": "^[A-Z]{1,8}$",
+      "title": "Symbol",
+      "type": "string"
+    }
+  },
+  "required": [
+    "category",
+    "symbol",
+    "session_date",
+    "close",
+    "previous_close",
+    "return_bps",
+    "observed_at",
+    "available_at"
+  ],
+  "title": "EconomicMarketObservationV1",
+  "type": "object"
+}

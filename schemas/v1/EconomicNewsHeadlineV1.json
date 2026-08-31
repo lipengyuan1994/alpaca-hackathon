@@ -1,0 +1,52 @@
+{
+  "additionalProperties": false,
+  "description": "Bounded, untrusted Alpaca news metadata retained for advisory context.\n\nThe body is deliberately excluded.  Headlines are untrusted data and the\neconomic advisory prompt treats them as data rather than instructions.",
+  "properties": {
+    "headline": {
+      "maxLength": 1000,
+      "minLength": 1,
+      "title": "Headline",
+      "type": "string"
+    },
+    "news_id": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "News Id",
+      "type": "string"
+    },
+    "published_at": {
+      "format": "date-time",
+      "title": "Published At",
+      "type": "string"
+    },
+    "source": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Source",
+      "type": "string"
+    },
+    "symbols": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 32,
+      "title": "Symbols",
+      "type": "array"
+    },
+    "updated_at": {
+      "format": "date-time",
+      "title": "Updated At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "news_id",
+    "headline",
+    "source",
+    "published_at",
+    "updated_at"
+  ],
+  "title": "EconomicNewsHeadlineV1",
+  "type": "object"
+}

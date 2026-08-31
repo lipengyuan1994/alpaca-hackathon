@@ -38,6 +38,9 @@ the [local Docker PostgreSQL runbook](docs/deployment/LOCAL_POSTGRES.md).
 The bounded QQQ V13.5 paper-wheel canary has a separate
 [preflight, arming, scheduling, reconciliation, and halt runbook](docs/deployment/PAPER_WHEEL_V13_5.md).
 It is Alpaca-paper-only and does not create a live-trading path.
+The one-capture-per-day economic support/veto gate, its PostgreSQL audit table,
+and its external morning scheduler trigger are described in the
+[daily economic-context runbook](docs/deployment/ECONOMIC_CONTEXT.md).
 
 Start with the [documentation index](docs/index.md). The competition strategy,
 risk posture, ownership model, and delivery gates remain in

@@ -1,0 +1,22 @@
+# syntax=docker/dockerfile:1
+# This read-only role can call only Alpaca Market Data endpoints and the
+# private PostgreSQL cache; it contains no trading/execution or model package.
+FROM python:3.12-slim AS economic-context
+ARG TARGETARCH
+RUN test "$TARGETARCH" = "arm64" || test "$TARGETARCH" = "amd64"
+WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+COPY configs/economic_context.yaml configs/economic_context.yaml
+COPY packages/__init__.py packages/__init__.py
+COPY packages/contracts packages/contracts
+COPY packages/runtime_secrets.py packages/runtime_secrets.py
+COPY packages/economic_context packages/economic_context
+COPY apps/common apps/common
+COPY apps/economic_context_worker apps/economic_context_worker
+RUN pip install --no-cache-dir \
+    "alpaca-py==0.44.0" \
+    "psycopg[binary]==3.3.4" \
+    "pydantic==2.13.5" \
+    "PyYAML==6.0.3"
+CMD ["python", "-m", "apps.economic_context_worker.main"]
