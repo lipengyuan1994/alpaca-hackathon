@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.regimeswitch.v13-5-qqq-paper-wheel</string>
+  <key>WorkingDirectory</key>
+  <string>__PROJECT_ROOT__</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/zsh</string>
+    <string>__PROJECT_ROOT__/infra/launchd/run-v13-5-qqq-paper-wheel.zsh</string>
+  </array>
+  <key>StartInterval</key>
+  <integer>60</integer>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <false/>
+  <key>ProcessType</key>
+  <string>Background</string>
+  <key>LowPriorityIO</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>__PROJECT_ROOT__/artifacts/paper_wheel/v13_5_qqq/launchd.stdout.log</string>
+  <key>StandardErrorPath</key>
+  <string>__PROJECT_ROOT__/artifacts/paper_wheel/v13_5_qqq/launchd.stderr.log</string>
+</dict>
+</plist>

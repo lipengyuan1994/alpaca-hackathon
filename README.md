@@ -35,6 +35,9 @@ secret directory and role boundaries described in
 secret values in `.env`, source, tests, documentation, or the public dashboard.
 For the durable local database that backs the paper-only execution ledger, use
 the [local Docker PostgreSQL runbook](docs/deployment/LOCAL_POSTGRES.md).
+The bounded QQQ V13.5 paper-wheel canary has a separate
+[preflight, arming, scheduling, reconciliation, and halt runbook](docs/deployment/PAPER_WHEEL_V13_5.md).
+It is Alpaca-paper-only and does not create a live-trading path.
 
 Start with the [documentation index](docs/index.md). The competition strategy,
 risk posture, ownership model, and delivery gates remain in

@@ -421,6 +421,82 @@ The regenerated [$100,000-base buffered V12 replay](../../research/candidates/gr
 
 The graph is generated directly from the daily equity-accounting artifact. These are in-sample historical-bar-proxy research results, not promotion evidence, live-performance claims, or authority to transact stock or options.
 
+### 14.3 Maximum-collateral and full-capital wheel research (V13; non-integrated)
+
+V13 keeps V12's frozen 7–14 DTE, approximately 2%-OTM contract choices and strictly-greater-than-15% premium take-profit rule. It changes only deterministic sizing and accounting. At each cash-secured-put entry, the strict variant sells the maximum whole number of contracts for which `strike × 100 × quantity` is fully funded. At each covered-call entry, quantity is at most `shares // 100`. There is no borrowing, naked option, cross-symbol capital transfer, or contract reranking. Unlike the V12 event-only summary, V13 marks shares and the open short-option liability every market day before computing return, Sharpe, Sortino, and drawdown.
+
+Whole option contracts cannot continuously deploy a $100,000 account because each SPY/QQQ contract consumes a 100-share capital block. The optional **full-capital residual-share sleeve** therefore buys only the whole underlying shares affordable after reserving all put-assignment collateral; during covered-call cycles it leaves the shares securing every short call untouched. The sleeve is liquidated when that option cycle resolves. This raises observed mean capital utilization above 99.6% without leverage, but it adds unhedged long-underlying delta and is not a risk-free improvement.
+
+| Variant / symbol | Ending equity | Return | CAGR | Sharpe | Sortino | Maximum drawdown | Mean capital utilization |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Strict V13 / QQQ | $112,455.30 | +12.46% | 4.85% | 0.58 | 0.87 | −11.49% | 68.03% |
+| Strict V13 / SPY | $109,763.90 | +9.76% | 3.69% | 0.66 | 1.05 | −7.87% | 61.74% |
+| Full-capital V13 / QQQ | $106,449.47 | +6.45% | 2.55% | 0.30 | 0.43 | −13.24% | 99.73% |
+| Full-capital V13 / SPY | $111,209.84 | +11.21% | 4.22% | 0.64 | 0.95 | −9.54% | 99.67% |
+
+The evidence does **not** justify choosing the full-capital variant merely because it deploys more cash. Relative to strict V13, it improves SPY absolute return but reduces SPY risk-adjusted performance; for QQQ it reduces both absolute and risk-adjusted performance. Strict V13 remains the baseline sizing enhancement, while the residual-share variant is retained as a falsification and utilization diagnostic. Neither result is a promotion decision.
+
+The strict [V13 metrics](../../research/candidates/group_a_wheel_v13_max_collateral_mtm_with_plot_20260830/metrics.json) and full-capital [V13 metrics](../../research/candidates/group_a_wheel_v13_full_capital_all_phases_mtm_with_plot_20260830/metrics.json) bind to the same immutable V12 option-observation and request-manifest hashes. The full-capital daily portfolio-equity graph starts from exactly $100,000:
+
+![V13 SPY and QQQ full-capital portfolio equity from a $100,000 starting balance](../../research/candidates/group_a_wheel_v13_full_capital_all_phases_mtm_with_plot_20260830/plots/portfolio_equity.svg)
+
+Portable offline reproduction uses the native project environment and a new empty output directory:
+
+```text
+uv run --no-sync python -m packages.research_data.group_a_wheel_v13_backtest \
+  --option-manifest data/alpaca/collections/alpaca_research_shared_v1_20260829/option_observations/group_a_wheel_v12/collection_read_only_retry1/option_observation_manifest.json \
+  --request-manifest data/alpaca/collections/alpaca_research_shared_v1_20260829/option_observations/group_a_wheel_v12/group_a_wheel_v12_option_requests.json \
+  --output /absolute/path/to/new-empty-v13-output \
+  --residual-share-overlay
+```
+
+V13 remains research-only stock-collateralized evidence. It has no broker access or order authority and cannot enter the current option-only `StrategyPluginV1` lifecycle. The principal unresolved controls are assignment/call-away reconciliation, reservation atomicity, equity-option saga rollback, concentration limits, volatility/regime filters, tail hedging, dividends, taxes, cash yield, and executable historical quote/fill evidence.
+
+### 14.4 QQQ V13.1–V13.5 optimization suite (requested V13 comparison)
+
+This suite is distinct from the preceding maximum-collateral sizing study. It is QQQ-only and freezes five signal/management variants before reading their new option outcomes. The design references the official Cboe [NASDAQ-100 BuyWrite methodology](https://cdn.cboe.com/api/global/us_indices/governance/Cboe_NASDAQ_BuyWrite_Indices_Methodology.pdf), [one-week PutWrite methodology](https://cdn.cboe.com/api/global/us_indices/governance/Cboe_One-Week_PutWrite_Indices_Methodology.pdf), and [ATM/30-delta/2%-OTM BuyWrite methodology](https://cdn.cboe.com/api/global/us_indices/governance/BXMD_Methodology.pdf). These sources establish transparent covered-call, weekly cash-collateralized-put, and strike-distance benchmarks; they do not validate the QQQ outcomes or the historical-bar execution proxy.
+
+The shared frozen [request manifest](../../data/alpaca/collections/alpaca_research_shared_v1_20260829/option_observations/group_a_wheel_v13/group_a_wheel_v13_option_requests.json), hash `sha256:fd9c92f7bf8ac63898a1e97251af88ff7a9ba02cf224b0d67f0f2882838d4b6c`, contains 135 weekly QQQ observations. Every observation preselects 1%, 2%, and 3%-OTM calls and puts, so all five variants consume the same timestamps and no contract is selected after viewing its option outcome:
+
+| Variant | Put / call rule | Short-option take-profit | Purpose |
+|---|---|---:|---|
+| V13.1 | fixed 2% / 2% OTM | strictly greater than 15% of entry credit | exact QQQ/V12 control |
+| V13.2 | fixed 1% / 1% OTM | strictly greater than 15% | higher-premium, closer-strike test |
+| V13.3 | fixed 3% / 3% OTM | strictly greater than 15% | farther-strike assignment/upside test |
+| V13.4 | fixed 2% / 2% OTM | strictly greater than 25% | less-aggressive early-close test |
+| V13.5 | prior 50-session uptrend: 1% put / 3% call; otherwise 3% put / 1% call | strictly greater than 15% | lagged trend-adaptive strike asymmetry |
+
+All 270 staged bar/trade artifacts passed hash verification before the option manifest was finalized. The common [metrics report](../../research/candidates/group_a_wheel_v13_package_20260830/metrics.json), [predeclared ranking](../../research/candidates/group_a_wheel_v13_package_20260830/comparison.json), [native run manifest](../../research/candidates/group_a_wheel_v13_package_20260830/run_manifest.json), and [cumulative-P&L graph](../../research/candidates/group_a_wheel_v13_package_20260830/plots/cumulative_pnl.svg) report:
+
+| Rank by frozen net-return rule | Variant | Net P&L / return | Sharpe / Sortino | Maximum drawdown | Completed cycles |
+|---:|---|---:|---:|---:|---:|
+| 1 | V13.5 | +$30,285.80 / +30.29% | 1.14 / 2.44 | −7.15% | 64 |
+| 2 | V13.3 | +$13,821.20 / +13.82% | 0.56 / 0.93 | −10.83% | 61 |
+| 3 | V13.2 | +$12,723.50 / +12.72% | 1.64 / 3.08 | −1.67% | 90 |
+| 4 | V13.1 | +$11,491.40 / +11.49% | 0.60 / 0.93 | −8.64% | 75 |
+| 5 | V13.4 | −$502.50 / −0.50% | −0.01 / −0.01 | −6.76% | 76 |
+
+| Variant | Option-session exposure | End-of-day stock exposure | Contract-side turnover | Net P&L at $0.50 / $1.00 per side |
+|---|---:|---:|---:|---:|
+| V13.1 | 26.61% | 55.81% | 150 | $11,431.40 / $11,356.40 |
+| V13.2 | 31.83% | 15.99% | 180 | $12,651.50 / $12,561.50 |
+| V13.3 | 22.89% | 38.79% | 122 | $13,772.40 / $13,711.40 |
+| V13.4 | 32.74% | 20.48% | 152 | −$563.30 / −$639.30 |
+| V13.5 | 22.52% | 70.50% | 128 | $30,234.60 / $30,170.60 |
+
+Option exposure is the fraction of regular sessions included in a completed short-option entry/exit interval; stock exposure is the fraction ending with 100 QQQ shares after deterministic assignment accounting. Fee stress changes the explicit per-contract-side fee from the $0.10 base while retaining the conservative fill buffer.
+
+V13.5 is the winner only under the outcome-independent primary ranking rule (`net_return`). V13.2 is the risk-adjusted leader in this sample, with the highest Sharpe/Sortino and lowest drawdown. V13.4 falsifies the proposed 25% target enhancement. The independent [reproduction directory](../../research/candidates/group_a_wheel_v13_package_reproduced_20260830/) has byte-identical metrics (`5144903d...`), comparison (`98f01049...`), run manifest (`dab83747...`), trades (`4be2edd7...`), daily returns (`fd655ecc...`), and graph (`ffd9532f...`) file hashes. The canonical report and comparison envelope hashes are `sha256:04f08797...` and `sha256:dbfbe198...`. The comparison is exploratory and in-sample: it is evidence for later out-of-sample validation, not permission to promote V13.5 or activate an equity-option lifecycle.
+
+Portable offline reproduction of the five-variant suite uses a new empty output directory:
+
+```text
+uv run --no-sync python -m packages.research_data.group_a_wheel_v13_variants_backtest \
+  --option-manifest data/alpaca/collections/alpaca_research_shared_v1_20260829/option_observations/group_a_wheel_v13/collection_read_only/option_observation_manifest.json \
+  --request-manifest data/alpaca/collections/alpaca_research_shared_v1_20260829/option_observations/group_a_wheel_v13/group_a_wheel_v13_option_requests.json \
+  --output /absolute/path/to/new-empty-v13-variants-output
+```
+
 ## 15. Definition of done
 
 Group A is done when both independently versioned packages are complete and reproducible, every prescribed pair-cell central/diagnostic result is published, SPY/QQQ comparisons are honest and synchronized, feasibility exclusions and open integration gates remain visible, and deterministic reproduction evidence is recorded. Each card has exactly one truthful terminal state: `REJECTED`, `RESEARCH_COMPLETE`, `INTEGRATION_READY`, `PAPER_SHADOW`, `PAPER_DEMO_ONLY`, or `PAPER_CANDIDATE`. The packet owner may not declare `PAPER_ENABLED` or produce the central full-universe replay.
