@@ -1,0 +1,12 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gap_continuation_v1"
+version = "1.0.0"
+description = "Group B deterministic standardized-gap-continuation research signal package."
+requires-python = ">=3.12,<3.13"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/gap_continuation_v1"]
