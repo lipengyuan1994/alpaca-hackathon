@@ -16,9 +16,9 @@ Assigned strategies: benchmark-residual relative strength and intraday compressi
 
 Group C tests technology-cluster signals that require explicit benchmark and dependence controls. `TQQQ` is leveraged QQQ beta with daily-reset/path risk; `IGV` is concentrated software exposure. They share QQQ as a required control, but they are not independent replications and must not be pooled as two confirmations of the same technology event.
 
-The group owns TQQQ/IGV data-quality interpretation, both feature specifications and pure signal functions, plug-in packages, group cells, artifacts, falsification, and review. It does not own Alpaca ingestion, benchmark publication, the central registry, portfolio arbitration, option contract selection, sizing, risk approval, order submission, promotion, or judged-account operation.
+The group owns TQQQ/IGV data-quality interpretation, both feature specifications and pure signal functions, plug-in packages, group cells, artifacts, falsification, and review. It may collect research data only through the repository's GET-only helper; it does not own benchmark publication, the central registry, portfolio arbitration, option contract selection, sizing, risk approval, order submission, promotion, or judged-account operation.
 
-Researchers work from a source snapshot plus immutable data artifacts. They need no GitHub write credential, Alpaca credential, account ID, broker access, MCP trading tool, deployment secret, or order permission. Return patches/source archives and content-addressed evidence to the platform owner.
+Researchers work from a source snapshot plus immutable data artifacts. They need no GitHub write credential, account ID, broker access, MCP trading tool, deployment secret, or order permission. They may use a separate approved development credential through the GET-only collector described in [the individual historical-data guide](ALPACA_HISTORICAL_DATA_GUIDE.md). Return patches/source archives and content-addressed evidence to the platform owner.
 
 A profitable report cannot self-promote. `integration/registry_candidate.yaml` is a non-authorizing proposal with lifecycle `research_only`; only central owners may later change registry authority after every research, integration, safety, and release gate passes.
 
@@ -31,7 +31,7 @@ The signal plug-in never calls an LLM. Any advisory AI may leave a frozen determ
 
 The Group C packet owner authors both families but freezes both specifications before viewing outcome P&L for either family. The Group A packet owner independently reviews both returned packages and signs each `pair_cell_review.json`. The reviewer may report a defect but cannot tune or directly repair a reviewed economic rule after seeing P&L; the Group C owner versions any outcome-changing correction and repeats affected runs. If the designated reviewer is unavailable, obtain another non-author reviewer outside Group C.
 
-The packet owner may not modify the authoritative registry, install broker credentials, run private market-data downloads, enable paper mode, review their own packages, or approve their own promotion. Stop before work if the checkout or `uv.lock` differs from the pinned values above.
+The packet owner may not modify the authoritative registry, use competition/live broker credentials, enable paper mode, review their own packages, or approve their own promotion. They may collect their own historical market data only through the repository's GET-only helper and a separate development credential. Stop before work if the checkout or `uv.lock` differs from the pinned values above.
 
 ## 3. Exact universe and controls
 
@@ -59,7 +59,7 @@ The full relative-strength benchmark map, frozen before outcome P&L, is:
 
 This packet returns two separate strategy packages and their TQQQ/IGV `pair_cell_metrics.json` files; relative strength also binds immutable QQQ control rows. Those files are diagnostic evidence only: the packet owner may not select TQQQ versus IGV, declare a champion/fallback, or claim the pair is the complete `CandidateSpecV1`. After all six strategies freeze, the central quant/release owner expands both unchanged to their compatible feasible universe and writes `central_full_universe_replay.json`. That later replay alone applies cross-symbol arbitration and the family-wide selection test. QQQ inputs are centrally published immutable control data and cannot be tuned or backfilled.
 
-Before any alpha outcome is viewed, the data steward must sign `research/shared/selection/option_proxy_feasibility_manifest.json`, ranking all six symbols from blinded entitlement, completeness, timestamp, standard-contract, simultaneous-leg, and corporate-action fields. The global `selected_symbols` list has at most three symbols. TQQQ or IGV absent from it still receives full underlying research, but its option artifacts are empty schema-valid tables plus `option_proxy_not_selected.json` with exact status `NOT_SELECTED_BY_FEASIBILITY`. QQQ is a required relative-strength benchmark input, not automatically an option-proxy selection. Group C cannot swap, rerank, or fill a slot after seeing results.
+Before any alpha outcome is viewed, the packet owner creates a deterministic `option_proxy_feasibility_manifest.json` from their hash-valid collected data, ranking all six symbols from blinded entitlement, completeness, timestamp, standard-contract, simultaneous-leg, and corporate-action fields. `READY_FOR_REPLAY` is sufficient; a signature is optional provenance. The `selected_symbols` list has at most three symbols. TQQQ or IGV absent from it still receives full underlying research, but its option artifacts are empty schema-valid tables plus `option_proxy_not_selected.json` with exact status `NOT_SELECTED_BY_FEASIBILITY`. QQQ is a required relative-strength benchmark input, not automatically an option-proxy selection. Group C cannot swap, rerank, or fill a slot after seeing results.
 
 ### 3.1 Frozen cross-symbol arbitration
 
@@ -78,9 +78,9 @@ The pair-cell reproduction script records both per-symbol rows and does not arbi
 
 ## 4. Alpaca free-tier data rules
 
-The data steward collects and hashes all inputs using the [read-only Alpaca collector](ALPACA_DATA_COLLECTOR.md) and its frozen shared specification. Group C consumes only immutable artifacts with `status=COLLECTED` and a hash-bound deterministic feasibility manifest with `status=READY_FOR_REPLAY`; independent review is optional provenance, not a backtest gate.
+The packet owner may collect and hash inputs using the [read-only Alpaca collector](ALPACA_DATA_COLLECTOR.md) and its frozen shared specification; follow [the individual historical-data guide](ALPACA_HISTORICAL_DATA_GUIDE.md). Group C consumes only immutable artifacts with `status=COLLECTED` and a hash-bound deterministic feasibility manifest with `status=READY_FOR_REPLAY`; independent review is optional provenance, not a backtest gate.
 
-Do not begin outcome-bearing work until `research/shared/entitlement_probe.json` confirms the approved free-tier endpoints, IEX/indicative feed behavior, requested dates, pagination, and access result. An unavailable or mismatched probe fails the data gate; it does not cause the researcher to request credentials or try another source.
+Do not begin outcome-bearing work until the collection's hash-bound `entitlement_probe.json` confirms the approved free-tier endpoints, IEX/indicative feed behavior, requested dates, pagination, and access result. An unavailable or mismatched probe fails the data gate; it does not cause the researcher to try another source.
 
 - Underlying history: Alpaca stock bars with explicit `feed=iex`; never SIP, delayed SIP relabeled as IEX, or another vendor.
 - Fetch raw-adjusted bars for point-in-time spot/strike matching and split-adjusted bars for continuous return features. Never pair a split-adjusted spot with a raw option strike.
@@ -392,7 +392,7 @@ Family-wise adjusted evidence that does not pass is labeled `suggestive`, shadow
 
 | Gate | Required evidence | Failure result |
 |---|---|---|
-| `C0_HANDOFF` | Baseline, native lock, attested collector `data_manifest.json`/`entitlement_probe.json`, immutable target/benchmark refs, Group C owner, both candidate IDs, and external reviewer recorded | Do not start outcome runs |
+| `C0_HANDOFF` | Baseline, native lock, hash-valid `COLLECTED` collector `data_manifest.json`/bound `entitlement_probe.json`, immutable target/benchmark refs, Group C owner, and both candidate IDs recorded | Do not start outcome runs |
 | `C1_DATA` | TQQQ/IGV/QQQ feasibility cards, at least 99% expected 15-minute bars, exact pair coverage, zero duplicates/OHLC failures, complete TQQQ split audit | Remove affected symbol or stop |
 | `C2_SPEC_FREEZE` | Candidate cards, benchmark map, features, central/sensitivity configs, exits, costs, trial entries, and hashes frozen before P&L | New candidate/version required |
 | `C3_SIGNAL` | Common-engine runs for both strategies, next-observation behavior, diagnostics, minimum sample/fold/concentration gates | `REJECTED` or `RESEARCH_COMPLETE` only |

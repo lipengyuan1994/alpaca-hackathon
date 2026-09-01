@@ -44,6 +44,7 @@ research-data-group-a-parallel-v2-option-requests = "packages.research_data.cli:
 research-data-group-a-wheel-v12-option-requests = "packages.research_data.cli:group_a_wheel_v12_option_requests_main"
 research-data-group-a-wheel-v13-option-requests = "packages.research_data.cli:group_a_wheel_v13_option_requests_main"
 research-data-group-a-wheel-v13-backtest = "packages.research_data.cli:group_a_wheel_v13_backtest_main"
+research-data-group-a-proxy-backtest = "packages.research_data.cli:group_a_proxy_backtest_main"
 research-data-collect-options-stage = "packages.research_data.cli:option_stage_main"
 research-data-finalize-options = "packages.research_data.cli:option_finalize_main"
 

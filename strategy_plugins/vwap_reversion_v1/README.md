@@ -15,5 +15,7 @@ uv run python -m strategy_plugins.vwap_reversion_v1.reproduce \
   --output /absolute/path/to/empty-output-directory
 ```
 
-The command works only with reviewed immutable inputs and makes no network or
-credential call.
+The command works with hash-valid immutable inputs (`COLLECTED` plus a bound
+`READY_FOR_REPLAY` feasibility manifest) and makes no network or credential
+call. A separate review signature is optional provenance, not a reproduction
+gate.

@@ -30,7 +30,7 @@ These are not interchangeable:
 Each of the three packet owners receives two strategy families from Section 3 and follows this sequence for both:
 
 1. Copy the assigned strategy card into `research/candidates/<candidate_id>/strategy_card.md` and freeze the economic hypothesis, central parameters, owned symbol cells, feature contract, exit-policy ID, and falsification conditions **before viewing outcome P&L**.
-2. Use only centrally collected, immutable Alpaca datasets. Do not create a private downloader, substitute vendor data, or fork the frozen clock, selector, cost, or marking semantics.
+2. Use immutable Alpaca datasets collected with the repository's GET-only helper or a hash-valid teammate collection. Do not use a private downloader, substitute vendor data, or fork the frozen clock, selector, cost, or marking semantics.
 3. Implement exactly one assigned strategy family and its canonical plug-in package. Each package must ship its own offline, cross-platform Python reproduction module; POSIX/PowerShell wrappers may call that module. This repository does not claim that a central research backtester exists.
 4. Run the central specification on the packet's two owned symbol cells and publish every prescribed sensitivity. A pair-cell result is diagnostic research evidence, not a complete deployable `CandidateSpecV1` and not permission to choose the better of the two symbols.
 5. Return one complete research, plug-in, golden-fixture, and parity package per assigned family as defined in Section 12. A notebook, chart, Sharpe ratio, or `plugin.py` by itself is not a deliverable.
@@ -88,7 +88,7 @@ Current free-tier assumptions to verify with a recorded entitlement probe:
 
 Every request that accepts a feed parameter specifies it explicitly and consumes all pagination tokens. For historical option bars/trades, record the sentinel `requested_feed=N/A_ENDPOINT_HAS_NO_FEED_PARAM`, endpoint schema hash, and observed entitlement instead. An invalid invented parameter, undocumented fallback, entitlement upgrade, mixed feed, or missing page is a failed data gate.
 
-One designated data steward performs and caches shared downloads through the repository's [read-only Alpaca data collector](../research/ALPACA_DATA_COLLECTOR.md) and its frozen `configs/research_data_collection_v1.yaml` specification. Credentials remain only in that collector runtime; the three packet owners consume immutable hashed artifacts. A raw collector result with `status=COLLECTED_UNATTESTED` is not an eligible research input: the steward and non-author reviewer must validate and attest its `data_manifest.json` and `entitlement_probe.json` before any outcome-bearing work. No researcher retrieves the same range independently or places any order through a research task.
+Each researcher may collect and cache their own data through the repository's [read-only Alpaca data collector](../research/ALPACA_DATA_COLLECTOR.md) and frozen `configs/research_data_collection_v1.yaml` specification; the operational steps are in the [individual historical-data guide](../research/ALPACA_HISTORICAL_DATA_GUIDE.md). A hash-valid `data_manifest.json` with `status=COLLECTED` (or compatible legacy `COLLECTED_UNATTESTED`) plus its bound probe/artifacts is an eligible research input. The researcher may also reuse a teammate's immutable collection. Use a separate development credential only in the collector runtime; no research task may place an order. Independent review is required for integration and promotion claims, not as a prerequisite to run a backtest.
 
 ## 3. Three-packet strategy-family assignment
 
@@ -155,9 +155,9 @@ Each owner's `signal.py` must expose a pure per-symbol evaluation that computes 
 7. Treat QQQ/TQQQ/IGV as one technology cluster and SMH/SOXL as one semiconductor cluster. Leveraged/unleveraged pairs are correlated expressions, not independent confirmation.
 8. In research artifacts, record every eligible, rejected, selected, and suppressed candidate with its reason code so portfolio P&L reconciles to per-symbol results. Runtime replay recomputes the same table from frozen context/config and `signal.py`.
 
-Round 0 still produces six comparable **symbol feasibility cards**, but data stewardship is cross-cutting rather than the alpha assignment. The cards consume only the reviewed collector artifacts: raw/split IEX bars, calendar, option-contract metadata, frozen historical option-observation requests, and separately captured indicative quote artifacts. Before any candidate return is exposed, the data steward writes `research/shared/selection/option_proxy_feasibility_manifest.json`. It ranks all six symbols using only blinded fields: entitlement result, requested/returned dates, timestamp integrity, bar completeness, standard-contract count, simultaneous-leg observation coverage, corporate-action classification, and deterministic symbol-order tie-break. It contains no signal return, option P&L, direction, Sharpe, candidate ID, or owner preference.
+Round 0 still produces six comparable **symbol feasibility cards**, but collection is self-service and cross-cutting rather than a centrally blocked alpha assignment. The cards consume only hash-valid collector artifacts: raw/split IEX bars, calendar, option-contract metadata, frozen historical option-observation requests, and separately captured indicative quote artifacts. Before any candidate return is exposed, the researcher writes a deterministic `option_proxy_feasibility_manifest.json` bound to their data manifest. It ranks all six symbols using only blinded fields: entitlement result, requested/returned dates, timestamp integrity, bar completeness, standard-contract count, simultaneous-leg observation coverage, corporate-action classification, and deterministic symbol-order tie-break. It contains no signal return, option P&L, direction, Sharpe, candidate ID, or owner preference.
 
-The manifest has `schema_version=option-proxy-feasibility/v1`, the pinned implementation/lock/data hashes, `generated_at`, ordered scoring fields, all six ranked rows, `selected_symbols` of length at most three, `selection_cutoff_rank`, and a manifest hash. It is signed by the data steward and one reviewer before outcome access. Each packet then behaves as follows:
+The manifest has `schema_version=option-proxy-feasibility/v1`, the pinned implementation/lock/data hashes, `generated_at`, ordered scoring fields, all six ranked rows, `selected_symbols` of length at most three, `selection_cutoff_rank`, and a manifest hash. `status=READY_FOR_REPLAY` is sufficient for outcome access once hashes and bindings validate; signatures may be appended as provenance but are not required. Each packet then behaves as follows:
 
 - an owned symbol selected by the manifest receives full historical option-proxy work;
 - an owned symbol not selected still receives the complete underlying pair-cell study, but `option_proxy_status` is exactly `NOT_SELECTED_BY_FEASIBILITY`;
@@ -165,7 +165,7 @@ The manifest has `schema_version=option-proxy-feasibility/v1`, the pinned implem
 - no group may exchange, rerank, or fill an unused slot after seeing any outcome;
 - Monday prospective quotes are accept/reject gates and never re-rank or replace the frozen subset.
 
-If returns were visible before this manifest was signed, record `BLINDING_BREACH` and include every viewed strategy-by-symbol variant in the selection/multiple-testing family.
+If returns were visible before this manifest was hash-bound and marked `READY_FOR_REPLAY`, record `BLINDING_BREACH` and include every viewed strategy-by-symbol variant in the selection/multiple-testing family.
 
 Resource limits for the sprint:
 
@@ -176,7 +176,7 @@ Resource limits for the sprint:
 
 ## 4. Standard one-symbol feasibility scan
 
-The data steward assigns or runs A–F once per symbol and records evidence paths, not just prose. Alpha owners consume the same frozen card; they do not issue independent downloads or reinterpret a red data gate.
+The researcher who owns a collection assigns or runs A–F once per symbol and records evidence paths, not just prose. Alpha owners may reuse a hash-identical shared card or create their own through the repository helper; they do not reinterpret a red data gate.
 
 ### A. Entitlement and surface probe
 
@@ -1037,7 +1037,7 @@ Deterministic serialization is part of the handoff:
 Before requesting integration review, the owner and non-author reviewer answer **yes** to all of these:
 
 - The central hypothesis and all viewed trials are in the trial ledger.
-- All inputs come from shared Alpaca-only immutable manifests and pass availability-time checks.
+- All inputs come from Alpaca-only immutable manifests (self-collected through the repository helper or shared) and pass availability-time checks.
 - The run reproduces from one documented platform-neutral `uv` command and exact commit/lock/config hashes; the manifest records its OS and CPU architecture.
 - Central and every prescribed sensitivity result are published for both owned pair cells; an unselected option-proxy cell carries the explicit `NOT_SELECTED_BY_FEASIBILITY` artifacts.
 - `pair_cell_metrics.json` is labeled diagnostic and does not claim a full-universe candidate, champion, fallback, or symbol winner.
@@ -1067,15 +1067,15 @@ telemetry/competition/
 
 - Release captain reviews and commits the implementation baseline; no researcher branches from the current untracked workspace state.
 - Platform owners close or explicitly track `G-R1`–`G-R6`, publish the registry/catalog/feature/reason/position-policy schemas, and pin only conformance commands that actually exist.
-- Data steward runs one shared entitlement probe.
+- Each collection owner runs and preserves a hash-bound entitlement probe; researchers may reuse a teammate's immutable collection.
 - Freeze feed, timestamp, contract, and proxy rules.
 - Publish the common scanner outputs and artifact schema. Each family package implements the same frozen clock/metric rules in its required offline reproduction script; parity fixtures expose semantic drift.
-- Bulk-fetch the six underlying histories once.
+- Collect the six underlying histories through the repository helper, once per shared collection or independently when a researcher needs their own evidence set.
 - Assign one packet per Section 3. Each packet owner writes two separate sets of `strategy_card.md`, `hypothesis.yaml`, `feature_contract.yaml`, and central/sensitivity configs before viewing P&L for either family.
 
 ### Saturday afternoon
 
-- Complete six historical feasibility cards and sign the blinded global `option_proxy_feasibility_manifest.json` before any result exposure.
+- Complete six historical feasibility cards and generate the hash-bound `READY_FOR_REPLAY` feasibility manifest before any result exposure; signatures are optional provenance.
 - Remove `RED_REMOVE` symbols.
 - Implement all six pure `signal.py` functions and boundary fixtures against the frozen feature rows.
 - Run the intraday-continuation golden underlying fixture on each available researcher platform and record hash comparisons. A platform difference is investigated and documented; it never blocks offline research. The central owner separately verifies native-ARM64 host compatibility before integration/paper promotion.

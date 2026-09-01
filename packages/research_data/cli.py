@@ -1,4 +1,4 @@
-"""Command-line entry point used only by the approved data-steward runtime."""
+"""GET-only Alpaca collection and deterministic research replay entry points."""
 
 from __future__ import annotations
 
@@ -15,6 +15,8 @@ from .collector import CollectionSpec, ResearchDataCollector, ResearchDataError
 from .feasibility import FeasibilityError, write_feasibility_draft
 from .group_a_option_requests import GroupARequestError, generate_requests
 from .group_a_parallel_v2_option_requests import generate_requests as generate_parallel_v2_requests
+from .group_a_proxy_backtest import GroupAReplayError
+from .group_a_proxy_backtest import run as run_group_a_proxy_backtest
 from .group_a_sensitivity_option_requests import generate_requests as generate_sensitivity_requests
 from .group_a_wheel_v12_option_requests import generate_requests as generate_wheel_v12_requests
 from .group_a_wheel_v13_option_requests import generate_requests as generate_wheel_v13_requests
@@ -221,6 +223,35 @@ def group_a_wheel_v13_backtest_main() -> int:
         output=args.output,
         base_data_manifest_path=args.base_data_manifest,
     )
+    print(target)
+    return 0
+
+
+def group_a_proxy_backtest_main() -> int:
+    """Replay a frozen Group A option-observation manifest without network I/O."""
+    parser = argparse.ArgumentParser(description=group_a_proxy_backtest_main.__doc__)
+    parser.add_argument("--option-manifest", required=True, type=Path)
+    parser.add_argument("--request-manifest", required=True, type=Path)
+    parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--base-data-manifest", type=Path)
+    parser.add_argument("--structure", choices=("debit", "credit", "single_long", "long_straddle", "calendar"), default="debit")
+    parser.add_argument("--execution-model", choices=("buffered", "bar_open"), default="buffered")
+    parser.add_argument("--exit-minutes", choices=(45, 60, 90, 240), type=int, default=60)
+    parser.add_argument("--force-exit-minutes", choices=(45, 60, 90, 240), type=int)
+    args = parser.parse_args()
+    try:
+        target = run_group_a_proxy_backtest(
+            option_manifest_path=args.option_manifest,
+            request_path=args.request_manifest,
+            output=args.output,
+            structure=args.structure,
+            execution_model=args.execution_model,
+            exit_minutes=args.exit_minutes,
+            force_exit_minutes=args.force_exit_minutes,
+            base_data_manifest_path=args.base_data_manifest,
+        )
+    except GroupAReplayError as exc:
+        raise SystemExit(str(exc)) from exc
     print(target)
     return 0
 

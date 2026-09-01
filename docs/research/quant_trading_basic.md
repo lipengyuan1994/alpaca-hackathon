@@ -36,16 +36,16 @@ The central platform owner runs final host-interface and paper-safety conformanc
 
 | Need | Researcher action | Non-negotiable rule |
 |---|---|---|
-| Historical ETF bars | Load the team's immutable normalized files named in `data_manifest.json`. | Never create a private download, switch vendor/feed, or patch missing rows. |
-| Historical option proxy | Use only the centrally supplied option-proxy artifacts and feasibility manifest. | A missing observation is `NO_PROXY_FILL`, never zero or a forward-filled price. |
-| Current quote readiness | Read the centrally captured indicative quote artifacts when supplied. | Do not call indicative quotes OPRA, NBBO, or executable history. |
-| Direct Alpaca retrieval | Data steward only, after the entitlement probe approves the exact endpoint/feed. | The retrieval code below is read-only and contains no credential setup. |
+| Historical ETF bars | Load immutable normalized files named in a hash-valid `data_manifest.json`, either shared or collected through this repository's helper. | Never use a private downloader, switch vendor/feed, or patch missing rows. |
+| Historical option proxy | Use a hash-bound option-observation artifact and feasibility manifest. | A missing observation is `NO_PROXY_FILL`, never zero or a forward-filled price. |
+| Current quote readiness | Read hash-bound indicative quote artifacts when supplied. | Do not call indicative quotes OPRA, NBBO, or executable history. |
+| Direct Alpaca retrieval | Follow [the individual historical-data guide](ALPACA_HISTORICAL_DATA_GUIDE.md) and use `research-data-collect`. | Use only a separate development credential in the GET-only helper; it contains no order path. |
 
 Alpaca's historical stock-bar endpoint is paginated; a result page may contain only one requested symbol, so a collector must continue until `next_page_token` is absent. The current primary API docs also state the requested `feed` explicitly and document access/rate-limit errors. See [stock bars](https://docs.alpaca.markets/us/reference/stockbars). Historical option bars are separately paginated and are a proxy surface in this project, not proof of a tradable historical quote. See [option bars](https://docs.alpaca.markets/us/reference/optionbars).
 
 ## 3. Read-only Alpaca bars client
 
-The class below is a simplified, documentation-focused adaptation of the working `AlpacaMarketDataProvider` in the sibling `live-trading-2026` project. It keeps the useful properties—UTC timestamps, explicit feed, pagination, normalized columns, and failure on malformed data—while deliberately omitting all credential lookup and all trading/order methods.
+The production helper is `packages.research_data.client.ReadOnlyAlpacaClient` plus `packages.research_data.collector.ResearchDataCollector`, invoked by `research-data-collect`; use that helper rather than copying the educational example below. It keeps the useful properties—UTC timestamps, explicit feed, pagination, normalized columns, and failure on malformed data—while deliberately omitting all trading/order methods. The [individual guide](ALPACA_HISTORICAL_DATA_GUIDE.md) gives the supported command and secret-file setup.
 
 The `headers` mapping is supplied only by an approved data-steward runtime; this document neither creates nor displays credential values. Packet researchers normally skip this class and read the immutable files supplied to them.
 

@@ -1,12 +1,12 @@
 # Research team handoff
 
-Status: **ready to distribute for credential-free research**
+Status: **ready for self-service, research-only Alpaca collection and backtests**
 
 Pinned implementation: `cb03a7684fb67c6f0888333f6c3c2145e8645be9`
 
 Pinned `uv.lock` SHA-256: `b846dc0b4d52be240cbb131e8267a5bf5ed4659b21570573b9ea1d48dcc865cf`
 
-This page is the front door for three research owners. Each owner receives one packet, researches both strategy families in that packet, and returns two separately versioned integration-shaped packages plus reproducible evidence. Researchers do not need Alpaca credentials, a broker account, deployment access, or permission to trade.
+This page is the front door for three research owners. Each owner receives one packet, researches both strategy families in that packet, and returns two separately versioned integration-shaped packages plus reproducible evidence. Researchers do not need a broker account, deployment access, or permission to trade. They may use a separate approved development credential solely through the repository's GET-only collection helper; see [Historical Alpaca data for individual research](ALPACA_HISTORICAL_DATA_GUIDE.md).
 
 ## 1. Assignments
 
@@ -24,20 +24,17 @@ Send each research owner this page plus exactly one packet:
 
 Every packet owner starts with [trading foundation](trading_foundation.md) and [quant trading basics](quant_trading_basic.md), then follows the normative [strategy research protocol](../plans/STRATEGY_RESEARCH_PLAN.md), [strategy API](../architecture/STRATEGY_API.md), and [published research interface freeze](../architecture/RESEARCH_INTERFACE_FREEZE.md). If a packet conflicts with those documents, stop and ask the release owner.
 
-## 2. What the platform/data owner must supply first
+## 2. Self-service data and backtest inputs
 
-Researchers start outcome-bearing work only after receiving:
+Each researcher may collect an immutable dataset for their packet through the repository's [read-only Alpaca collector](ALPACA_DATA_COLLECTOR.md), using the exact procedure in [Historical Alpaca data for individual research](ALPACA_HISTORICAL_DATA_GUIDE.md). The required inputs for an outcome-bearing research run are:
 
-1. a checkout or source archive at the pinned implementation commit;
-2. the exact pinned `uv.lock`;
-3. a centrally collected immutable Alpaca data manifest covering the required underlying/control symbols;
-4. `research/shared/entitlement_probe.json` showing the approved free-tier endpoints and feed behavior;
-5. a signed, blinded `research/shared/selection/option_proxy_feasibility_manifest.json`; and
-6. the artifact schema plus hashes for every supplied raw and normalized input.
+1. a checkout or source archive at the pinned implementation commit and exact pinned `uv.lock`;
+2. a hash-valid `data_manifest.json` with `status=COLLECTED`, covering the required target/control symbols;
+3. its hash-bound `entitlement_probe.json` and all referenced raw/normalized artifacts;
+4. a deterministic, hash-valid `option_proxy_feasibility_manifest.json` with `status=READY_FOR_REPLAY`; and
+5. the candidate's pre-outcome specification and hash-recorded output directory.
 
-The data steward collects once for the team. Researchers must not build private downloaders, request competition credentials, switch vendors/feeds, hand-fill missing data, or search for a more favorable sample. A missing prerequisite is a visible failed gate, not permission to improvise.
-
-The data steward uses the repository's [read-only Alpaca collector](ALPACA_DATA_COLLECTOR.md) from an approved credential runtime. It writes raw provider pages, normalized Parquet, a canonical `data_manifest.json`, and an unattested entitlement probe to a new empty directory. The separate review/attestation step remains mandatory before researchers consume the manifest.
+The collection may be owned by the researcher or shared by a teammate. Use only the repository helper, the frozen specification, explicit IEX/endpoint rules, and a separate development credential. Never use competition/live credentials, switch vendor/feed, hand-fill missing data, or overwrite an evidence directory. A signature or separate steward attestation is welcome provenance, but it is not required to start or complete a research-only backtest.
 
 ```text
 research-data-collect \
@@ -169,7 +166,7 @@ Headline P&L or Sharpe alone is not acceptance. A candidate with weak coverage, 
 Stop and report the exact failed gate if any of these occur:
 
 - source commit or lock hash mismatch;
-- missing/unsigned data or feasibility manifest;
+- missing, hash-invalid, or not-ready data or feasibility manifest;
 - feed/entitlement mismatch, incomplete pagination, timestamp ambiguity, or invalid corporate-action join;
 - outcome P&L was viewed before the hypothesis/config/feature/selection identity was frozen;
 - a requested feature is missing, stale, future, nonfinite, or schema-mismatched;
