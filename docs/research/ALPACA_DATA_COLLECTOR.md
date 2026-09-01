@@ -1,8 +1,8 @@
 # Read-only Alpaca research data collector
 
-Status: **data-steward utility; collection output is not research approval or paper-trading authority**
+Status: **individual-researcher utility; collection output is not research approval or paper-trading authority**
 
-The `research-data-collect` command collects the team-wide Alpaca evidence needed for offline strategy research. It is run once by the approved data steward, then packet owners use only the frozen artifacts. It never belongs in a plug-in package or a strategy-reproduction command.
+The `research-data-collect` command collects immutable Alpaca evidence needed for offline strategy research. Each researcher may run it with a separate approved development credential, or reuse a teammate's hash-valid collection. It never belongs in a plug-in package or a strategy-reproduction command. See [the individual historical-data guide](ALPACA_HISTORICAL_DATA_GUIDE.md) for credential-file setup and the end-to-end collection-to-backtest workflow.
 
 ## Scope and safety boundary
 
@@ -18,7 +18,7 @@ It does not instantiate the paper execution adapter or call any account, positio
 
 The collector is intentionally distinct from `live-trading-2026`: it reuses its read-only pagination, canonical-hash, and atomic-write patterns without importing its broker-facing code.
 
-## Data-steward invocation
+## Individual researcher invocation
 
 Run from the repository root with Python 3.12 and the pinned lock. The collector
 uses the fixed Compose file-secret bundle at
@@ -140,8 +140,8 @@ was a former review requirement, not a data-completeness state.
 
 ## Blinded feasibility draft
 
-After collection, the data steward can generate an unsigned, deterministic
-feasibility draft without reading signal returns or option P&L:
+After collection, the researcher can generate an unsigned, deterministic
+feasibility manifest without reading signal returns or option P&L:
 
 ```text
 research-data-feasibility \

@@ -476,7 +476,7 @@ Notebooks may explore; only tested package code may enter either competition wor
 
 ### Parallel candidate workstreams
 
-Round 0 remains a standardized six-symbol **data feasibility** scan owned by the data steward. Alpha research is delegated through three independently shareable packets. Each packet owner evaluates two separately frozen strategy families over the packet's pair cells and returns one package per family; later central replay expands each unchanged family over every compatible feasible symbol.
+Round 0 remains a standardized six-symbol **data feasibility** scan, but any packet owner may run it through the repository's GET-only Alpaca collector with a separate development credential. Alpha research is delegated through three independently shareable packets. Each packet owner evaluates two separately frozen strategy families over the packet's pair cells and returns one package per family; later central replay expands each unchanged family over every compatible feasible symbol.
 
 | Packet recipient | Pair cells | Strategy families | Independent reviewer |
 |---|---|---|---|

@@ -18,5 +18,7 @@ uv run python -m strategy_plugins.intraday_continuation_v1.reproduce \
   --output /absolute/path/to/empty-output-directory
 ```
 
-It has no network or credential path. It refuses an unreviewed manifest and
-does not call the Alpaca collector.
+It has no network or credential path. It accepts a hash-valid `COLLECTED`
+manifest plus a bound `READY_FOR_REPLAY` feasibility manifest; a separate
+review signature is optional provenance, not a reproduction gate. It does not
+call the Alpaca collector.
