@@ -237,6 +237,25 @@ def test_new_entry_cutoff_is_strict_but_does_not_halt_runtime(tmp_path: Path) ->
     assert outcome.status == "NO_ACTION"
     assert outcome.reason_codes == ("WHEEL_NEW_ENTRY_CUTOFF_REACHED",)
     assert broker.submit_count == 0
+    persisted = runtime.store.load_state(config_hash=runtime.loaded.config_hash, now=cutoff)
+    assert persisted.sequence == 1
+    assert persisted.last_run_at == cutoff
+
+
+def test_risk_rejection_advances_audit_state_without_submission(tmp_path: Path) -> None:
+    broker = FakePaperBroker()
+    broker.account_row = replace(broker.account_row, cash=Decimal("80000"))
+    runtime = _runtime(tmp_path, broker)
+
+    outcome = runtime.run_once(now=MONDAY)
+
+    assert outcome.status == "RISK_REJECTED"
+    assert outcome.reason_codes == ("WHEEL_CSP_CASH_BUFFER_INSUFFICIENT",)
+    assert broker.submit_count == 0
+    persisted = runtime.store.load_state(config_hash=runtime.loaded.config_hash, now=MONDAY)
+    assert persisted.sequence == 1
+    assert persisted.last_run_at == MONDAY
+    assert outcome.state_hash == persisted.state_hash
 
 
 def test_missing_arm_is_deterministic_no_submission(tmp_path: Path) -> None:
