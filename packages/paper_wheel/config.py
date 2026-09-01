@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, time
 from decimal import Decimal
 from pathlib import Path
 from typing import Literal
@@ -17,19 +17,26 @@ from packages.contracts.models import StrictModel
 
 class WheelScheduleConfig(StrictModel):
     timezone: Literal["America/New_York"] = "America/New_York"
-    entry_time: str = Field(default="10:00", pattern=r"^[0-2][0-9]:[0-5][0-9]$")
-    entry_window_minutes: int = Field(default=5, ge=1, le=15)
+    entry_policy: Literal["market_hours"] = "market_hours"
     no_new_entries_after: str = Field(default="15:15", pattern=r"^[0-2][0-9]:[0-5][0-9]$")
-    first_eligible_session_per_iso_week: bool = True
     poll_seconds: int = Field(default=60, ge=30, le=300)
     order_cancel_after_seconds: int = Field(default=180, ge=60, le=900)
     cancel_confirmation_grace_seconds: int = Field(default=120, ge=30, le=600)
     lifecycle_settlement_grace_minutes: int = Field(default=30, ge=5, le=240)
 
-    @model_validator(mode="after")
-    def _ordered(self) -> "WheelScheduleConfig":
-        if self.entry_time >= self.no_new_entries_after:
+    @field_validator("no_new_entries_after")
+    @classmethod
+    def _regular_session_cutoff(cls, value: str) -> str:
+        try:
+            parsed = time.fromisoformat(value)
+        except ValueError as exc:
+            raise ValueError("WHEEL_SCHEDULE_ENTRY_CUTOFF_INVALID") from exc
+        if not (time(9, 30) < parsed <= time(16, 0)):
             raise ValueError("WHEEL_SCHEDULE_ENTRY_CUTOFF_INVALID")
+        return value
+
+    @model_validator(mode="after")
+    def _timezone_available(self) -> "WheelScheduleConfig":
         try:
             ZoneInfo(self.timezone)
         except ZoneInfoNotFoundError as exc:  # pragma: no cover - host packaging defect
@@ -106,7 +113,7 @@ class WheelRuntimeConfig(StrictModel):
     mode: Literal["paper"] = "paper"
     paper_base_url: Literal["https://paper-api.alpaca.markets"] = "https://paper-api.alpaca.markets"
     submission_enabled: bool = False
-    runtime_root: Path = Path("artifacts/paper_wheel/v13_5_qqq")
+    runtime_root: Path = Path("artifacts/paper_wheel/v13_5_qqq_market_hours")
     client_order_prefix: str = Field(default="rs-v135", pattern=r"^[a-z0-9-]{3,12}$")
 
     @field_validator("runtime_root")

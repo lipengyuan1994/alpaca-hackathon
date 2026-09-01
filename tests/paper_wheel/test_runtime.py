@@ -215,6 +215,30 @@ def test_cash_state_submits_one_cash_secured_put_and_never_duplicates(tmp_path: 
     assert second.status == "HOLD"
 
 
+def test_flat_runtime_can_enter_on_tuesday_at_market_open(tmp_path: Path) -> None:
+    tuesday_open = datetime(2026, 9, 1, 13, 30, 1, tzinfo=UTC)
+    broker = FakePaperBroker(now=tuesday_open)
+    runtime = _runtime(tmp_path, broker)
+
+    outcome = runtime.run_once(now=tuesday_open)
+
+    assert outcome.status == "ORDER_SUBMITTED"
+    assert broker.submit_count == 1
+    assert broker.submitted_plans[0].action == WheelAction.SELL_CASH_SECURED_PUT
+
+
+def test_new_entry_cutoff_is_strict_but_does_not_halt_runtime(tmp_path: Path) -> None:
+    cutoff = datetime(2026, 9, 1, 19, 15, tzinfo=UTC)
+    broker = FakePaperBroker(now=cutoff)
+    runtime = _runtime(tmp_path, broker)
+
+    outcome = runtime.run_once(now=cutoff)
+
+    assert outcome.status == "NO_ACTION"
+    assert outcome.reason_codes == ("WHEEL_NEW_ENTRY_CUTOFF_REACHED",)
+    assert broker.submit_count == 0
+
+
 def test_missing_arm_is_deterministic_no_submission(tmp_path: Path) -> None:
     broker = FakePaperBroker()
     runtime = PaperWheelRuntime(loaded=_loaded(tmp_path), broker=broker, project_root=tmp_path)

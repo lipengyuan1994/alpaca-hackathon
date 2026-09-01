@@ -22,8 +22,8 @@
   <key>LowPriorityIO</key>
   <true/>
   <key>StandardOutPath</key>
-  <string>__PROJECT_ROOT__/artifacts/paper_wheel/v13_5_qqq/launchd.stdout.log</string>
+  <string>__PROJECT_ROOT__/artifacts/paper_wheel/v13_5_qqq_market_hours/launchd.stdout.log</string>
   <key>StandardErrorPath</key>
-  <string>__PROJECT_ROOT__/artifacts/paper_wheel/v13_5_qqq/launchd.stderr.log</string>
+  <string>__PROJECT_ROOT__/artifacts/paper_wheel/v13_5_qqq_market_hours/launchd.stderr.log</string>
 </dict>
 </plist>

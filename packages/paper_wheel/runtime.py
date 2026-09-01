@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import UTC, date, datetime, time, timedelta
+from datetime import UTC, datetime, time, timedelta
 from decimal import ROUND_DOWN, ROUND_UP, Decimal
 from typing import Any
 from zoneinfo import ZoneInfo
@@ -89,11 +89,6 @@ def _account_hash(account_id: str) -> str:
 def _clock_text(value: str) -> time:
     hour, minute = (int(item) for item in value.split(":"))
     return time(hour=hour, minute=minute)
-
-
-def _week_key(value: date) -> str:
-    year, week, _ = value.isocalendar()
-    return f"{year:04d}-W{week:02d}"
 
 
 def _client_order_id(prefix: str, payload: dict[str, Any]) -> str:
@@ -486,11 +481,8 @@ class PaperWheelRuntime:
             return self._halt(state, now=now, reason="WHEEL_UNDERLYING_SHARE_QUANTITY_INVALID")
         if entry_block_reasons:
             return RuntimeOutcome(status="NO_ACTION", reason_codes=entry_block_reasons, state_hash=state.state_hash)
-        if not self._entry_window(now=now, clock=clock):
-            return RuntimeOutcome(status="NO_ACTION", reason_codes=("WHEEL_OUTSIDE_ENTRY_WINDOW",), state_hash=state.state_hash)
-        week = _week_key(now.astimezone(_EASTERN).date())
-        if state.last_entry_week_by_symbol.get(symbol) == week:
-            return RuntimeOutcome(status="NO_ACTION", reason_codes=("WHEEL_WEEKLY_ENTRY_ALREADY_USED",), state_hash=state.state_hash)
+        if not self._entry_allowed(now=now, clock=clock):
+            return RuntimeOutcome(status="NO_ACTION", reason_codes=("WHEEL_NEW_ENTRY_CUTOFF_REACHED",), state_hash=state.state_hash)
         closes = self.broker.completed_daily_closes(symbol, now=now, sessions=self.config.strategy.trend_sessions)
         trend = trend_is_up(closes, sessions=self.config.strategy.trend_sessions)
         if trend is None:
@@ -510,20 +502,11 @@ class PaperWheelRuntime:
             for event_type in latest.values()
         )
 
-    def _entry_window(self, *, now: datetime, clock: PaperClock) -> bool:
+    def _entry_allowed(self, *, now: datetime, clock: PaperClock) -> bool:
         local = now.astimezone(_EASTERN)
-        start = _clock_text(self.config.schedule.entry_time)
-        start_dt = datetime.combine(local.date(), start, tzinfo=_EASTERN)
-        end_dt = start_dt + timedelta(minutes=self.config.schedule.entry_window_minutes)
-        if not (start_dt <= local < end_dt) or not clock.is_open:
-            return False
-        if self.config.schedule.first_eligible_session_per_iso_week:
-            monday = local.date() - timedelta(days=local.weekday())
-            friday = monday + timedelta(days=4)
-            sessions = self.broker.calendar_open_dates(monday, friday)
-            if not sessions or local.date() != min(sessions):
-                return False
-        return True
+        cutoff = _clock_text(self.config.schedule.no_new_entries_after)
+        cutoff_at = datetime.combine(local.date(), cutoff, tzinfo=_EASTERN)
+        return clock.is_open and local < cutoff_at
 
     def _entry_plan(
         self,
@@ -735,7 +718,6 @@ class PaperWheelRuntime:
 
     def _apply_fill(self, state: WheelRuntimeStateV1, *, plan: WheelOrderPlanV1, order: PaperOrder, now: datetime) -> WheelRuntimeStateV1:
         managed = dict(state.managed_options)
-        entries = dict(state.last_entry_week_by_symbol)
         if plan.action == WheelAction.BUY_TO_CLOSE:
             managed.pop(plan.underlying, None)
         else:
@@ -750,8 +732,7 @@ class PaperWheelRuntime:
                 entry_order_id=order.broker_order_id,
                 opened_at=order.updated_at,
             )
-            entries[plan.underlying] = _week_key(now.astimezone(_EASTERN).date())
-        return self._advance(state, now=now, status="READY", managed_options=managed, last_entry_week_by_symbol=entries)
+        return self._advance(state, now=now, status="READY", managed_options=managed)
 
     def _halt(self, state: WheelRuntimeStateV1, *, now: datetime, reason: str) -> RuntimeOutcome:
         halted = self._advance(state, now=now, status="HALTED", halt_reason=reason)
