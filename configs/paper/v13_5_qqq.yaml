@@ -1,10 +1,10 @@
-schema_version: paper-wheel-config/v1
+schema_version: paper-wheel-config/v2
 
 runtime:
   mode: paper
   paper_base_url: https://paper-api.alpaca.markets
   submission_enabled: true
-  runtime_root: artifacts/paper_wheel/v13_5_qqq
+  runtime_root: artifacts/paper_wheel/v13_5_qqq_market_hours
   client_order_prefix: rs-v135
 
 strategy:
@@ -21,10 +21,8 @@ strategy:
 
 schedule:
   timezone: America/New_York
-  entry_time: "10:00"
-  entry_window_minutes: 5
+  entry_policy: market_hours
   no_new_entries_after: "15:15"
-  first_eligible_session_per_iso_week: true
   poll_seconds: 60
   order_cancel_after_seconds: 180
   cancel_confirmation_grace_seconds: 120
