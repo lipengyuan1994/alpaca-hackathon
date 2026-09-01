@@ -13,6 +13,7 @@ from packages.paper_wheel.strategy import should_take_profit, target_strike_frac
 def test_checked_in_v13_5_qqq_config_is_strict_and_paper_only() -> None:
     loaded = load_config(Path("configs/paper/v13_5_qqq.yaml"))
 
+    assert loaded.config.schema_version == "paper-wheel-config/v2"
     assert loaded.config.runtime.mode == "paper"
     assert loaded.config.runtime.paper_base_url == "https://paper-api.alpaca.markets"
     assert loaded.config.strategy.strategy_id == "v13.5"

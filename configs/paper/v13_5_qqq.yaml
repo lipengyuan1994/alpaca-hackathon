@@ -1,4 +1,4 @@
-schema_version: paper-wheel-config/v1
+schema_version: paper-wheel-config/v2
 
 runtime:
   mode: paper

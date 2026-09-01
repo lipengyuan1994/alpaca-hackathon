@@ -29,7 +29,9 @@ V13.5 research cadence. Research evaluated the first weekly 10:00 ET slot; this
 paper canary permits evaluation throughout regular market hours so a transient
 provider or repository-controlled failure does not spend the week's only entry
 opportunity. This changes deployment timing evidence and must not be represented
-as a replay of the frozen research backtest.
+as a replay of the frozen research backtest. Config schema
+`paper-wheel-config/v2` makes this breaking schedule change explicit; legacy
+clock-window keys are rejected rather than silently ignored.
 
 The `activation` window authorizes **new entries only**. Reconciliation and a
 risk-reducing buy-to-close remain available after the arm expires so a 7–14 DTE

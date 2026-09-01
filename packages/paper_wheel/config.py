@@ -125,7 +125,7 @@ class WheelRuntimeConfig(StrictModel):
 
 
 class WheelPaperConfig(StrictModel):
-    schema_version: Literal["paper-wheel-config/v1"] = "paper-wheel-config/v1"
+    schema_version: Literal["paper-wheel-config/v2"] = "paper-wheel-config/v2"
     runtime: WheelRuntimeConfig
     strategy: WheelStrategyConfig
     schedule: WheelScheduleConfig
