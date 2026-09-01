@@ -1,10 +1,10 @@
-schema_version: paper-wheel-config/v2
+schema_version: paper-wheel-config/v3
 
 runtime:
   mode: paper
   paper_base_url: https://paper-api.alpaca.markets
   submission_enabled: true
-  runtime_root: artifacts/paper_wheel/v13_5_qqq_market_hours
+  runtime_root: artifacts/paper_wheel/v13_5_qqq_market_hours_cash_secured
   client_order_prefix: rs-v135
 
 strategy:
@@ -30,7 +30,6 @@ schedule:
 
 risk:
   max_contracts_per_symbol: 1
-  max_assignment_notional_usd: 60000
   minimum_unreserved_cash_usd: 25000
   maximum_daily_drawdown_fraction: 0.02
   maximum_quote_age_seconds: 15

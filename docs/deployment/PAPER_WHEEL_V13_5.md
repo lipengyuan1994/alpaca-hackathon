@@ -30,8 +30,9 @@ paper canary permits evaluation throughout regular market hours so a transient
 provider or repository-controlled failure does not spend the week's only entry
 opportunity. This changes deployment timing evidence and must not be represented
 as a replay of the frozen research backtest. Config schema
-`paper-wheel-config/v2` makes this breaking schedule change explicit; legacy
-clock-window keys are rejected rather than silently ignored.
+`paper-wheel-config/v3` makes the breaking schedule and collateral-policy
+changes explicit; legacy clock-window and fixed assignment-cap keys are rejected
+rather than silently ignored.
 
 The `activation` window authorizes **new entries only**. Reconciliation and a
 risk-reducing buy-to-close remain available after the arm expires so a 7–14 DTE
@@ -159,6 +160,9 @@ Even after cancellation, the same client order ID is never reused.
 The runtime holds a nonblocking process lease, allows one account order at a
 time, rejects stale/crossed/wide quotes, enforces cash and share collateral,
 blocks new entries after a 2% daily drawdown, and keeps buy-to-close available.
+There is no independent fixed assignment-notional ceiling. A cash-secured put
+is eligible only when paper cash and options buying power each cover 100 shares
+at the strike and at least $25,000 cash remains unreserved after that collateral.
 Missing assignment/expiration activity waits up to 30 minutes and then halts
 instead of guessing.
 
@@ -176,7 +180,8 @@ open short option automatically. Inspect Alpaca paper positions/orders and the
 local journal before any recovery. There is no automatic re-arm path.
 
 Do not delete or hand-edit the control files. Runtime evidence is stored with
-mode `0600` under `artifacts/paper_wheel/v13_5_qqq_market_hours/`:
+mode `0600` under
+`artifacts/paper_wheel/v13_5_qqq_market_hours_cash_secured/`:
 
 ```text
 state.json

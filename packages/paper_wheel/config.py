@@ -75,7 +75,6 @@ class WheelStrategyConfig(StrictModel):
 
 class WheelRiskConfig(StrictModel):
     max_contracts_per_symbol: Literal[1] = 1
-    max_assignment_notional_usd: Decimal = Field(default=Decimal("60000"), gt=0)
     minimum_unreserved_cash_usd: Decimal = Field(default=Decimal("25000"), ge=0)
     maximum_daily_drawdown_fraction: Decimal = Field(default=Decimal("0.02"), gt=0, le=Decimal("0.10"))
     maximum_quote_age_seconds: int = Field(default=15, ge=1, le=60)
@@ -113,7 +112,7 @@ class WheelRuntimeConfig(StrictModel):
     mode: Literal["paper"] = "paper"
     paper_base_url: Literal["https://paper-api.alpaca.markets"] = "https://paper-api.alpaca.markets"
     submission_enabled: bool = False
-    runtime_root: Path = Path("artifacts/paper_wheel/v13_5_qqq_market_hours")
+    runtime_root: Path = Path("artifacts/paper_wheel/v13_5_qqq_market_hours_cash_secured")
     client_order_prefix: str = Field(default="rs-v135", pattern=r"^[a-z0-9-]{3,12}$")
 
     @field_validator("runtime_root")
@@ -125,7 +124,7 @@ class WheelRuntimeConfig(StrictModel):
 
 
 class WheelPaperConfig(StrictModel):
-    schema_version: Literal["paper-wheel-config/v2"] = "paper-wheel-config/v2"
+    schema_version: Literal["paper-wheel-config/v3"] = "paper-wheel-config/v3"
     runtime: WheelRuntimeConfig
     strategy: WheelStrategyConfig
     schedule: WheelScheduleConfig

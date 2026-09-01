@@ -278,7 +278,17 @@ class PaperWheelRuntime:
                 ),
             )
             if outcome is not None:
-                return outcome
+                if outcome.status in {"ORDER_SUBMITTED", "SUBMISSION_UNKNOWN", "HALTED"}:
+                    return outcome
+                next_state = self._advance(state, now=now)
+                self.store.save_state(next_state)
+                return RuntimeOutcome(
+                    status=outcome.status,
+                    reason_codes=outcome.reason_codes,
+                    plan_hash=outcome.plan_hash,
+                    client_order_id=outcome.client_order_id,
+                    state_hash=next_state.state_hash,
+                )
         next_state = self._advance(state, now=now)
         self.store.save_state(next_state)
         return RuntimeOutcome(status="NO_ACTION", reason_codes=("WHEEL_NO_ELIGIBLE_ACTION",), state_hash=next_state.state_hash)

@@ -126,8 +126,6 @@ def plan_violations(
         if underlying is not None and underlying.quantity != 0:
             reasons.append("WHEEL_CSP_REQUIRES_NO_UNDERLYING_POSITION")
         required = plan.strike * Decimal("100")
-        if required > config.risk.max_assignment_notional_usd:
-            reasons.append("WHEEL_ASSIGNMENT_NOTIONAL_LIMIT")
         if account.cash - required < config.risk.minimum_unreserved_cash_usd:
             reasons.append("WHEEL_CSP_CASH_BUFFER_INSUFFICIENT")
         if account.options_buying_power < required:

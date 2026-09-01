@@ -34,6 +34,26 @@ class FakePaperBroker:
         self.position_rows: list[PaperPosition] = []
         self.orders: dict[str, PaperOrder] = {}
         self.option_ask = Decimal("2.20")
+        self.underlying_bid = Decimal("569.90")
+        self.underlying_ask = Decimal("570.00")
+        self.put_candidates = (
+            PaperOptionContract(
+                symbol="QQQ260911P00564000",
+                underlying="QQQ",
+                right="PUT",
+                strike=Decimal("564"),
+                expiration=date(2026, 9, 11),
+                quote=PaperQuote(bid=Decimal("2.00"), ask=Decimal("2.20"), timestamp=self.now),
+            ),
+            PaperOptionContract(
+                symbol="QQQ260911P00552000",
+                underlying="QQQ",
+                right="PUT",
+                strike=Decimal("552"),
+                expiration=date(2026, 9, 11),
+                quote=PaperQuote(bid=Decimal("1.00"), ask=Decimal("1.10"), timestamp=self.now),
+            ),
+        )
         self.activity_rows: list[PaperOptionLifecycleActivity] = []
         self.cancel_count = 0
         self.account_row = PaperAccount(
@@ -73,7 +93,7 @@ class FakePaperBroker:
         return tuple(Decimal(index) for index in range(521, 521 + sessions))
 
     def underlying_quote(self, symbol: str) -> PaperQuote:
-        return PaperQuote(bid=Decimal("569.90"), ask=Decimal("570.00"), timestamp=self.now)
+        return PaperQuote(bid=self.underlying_bid, ask=self.underlying_ask, timestamp=self.now)
 
     def option_candidates(
         self,
@@ -87,23 +107,9 @@ class FakePaperBroker:
     ) -> tuple[PaperOptionContract, ...]:
         expiration = date(2026, 9, 11)
         if right == "PUT":
-            return (
-                PaperOptionContract(
-                    symbol="QQQ260911P00564000",
-                    underlying="QQQ",
-                    right="PUT",
-                    strike=Decimal("564"),
-                    expiration=expiration,
-                    quote=PaperQuote(bid=Decimal("2.00"), ask=Decimal("2.20"), timestamp=self.now),
-                ),
-                PaperOptionContract(
-                    symbol="QQQ260911P00552000",
-                    underlying="QQQ",
-                    right="PUT",
-                    strike=Decimal("552"),
-                    expiration=expiration,
-                    quote=PaperQuote(bid=Decimal("1.00"), ask=Decimal("1.10"), timestamp=self.now),
-                ),
+            return tuple(
+                replace(item, quote=replace(item.quote, timestamp=self.now))
+                for item in self.put_candidates
             )
         return (
             PaperOptionContract(
@@ -237,6 +243,48 @@ def test_new_entry_cutoff_is_strict_but_does_not_halt_runtime(tmp_path: Path) ->
     assert outcome.status == "NO_ACTION"
     assert outcome.reason_codes == ("WHEEL_NEW_ENTRY_CUTOFF_REACHED",)
     assert broker.submit_count == 0
+    persisted = runtime.store.load_state(config_hash=runtime.loaded.config_hash, now=cutoff)
+    assert persisted.sequence == 1
+    assert persisted.last_run_at == cutoff
+
+
+def test_risk_rejection_advances_audit_state_without_submission(tmp_path: Path) -> None:
+    broker = FakePaperBroker()
+    broker.account_row = replace(broker.account_row, cash=Decimal("80000"))
+    runtime = _runtime(tmp_path, broker)
+
+    outcome = runtime.run_once(now=MONDAY)
+
+    assert outcome.status == "RISK_REJECTED"
+    assert outcome.reason_codes == ("WHEEL_CSP_CASH_BUFFER_INSUFFICIENT",)
+    assert broker.submit_count == 0
+    persisted = runtime.store.load_state(config_hash=runtime.loaded.config_hash, now=MONDAY)
+    assert persisted.sequence == 1
+    assert persisted.last_run_at == MONDAY
+    assert outcome.state_hash == persisted.state_hash
+
+
+def test_seventy_thousand_dollar_put_is_allowed_when_fully_cash_secured(tmp_path: Path) -> None:
+    broker = FakePaperBroker()
+    broker.underlying_bid = Decimal("714.90")
+    broker.underlying_ask = Decimal("715.00")
+    broker.put_candidates = (
+        PaperOptionContract(
+            symbol="QQQ260911P00700000",
+            underlying="QQQ",
+            right="PUT",
+            strike=Decimal("700"),
+            expiration=date(2026, 9, 11),
+            quote=PaperQuote(bid=Decimal("2.00"), ask=Decimal("2.20"), timestamp=broker.now),
+        ),
+    )
+    runtime = _runtime(tmp_path, broker)
+
+    outcome = runtime.run_once(now=MONDAY)
+
+    assert outcome.status == "ORDER_SUBMITTED"
+    assert broker.submit_count == 1
+    assert broker.submitted_plans[0].collateral_required == Decimal("70000")
 
 
 def test_missing_arm_is_deterministic_no_submission(tmp_path: Path) -> None:
