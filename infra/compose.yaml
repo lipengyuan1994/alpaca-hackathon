@@ -96,9 +96,12 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
       REGIMESWITCH_EXECUTION_ROLE: regimeswitch_execution
       REGIMESWITCH_EXECUTION_PASSWORD_FILE: /run/secrets/postgres_execution_password
+      REGIMESWITCH_READONLY_ROLE: regimeswitch_readonly
+      REGIMESWITCH_READONLY_PASSWORD_FILE: /run/secrets/postgres_readonly_password
     secrets:
       - postgres_bootstrap_password
       - postgres_execution_password
+      - postgres_readonly_password
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
@@ -131,9 +134,6 @@ services:
       PAPER_ACCOUNT_ID_FILE: /run/secrets/paper_account_id
       PAPER_API_BASE_URL: https://paper-api.alpaca.markets
       DATABASE_URL_FILE: /run/secrets/execution_database_url
-      # Blank defaults let non-execution roles start without release material.
-      # deployment_from_environment() rejects these empty values before the
-      # worker can construct a broker adapter or submit an order.
       RISK_POLICY_HASH: ${RISK_POLICY_HASH:-}
       TEMPLATE_CATALOG_HASH: ${TEMPLATE_CATALOG_HASH:-}
       STRATEGY_REGISTRY_HASH: ${STRATEGY_REGISTRY_HASH:-}
@@ -164,10 +164,18 @@ services:
     build:
       context: ..
       dockerfile: infra/Dockerfile.api
+    environment:
+      DATABASE_URL_FILE: /run/secrets/readonly_database_url
     ports:
       - "${PUBLIC_API_PORT:-8000}:8000"
+    secrets:
+      - readonly_database_url
+    depends_on:
+      postgres:
+        condition: service_healthy
     networks:
       - public
+      - database-internal
     restart: unless-stopped
 
 networks:
@@ -208,3 +216,7 @@ secrets:
     file: "${REGIMESWITCH_SECRETS_DIR:-/Users/lipengyuan/.config/great_secrets}/postgres/bootstrap_password"
   postgres_execution_password:
     file: "${REGIMESWITCH_SECRETS_DIR:-/Users/lipengyuan/.config/great_secrets}/postgres/execution_password"
+  postgres_readonly_password:
+    file: "${REGIMESWITCH_SECRETS_DIR:-/Users/lipengyuan/.config/great_secrets}/postgres/readonly_password"
+  readonly_database_url:
+    file: "${REGIMESWITCH_SECRETS_DIR:-/Users/lipengyuan/.config/great_secrets}/readonly_database_url"
