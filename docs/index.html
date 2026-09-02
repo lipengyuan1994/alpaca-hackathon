@@ -25,9 +25,10 @@
       <span>Stable Income Generator</span>
     </a>
     <nav aria-label="Primary navigation">
+      <a href="#live-paper">Live paper</a>
       <a href="#performance">Performance</a>
-      <a href="#strategy">Strategy</a>
       <a href="#intelligence">Intelligence</a>
+      <a href="architecture/ARCHITECTURE_DESIGN.html">Architecture</a>
       <a class="nav-cta" href="#run">Run it</a>
     </nav>
   </header>
@@ -53,16 +54,16 @@
       <aside class="proof-card" aria-label="Live paper account snapshot">
         <div class="proof-card-head">
           <span>Paper account equity</span>
-          <span class="status-pill"><span class="live-dot" aria-hidden="true"></span> Broker verified</span>
+          <span class="status-pill" data-live-freshness><span class="live-dot" aria-hidden="true"></span> Near-live · checking</span>
         </div>
-        <strong>$100,079.73</strong>
-        <p class="positive">+$79.73 since fresh $100K baseline</p>
+        <a class="live-equity-link" href="#live-paper" aria-label="Open near-live Alpaca paper evidence"><strong data-live-equity>$100,079.73</strong></a>
+        <p class="positive" data-live-total-pnl>+$79.73 since fresh $100K baseline</p>
         <dl>
-          <div><dt>Account ID</dt><dd class="account-row"><code>4c0db2cd-f24c-419f-a9fb-339a24cdef1c</code><button class="copy-mini" type="button" data-copy="4c0db2cd-f24c-419f-a9fb-339a24cdef1c" aria-label="Copy Alpaca paper account ID">Copy</button></dd></div>
+          <div><dt>Account ID</dt><dd class="account-row"><code data-live-account-id>4c0db2cd-f24c-419f-a9fb-339a24cdef1c</code><button class="copy-mini" type="button" data-copy="4c0db2cd-f24c-419f-a9fb-339a24cdef1c" aria-label="Copy Alpaca paper account ID">Copy</button></dd></div>
           <div><dt>Strategy</dt><dd>V13.5 · QQQ</dd></div>
-          <div><dt>Snapshot</dt><dd>Sep 2, 2026 · 5:31 PM ET</dd></div>
+          <div><dt>Last deployed</dt><dd><time data-live-generated-at datetime="2026-09-02T22:04:11.865285Z">Sep 2, 2026 · 6:04 PM ET</time></dd></div>
         </dl>
-        <small><strong>broker_reported_paper</strong> evidence. Full ID published with account-owner approval; API credentials and controls remain private.</small>
+        <small><strong>broker_reported_paper</strong> evidence refreshed on a five-minute backend schedule. Full ID published with account-owner approval; API credentials and controls remain private.</small>
       </aside>
     </section>
 
@@ -70,7 +71,7 @@
       <article><span>Frozen backtest return</span><strong>+30.29%</strong><small>Jan 2024 – Aug 2026</small></article>
       <article><span>Booked-equity drawdown</span><strong>−7.15%</strong><small>vs −22.84% QQQ</small></article>
       <article><span>Sharpe / Sortino</span><strong>1.14 / 2.44</strong><small>64 completed cycles</small></article>
-      <article><span>Current paper P&amp;L</span><strong class="positive">+$79.73</strong><small>Dated broker snapshot</small></article>
+      <article><span>Near-live paper P&amp;L</span><strong class="positive" data-live-total-pnl-short>+$79.73</strong><small data-live-generated-short>Five-minute broker snapshot</small></article>
     </section>
 
     <section class="section proof-section" id="proof">
@@ -96,11 +97,63 @@
         </article>
         <article class="feature-card feature-card-accent">
           <span class="card-index">03 · PAPER ACCOUNT</span>
-          <h3 class="positive">Positive under live marks</h3>
-          <p>At the published snapshot, the fresh $100,000 Alpaca paper account held $100,079.73 of equity while a managed QQQ put remained open. That is real broker-reported paper evidence—not simulated P&amp;L.</p>
-          <a href="assets/data/live-paper-snapshot.json">Download snapshot record ↓</a>
+          <h3 class="positive">Near-live broker evidence</h3>
+          <p>The public account card is now regenerated from Alpaca every five minutes. Equity, P&amp;L, freshness, and filled V13.5 orders come from the broker response—not simulated P&amp;L.</p>
+          <a href="#live-paper">Open live evidence panel ↓</a>
         </article>
       </div>
+    </section>
+
+    <section class="section live-paper-section" id="live-paper">
+      <div class="section-heading split">
+        <div>
+          <p class="eyebrow"><span class="live-dot" aria-hidden="true"></span> Alpaca paper evidence</p>
+          <h2>Five-minute proof.<br>Zero public credentials.</h2>
+        </div>
+        <div class="section-intro">
+          <p>A scheduled GitHub Actions runner authenticates privately, reads the paper account and closed orders, removes every field we do not intend to publish, and deploys this static evidence with GitHub Pages.</p>
+          <p class="freshness-line"><strong data-live-feed-status>Loading latest deployed snapshot…</strong><br><span>Browser checks every 60 seconds · backend target every 5 minutes · marked stale after 15 minutes</span></p>
+        </div>
+      </div>
+
+      <div class="live-metric-grid" aria-label="Near-live paper account metrics">
+        <article><span>Equity</span><strong data-live-equity>$100,079.73</strong><small>Broker reported</small></article>
+        <article><span>Total paper P&amp;L</span><strong class="positive" data-live-total-pnl-short>+$79.73</strong><small>vs fresh $100K baseline</small></article>
+        <article><span>Today</span><strong class="positive" data-live-day-pnl>+$150.00</strong><small data-live-day-return>+0.15%</small></article>
+        <article><span>Cash / buying power</span><strong data-live-cash>$100,375.73</strong><small data-live-buying-power>$119,902.92 buying power</small></article>
+      </div>
+
+      <div class="trades-card">
+        <div class="trades-card-head">
+          <div>
+            <p class="eyebrow">Most recent system activity</p>
+            <h3>Last 10 filled V13.5 orders</h3>
+          </div>
+          <div class="trade-meta"><span data-live-order-count>5 fills available</span><a href="assets/data/live-paper-snapshot.json">Download hash-bound JSON ↓</a></div>
+        </div>
+        <div class="live-table-wrap">
+          <table class="live-trades-table">
+            <caption>Only filled broker orders carrying the <code>rs-v135</code> system prefix are included. Manual, canceled, unfilled, and foreign orders are excluded.</caption>
+            <thead><tr><th scope="col">Filled</th><th scope="col">Action</th><th scope="col">Contract</th><th scope="col">Qty</th><th scope="col">Avg fill</th><th scope="col">System ref</th></tr></thead>
+            <tbody data-live-orders>
+              <tr><td>Sep 1 · 11:42 AM ET</td><td><span class="trade-action sell">Sell to open</span></td><td><strong>QQQ $704 PUT</strong><small>Expires Sep 8, 2026</small></td><td>1</td><td>$2.78</td><td><code>805c2262</code></td></tr>
+              <tr><td>Sep 1 · 11:41 AM ET</td><td><span class="trade-action buy">Buy to close</span></td><td><strong>QQQ $702 PUT</strong><small>Expires Sep 8, 2026</small></td><td>1</td><td>$2.37</td><td><code>771c164a</code></td></tr>
+              <tr><td>Sep 1 · 10:31 AM ET</td><td><span class="trade-action sell">Sell to open</span></td><td><strong>QQQ $702 PUT</strong><small>Expires Sep 8, 2026</small></td><td>1</td><td>$2.86</td><td><code>2dd0bb46</code></td></tr>
+              <tr><td>Sep 1 · 10:30 AM ET</td><td><span class="trade-action buy">Buy to close</span></td><td><strong>QQQ $700 PUT</strong><small>Expires Sep 8, 2026</small></td><td>1</td><td>$2.57</td><td><code>c46ad52f</code></td></tr>
+              <tr><td>Sep 1 · 10:01 AM ET</td><td><span class="trade-action sell">Sell to open</span></td><td><strong>QQQ $700 PUT</strong><small>Expires Sep 8, 2026</small></td><td>1</td><td>$3.06</td><td><code>4f4492d1</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <ol class="refresh-flow" aria-label="How the public paper snapshot is refreshed">
+        <li><span>01</span><strong>Schedule</strong><small>GitHub queues the publisher every five minutes.</small></li>
+        <li><span>02</span><strong>Read only</strong><small>Credentials are injected from encrypted Actions secrets.</small></li>
+        <li><span>03</span><strong>Sanitize</strong><small>Account values and matching filled system orders survive the allowlist.</small></li>
+        <li><span>04</span><strong>Hash</strong><small>The exact public JSON receives a deterministic SHA-256 binding.</small></li>
+        <li><span>05</span><strong>Deploy</strong><small>GitHub Pages atomically replaces the previous good snapshot.</small></li>
+      </ol>
+      <p class="paper-disclosure">Paper trading is simulated and is not live-money performance. Scheduled workflows may start later than their target during GitHub load; the page therefore displays the broker timestamp and fails visibly to <strong>STALE</strong> instead of pretending freshness.</p>
     </section>
 
     <section class="section performance" id="performance">
@@ -286,7 +339,7 @@ curl http://127.0.0.1:8000/v1/status</code></pre>
       </div>
       <div class="run-links">
         <a class="button button-primary" href="https://github.com/lipengyuan1994/alpaca-hackathon/blob/main/docs/deployment/judge-reproduce.md">Full reproduction guide</a>
-        <a class="button button-secondary" href="https://github.com/lipengyuan1994/alpaca-hackathon/blob/main/docs/architecture/ARCHITECTURE_DESIGN.html">Explore architecture</a>
+        <a class="button button-secondary" href="architecture/ARCHITECTURE_DESIGN.html">Explore architecture</a>
       </div>
     </section>
 
@@ -311,6 +364,7 @@ curl http://127.0.0.1:8000/v1/status</code></pre>
     <p>RegimeSwitch · Paper-only options research and automation · MIT licensed</p>
     <nav aria-label="Footer navigation">
       <a href="https://github.com/lipengyuan1994/alpaca-hackathon">GitHub</a>
+      <a href="architecture/ARCHITECTURE_DESIGN.html">Architecture</a>
       <a href="https://github.com/lipengyuan1994/alpaca-hackathon/blob/main/docs/index.md">Docs</a>
       <a href="#top">Back to top ↑</a>
     </nav>

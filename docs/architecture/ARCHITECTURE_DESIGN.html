@@ -4,7 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Formal physical, logical, and data-flow architecture design for the RegimeSwitch paper-only options-agent platform.">
-  <title>RegimeSwitch — Formal Architecture Design</title>
+  <meta name="theme-color" content="#0d2a4a">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://lipengyuan1994.github.io/alpaca-hackathon/architecture/ARCHITECTURE_DESIGN.html">
+  <meta property="og:title" content="Stable Income Generator · Architecture">
+  <meta property="og:description" content="Physical, logical, data-flow, PostgreSQL, container, and authority architecture for the paper-only trading platform.">
+  <meta property="og:image" content="https://lipengyuan1994.github.io/alpaca-hackathon/assets/stable-income-generator-banner.png">
+  <title>Stable Income Generator — Formal Architecture</title>
   <style>
     :root {
       color-scheme: light;
@@ -91,6 +97,19 @@
       letter-spacing: .06em;
       text-transform: uppercase;
     }
+    .site-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin: 0 0 18px;
+      color: #a8dcd8;
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+    .site-back:hover { color: #fff; }
 
     main { min-width: 0; }
     .masthead {
@@ -272,9 +291,10 @@
 <body>
   <div class="document-shell">
     <aside class="sidebar" aria-label="Document navigation">
+      <a class="site-back" href="../" aria-label="Back to Stable Income Generator">← Product site</a>
       <div class="brand-mark" aria-hidden="true">RS</div>
-      <h1>RegimeSwitch Architecture</h1>
-      <p class="subtitle">Paper-only options-agent platform</p>
+      <h1>Stable Income Generator</h1>
+      <p class="subtitle">Formal platform architecture</p>
       <nav>
         <a href="#control">Document control</a>
         <a href="#executive">Executive view</a>
@@ -287,13 +307,13 @@
         <a href="#decisions">Architecture decisions</a>
         <a href="#acceptance">Acceptance criteria</a>
       </nav>
-      <div class="classification">Internal architecture record<br>Paper execution only</div>
+      <div class="classification">Public judge architecture<br>Paper execution only</div>
     </aside>
 
     <main>
       <header class="masthead">
         <p class="eyebrow">Formal Architecture Design · Version 1.1</p>
-        <h2>RegimeSwitch Paper Options-Agent Platform</h2>
+        <h2>Stable Income Generator Platform</h2>
         <p class="lead">A bounded, auditable architecture for deterministic signal generation, constrained LLM review, defined-risk option planning, independent preflight, and Alpaca paper execution.</p>
         <div class="status-line" aria-label="Architecture status">
           <span class="status-chip">Implementation aligned</span>
@@ -379,7 +399,7 @@
                 <text x="830" y="101" text-anchor="middle" class="svg-sub">IEX bars · headline metadata</text>
                 <rect x="970" y="53" width="220" height="70" class="svg-node execution"/>
                 <text x="1080" y="80" text-anchor="middle" class="svg-title">Alpaca Paper Trading</text>
-                <text x="1080" y="101" text-anchor="middle" class="svg-sub">paper-api.alpaca.markets only</text>
+                <text x="1080" y="101" text-anchor="middle" class="svg-sub">authenticated paper access only</text>
 
                 <rect x="30" y="155" width="1220" height="540" rx="18" class="svg-zone"/>
                 <text x="55" y="185" class="svg-zone-label">DOCKER COMPOSE · ALPACA-HACKATHON-PAPER · DEFAULT LINUX/ARM64</text>
@@ -735,7 +755,7 @@
         </section>
 
         <footer>
-          <div class="footer-row"><span>RegimeSwitch · RS-ARC-001 · Version 1.1</span><span>Paper-only architecture · Generated from repository implementation and normative design</span></div>
+          <div class="footer-row"><span>Stable Income Generator · RS-ARC-001 · Version 1.1</span><span>Paper-only architecture · Generated from repository implementation and normative design</span></div>
         </footer>
       </div>
     </main>
