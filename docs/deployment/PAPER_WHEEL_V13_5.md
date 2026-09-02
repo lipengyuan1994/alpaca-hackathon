@@ -30,9 +30,9 @@ paper canary permits evaluation throughout regular market hours so a transient
 provider or repository-controlled failure does not spend the week's only entry
 opportunity. This changes deployment timing evidence and must not be represented
 as a replay of the frozen research backtest. Config schema
-`paper-wheel-config/v3` makes the breaking schedule and collateral-policy
-changes explicit; legacy clock-window and fixed assignment-cap keys are rejected
-rather than silently ignored.
+`paper-wheel-config/v4` makes the breaking schedule and collateral-policy
+changes explicit; legacy clock-window, fixed assignment-cap, and unreserved-cash
+keys are rejected rather than silently ignored.
 
 The `activation` window authorizes **new entries only**. Reconciliation and a
 risk-reducing buy-to-close remain available after the arm expires so a 7–14 DTE
@@ -108,9 +108,26 @@ arm token:
   --reason "Authorized QQQ V13.5 market-hours Alpaca paper canary through 2026-09-04"
 ```
 
-Any semantic YAML change changes `config_hash` and invalidates the arm. If a
-position is open, reconcile and close or complete its lifecycle before migrating
-to a new configuration/runtime root.
+Any semantic YAML change changes `config_hash` and invalidates the arm. Normally,
+an open position must complete its lifecycle before moving to a new configuration
+or runtime root.
+
+For an explicitly authorized in-place paper-policy change while a managed
+position is open, use the audited migration command instead of editing runtime
+state or deleting the arm. It requires the exact previous config hash, a
+reconciled position, no open order, the same paper account and activation
+window, and records start/completion events in the hash-chained journal:
+
+```zsh
+.venv/bin/python -m packages.paper_wheel.cli migrate-config \
+  --config configs/paper/v13_5_qqq.yaml \
+  --expected-current-config-hash sha256:<exact-previous-hash> \
+  --reason "Operator authorized paper-policy migration"
+```
+
+The command never submits, cancels, or replaces an order. A partially completed
+migration is recoverable only when its journal start event and old/new hashes
+match exactly; every other mismatch fails closed.
 
 Verify that the future schedule window, current config hash, and authenticated
 paper account all match the token:
@@ -160,9 +177,10 @@ Even after cancellation, the same client order ID is never reused.
 The runtime holds a nonblocking process lease, allows one account order at a
 time, rejects stale/crossed/wide quotes, enforces cash and share collateral,
 blocks new entries after a 2% daily drawdown, and keeps buy-to-close available.
-There is no independent fixed assignment-notional ceiling. A cash-secured put
-is eligible only when paper cash and options buying power each cover 100 shares
-at the strike and at least $25,000 cash remains unreserved after that collateral.
+There is no independent fixed assignment-notional ceiling or unreserved-cash
+requirement. A cash-secured put is eligible only when paper cash and options
+buying power each cover 100 shares at the strike. Whole-contract sizing, full
+cash collateral, and the one-contract-per-symbol limit remain mandatory.
 Missing assignment/expiration activity waits up to 30 minutes and then halts
 instead of guessing.
 
