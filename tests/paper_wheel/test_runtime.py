@@ -5,6 +5,8 @@ from datetime import UTC, date, datetime, timedelta
 from decimal import Decimal
 from pathlib import Path
 
+import pytest
+
 from packages.contracts.canonical import canonical_hash
 from packages.paper_wheel.broker import (
     PaperAccount,
@@ -248,20 +250,44 @@ def test_new_entry_cutoff_is_strict_but_does_not_halt_runtime(tmp_path: Path) ->
     assert persisted.last_run_at == cutoff
 
 
-def test_risk_rejection_advances_audit_state_without_submission(tmp_path: Path) -> None:
+def test_insufficient_cash_rejection_advances_audit_state_without_submission(tmp_path: Path) -> None:
     broker = FakePaperBroker()
-    broker.account_row = replace(broker.account_row, cash=Decimal("80000"))
+    broker.account_row = replace(broker.account_row, cash=Decimal("56399.99"))
     runtime = _runtime(tmp_path, broker)
 
     outcome = runtime.run_once(now=MONDAY)
 
     assert outcome.status == "RISK_REJECTED"
-    assert outcome.reason_codes == ("WHEEL_CSP_CASH_BUFFER_INSUFFICIENT",)
+    assert outcome.reason_codes == ("WHEEL_CSP_CASH_INSUFFICIENT",)
     assert broker.submit_count == 0
     persisted = runtime.store.load_state(config_hash=runtime.loaded.config_hash, now=MONDAY)
     assert persisted.sequence == 1
     assert persisted.last_run_at == MONDAY
     assert outcome.state_hash == persisted.state_hash
+
+
+def test_exact_assignment_cash_is_sufficient_without_reserve(tmp_path: Path) -> None:
+    broker = FakePaperBroker()
+    broker.account_row = replace(broker.account_row, cash=Decimal("56400"))
+    runtime = _runtime(tmp_path, broker)
+
+    outcome = runtime.run_once(now=MONDAY)
+
+    assert outcome.status == "ORDER_SUBMITTED"
+    assert broker.submit_count == 1
+    assert broker.submitted_plans[0].collateral_required == Decimal("56400")
+
+
+def test_options_buying_power_still_must_cover_full_assignment(tmp_path: Path) -> None:
+    broker = FakePaperBroker()
+    broker.account_row = replace(broker.account_row, options_buying_power=Decimal("56399.99"))
+    runtime = _runtime(tmp_path, broker)
+
+    outcome = runtime.run_once(now=MONDAY)
+
+    assert outcome.status == "RISK_REJECTED"
+    assert outcome.reason_codes == ("WHEEL_CSP_OPTIONS_BUYING_POWER_INSUFFICIENT",)
+    assert broker.submit_count == 0
 
 
 def test_seventy_thousand_dollar_put_is_allowed_when_fully_cash_secured(tmp_path: Path) -> None:
@@ -438,6 +464,58 @@ def test_schedule_verification_requires_exact_bound_arm(tmp_path: Path) -> None:
     assert missing.status == "PAPER_ARM_SCHEDULE_BLOCKED"
     assert missing.reason_codes == ("WHEEL_OPERATOR_ARM_MISSING",)
     assert ready.status == "PAPER_ARM_SCHEDULE_READY"
+
+
+def test_config_migration_preserves_managed_position_and_rebinds_arm(tmp_path: Path) -> None:
+    broker = FakePaperBroker()
+    current_runtime = _runtime(tmp_path, broker)
+    assert current_runtime.run_once(now=MONDAY).status == "ORDER_SUBMITTED"
+    previous_hash = current_runtime.loaded.config_hash
+    migrated_hash = canonical_hash({"config": current_runtime.config.model_dump(mode="json"), "revision": "next"})
+    migrated_loaded = current_runtime.loaded.model_copy(update={"config_hash": migrated_hash})
+    migrated_runtime = PaperWheelRuntime(loaded=migrated_loaded, broker=broker, project_root=tmp_path)
+    submissions_before_migration = broker.submit_count
+
+    outcome = migrated_runtime.migrate_config(
+        now=MONDAY + timedelta(minutes=1),
+        expected_current_config_hash=previous_hash,
+        operator_reason="operator authorized cash policy migration",
+    )
+    repeated = migrated_runtime.migrate_config(
+        now=MONDAY + timedelta(minutes=2),
+        expected_current_config_hash=previous_hash,
+        operator_reason="operator authorized cash policy migration",
+    )
+
+    state = migrated_runtime.store.load_state(config_hash=migrated_hash, now=MONDAY)
+    arm = migrated_runtime.store.load_arm()
+    events = migrated_runtime.store.events()
+    assert outcome.status == "PAPER_CONFIG_MIGRATED"
+    assert repeated.status == "PAPER_CONFIG_MIGRATION_ALREADY_APPLIED"
+    assert state.managed_options["QQQ"].option_symbol == "QQQ260911P00564000"
+    assert arm is not None and arm.config_hash == migrated_hash
+    assert [event.event_type for event in events[-2:]] == ["CONFIG_MIGRATION_STARTED", "CONFIG_MIGRATION_COMPLETED"]
+    assert broker.submit_count == submissions_before_migration
+    assert broker.cancel_count == 0
+
+
+def test_config_migration_rejects_wrong_source_hash_without_writes(tmp_path: Path) -> None:
+    broker = FakePaperBroker()
+    runtime = _runtime(tmp_path, broker)
+    assert runtime.run_once(now=MONDAY).status == "ORDER_SUBMITTED"
+    migrated_hash = canonical_hash({"config": runtime.config.model_dump(mode="json"), "revision": "next"})
+    migrated_loaded = runtime.loaded.model_copy(update={"config_hash": migrated_hash})
+    migrated_runtime = PaperWheelRuntime(loaded=migrated_loaded, broker=broker, project_root=tmp_path)
+    previous_events = migrated_runtime.store.events()
+
+    with pytest.raises(RuntimeError, match="WHEEL_CONFIG_MIGRATION_BINDING_MISMATCH"):
+        migrated_runtime.migrate_config(
+            now=MONDAY,
+            expected_current_config_hash=canonical_hash({"wrong": "source"}),
+            operator_reason="operator authorized cash policy migration",
+        )
+
+    assert migrated_runtime.store.events() == previous_events
 
 
 def test_daily_drawdown_blocks_entry_but_does_not_block_buy_to_close(tmp_path: Path) -> None:

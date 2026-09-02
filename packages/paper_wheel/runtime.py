@@ -96,6 +96,11 @@ def _client_order_id(prefix: str, payload: dict[str, Any]) -> str:
     return f"{prefix}-{digest[:32]}"
 
 
+def _is_canonical_hash(value: str) -> bool:
+    digest = value.removeprefix("sha256:")
+    return value.startswith("sha256:") and len(digest) == 64 and all(character in "0123456789abcdef" for character in digest)
+
+
 class PaperWheelRuntime:
     def __init__(self, *, loaded: LoadedWheelConfig, broker: PaperWheelBroker, project_root: Any) -> None:
         self.loaded = loaded
@@ -124,6 +129,121 @@ class PaperWheelRuntime:
             detail={"config_hash": self.loaded.config_hash, "account_id_hash": token.account_id_hash, "token_hash": token.token_hash},
         )
         return token
+
+    def migrate_config(
+        self,
+        *,
+        now: datetime,
+        expected_current_config_hash: str,
+        operator_reason: str,
+    ) -> RuntimeOutcome:
+        """Rebind reconciled paper state and its arm to an explicitly authorized config."""
+        reason = operator_reason.strip()
+        if not 8 <= len(reason) <= 256:
+            raise RuntimeError("WHEEL_CONFIG_MIGRATION_REASON_INVALID")
+        if not _is_canonical_hash(expected_current_config_hash):
+            raise RuntimeError("WHEEL_CONFIG_MIGRATION_SOURCE_HASH_INVALID")
+        if expected_current_config_hash == self.loaded.config_hash:
+            raise RuntimeError("WHEEL_CONFIG_MIGRATION_HASH_UNCHANGED")
+        normalized_now = now.astimezone(UTC)
+        with self.store.lease():
+            state = self.store.load_existing_state()
+            arm = self.store.load_arm()
+            account = self.broker.account()
+            positions = self.broker.positions()
+            orders = self.broker.open_orders()
+            if account.account_id != self.broker.expected_account_id:
+                raise RuntimeError("WHEEL_CONFIG_MIGRATION_ACCOUNT_MISMATCH")
+            if state.status == "HALTED":
+                raise RuntimeError("WHEEL_CONFIG_MIGRATION_HALTED_STATE")
+            if orders:
+                raise RuntimeError("WHEEL_CONFIG_MIGRATION_OPEN_ORDERS")
+            structural = broker_shape_violations(positions=positions, orders=orders, config=self.config)
+            position_reasons = runtime_position_violations(state=state, positions=positions, config=self.config)
+            if structural or position_reasons:
+                raise RuntimeError((structural or position_reasons)[0])
+            if arm is None:
+                raise RuntimeError("WHEEL_CONFIG_MIGRATION_ARM_MISSING")
+            expected_start = datetime.combine(
+                self.config.activation.start_date,
+                time.min,
+                tzinfo=_EASTERN,
+            ).astimezone(UTC)
+            expected_expiry = datetime.combine(
+                self.config.activation.end_date + timedelta(days=1),
+                time.min,
+                tzinfo=_EASTERN,
+            ).astimezone(UTC)
+            if arm.account_id_hash != _account_hash(account.account_id):
+                raise RuntimeError("WHEEL_CONFIG_MIGRATION_ARM_ACCOUNT_MISMATCH")
+            if arm.valid_from != expected_start or arm.expires_at != expected_expiry:
+                raise RuntimeError("WHEEL_CONFIG_MIGRATION_ARM_WINDOW_MISMATCH")
+            allowed_hashes = {expected_current_config_hash, self.loaded.config_hash}
+            if state.config_hash not in allowed_hashes or arm.config_hash not in allowed_hashes:
+                raise RuntimeError("WHEEL_CONFIG_MIGRATION_BINDING_MISMATCH")
+            if state.config_hash == expected_current_config_hash and arm.config_hash == self.loaded.config_hash:
+                raise RuntimeError("WHEEL_CONFIG_MIGRATION_PHASE_INVALID")
+
+            migration_detail = {
+                "previous_config_hash": expected_current_config_hash,
+                "new_config_hash": self.loaded.config_hash,
+            }
+            matching_started = any(
+                event.event_type == "CONFIG_MIGRATION_STARTED"
+                and event.detail.get("previous_config_hash") == expected_current_config_hash
+                and event.detail.get("new_config_hash") == self.loaded.config_hash
+                for event in self.store.events()
+            )
+            matching_completed = any(
+                event.event_type == "CONFIG_MIGRATION_COMPLETED"
+                and event.detail.get("previous_config_hash") == expected_current_config_hash
+                and event.detail.get("new_config_hash") == self.loaded.config_hash
+                for event in self.store.events()
+            )
+            if state.config_hash == self.loaded.config_hash and arm.config_hash == self.loaded.config_hash:
+                if not matching_started or not matching_completed:
+                    raise RuntimeError("WHEEL_CONFIG_MIGRATION_AUDIT_INCOMPLETE")
+                return RuntimeOutcome(status="PAPER_CONFIG_MIGRATION_ALREADY_APPLIED", state_hash=state.state_hash)
+
+            if not matching_started:
+                self.store.append(
+                    event_type="CONFIG_MIGRATION_STARTED",
+                    occurred_at=normalized_now,
+                    detail={
+                        **migration_detail,
+                        "previous_arm_token_hash": arm.token_hash,
+                        "operator_reason": reason,
+                    },
+                )
+            if state.config_hash == expected_current_config_hash:
+                migrated_state = self._advance(
+                    state,
+                    now=normalized_now,
+                    config_hash=self.loaded.config_hash,
+                )
+                self.store.save_state(migrated_state)
+            else:
+                if not matching_started:
+                    raise RuntimeError("WHEEL_CONFIG_MIGRATION_AUDIT_INCOMPLETE")
+                migrated_state = state
+            migrated_arm = WheelArmTokenV1(
+                config_hash=self.loaded.config_hash,
+                account_id_hash=arm.account_id_hash,
+                valid_from=arm.valid_from,
+                expires_at=arm.expires_at,
+                operator_reason=reason,
+            )
+            self.store.save_arm(migrated_arm)
+            self.store.append(
+                event_type="CONFIG_MIGRATION_COMPLETED",
+                occurred_at=normalized_now,
+                detail={
+                    **migration_detail,
+                    "new_arm_token_hash": migrated_arm.token_hash,
+                    "state_hash": migrated_state.state_hash,
+                },
+            )
+            return RuntimeOutcome(status="PAPER_CONFIG_MIGRATED", state_hash=migrated_state.state_hash)
 
     def operator_halt(self, *, now: datetime, reason: str) -> RuntimeOutcome:
         if not 8 <= len(reason.strip()) <= 256:

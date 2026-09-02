@@ -56,12 +56,19 @@ class WheelStateStore:
     def load_state(self, *, config_hash: str, now: datetime) -> WheelRuntimeStateV1:
         if not self.state_path.exists():
             return WheelRuntimeStateV1(config_hash=config_hash, last_run_at=now.astimezone(UTC))
+        state = self.load_existing_state()
+        if state.config_hash != config_hash:
+            raise RuntimeError("WHEEL_RUNTIME_CONFIG_HASH_CHANGED_REARM_REQUIRED")
+        return state
+
+    def load_existing_state(self) -> WheelRuntimeStateV1:
+        """Load persisted state without accepting a replacement config hash."""
+        if not self.state_path.exists():
+            raise RuntimeError("WHEEL_RUNTIME_STATE_MISSING")
         try:
             state = WheelRuntimeStateV1.model_validate_json(self.state_path.read_text(encoding="utf-8"))
         except (OSError, ValueError) as exc:
             raise RuntimeError("WHEEL_RUNTIME_STATE_INVALID") from exc
-        if state.config_hash != config_hash:
-            raise RuntimeError("WHEEL_RUNTIME_CONFIG_HASH_CHANGED_REARM_REQUIRED")
         return state
 
     def save_state(self, state: WheelRuntimeStateV1) -> None:

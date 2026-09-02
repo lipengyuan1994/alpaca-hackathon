@@ -56,6 +56,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     halt.add_argument("--config", required=True, type=Path)
     halt.add_argument("--reason", required=True)
     halt.add_argument("--at", help="timezone-aware operator timestamp")
+    migrate = actions.add_parser("migrate-config")
+    migrate.add_argument("--config", required=True, type=Path)
+    migrate.add_argument("--expected-current-config-hash", required=True)
+    migrate.add_argument("--reason", required=True)
+    migrate.add_argument("--at", help="timezone-aware operator timestamp")
     args = parser.parse_args(argv)
     try:
         if args.action == "status":
@@ -103,6 +108,12 @@ def main(argv: Sequence[str] | None = None) -> int:
                 )
             )
             return 0
+        elif args.action == "migrate-config":
+            outcome = runtime.migrate_config(
+                now=now,
+                expected_current_config_hash=args.expected_current_config_hash,
+                operator_reason=args.reason,
+            )
         else:
             outcome = runtime.operator_halt(now=now, reason=args.reason)
         print(canonical_json(outcome.public_dict()))
