@@ -1,0 +1,55 @@
+name: stable-income-generator-pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/**"
+      - "packages/paper_wheel/public_snapshot.py"
+      - ".github/workflows/pages.yml"
+  schedule:
+    - cron: "2/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Refresh sanitized paper evidence
+        env:
+          ALPACA_PAPER_API_KEY: ${{ secrets.ALPACA_PAPER_API_KEY }}
+          ALPACA_PAPER_API_SECRET: ${{ secrets.ALPACA_PAPER_API_SECRET }}
+          ALPACA_PAPER_ACCOUNT_ID: ${{ secrets.ALPACA_PAPER_ACCOUNT_ID }}
+          ALPACA_PAPER_BASE_URL: ${{ secrets.ALPACA_PAPER_BASE_URL }}
+        run: >-
+          python3 packages/paper_wheel/public_snapshot.py
+          --output docs/assets/data/live-paper-snapshot.json
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Assemble public site
+        run: |
+          mkdir -p _site/architecture
+          cp docs/index.html docs/.nojekyll _site/
+          cp -R docs/assets _site/assets
+          cp docs/architecture/ARCHITECTURE_DESIGN.html _site/architecture/ARCHITECTURE_DESIGN.html
+      - name: Upload static site
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

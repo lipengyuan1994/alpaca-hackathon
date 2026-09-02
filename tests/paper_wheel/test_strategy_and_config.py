@@ -13,7 +13,7 @@ from packages.paper_wheel.strategy import should_take_profit, target_strike_frac
 def test_checked_in_v13_5_qqq_config_is_strict_and_paper_only() -> None:
     loaded = load_config(Path("configs/paper/v13_5_qqq.yaml"))
 
-    assert loaded.config.schema_version == "paper-wheel-config/v3"
+    assert loaded.config.schema_version == "paper-wheel-config/v4"
     assert loaded.config.runtime.mode == "paper"
     assert loaded.config.runtime.paper_base_url == "https://paper-api.alpaca.markets"
     assert loaded.config.strategy.strategy_id == "v13.5"
@@ -92,6 +92,18 @@ def test_config_rejects_removed_fixed_assignment_cap(tmp_path: Path) -> None:
     legacy = tmp_path / "legacy-assignment-cap.yaml"
     legacy.write_text(
         source.replace("  max_contracts_per_symbol: 1\n", "  max_contracts_per_symbol: 1\n  max_assignment_notional_usd: 60000\n"),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError):
+        load_config(legacy)
+
+
+def test_config_rejects_removed_unreserved_cash_requirement(tmp_path: Path) -> None:
+    source = Path("configs/paper/v13_5_qqq.yaml").read_text(encoding="utf-8")
+    legacy = tmp_path / "legacy-cash-reserve.yaml"
+    legacy.write_text(
+        source.replace("  max_contracts_per_symbol: 1\n", "  max_contracts_per_symbol: 1\n  minimum_unreserved_cash_usd: 25000\n"),
         encoding="utf-8",
     )
 

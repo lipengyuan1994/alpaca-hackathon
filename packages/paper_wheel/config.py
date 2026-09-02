@@ -75,7 +75,6 @@ class WheelStrategyConfig(StrictModel):
 
 class WheelRiskConfig(StrictModel):
     max_contracts_per_symbol: Literal[1] = 1
-    minimum_unreserved_cash_usd: Decimal = Field(default=Decimal("25000"), ge=0)
     maximum_daily_drawdown_fraction: Decimal = Field(default=Decimal("0.02"), gt=0, le=Decimal("0.10"))
     maximum_quote_age_seconds: int = Field(default=15, ge=1, le=60)
     maximum_clock_skew_seconds: int = Field(default=2, ge=0, le=5)
@@ -124,7 +123,7 @@ class WheelRuntimeConfig(StrictModel):
 
 
 class WheelPaperConfig(StrictModel):
-    schema_version: Literal["paper-wheel-config/v3"] = "paper-wheel-config/v3"
+    schema_version: Literal["paper-wheel-config/v4"] = "paper-wheel-config/v4"
     runtime: WheelRuntimeConfig
     strategy: WheelStrategyConfig
     schedule: WheelScheduleConfig
