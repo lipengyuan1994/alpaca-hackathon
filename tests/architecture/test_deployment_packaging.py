@@ -190,7 +190,7 @@ def test_postgres_service_is_internal_and_initializes_the_runtime_schema() -> No
     assert postgres["networks"] == ["database-internal"]
     assert networks["database-internal"]["internal"] is True
     assert "ports" not in postgres
-    assert postgres["secrets"] == ["postgres_bootstrap_password", "postgres_execution_password"]
+    assert postgres["secrets"] == ["postgres_bootstrap_password", "postgres_execution_password", "postgres_readonly_password"]
     assert postgres["read_only"] is True
     assert "no-new-privileges:true" in postgres["security_opt"]
     assert postgres["healthcheck"]["test"] == [
