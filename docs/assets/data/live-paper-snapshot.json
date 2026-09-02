@@ -1,0 +1,17 @@
+{
+  "schema_version": "stable-income-generator-live-paper-snapshot/v1",
+  "source": "broker_reported_paper",
+  "as_of": "2026-09-02T21:31:43.898726Z",
+  "account_id": "4c0db2cd-f24c-419f-a9fb-339a24cdef1c",
+  "strategy": "v13.5",
+  "underlying": "QQQ",
+  "starting_baseline": 100000.00,
+  "equity": 100079.73,
+  "total_pnl": 79.73,
+  "total_return": 0.0007973,
+  "day_start_equity": 99929.73,
+  "day_pnl": 150.00,
+  "day_return": 0.0015011,
+  "evidence_scope": "A read-only Alpaca paper-account snapshot. It is operational evidence, not a backtest, live-money result, future-return promise, or official contest score.",
+  "publication_note": "The account owner explicitly approved publication of the full paper account ID. API credentials, secrets, and private control paths remain excluded."
+}

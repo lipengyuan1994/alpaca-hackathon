@@ -6,6 +6,7 @@ This directory is the navigation hub for the Alpaca hackathon project. The root 
 
 | Document | Purpose | Primary audience | Authority |
 |---|---|---|---|
+| [`index.html`](index.html) | Public “Stable Income Generator” judge website with V13.5 research, SPY/QQQ comparison, dated paper evidence, system boundaries, and reproduction path | Judges, demo owner, submission reviewers | Public narrative; evidence labels and linked artifacts remain authoritative |
 | [`HACKATHON_PLAN.md`](../HACKATHON_PLAN.md) | Competition requirements, team decisions, product scope, risk posture, six-person ownership, schedule, gates, and submission plan | Entire team | Canonical competition plan |
 | [`architecture/SYSTEM_ARCHITECTURE.md`](architecture/SYSTEM_ARCHITECTURE.md) | Process topology, trust boundaries, package dependency rules, event flow, persistence, deployment, and scaling path | Platform, execution, frontend, release | Normative system design |
 | [`architecture/ARCHITECTURE_DESIGN.html`](architecture/ARCHITECTURE_DESIGN.html) | Professional, print-ready physical, logical, and data-flow architecture design with controls and contract traceability | Architecture reviewers, platform, execution, release | Implementation-aligned visual architecture record |
