@@ -4,6 +4,10 @@ This is the executable modular-monolith skeleton defined in the
 [system architecture](docs/architecture/SYSTEM_ARCHITECTURE.md). It has no
 live-trading mode, endpoint, or live credential path.
 
+The public judge-facing product story is the
+[Stable Income Generator website](https://lipengyuan1994.github.io/alpaca-hackathon/),
+with separated backtest, deterministic-system, and broker-reported paper evidence.
+
 The following are **core-platform macOS/ARM64** fixture paths. They run without network or broker credentials:
 
 ```zsh
