@@ -46,6 +46,12 @@ def test_public_snapshot_filters_sorts_limits_and_hashes_orders() -> None:
     )
 
     assert snapshot["schema_version"] == "stable-income-generator-live-paper/v2"
+    assert snapshot["refresh_contract"]["publishing_window"] == {
+        "timezone": "America/New_York",
+        "weekdays": ["MON", "TUE", "WED", "THU", "FRI"],
+        "start": "09:00",
+        "final_run": "17:00",
+    }
     assert snapshot["account"]["total_pnl"] == 79.73
     assert snapshot["account"]["day_pnl"] == 150.0
     assert len(snapshot["recent_filled_system_orders"]) == 10

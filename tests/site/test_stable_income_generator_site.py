@@ -53,7 +53,9 @@ def test_pages_workflow_publishes_only_the_curated_site() -> None:
     assert "path: _site" in workflow
     assert "path: docs" not in workflow
     assert "cp docs/index.html docs/.nojekyll _site/" in workflow
-    assert 'cron: "2/5 * * * *"' in workflow
+    assert 'cron: "*/5 9-16 * * 1-5"' in workflow
+    assert 'cron: "0 17 * * 1-5"' in workflow
+    assert workflow.count('timezone: "America/New_York"') == 2
     assert "packages/paper_wheel/public_snapshot.py" in workflow
     assert "secrets.ALPACA_PAPER_API_KEY" in workflow
     assert "secrets.ALPACA_PAPER_API_SECRET" in workflow

@@ -98,7 +98,7 @@
         <article class="feature-card feature-card-accent">
           <span class="card-index">03 · PAPER ACCOUNT</span>
           <h3 class="positive">Near-live broker evidence</h3>
-          <p>The public account card is now regenerated from Alpaca every five minutes. Equity, P&amp;L, freshness, and filled V13.5 orders come from the broker response—not simulated P&amp;L.</p>
+          <p>The public account card is regenerated from Alpaca every five minutes on weekdays from 9:00 AM through 5:00 PM ET. Equity, P&amp;L, freshness, and filled V13.5 orders come from the broker response—not simulated P&amp;L.</p>
           <a href="#live-paper">Open live evidence panel ↓</a>
         </article>
       </div>
@@ -108,11 +108,11 @@
       <div class="section-heading split">
         <div>
           <p class="eyebrow"><span class="live-dot" aria-hidden="true"></span> Alpaca paper evidence</p>
-          <h2>Five-minute proof.<br>Zero public credentials.</h2>
+          <h2>Five-minute market-window proof.<br>Zero public credentials.</h2>
         </div>
         <div class="section-intro">
           <p>A scheduled GitHub Actions runner authenticates privately, reads the paper account and closed orders, removes every field we do not intend to publish, and deploys this static evidence with GitHub Pages.</p>
-          <p class="freshness-line"><strong data-live-feed-status>Loading latest deployed snapshot…</strong><br><span>Browser checks every 60 seconds · backend target every 5 minutes · marked stale after 15 minutes</span></p>
+          <p class="freshness-line"><strong data-live-feed-status>Loading latest deployed snapshot…</strong><br><span>Browser checks every 60 seconds · backend target every 5 minutes, weekdays 9:00 AM–5:00 PM ET · marked stale after 15 active minutes</span></p>
         </div>
       </div>
 
@@ -147,13 +147,13 @@
       </div>
 
       <ol class="refresh-flow" aria-label="How the public paper snapshot is refreshed">
-        <li><span>01</span><strong>Schedule</strong><small>GitHub queues the publisher every five minutes.</small></li>
+        <li><span>01</span><strong>Schedule</strong><small>GitHub targets every five minutes, weekdays 9:00 AM–5:00 PM ET.</small></li>
         <li><span>02</span><strong>Read only</strong><small>Credentials are injected from encrypted Actions secrets.</small></li>
         <li><span>03</span><strong>Sanitize</strong><small>Account values and matching filled system orders survive the allowlist.</small></li>
         <li><span>04</span><strong>Hash</strong><small>The exact public JSON receives a deterministic SHA-256 binding.</small></li>
         <li><span>05</span><strong>Deploy</strong><small>GitHub Pages atomically replaces the previous good snapshot.</small></li>
       </ol>
-      <p class="paper-disclosure">Paper trading is simulated and is not live-money performance. Scheduled workflows may start later than their target during GitHub load; the page therefore displays the broker timestamp and fails visibly to <strong>STALE</strong> instead of pretending freshness.</p>
+      <p class="paper-disclosure">Paper trading is simulated and is not live-money performance. The publisher pauses outside its weekday 9:00 AM–5:00 PM ET monitoring window. During active hours, delayed or failed workflows remain visibly <strong>STALE</strong> instead of pretending freshness.</p>
     </section>
 
     <section class="section performance" id="performance">
