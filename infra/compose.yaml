@@ -83,7 +83,7 @@ services:
       - agent-egress
     restart: unless-stopped
 
-   postgres:
+  postgres:
     platform: ${REGIMESWITCH_DOCKER_PLATFORM:-linux/arm64}
     build:
       context: ..
@@ -116,7 +116,11 @@ services:
       - /var/run/postgresql:rw,nosuid,nodev,size=8m
     shm_size: 128mb
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready --username=$${POSTGRES_USER} --dbname=$${POSTGRES_DB}"]
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready --username=$${POSTGRES_USER} --dbname=$${POSTGRES_DB}",
+        ]
       interval: 5s
       timeout: 3s
       retries: 12
@@ -183,18 +187,24 @@ networks:
   agent-internal:
     driver: bridge
     internal: true
+
   agent-egress:
     driver: bridge
+
   market-data-egress:
     driver: bridge
+
   broker-egress:
     driver: bridge
+
   database-internal:
     driver: bridge
     internal: true
+
   database-readonly:
     driver: bridge
     internal: true
+
   public:
     driver: bridge
 
@@ -204,23 +214,33 @@ volumes:
 secrets:
   agent_model_api_key:
     file: "${REGIMESWITCH_SECRETS_DIR:-/Users/lipengyuan/.config/great_secrets}/llm/model_api_key.yaml"
+
   paper_alpaca_api_key:
     file: "${REGIMESWITCH_SECRETS_DIR:-/Users/lipengyuan/.config/great_secrets}/alpaca/alpaca_api_key.yaml"
+
   paper_alpaca_api_secret:
     file: "${REGIMESWITCH_SECRETS_DIR:-/Users/lipengyuan/.config/great_secrets}/alpaca/alpaca_api_key.yaml"
+
   paper_account_id:
     file: "${REGIMESWITCH_SECRETS_DIR:-/Users/lipengyuan/.config/great_secrets}/alpaca/alpaca_api_key.yaml"
+
   execution_database_url:
     file: "${REGIMESWITCH_SECRETS_DIR:-/Users/lipengyuan/.config/great_secrets}/execution_database_url"
+
   economic_alpaca_api_key:
     file: "${REGIMESWITCH_SECRETS_DIR:-/Users/lipengyuan/.config/great_secrets}/alpaca/economic_data_api_key.yaml"
+
   economic_alpaca_api_secret:
     file: "${REGIMESWITCH_SECRETS_DIR:-/Users/lipengyuan/.config/great_secrets}/alpaca/economic_data_api_key.yaml"
+
   postgres_bootstrap_password:
     file: "${REGIMESWITCH_SECRETS_DIR:-/Users/lipengyuan/.config/great_secrets}/postgres/bootstrap_password"
+
   postgres_execution_password:
     file: "${REGIMESWITCH_SECRETS_DIR:-/Users/lipengyuan/.config/great_secrets}/postgres/execution_password"
+
   postgres_readonly_password:
     file: "${REGIMESWITCH_SECRETS_DIR:-/Users/lipengyuan/.config/great_secrets}/postgres/readonly_password"
+
   readonly_database_url:
     file: "${REGIMESWITCH_SECRETS_DIR:-/Users/lipengyuan/.config/great_secrets}/readonly_database_url"
