@@ -8,7 +8,13 @@ on:
       - "packages/paper_wheel/public_snapshot.py"
       - ".github/workflows/pages.yml"
   schedule:
-    - cron: "2/5 * * * *"
+    # Five-minute broker captures during the public monitoring window only.
+    # The separate final trigger includes exactly 5:00 PM without continuing
+    # through the rest of the 5 PM hour.
+    - cron: "*/5 9-16 * * 1-5"
+      timezone: "America/New_York"
+    - cron: "0 17 * * 1-5"
+      timezone: "America/New_York"
   workflow_dispatch:
 
 permissions:

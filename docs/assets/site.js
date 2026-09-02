@@ -32,6 +32,27 @@ const expiryDate = new Intl.DateTimeFormat("en-US", {
   year: "numeric",
 });
 
+const easternScheduleClock = new Intl.DateTimeFormat("en-US", {
+  timeZone: "America/New_York",
+  weekday: "short",
+  hour: "2-digit",
+  minute: "2-digit",
+  hourCycle: "h23",
+});
+
+function publisherWindowIsOpen(now) {
+  const parts = Object.fromEntries(
+    easternScheduleClock
+      .formatToParts(now)
+      .filter((part) => part.type !== "literal")
+      .map((part) => [part.type, part.value]),
+  );
+  const weekday = ["Mon", "Tue", "Wed", "Thu", "Fri"].includes(parts.weekday);
+  const hour = Number(parts.hour);
+  const minute = Number(parts.minute);
+  return weekday && (hour >= 9 && (hour < 17 || (hour === 17 && minute === 0)));
+}
+
 function signedMoney(value) {
   const numeric = Number(value);
   return `${numeric >= 0 ? "+" : "−"}${money.format(Math.abs(numeric))}`;
@@ -116,11 +137,18 @@ function renderOrders(orders) {
 
 function setFreshness(snapshot) {
   const generated = new Date(snapshot.generated_at);
+  const timestampValid = Number.isFinite(generated.getTime());
   const ageSeconds = Math.max(0, (Date.now() - generated.getTime()) / 1000);
   const staleAfter = Number(snapshot.refresh_contract.stale_after_seconds || 900);
-  const stale = !Number.isFinite(ageSeconds) || ageSeconds > staleAfter;
+  const expired = !timestampValid || !Number.isFinite(ageSeconds) || ageSeconds > staleAfter;
+  const scheduledPause = expired && timestampValid && !publisherWindowIsOpen(new Date());
+  const stale = expired && !scheduledPause;
   const minutes = Math.floor(ageSeconds / 60);
-  const label = stale ? `Stale · ${minutes}m old` : `Near-live · ${minutes}m old`;
+  const label = scheduledPause
+    ? `Off hours · ${minutes}m old`
+    : stale
+      ? `Stale · ${minutes}m old`
+      : `Near-live · ${minutes}m old`;
 
   document.querySelectorAll("[data-live-freshness]").forEach((element) => {
     const dot = document.createElement("span");
@@ -128,14 +156,18 @@ function setFreshness(snapshot) {
     dot.setAttribute("aria-hidden", "true");
     element.replaceChildren(dot, document.createTextNode(label));
     element.classList.toggle("is-stale", stale);
+    element.classList.toggle("is-idle", scheduledPause);
     element.classList.remove("is-error");
   });
   const status = document.querySelector("[data-live-feed-status]");
   if (status) {
-    status.textContent = stale
-      ? `STALE · last broker capture ${easternTime.format(generated)}`
-      : `BROKER VERIFIED · refreshed ${easternTime.format(generated)}`;
+    status.textContent = scheduledPause
+      ? `OFF HOURS · last broker capture ${easternTime.format(generated)}`
+      : stale
+        ? `STALE · last broker capture ${easternTime.format(generated)}`
+        : `BROKER VERIFIED · refreshed ${easternTime.format(generated)}`;
     status.classList.toggle("is-stale", stale);
+    status.classList.toggle("is-idle", scheduledPause);
     status.classList.remove("is-error");
   }
 }
@@ -184,11 +216,13 @@ function setFeedError() {
     dot.setAttribute("aria-hidden", "true");
     element.replaceChildren(dot, document.createTextNode("Refresh unavailable"));
     element.classList.add("is-error");
+    element.classList.remove("is-idle");
   });
   const status = document.querySelector("[data-live-feed-status]");
   if (status) {
     status.textContent = "REFRESH UNAVAILABLE · showing last deployed snapshot";
     status.classList.add("is-error");
+    status.classList.remove("is-idle");
   }
 }
 

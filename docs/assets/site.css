@@ -61,6 +61,8 @@ h1 em, .close-section h2 em { color: var(--mint); font-weight: 400; }
 .status-pill { color: var(--mint); }
 .status-pill.is-stale, .status-pill.is-error { color: var(--amber); }
 .status-pill.is-stale .live-dot, .status-pill.is-error .live-dot { background: var(--amber); box-shadow: 0 0 0 .3rem rgba(232,196,107,.12); }
+.status-pill.is-idle { color: var(--muted); }
+.status-pill.is-idle .live-dot { background: var(--muted); box-shadow: none; }
 .status-pill .live-dot { width: .42rem; height: .42rem; box-shadow: none; }
 .live-equity-link { display: block; width: fit-content; margin-top: 1.15rem; text-decoration-color: rgba(168,240,198,.34); text-underline-offset: .2em; }
 .live-equity-link strong { font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.65rem, 4vw, 4.1rem); font-weight: 400; letter-spacing: -.05em; }
@@ -107,6 +109,7 @@ h2 { margin: 0; max-width: 790px; font-family: Georgia, "Times New Roman", serif
 .freshness-line { padding: 1rem 1.1rem; border: 1px solid var(--line); border-radius: .8rem; background: rgba(11,26,22,.6); }
 .freshness-line strong { color: var(--mint); font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; }
 .freshness-line strong.is-stale, .freshness-line strong.is-error { color: var(--amber); }
+.freshness-line strong.is-idle { color: var(--muted); }
 .freshness-line span { font-size: .75rem; }
 .live-metric-grid { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid rgba(77,220,143,.3); border-radius: 1rem; background: linear-gradient(145deg, rgba(18,52,39,.7), rgba(7,19,15,.52)); overflow: hidden; }
 .live-metric-grid article { min-width: 0; padding: 1.4rem; border-right: 1px solid var(--line); }
