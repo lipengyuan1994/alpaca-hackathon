@@ -5,6 +5,16 @@ import worker from "./index.js";
 
 const env = { GITHUB_TOKEN: "test-only-token" };
 
+test("temporary scheduler probe logs delivery but never dispatches", async (t) => {
+  let calls = 0;
+  const logs = [];
+  t.mock.method(globalThis, "fetch", async () => { calls += 1; });
+  t.mock.method(console, "log", value => logs.push(JSON.parse(value)));
+  await worker.scheduled({ cron: "* * * * *", scheduledTime: Date.parse("2026-09-03T15:15:00-04:00") }, {});
+  assert.equal(calls, 0);
+  assert.deepEqual(logs.map(log => log.event), ["scheduled_received", "scheduler_probe"]);
+});
+
 test("scheduled dispatch respects Eastern weekday and time boundaries", async (t) => {
   const calls = [];
   t.mock.method(globalThis, "fetch", async (url, options) => {

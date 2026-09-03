@@ -15,6 +15,6 @@
     }
   },
   "triggers": {
-    "crons": ["*/30 * * * MON-FRI"]
+    "crons": ["0,30 * * * MON-FRI"]
   }
 }

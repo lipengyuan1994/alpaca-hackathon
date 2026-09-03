@@ -1,7 +1,9 @@
 const SERVICE_NAME = "alpaca-paper-refresh-native";
 const DISPATCH_URL =
   "https://api.github.com/repos/lipengyuan1994/alpaca-hackathon/actions/workflows/pages.yml/dispatches";
-const CRON = "*/30 * * * MON-FRI";
+const CRON = "0,30 * * * MON-FRI";
+// Optional delivery probe: never sends a GitHub request, even if left configured.
+const DIAGNOSTIC_CRON = "* * * * *";
 
 const eastern = new Intl.DateTimeFormat("en-US", {
   timeZone: "America/New_York",
@@ -124,6 +126,16 @@ function jsonResponse(body, status = 200) {
 
 export default {
   async scheduled(controller, env) {
+    console.log(JSON.stringify({
+      event: "scheduled_received",
+      service: SERVICE_NAME,
+      cron: controller.cron,
+      scheduledTime: controller.scheduledTime,
+    }));
+    if (controller.cron === DIAGNOSTIC_CRON) {
+      console.log(JSON.stringify({ event: "scheduler_probe", service: SERVICE_NAME }));
+      return;
+    }
     await dispatchWorkflow(controller.scheduledTime ?? Date.now(), env);
   },
 
