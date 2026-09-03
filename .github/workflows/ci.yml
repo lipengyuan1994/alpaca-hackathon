@@ -25,6 +25,10 @@ jobs:
         run: uv run python -c 'import platform; assert platform.machine() == "arm64"'
       - name: Test architecture and fixture replay
         run: uv run python -m pytest
+      - name: Test Cloudflare paper refresh Worker
+        run: |
+          node -e 'if (process.arch !== "arm64") throw new Error("Native ARM64 Node required")'
+          node --test cloudflare/alpaca-paper-refresh-native/index.test.js
       - name: Verify schema snapshots
         run: |
           uv run python -m packages.contracts.schema_export

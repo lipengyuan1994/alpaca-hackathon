@@ -13,3 +13,9 @@ must never be committed to this directory.
   exact `GITHUB_TOKEN` as a Bearer token.
 - The scheduled handler awaits the GitHub request so a failed dispatch is
   recorded as a failed Cron invocation.
+
+Run the dependency-free tests with native Node:
+
+```sh
+node --test cloudflare/alpaca-paper-refresh-native/index.test.js
+```

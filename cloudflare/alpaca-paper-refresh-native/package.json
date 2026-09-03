@@ -1,0 +1,8 @@
+{
+  "name": "alpaca-paper-refresh-native",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test index.test.js"
+  }
+}
