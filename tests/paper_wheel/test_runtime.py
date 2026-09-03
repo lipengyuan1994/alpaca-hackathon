@@ -419,6 +419,48 @@ def test_stale_open_order_is_canceled_and_client_id_is_never_reused(tmp_path: Pa
     assert broker.submit_count == 1
 
 
+def test_canceled_take_profit_retries_with_fresh_deterministic_client_id(tmp_path: Path) -> None:
+    broker = FakePaperBroker()
+    runtime = _runtime(tmp_path, broker)
+    assert runtime.run_once(now=MONDAY).status == "ORDER_SUBMITTED"
+    broker.option_ask = Decimal("1.69")
+    broker.submission = "accepted"
+    broker.now = MONDAY + timedelta(minutes=1)
+    first_close = runtime.run_once(now=broker.now)
+    first_close_id = first_close.client_order_id
+
+    broker.now += timedelta(minutes=3, seconds=1)
+    assert runtime.run_once(now=broker.now).status == "ORDER_PENDING"
+    broker.now += timedelta(seconds=30)
+    retry = runtime.run_once(now=broker.now)
+
+    assert retry.status == "ORDER_SUBMITTED"
+    assert retry.client_order_id != first_close_id
+    assert broker.submit_count == 3
+    assert broker.submitted_plans[-1].action == WheelAction.BUY_TO_CLOSE
+
+
+def test_terminal_cancel_restores_ready_state_when_take_profit_recedes(tmp_path: Path) -> None:
+    broker = FakePaperBroker()
+    runtime = _runtime(tmp_path, broker)
+    assert runtime.run_once(now=MONDAY).status == "ORDER_SUBMITTED"
+    broker.option_ask = Decimal("1.69")
+    broker.submission = "accepted"
+    broker.now = MONDAY + timedelta(minutes=1)
+    assert runtime.run_once(now=broker.now).status == "ORDER_SUBMITTED"
+
+    broker.now += timedelta(minutes=3, seconds=1)
+    assert runtime.run_once(now=broker.now).status == "ORDER_PENDING"
+    broker.option_ask = Decimal("2.20")
+    broker.now += timedelta(seconds=30)
+    outcome = runtime.run_once(now=broker.now)
+
+    assert outcome.status == "HOLD"
+    persisted = runtime.store.load_state(config_hash=runtime.loaded.config_hash, now=broker.now)
+    assert persisted.status == "READY"
+    assert broker.submit_count == 2
+
+
 def test_operator_halt_cancels_owned_open_order_and_stays_halted(tmp_path: Path) -> None:
     broker = FakePaperBroker(submission="accepted")
     runtime = _runtime(tmp_path, broker)
