@@ -16,9 +16,19 @@ external scheduler was used. The old Cron registration was removed.
   succeeded. Public JSON was generated at `2026-09-03T19:54:22.759843Z`.
 - Persistent status recorded `lastOutcome: dispatched`, `lastError: null`, and
   `alarmAt: 1788465600000` — the next normal slot, 4:00 PM ET.
+- With no Worker requests sent between validation and the normal slot, the
+  recurring alarm fired at `2026-09-03T20:00:00.034Z` (4:00 PM ET), dispatched
+  GitHub request `3302:3EB921:9C886D:1F262FC:6A99D1C0`, and rearmed itself for
+  `2026-09-03T20:30:00Z`. Its status remained `dispatched` with no error.
+- [Normal-slot Pages run 33799673542](https://github.com/lipengyuan1994/alpaca-hackathon/actions/runs/33799673542)
+  was created at 20:00:01 UTC by that alarm and completed successfully.
+  Workers Logs recorded the normal event as `alarm` / `ok` and emitted both
+  `github_dispatch_succeeded` and `alarm_refresh_completed`.
 - Fourteen tests passed, including real Durable Object alarm/rearm behavior,
   duplicate suppression, retry bounds, authenticated controls, weekend and DST
   handling, and preserving a stop during an in-flight GitHub request.
+- [Repository CI 33799264993](https://github.com/lipengyuan1994/alpaca-hackathon/actions/runs/33799264993)
+  passed for commit `c92a1fd`, including the new Cloudflare runtime tests.
 
 The sections below preserve the earlier Cron investigation as historical
 evidence. Production now uses alarms, so an empty Cron Events page is expected.
