@@ -1,5 +1,9 @@
 # Alpaca paper refresh Worker
 
+For the complete broker-to-dashboard flow, GitHub fallback, credential boundaries,
+freshness semantics, and operator troubleshooting, see the
+[paper performance refresh runbook](../../docs/deployment/PAPER_PERFORMANCE_REFRESH.md).
+
 This Cloudflare Worker uses a **SQLite-backed Durable Object alarm** to dispatch
 `.github/workflows/pages.yml` at :00 and :30, Monday-Friday, from 9:00 AM through
 5:00 PM `America/New_York`. It survives laptop shutdown and Worker eviction.

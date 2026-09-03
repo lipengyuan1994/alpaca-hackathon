@@ -11,6 +11,13 @@ paper evidence. Its dedicated
 [architecture page](https://lipengyuan1994.github.io/alpaca-hackathon/architecture/ARCHITECTURE_DESIGN.html)
 shows the physical, logical, data-flow, PostgreSQL, and container boundaries.
 
+The [paper performance dashboard](https://lipengyuan1994.github.io/alpaca-hackathon/paper-performance.html)
+is refreshed by Cloudflare Durable Object alarms → GitHub Actions → GitHub Pages,
+every 30 minutes on weekdays, 9:00 AM–5:00 PM Eastern. This is read-only
+publication, separate from the paper trading loop. The
+[refresh operations runbook](docs/deployment/PAPER_PERFORMANCE_REFRESH.md)
+covers scheduling, fallback triggers, credentials, freshness, and recovery.
+
 The following are **core-platform macOS/ARM64** fixture paths. They run without network or broker credentials:
 
 ```zsh

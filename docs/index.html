@@ -63,7 +63,7 @@
           <div><dt>Strategy</dt><dd>V13.5 · QQQ</dd></div>
           <div><dt>Last deployed</dt><dd><time data-live-generated-at datetime="2026-09-02T22:04:11.865285Z">Sep 2, 2026 · 6:04 PM ET</time></dd></div>
         </dl>
-        <small><strong>broker_reported_paper</strong> evidence refreshed every 30 minutes during the weekday monitoring window. Full ID published with account-owner approval; API credentials and controls remain private.</small>
+        <small><strong>broker_reported_paper</strong> evidence, with Cloudflare alarms targeting a refresh every 30 minutes during the weekday monitoring window. <a href="#refresh">How updates reach this page →</a> Full ID published with account-owner approval; API credentials and controls remain private.</small>
       </aside>
     </section>
 
@@ -98,9 +98,36 @@
         <article class="feature-card feature-card-accent">
           <span class="card-index">03 · PAPER ACCOUNT</span>
           <h3 class="positive">Near-live broker evidence</h3>
-          <p>The public account card is regenerated from Alpaca every 30 minutes on weekdays from 9:00 AM through 5:00 PM ET. Equity, P&amp;L history, and filled V13.5 orders come from the broker response—not a backtest.</p>
+          <p>Running since Tuesday, September 1, 2026. Cloudflare Durable Object alarms trigger broker snapshots every 30 minutes on weekdays, 9:00 AM–5:00 PM ET. Equity, P&amp;L history, and filled V13.5 orders come from Alpaca paper—not a backtest.</p>
           <a href="paper-performance.html">Open paper account performance →</a>
         </article>
+      </div>
+    </section>
+
+    <section class="section refresh-section" id="refresh" aria-labelledby="refresh-heading">
+      <div class="section-heading split">
+        <div>
+          <p class="eyebrow">From broker to browser</p>
+          <h2 id="refresh-heading">Fresh evidence.<br>A visible update path.</h2>
+        </div>
+        <p class="section-intro">A persistent Cloudflare Durable Object alarm starts each scheduled refresh—no open browser or running laptop required. GitHub Actions reads the paper account, then publishes the latest evidence to this website.</p>
+      </div>
+      <ol class="refresh-flow" aria-label="Paper performance publication flow">
+        <li><span>01 · SCHEDULE</span><strong>Cloudflare alarm</strong><small>Stored timer targets :00 and :30, Monday–Friday, 9 AM–5 PM Eastern.</small></li>
+        <li><span>02 · TRIGGER</span><strong>GitHub Actions</strong><small>Authenticated dispatch starts the Pages workflow. A GitHub schedule remains as fallback.</small></li>
+        <li><span>03 · READ</span><strong>Alpaca paper</strong><small>Read-only account, daily P&amp;L history, and the ten most recent system fills.</small></li>
+        <li><span>04 · PUBLISH</span><strong>GitHub Pages</strong><small>Sanitized, timestamped JSON ships with the dashboard. API credentials stay private.</small></li>
+        <li><span>05 · DISPLAY</span><strong>Your dashboard</strong><small>The browser checks the published snapshot every 60 seconds and shows its age.</small></li>
+      </ol>
+      <p class="truth-note">Scheduled snapshots, not a tick-by-tick stream. Build and deployment time adds latency. Eastern daylight saving time is handled automatically; the weekday schedule does not exclude market holidays. Data over 90 minutes old is marked stale during the refresh window, or off hours outside it.</p>
+      <div class="boundary-callout">
+        <strong>Refresh ≠ trading</strong>
+        <p>The paper trading loop operates separately. This publishing pipeline reads results; it never starts trading, submits orders, or cancels them. Real-market paper evidence is observable performance—not a promise of future returns.</p>
+      </div>
+      <div class="hero-actions">
+        <a class="button button-primary" href="paper-performance.html">Open paper performance →</a>
+        <a class="button button-secondary" href="https://github.com/lipengyuan1994/alpaca-hackathon/blob/main/docs/deployment/PAPER_PERFORMANCE_REFRESH.md">Read the refresh runbook ↗</a>
+        <a href="assets/data/live-paper-snapshot.json">Inspect published JSON ↗</a>
       </div>
     </section>
 

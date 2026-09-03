@@ -143,6 +143,8 @@ h2 { margin: 0; max-width: 790px; font-family: Georgia, "Times New Roman", serif
 .refresh-flow span { color: var(--dim); font-family: monospace; font-size: .65rem; }
 .refresh-flow strong { margin: 2rem 0 .35rem; color: var(--mint); font-family: Georgia, serif; font-size: 1.1rem; font-weight: 400; }
 .refresh-flow small { color: var(--muted); font-size: .68rem; }
+.refresh-section .refresh-flow span { font-size: .72rem; }
+.refresh-section .refresh-flow small { font-size: .85rem; }
 .paper-disclosure { margin: 1rem 0 0; padding: 1rem 1.1rem; border-left: 2px solid var(--amber); color: var(--muted); background: rgba(232,196,107,.04); font-size: .74rem; }
 .paper-disclosure strong { color: var(--amber); }
 

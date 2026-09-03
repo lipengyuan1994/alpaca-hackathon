@@ -64,6 +64,35 @@ def test_pages_workflow_publishes_only_the_curated_site() -> None:
     assert "_site/architecture/ARCHITECTURE_DESIGN.html" in workflow
 
 
+def test_refresh_docs_and_home_explain_the_deployed_alarm_pipeline() -> None:
+    html = HTML_PATH.read_text(encoding="utf-8")
+    paper = PAPER_PERFORMANCE_PATH.read_text(encoding="utf-8")
+    runbook = DOCS / "deployment" / "PAPER_PERFORMANCE_REFRESH.md"
+    docs = runbook.read_text(encoding="utf-8")
+    worker = ROOT / "cloudflare" / "alpaca-paper-refresh-native"
+    config = json.loads((worker / "wrangler.jsonc").read_text(encoding="utf-8"))
+    snapshot = json.loads(LIVE_PATH.read_text(encoding="utf-8"))
+
+    assert config["main"] == "alarm-entry.js"
+    assert config["triggers"]["crons"] == []
+    assert snapshot["refresh_contract"]["scheduled_interval_seconds"] == 1800
+    assert snapshot["refresh_contract"]["browser_poll_seconds"] == 60
+    assert snapshot["refresh_contract"]["stale_after_seconds"] == 5400
+    assert 'id="refresh"' in html
+    assert 'href="index.html#refresh"' in paper
+    assert "Cloudflare Durable Object alarm" in html
+    assert "GitHub Actions" in html and "GitHub Pages" in html
+    assert "PAPER_PERFORMANCE_REFRESH.md" in html
+    assert "Refresh ≠ trading" in html
+    assert "90 active minutes" not in paper
+    for source in (ROOT / "README.md", DOCS / "index.md", worker / "README.md"):
+        assert "PAPER_PERFORMANCE_REFRESH.md" in source.read_text(encoding="utf-8")
+    for endpoint in ("GET /scheduler/status", "POST /scheduler/start", "POST /scheduler/stop"):
+        assert endpoint in docs
+    assert "HTTP 204 means accepted, not deployed" in docs
+    assert "Cron Events are expected" in docs
+
+
 def test_public_copy_matches_approved_paper_snapshot() -> None:
     html = HTML_PATH.read_text(encoding="utf-8")
     paper_performance = PAPER_PERFORMANCE_PATH.read_text(encoding="utf-8")
