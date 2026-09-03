@@ -353,6 +353,8 @@ class PaperWheelRuntime:
             next_state = self._advance(state, now=now, status="RECONCILE_ONLY")
             self.store.save_state(next_state)
             return RuntimeOutcome(status="ORDER_PENDING", state_hash=next_state.state_hash)
+        if state.status == "RECONCILE_ONLY" and not state.lifecycle_missing_since_by_symbol:
+            state = self._advance(state, now=now, status="READY")
         positions = self.broker.positions()
         orders = self.broker.open_orders()
         structural = broker_shape_violations(positions=positions, orders=orders, config=self.config)
@@ -739,6 +741,19 @@ class PaperWheelRuntime:
         )
 
     def _close_plan(self, *, managed: ManagedOptionV1, quote: Any, trend_up: bool, now: datetime) -> WheelOrderPlanV1:
+        prior_attempts = 0
+        for event in self.store.events():
+            if event.event_type != "ORDER_PREPARED":
+                continue
+            raw_plan = event.detail.get("plan")
+            if not isinstance(raw_plan, dict):
+                continue
+            if (
+                raw_plan.get("action") == WheelAction.BUY_TO_CLOSE
+                and raw_plan.get("option_symbol") == managed.option_symbol
+                and raw_plan.get("config_hash") == self.loaded.config_hash
+            ):
+                prior_attempts += 1
         semantics = {
             "strategy_id": "v13.5",
             "underlying": managed.underlying,
@@ -748,6 +763,8 @@ class PaperWheelRuntime:
             "entry_client_order_id": managed.entry_client_order_id,
             "config_hash": self.loaded.config_hash,
         }
+        if prior_attempts:
+            semantics["retry_ordinal"] = prior_attempts
         return WheelOrderPlanV1(
             strategy_id="v13.5",
             underlying=managed.underlying,
