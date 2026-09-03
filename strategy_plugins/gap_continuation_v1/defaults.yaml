@@ -1,0 +1,9 @@
+gap_z_threshold: '1.00'
+continuation_ratio_threshold: '0.25'
+gap_lookback_sessions: 60
+gap_floor: '0.000001'
+decision_time_et: '10:30:01'
+max_entries_per_symbol_session: 1
+time_exit_minutes: 60
+risk_tier: TINY
+intent_ttl_seconds: 300

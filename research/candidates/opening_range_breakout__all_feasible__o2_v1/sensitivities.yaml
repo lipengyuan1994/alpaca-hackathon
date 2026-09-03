@@ -1,0 +1,10 @@
+frozen_before_outcomes: true
+central:
+  break_fraction_threshold: '0.10'
+  volume_ratio_threshold: '1.25'
+  time_exit_minutes: 60
+diagnostics:
+  break_fraction_threshold: ['0.05', '0.15']
+  volume_ratio_threshold: ['1.00', '1.50']
+  time_exit_minutes: [45, 90]
+forbidden: [symbol_specific_thresholds, alternative_range_lengths, gap_filters, volatility_regimes, news, iv, greeks, extra_feature_search]

@@ -1,0 +1,17 @@
+api_version: strategy-plugin/v1
+plugin_id: gap_continuation
+plugin_version: 1.0.0
+entrypoint: gap_continuation_v1.plugin:Plugin
+owner: assigned_group_b_research_owner
+reviewer: independent_group_c_research_reviewer
+economic_hypothesis_id: STANDARDIZED_GAP_CONTINUATION
+allowed_underlyings: [SPY, QQQ, TQQQ, SMH, SOXL, IGV]
+allowed_templates: [CALL_DEBIT_SPREAD_V1, PUT_DEBIT_SPREAD_V1]
+required_feature_schema: feature-vector/v1
+feature_contract_hash: sha256:5d3521f1d77ec642ba80c5a8b03eb6d7a0b521b2ea246f1e44828fe5116c8160
+pair_cell_symbols: [SMH, SOXL]
+position_policy: TREND_VWAP_OR_60M_V1
+decision_schema_version: strategy-evaluation/v1
+network_access: false
+deterministic: true
+lifecycle: research_only

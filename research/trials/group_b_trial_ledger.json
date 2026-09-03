@@ -1,0 +1,109 @@
+{
+  "ledger_version": "1",
+  "created_utc": "2026-08-30T21:40:00Z",
+  "group": "B",
+  "plan_reference": "docs/research/GROUP_B_SEMICONDUCTOR_PLAN.md",
+  "interface_freeze_reference": "docs/architecture/RESEARCH_INTERFACE_FREEZE.md",
+  "branch": "research/group-b-orb-gap",
+  "spec_freeze_commit": "10b38e2",
+  "hashing_convention": "sha256 over LF-normalized file bytes (identical to git blob bytes for this repository's text normalization); verified against working tree immediately before commit",
+  "frozen_before_outcomes": true,
+  "b0_handoff": {
+    "status": "PARTIAL_BLOCKED_ON_STEWARD_ARTIFACTS",
+    "baseline_evidence": {
+      "windows_x86_64": "Phase 0 record in docs/research/GROUP_B_WORKING_PROTOCOL.md (ruff clean; frozen runner POSIX-only failures expected and root-caused)",
+      "wsl_ubuntu_24_04_x86_64": "Phase 0 record (canonical 31/31 pass; chunked full-suite log SHA-256 chain bound)"
+    },
+    "native_lock": {
+      "published_dependency_lock_sha256": "b846dc0b4d52be240cbb131e8267a5bf5ed4659b21570573b9ea1d48dcc865cf",
+      "origin_main_relocked_uv_lock_sha256": "3d37e9c7a24febdb41ccf5fec815613b818ea76fc66ecd0cc1ec9a89715ba114",
+      "source_snapshot_zip_sha256": "cb03a7684fb67c6f0888333f6c3c2145e8645be9",
+      "origin_main_at_branch_point": "2852910d563122e73d92e16c93d374afdd4bcda2"
+    },
+    "attested_data_manifest": null,
+    "attested_entitlement_probe": null,
+    "option_proxy_feasibility_manifest": null,
+    "steward_artifacts_status": "PENDING_STEWARD_PUBLICATION",
+    "group_b_owner": "Group B packet owner (branch research/group-b-orb-gap; commits c894466, 10b38e2)",
+    "external_reviewer": "Group C owner (identity to be confirmed; working-protocol open question 3)",
+    "candidate_ids": [
+      "opening_range_breakout__all_feasible__o2_v1",
+      "gap_continuation__all_feasible__o2_v1"
+    ],
+    "outcome_runs_started": false,
+    "gate_disposition": "B0 required fields baseline/lock/owner/candidate IDs are recorded; attested data_manifest.json, entitlement_probe.json, and option_proxy_feasibility_manifest.json are not yet published under research/shared/ (only coverage_exceptions/alpaca_free_iex_history_floor_v1.json exists). Per gate rule, no outcome runs start until they appear and hash-verify."
+  },
+  "central_release_bindings": {
+    "loaded_template_catalog_sha256": "74906ee706cef3a52b77cb84e2f7b80c66bbc6b0e63ad3982be9e0ef0e02076e",
+    "arbitration_source_sha256": "864fe5d419717bb424eb10ed54b5ad8ac5095bfc235d3f10a2d894e39826edd5",
+    "position_manager_source_sha256": "c77bfe135c4cb13eb530e9d390f2c6ceab1e8aaced762489b849ee0d82bd69b7",
+    "loaded_fixture_registry_sha256": "fdbe412038def1df8b3c1e552cbbfa42c300d4e73e5ac74cd92b4db233893a04"
+  },
+  "frozen_periods": {
+    "discovery_warm_up": "2020-07-27..2023-12-29",
+    "option_calibration": "2024-02-01..2024-12-31",
+    "oos_folds": "2025Q1..2025Q4",
+    "final_accept_reject": "2026-01-02..2026-08-27",
+    "bootstrap": "PCG64 seed 20260829, 10000 reps, synchronized centered 5-session circular blocks",
+    "discovery_start_authority": "research/shared/coverage_exceptions/alpaca_free_iex_history_floor_v1.json"
+  },
+  "entries": [
+    {
+      "trial_number": 1,
+      "candidate_id": "opening_range_breakout__all_feasible__o2_v1",
+      "hypothesis_id": "OPENING_RANGE_BREAKOUT",
+      "plugin_id": "opening_range_breakout",
+      "plugin_version": "1.0.0",
+      "expression": "O2_DEBIT_VERTICAL_ONLY",
+      "entry_templates": ["CALL_DEBIT_SPREAD_V1", "PUT_DEBIT_SPREAD_V1"],
+      "eligible_symbols": ["SPY", "QQQ", "TQQQ", "SMH", "SOXL", "IGV"],
+      "pair_cell_symbols": ["SMH", "SOXL"],
+      "bound_commit": "10b38e2",
+      "hashes_sha256": {
+        "hypothesis.yaml": "79302bbecd9f775ddfa691a982451819261339f7175f91ef5c56a22e6b42525a",
+        "feature_contract.yaml": "0ef3d29fd8680508b0c02cacda2aef31f495f0960373848dc46837ff4a259654",
+        "central_config.json": "607b30f351d8ca5203d75293a45018bb5a3cc381409c253530d8bdea38f6e081",
+        "sensitivities.yaml": "4439fa95496edb1e8992362838c1767a5a975802ca7f37e0fbd4c6ef6f21829b",
+        "reason_codes.yaml": "4e2ea70681c1918ec7543865726f6deabd2575b5c76a5fd26da8844bf8b9c856",
+        "state_schema.json": "1bb2bf5fb452e3a30ef71c436a0ddc6ff9ae46afb9ed32714b1c248d7c85cf8d",
+        "costs.yaml": "d4711c84edd637b933fc9574e7b5332dce4d91539944dfd4412f084aa61c11c8"
+      },
+      "central_budgets": {
+        "break_fraction": "0.10",
+        "volume_ratio": "1.25",
+        "time_exit_minutes": 60,
+        "diagnostics": {"break_fraction": ["0.05", "0.15"], "volume_ratio": ["1.00", "1.50"], "time_exit_minutes": [45, 90]}
+      },
+      "terminal_state": "RESEARCH_NOT_RUN"
+    },
+    {
+      "trial_number": 2,
+      "candidate_id": "gap_continuation__all_feasible__o2_v1",
+      "hypothesis_id": "STANDARDIZED_GAP_CONTINUATION",
+      "plugin_id": "gap_continuation",
+      "plugin_version": "1.0.0",
+      "expression": "O2_DEBIT_VERTICAL_ONLY",
+      "entry_templates": ["CALL_DEBIT_SPREAD_V1", "PUT_DEBIT_SPREAD_V1"],
+      "eligible_symbols": ["SPY", "QQQ", "TQQQ", "SMH", "SOXL", "IGV"],
+      "pair_cell_symbols": ["SMH", "SOXL"],
+      "bound_commit": "10b38e2",
+      "hashes_sha256": {
+        "hypothesis.yaml": "f1d6d94bed3b43a58dfe89e0ceaa17907430ef21aa599efbd7574aa461eb57c8",
+        "feature_contract.yaml": "5d3521f1d77ec642ba80c5a8b03eb6d7a0b521b2ea246f1e44828fe5116c8160",
+        "central_config.json": "6dacfe17abb96b3ecb4c93f93b292dc137da125fbef9770e17cc111c7cc56c4b",
+        "sensitivities.yaml": "668531f1d5a024ffbad2296d98731a0814f631d3aa0480ebf1c47bc4e3dc6c5b",
+        "reason_codes.yaml": "5fd03b6b1df6120603b089be77579d3a782315ca77e84ae90d019b540cbdef12",
+        "state_schema.json": "d2b28d3618ddce937dd68fd00b315e208a6e2480e4e9de5ae5ee342e43dcdb03",
+        "costs.yaml": "d4711c84edd637b933fc9574e7b5332dce4d91539944dfd4412f084aa61c11c8"
+      },
+      "central_budgets": {
+        "gap_z_abs": "1.00",
+        "continuation_ratio": "0.25",
+        "time_exit_minutes": 60,
+        "diagnostics": {"gap_z_abs": ["0.75", "1.25"], "continuation_ratio": ["0.00", "0.50"], "time_exit_minutes": [45, 90]}
+      },
+      "terminal_state": "RESEARCH_NOT_RUN"
+    }
+  ],
+  "amendment_rule": "Any post-outcome spec change requires a new versioned candidate and a new numbered trial entry; entries are append-only."
+}

@@ -1,0 +1,10 @@
+frozen_before_outcomes: true
+central:
+  gap_z_threshold: '1.00'
+  continuation_ratio_threshold: '0.25'
+  time_exit_minutes: 60
+diagnostics:
+  gap_z_threshold: ['0.75', '1.25']
+  continuation_ratio_threshold: ['0.00', '0.50']
+  time_exit_minutes: [45, 90]
+forbidden: [earnings_news_labels, overnight_futures, premarket_data, symbol_specific_cutoffs, regime_overlays, iv, greeks, alternate_confirmation_hour, extra_feature_search]
