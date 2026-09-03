@@ -312,6 +312,14 @@ footer p { margin: 0; }
 .paper-pnl-card { position: relative; margin: 0; padding: 1.15rem; border: 1px solid var(--line-strong); border-radius: 1.25rem; background: rgba(248, 251, 245, .82); box-shadow: 0 24px 64px rgba(49, 83, 67, .08); overflow: hidden; }
 .paper-pnl-card svg { display: block; width: 100%; min-height: 300px; }
 .paper-pnl-card figcaption { padding: .8rem .45rem .1rem; border-top: 1px solid var(--line); color: var(--muted); font-size: .72rem; }
+.paper-pnl-metrics { margin-top: 1rem; border-color: #aac1b3; background: #f9fcf7; box-shadow: 0 12px 32px rgba(49, 83, 67, .07); }
+.paper-pnl-metrics article { border-color: #c6d5cb; background: #f9fcf7; }
+.paper-performance-page .paper-pnl-metrics span { color: #315547; font-weight: 800; }
+.paper-performance-page .paper-pnl-metrics strong { color: #102f24; font-size: clamp(1.35rem, 2.4vw, 2rem); }
+.paper-performance-page .paper-pnl-metrics strong.positive { color: #087342 !important; }
+.paper-performance-page .paper-pnl-metrics strong.negative { color: #96392f !important; }
+.paper-performance-page .paper-pnl-metrics small { color: #49685b; font-size: .72rem; line-height: 1.45; }
+.paper-calculation-note { max-width: 920px; margin: .8rem 0 0; color: #49685b; font-size: .75rem; line-height: 1.6; }
 .pnl-chart-empty { display: none; min-height: 300px; margin: 0; place-items: center; color: var(--muted); text-align: center; }
 .pnl-grid-line { stroke: rgba(23, 50, 41, .1); stroke-width: 1; }
 .pnl-zero-line { stroke: rgba(148, 102, 31, .48); stroke-width: 1.5; stroke-dasharray: 7 7; }

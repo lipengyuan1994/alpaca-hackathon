@@ -78,6 +78,9 @@ def test_public_copy_matches_approved_paper_snapshot() -> None:
     assert 'href="paper-performance.html"' in html
     assert "Top 10 recent fills" in paper_performance
     assert "data-pnl-chart" in paper_performance
+    assert "Annualized P&amp;L rate" in paper_performance
+    assert "data-pnl-cumulative" in paper_performance
+    assert "data-pnl-max-drawdown" in paper_performance
     assert "paper-performance-page" in paper_performance
     assert "architecture/ARCHITECTURE_DESIGN.html" in html
     assert len(snapshot["recent_filled_system_orders"]) <= 10

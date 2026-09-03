@@ -1,4 +1,6 @@
 const SNAPSHOT_PATH = "assets/data/live-paper-snapshot.json";
+const PAPER_LAUNCH_AT = new Date("2026-09-01T00:00:00-04:00");
+const ANNUALIZATION_DAYS = 365.2425;
 
 const money = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -239,6 +241,75 @@ function renderPnlChart(history) {
   updateTone("[data-pnl-change]", last.pnl);
 }
 
+function renderPnlMetrics(snapshot) {
+  const account = snapshot.account || {};
+  const totalPnl = Number(account.total_pnl);
+  const baseline = Number(account.starting_baseline);
+  const reportedReturn = Number(account.total_return);
+  const totalReturn = Number.isFinite(reportedReturn)
+    ? reportedReturn
+    : totalPnl / baseline;
+  const generatedAt = new Date(snapshot.generated_at);
+  const elapsedDays = Math.max(
+    1,
+    (generatedAt.getTime() - PAPER_LAUNCH_AT.getTime()) / 86_400_000,
+  );
+  const annualizedRate = totalReturn * (ANNUALIZATION_DAYS / elapsedDays);
+  const annualizedPnl = totalPnl * (ANNUALIZATION_DAYS / elapsedDays);
+  const elapsedLabel = `${elapsedDays.toFixed(1)} elapsed ${elapsedDays < 1.05 ? "day" : "days"}`;
+
+  updateText("[data-pnl-cumulative]", signedMoney(totalPnl));
+  updateText("[data-pnl-cumulative-return]", signedPercent(totalReturn));
+  updateText("[data-pnl-annualized-rate]", signedPercent(annualizedRate));
+  updateText(
+    "[data-pnl-annualized-detail]",
+    `${signedMoney(annualizedPnl)}/yr · ${elapsedLabel}`,
+  );
+  updateText(
+    "[data-pnl-calculation-note]",
+    `Annualized P&L rate scales cumulative return over ${elapsedLabel} since the Sep 1, 2026 launch. It is an early live-paper run-rate, not a forecast.`,
+  );
+  updateTone(
+    "[data-pnl-cumulative], [data-pnl-cumulative-return], [data-pnl-annualized-rate]",
+    totalPnl,
+  );
+
+  const historyPoints = Array.isArray(snapshot.portfolio_history?.points)
+    ? snapshot.portfolio_history.points
+        .map((point) => ({
+          timestamp: new Date(point.timestamp),
+          pnl: Number(point.total_pnl),
+        }))
+        .filter((point) => Number.isFinite(point.timestamp.getTime()) && Number.isFinite(point.pnl))
+        .sort((left, right) => left.timestamp - right.timestamp)
+    : [];
+
+  if (historyPoints.length < 2 || !Number.isFinite(baseline) || baseline <= 0) {
+    updateText("[data-pnl-max-drawdown]", "History pending");
+    updateText("[data-pnl-max-drawdown-detail]", "Needs at least 2 daily observations");
+    return;
+  }
+
+  let peakEquity = baseline;
+  let maxDrawdown = 0;
+  let maxDrawdownRate = 0;
+  historyPoints.forEach((point) => {
+    const equity = baseline + point.pnl;
+    peakEquity = Math.max(peakEquity, equity);
+    const drawdown = equity - peakEquity;
+    if (drawdown < maxDrawdown) {
+      maxDrawdown = drawdown;
+      maxDrawdownRate = drawdown / peakEquity;
+    }
+  });
+  updateText("[data-pnl-max-drawdown]", signedMoney(maxDrawdown));
+  updateText(
+    "[data-pnl-max-drawdown-detail]",
+    `${signedPercent(maxDrawdownRate)} peak-to-trough · ${historyPoints.length} observations`,
+  );
+  updateTone("[data-pnl-max-drawdown]", maxDrawdown);
+}
+
 function setFreshness(snapshot) {
   const generated = new Date(snapshot.generated_at);
   const timestampValid = Number.isFinite(generated.getTime());
@@ -281,7 +352,7 @@ function applySnapshot(snapshot) {
   updateText("[data-live-equity]", money.format(Number(account.equity)));
   updateText(
     "[data-live-total-pnl]",
-    `${signedMoney(account.total_pnl)} since fresh $100K baseline`,
+    `${signedMoney(account.total_pnl)} since fresh $100K baseline · live since Sep 1, 2026`,
   );
   updateText("[data-live-total-pnl-short]", signedMoney(account.total_pnl));
   updateTone("[data-live-total-pnl], [data-live-total-pnl-short]", account.total_pnl);
@@ -312,6 +383,7 @@ function applySnapshot(snapshot) {
     `${orders.length} ${orders.length === 1 ? "fill" : "fills"} available`,
   );
   renderOrders(orders);
+  renderPnlMetrics(snapshot);
   renderPnlChart(snapshot.portfolio_history);
   setFreshness(snapshot);
 }

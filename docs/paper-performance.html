@@ -15,7 +15,7 @@
   <meta name="twitter:description" content="Broker-reported paper equity, P&L history, and recent system fills.">
   <meta name="twitter:image" content="https://lipengyuan1994.github.io/alpaca-hackathon/assets/stable-income-generator-banner.png">
   <title>Paper Account Performance · Stable Income Generator</title>
-  <link rel="stylesheet" href="assets/site.css">
+  <link rel="stylesheet" href="assets/site.css?v=20260903-2">
 </head>
 <body class="paper-performance-page">
   <a class="skip-link" href="#main">Skip to account performance</a>
@@ -37,13 +37,14 @@
       <div>
         <p class="eyebrow"><span class="live-dot" aria-hidden="true"></span> Alpaca paper account</p>
         <h1>Performance,<br><em>in the open.</em></h1>
-        <p class="lede">A dedicated, broker-reported view of the paper account. It separates live paper behavior from the frozen V13.5 backtest and exposes only the fields approved for public evidence.</p>
+        <p class="lede">A broker-reported record of Stable Income Generator operating against live market conditions in an Alpaca paper account since Tuesday, September 1, 2026. Follow the equity curve and system fills as the strategy proves itself beyond the backtest.</p>
       </div>
       <aside class="paper-status-card" aria-label="Paper account refresh status">
         <span class="status-pill" data-live-freshness><span class="live-dot" aria-hidden="true"></span> Checking latest snapshot</span>
         <strong data-live-equity>$100,079.73</strong>
-        <p class="positive" data-live-total-pnl>+$79.73 since fresh $100K baseline</p>
+        <p class="positive" data-live-total-pnl>+$79.73 since fresh $100K baseline · live since Sep 1, 2026</p>
         <dl>
+          <div><dt>Live-market launch</dt><dd><time datetime="2026-09-01">Sep 1, 2026</time></dd></div>
           <div><dt>Account status</dt><dd data-live-account-status>ACTIVE</dd></div>
           <div><dt>Last captured</dt><dd><time data-live-generated-at datetime="2026-09-02T22:04:11.865285Z">Sep 2, 2026 · 6:04 PM ET</time></dd></div>
           <div><dt>Refresh target</dt><dd>Every 30 minutes · weekdays</dd></div>
@@ -85,6 +86,13 @@
         <p class="pnl-chart-empty" data-pnl-empty>Portfolio history will appear after the next successful broker refresh.</p>
         <figcaption id="pnl-chart-description">Daily account equity translated to profit or loss against the approved $100,000 starting baseline. The final point is the latest available Alpaca portfolio-history observation.</figcaption>
       </figure>
+      <div class="live-metric-grid paper-pnl-metrics" aria-label="Calculated live paper performance metrics">
+        <article><span>Cumulative P&amp;L</span><strong class="positive" data-pnl-cumulative>+$79.73</strong><small>Since the Sep 1 launch baseline</small></article>
+        <article><span>Cumulative return</span><strong class="positive" data-pnl-cumulative-return>+0.08%</strong><small>Broker equity vs $100K baseline</small></article>
+        <article><span>Annualized P&amp;L rate</span><strong class="positive" data-pnl-annualized-rate>+16.61%</strong><small data-pnl-annualized-detail>+$16,612.80/yr · 1.8 elapsed days</small></article>
+        <article><span>Max drawdown</span><strong data-pnl-max-drawdown>History pending</strong><small data-pnl-max-drawdown-detail>Needs at least 2 daily observations</small></article>
+      </div>
+      <p class="paper-calculation-note" data-pnl-calculation-note>Annualized P&amp;L rate scales cumulative return over the elapsed calendar time since the Sep 1, 2026 launch. It is an early live-paper run-rate, not a forecast.</p>
     </section>
 
     <section class="paper-performance-section" aria-labelledby="recent-trades-title">
@@ -114,12 +122,12 @@
 
     <section class="paper-performance-section paper-method" aria-labelledby="method-title">
       <div>
-        <p class="eyebrow">Evidence boundary</p>
-        <h2 id="method-title">Paper behavior, not a return promise.</h2>
+        <p class="eyebrow">Live-market proof</p>
+        <h2 id="method-title">Real market conditions. Real strategy decisions. Results in the open.</h2>
       </div>
       <div>
-        <p>Account values and portfolio history come from Alpaca’s paper Trading API. The trade table is restricted to filled orders with the system-owned <code>rs-v135</code> client-order prefix.</p>
-        <p>API credentials, broker origin, broker order IDs, and every order-control capability remain private. Paper trading is simulated and is not live-money performance.</p>
+        <p>This is more than a hypothetical model output. Stable Income Generator runs on live market data, and its account values, portfolio history, and system fills are reported directly by Alpaca’s paper Trading API. The public record shows how the strategy performs as markets move—not just how it scored in a historical test.</p>
+        <p>The trade table is restricted to filled orders with the system-owned <code>rs-v135</code> client-order prefix. Credentials and order-control capabilities remain private. Paper execution and capital are simulated, so these results demonstrate live-market operation rather than live-money returns.</p>
       </div>
     </section>
   </main>
@@ -133,6 +141,6 @@
       <a href="#main">Back to top ↑</a>
     </nav>
   </footer>
-  <script src="assets/site.js" defer></script>
+  <script src="assets/site.js?v=20260903-2" defer></script>
 </body>
 </html>
