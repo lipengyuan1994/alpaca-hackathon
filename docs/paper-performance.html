@@ -77,14 +77,14 @@
           <h2 id="pnl-history-title">Paper P&amp;L history</h2>
         </div>
         <div class="paper-chart-meta">
-          <span data-pnl-range>One-year daily history</span>
+          <span data-pnl-range>Daily history + latest account snapshot</span>
           <strong data-pnl-change>Waiting for broker history</strong>
         </div>
       </div>
       <figure class="paper-pnl-card">
         <svg data-pnl-chart viewBox="0 0 1000 360" role="img" aria-labelledby="pnl-history-title pnl-chart-description"></svg>
         <p class="pnl-chart-empty" data-pnl-empty>Portfolio history will appear after the next successful broker refresh.</p>
-        <figcaption id="pnl-chart-description">Daily account equity translated to profit or loss against the approved $100,000 starting baseline. The final point is the latest available Alpaca portfolio-history observation.</figcaption>
+        <figcaption id="pnl-chart-description">Paper account P&amp;L against the $100,000 starting baseline. Daily broker history is extended to the latest account snapshot when available, using the same P&amp;L as the account cards. The dashed final segment marks that snapshot—not another daily close. This is sampled history, not a continuous intraday record.</figcaption>
       </figure>
       <div class="live-metric-grid paper-pnl-metrics" aria-label="Calculated live paper performance metrics">
         <article><span>Cumulative P&amp;L</span><strong class="positive" data-pnl-cumulative>+$79.73</strong><small>Since the Sep 1 launch baseline</small></article>

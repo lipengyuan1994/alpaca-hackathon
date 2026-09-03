@@ -93,7 +93,15 @@ The builder uses GET requests for:
 The ten fills are **the most recent system fills, not the ten most profitable
 trades**. Account/history metrics describe the account; the fills table filters
 to the system prefix. The graph can be unavailable if the history request
-fails while account and order reads succeed.
+fails while account and order reads succeed. The chart extends daily history
+with `account.total_pnl` at `generated_at` when that valid snapshot is at least
+as recent as the history. Its headline therefore matches the current account
+cards; a dashed final segment and capture timestamp distinguish the snapshot
+from daily observations. Same-timestamp observations are replaced rather than
+duplicated. A lower or negative current P&L is included just like a higher one.
+Without enough history, the current amount still displays but no trend is
+invented. Daily-history drawdown remains a separately sampled metric, not a
+continuous intraday drawdown.
 
 The public JSON contains broker-reported paper balances, P&L, selected fills,
 history, freshness metadata, and the account ID published with the owner's

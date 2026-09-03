@@ -150,24 +150,51 @@ function svgNode(name, attributes = {}, text = "") {
   return node;
 }
 
-function renderPnlChart(history) {
-  const svg = document.querySelector("[data-pnl-chart]");
-  if (!svg) return;
-  const empty = document.querySelector("[data-pnl-empty]");
-  const rawPoints = Array.isArray(history?.points) ? history.points : [];
+function pnlChartPoints(snapshot) {
+  const rawPoints = Array.isArray(snapshot.portfolio_history?.points)
+    ? snapshot.portfolio_history.points : [];
   const points = rawPoints
+    .filter((point) => point.timestamp != null && point.total_pnl != null && point.total_pnl !== "")
     .map((point) => ({
       timestamp: new Date(point.timestamp),
       pnl: Number(point.total_pnl),
+      source: "daily",
     }))
     .filter((point) => Number.isFinite(point.timestamp.getTime()) && Number.isFinite(point.pnl))
     .sort((left, right) => left.timestamp - right.timestamp);
+
+  const capturedAt = new Date(snapshot.generated_at);
+  const currentPnl = snapshot.account?.total_pnl;
+  if (snapshot.generated_at != null && Number.isFinite(capturedAt.getTime())
+      && currentPnl != null && currentPnl !== "" && Number.isFinite(Number(currentPnl))
+      && (!points.length || capturedAt >= points[points.length - 1].timestamp)) {
+    // Same timestamp: prefer the account snapshot without plotting two valuations.
+    while (points.length && +points[points.length - 1].timestamp === +capturedAt) points.pop();
+    points.push({ timestamp: capturedAt, pnl: Number(currentPnl), source: "snapshot" });
+  }
+  return points;
+}
+
+function renderPnlChart(snapshot) {
+  const svg = document.querySelector("[data-pnl-chart]");
+  if (!svg) return;
+  const empty = document.querySelector("[data-pnl-empty]");
+  const points = pnlChartPoints(snapshot);
+  const last = points[points.length - 1];
+  const hasSnapshot = last?.source === "snapshot";
+  const dailyCount = points.filter((point) => point.source === "daily").length;
+  updateText("[data-pnl-change]", last
+    ? `${signedMoney(last.pnl)} · ${hasSnapshot ? "latest snapshot" : "daily history only"}`
+    : "History unavailable");
+  if (last) updateTone("[data-pnl-change]", last.pnl);
+  updateText("[data-pnl-range]", hasSnapshot
+    ? `Captured ${easternTime.format(last.timestamp)} · ${dailyCount} daily points + latest snapshot`
+    : last ? `${dailyCount} daily points · current snapshot unavailable` : "History unavailable");
 
   if (points.length < 2) {
     svg.replaceChildren();
     svg.hidden = true;
     if (empty) empty.style.display = "grid";
-    updateText("[data-pnl-change]", "History unavailable");
     return;
   }
 
@@ -186,7 +213,10 @@ function renderPnlChart(history) {
   const range = maximum - minimum || 1;
   minimum -= range * 0.12;
   maximum += range * 0.12;
-  const scaleX = (index) => padding.left + (index / (points.length - 1)) * plotWidth;
+  const timeSpan = last.timestamp - points[0].timestamp;
+  const scaleX = (index) => padding.left + (timeSpan > 0
+    ? (points[index].timestamp - points[0].timestamp) / timeSpan
+    : index / (points.length - 1)) * plotWidth;
   const scaleY = (value) => padding.top + ((maximum - value) / (maximum - minimum)) * plotHeight;
 
   const definitions = svgNode("defs");
@@ -218,11 +248,19 @@ function renderPnlChart(history) {
   const areaPath = `${linePath} L${scaleX(points.length - 1).toFixed(2)},${(height - padding.bottom).toFixed(2)} L${scaleX(0).toFixed(2)},${(height - padding.bottom).toFixed(2)} Z`;
   svg.append(
     svgNode("path", { d: areaPath, class: "pnl-area" }),
-    svgNode("path", { d: linePath, class: "pnl-line" }),
+    svgNode("path", { d: hasSnapshot ? linePath.slice(0, linePath.lastIndexOf(" L")) : linePath, class: "pnl-line" }),
   );
+  if (hasSnapshot) {
+    const previous = points.length - 2;
+    svg.append(svgNode("path", {
+      d: `M${scaleX(previous)},${scaleY(points[previous].pnl)} L${scaleX(points.length - 1)},${scaleY(last.pnl)}`,
+      class: "pnl-line", "stroke-dasharray": "7 5", "data-pnl-snapshot-segment": "",
+    }));
+  }
 
-  const last = points[points.length - 1];
-  svg.append(svgNode("circle", { cx: scaleX(points.length - 1), cy: scaleY(last.pnl), r: 7, class: "pnl-latest-dot" }));
+  const lastDot = svgNode("circle", { cx: scaleX(points.length - 1), cy: scaleY(last.pnl), r: 7, class: "pnl-latest-dot" });
+  lastDot.append(svgNode("title", {}, `${hasSnapshot ? "Latest account snapshot" : "Daily history"}: ${signedMoney(last.pnl)} · ${easternTime.format(last.timestamp)}`));
+  svg.append(lastDot);
   const labelIndexes = [...new Set([0, Math.floor((points.length - 1) / 2), points.length - 1])];
   labelIndexes.forEach((index) => {
     svg.append(svgNode("text", {
@@ -230,15 +268,8 @@ function renderPnlChart(history) {
       y: height - 16,
       "text-anchor": index === 0 ? "start" : index === points.length - 1 ? "end" : "middle",
       class: "pnl-axis-label",
-    }, chartDate.format(points[index].timestamp)));
+    }, index === points.length - 1 && hasSnapshot ? "Latest snapshot" : chartDate.format(points[index].timestamp)));
   });
-
-  updateText(
-    "[data-pnl-range]",
-    `${chartDate.format(points[0].timestamp)}–${chartDate.format(last.timestamp)} · ${points.length} daily points`,
-  );
-  updateText("[data-pnl-change]", `${signedMoney(last.pnl)} vs $100K baseline`);
-  updateTone("[data-pnl-change]", last.pnl);
 }
 
 function renderPnlMetrics(snapshot) {
@@ -384,7 +415,7 @@ function applySnapshot(snapshot) {
   );
   renderOrders(orders);
   renderPnlMetrics(snapshot);
-  renderPnlChart(snapshot.portfolio_history);
+  renderPnlChart(snapshot);
   setFreshness(snapshot);
 }
 

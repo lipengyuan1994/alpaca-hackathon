@@ -25,6 +25,10 @@ jobs:
         run: uv run python -c 'import platform; assert platform.machine() == "arm64"'
       - name: Test architecture and fixture replay
         run: uv run python -m pytest
+      - name: Test dashboard chart data
+        run: |
+          node -e 'if (process.arch !== "arm64") throw new Error("Native ARM64 Node required")'
+          node --test tests/site/pnl_chart.test.cjs
       - name: Test Cloudflare paper refresh Worker
         run: |
           node -e 'if (process.arch !== "arm64") throw new Error("Native ARM64 Node required")'
