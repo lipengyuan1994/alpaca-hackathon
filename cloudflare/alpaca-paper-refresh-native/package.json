@@ -3,6 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test index.test.js"
+    "test": "node --test index.test.js && vitest run"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-plugin": "1.1.4",
+    "vitest": "4.1.11"
   }
 }

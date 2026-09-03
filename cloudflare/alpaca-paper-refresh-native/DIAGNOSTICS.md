@@ -1,6 +1,29 @@
 # Scheduled refresh diagnosis — September 3, 2026
 
-## Verified findings
+## Resolution: persistent Cloudflare alarm
+
+The original absence of Cron events did not prove a Cloudflare platform fault.
+On the user's request for another approach, scheduling was moved to a
+SQLite-backed Durable Object within the same Worker. No paid-plan upgrade or
+external scheduler was used. The old Cron registration was removed.
+
+- Deployment: `8204751b-9a98-4866-bb91-939bf6e4206c`.
+- The authenticated start call armed a timer; it did not dispatch GitHub.
+- The timer fired automatically at `2026-09-03T19:54:08.016Z` (3:54:08 PM ET).
+- Cloudflare recorded event type `alarm`, outcome `ok`.
+- GitHub returned HTTP 204 with request ID `2AD7:1A2ED4:7D6470:195712C:6A99D060`.
+- [Pages run 33799120057](https://github.com/lipengyuan1994/alpaca-hackathon/actions/runs/33799120057)
+  succeeded. Public JSON was generated at `2026-09-03T19:54:22.759843Z`.
+- Persistent status recorded `lastOutcome: dispatched`, `lastError: null`, and
+  `alarmAt: 1788465600000` — the next normal slot, 4:00 PM ET.
+- Fourteen tests passed, including real Durable Object alarm/rearm behavior,
+  duplicate suppression, retry bounds, authenticated controls, weekend and DST
+  handling, and preserving a stop during an in-flight GitHub request.
+
+The sections below preserve the earlier Cron investigation as historical
+evidence. Production now uses alarms, so an empty Cron Events page is expected.
+
+## Historical findings: Cron approach
 
 - The earlier recorded exceptions were HTTP GET requests reporting
   `Handler does not export a fetch() function.` They were not scheduled events.
@@ -54,12 +77,9 @@ The final public snapshot was verified with `generated_at` equal to
 The latest observed GitHub fallback `schedule` run was at 16:43 UTC, so that
 fallback was not assumed to guarantee freshness either.
 
-**Unresolved:** hosted scheduled-event delivery/registration. No infrastructure
-root cause has been established. Automatic refresh must not be represented as
-working until an actual scheduled invocation is observed. Cloudflare account-side
-investigation is needed to explain why accepted triggers do not invoke the
-deployed scheduled handler. Do not make further speculative account or billing
-changes. Supply this evidence to Cloudflare support if escalation is authorized.
+**Historical unresolved question:** why the original Cron registration did not
+produce observable invocations. No infrastructure root cause was established.
+This is no longer a dependency of the working alarm-based refresh path above.
 
 Cloudflare documents propagation of trigger changes as taking
 [up to 15 minutes](https://developers.cloudflare.com/workers/configuration/cron-triggers/).

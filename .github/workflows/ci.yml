@@ -28,7 +28,8 @@ jobs:
       - name: Test Cloudflare paper refresh Worker
         run: |
           node -e 'if (process.arch !== "arm64") throw new Error("Native ARM64 Node required")'
-          node --test cloudflare/alpaca-paper-refresh-native/index.test.js
+          npm ci --prefix cloudflare/alpaca-paper-refresh-native
+          npm test --prefix cloudflare/alpaca-paper-refresh-native
       - name: Verify schema snapshots
         run: |
           uv run python -m packages.contracts.schema_export

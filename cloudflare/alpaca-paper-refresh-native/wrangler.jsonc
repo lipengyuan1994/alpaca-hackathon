@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/cloudflare/workers-sdk/main/packages/wrangler/config-schema.json",
   "name": "alpaca-paper-refresh-native",
-  "main": "index.js",
+  "main": "alarm-entry.js",
   "compatibility_date": "2026-09-03",
   "workers_dev": true,
   "observability": {
@@ -14,7 +14,9 @@
       "persist": true
     }
   },
-  "triggers": {
-    "crons": ["0,30 * * * MON-FRI"]
-  }
+  "durable_objects": {
+    "bindings": [{ "name": "PAPER_REFRESH_SCHEDULER", "class_name": "PaperRefreshScheduler" }]
+  },
+  "migrations": [{ "tag": "v1-alarm-scheduler", "new_sqlite_classes": ["PaperRefreshScheduler"] }],
+  "triggers": { "crons": [] }
 }

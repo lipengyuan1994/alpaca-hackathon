@@ -17,7 +17,7 @@ const eastern = new Intl.DateTimeFormat("en-US", {
   hourCycle: "h23",
 });
 
-function easternParts(timestamp) {
+export function easternParts(timestamp) {
   return Object.fromEntries(
     eastern
       .formatToParts(new Date(timestamp))
@@ -26,7 +26,7 @@ function easternParts(timestamp) {
   );
 }
 
-function insideRefreshWindow(parts) {
+export function insideRefreshWindow(parts) {
   const minutes = Number(parts.hour) * 60 + Number(parts.minute);
   return (
     ["Mon", "Tue", "Wed", "Thu", "Fri"].includes(parts.weekday) &&
@@ -39,7 +39,7 @@ function easternLabel(parts) {
   return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}:${parts.second} America/New_York`;
 }
 
-async function dispatchWorkflow(scheduledTime, env) {
+export async function dispatchWorkflow(scheduledTime, env) {
   const parts = easternParts(scheduledTime);
   const scheduledEastern = easternLabel(parts);
   if (!insideRefreshWindow(parts)) {
@@ -69,11 +69,13 @@ async function dispatchWorkflow(scheduledTime, env) {
       "X-GitHub-Api-Version": "2022-11-28",
     },
     body: JSON.stringify({ ref: "main" }),
+    signal: AbortSignal.timeout(20000),
   });
   const githubRequestId = response.headers.get("x-github-request-id");
 
   if (!response.ok) {
-    const responseBody = (await response.text()).slice(0, 300);
+    // Do not buffer or log an unbounded upstream error body.
+    await response.body?.cancel();
     console.error(
       JSON.stringify({
         event: "github_dispatch_failed",
@@ -82,7 +84,6 @@ async function dispatchWorkflow(scheduledTime, env) {
         scheduledEastern,
         githubStatus: response.status,
         githubRequestId,
-        responseBody,
       }),
     );
     throw new Error(`GitHub workflow dispatch failed with status ${response.status}`);
@@ -106,7 +107,7 @@ async function sha256(value) {
   return new Uint8Array(await crypto.subtle.digest("SHA-256", bytes));
 }
 
-async function authorized(request, env) {
+export async function authorized(request, env) {
   const supplied = request.headers.get("authorization") || "";
   const expected = `Bearer ${env.GITHUB_TOKEN || ""}`;
   const [suppliedHash, expectedHash] = await Promise.all([sha256(supplied), sha256(expected)]);
@@ -117,7 +118,7 @@ async function authorized(request, env) {
   return Boolean(env.GITHUB_TOKEN) && difference === 0;
 }
 
-function jsonResponse(body, status = 200) {
+export function jsonResponse(body, status = 200) {
   return Response.json(body, {
     status,
     headers: { "cache-control": "no-store" },
