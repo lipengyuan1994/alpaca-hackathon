@@ -72,6 +72,16 @@ uses `cancel-in-progress: true`; overlapping fallback, alarm, or push runs may
 cancel an earlier run. Check the latest successful deployment, not just whether
 one particular run was cancelled.
 
+### Website-code caching
+
+Both HTML pages reference `site.js` and `site.css` with `?v=` followed by the
+first 12 characters of each file's SHA-256. When either asset changes, update
+its version in both `docs/index.html` and `docs/paper-performance.html`.
+`test_shared_assets_have_content_bound_cache_versions` enforces this in CI.
+GitHub Pages can cache assets for ten minutes; polling fresh JSON does not
+reload JavaScript in an already-open tab. After a website-code deployment,
+reload the page (use a new page query string if the HTML itself is cached).
+
 ## Data and credential boundaries
 
 Cloudflare has a `GITHUB_TOKEN` secret: a fine-grained token with Actions write

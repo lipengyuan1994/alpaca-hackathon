@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from hashlib import sha256
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlparse
@@ -45,6 +46,18 @@ def test_public_site_references_existing_local_assets() -> None:
             if not target.is_relative_to(DOCS.resolve()) or not exists:
                 missing.append(f"{html_path.name}: {reference}")
     assert not missing
+
+
+def test_shared_assets_have_content_bound_cache_versions() -> None:
+    for html_path in (HTML_PATH, PAPER_PERFORMANCE_PATH):
+        parser = _References()
+        parser.feed(html_path.read_text(encoding="utf-8"))
+        for asset in ("assets/site.js", "assets/site.css"):
+            version = sha256((DOCS / asset).read_bytes()).hexdigest()[:12]
+            references = [ref for ref in parser.references if urlparse(ref).path == asset]
+            assert references == [f"{asset}?v={version}"], (
+                f"Update {html_path.name} {asset} cache version to {version}"
+            )
 
 
 def test_pages_workflow_publishes_only_the_curated_site() -> None:
