@@ -113,12 +113,45 @@ def _public_order(order: dict[str, Any], *, prefix: str) -> dict[str, Any] | Non
     }
 
 
+def _portfolio_points(
+    history: dict[str, Any] | None,
+    *,
+    baseline: Decimal,
+) -> list[dict[str, Any]]:
+    """Return bounded, sanitized daily equity history for public charting."""
+    if history is None:
+        return []
+    timestamps = history.get("timestamp")
+    equities = history.get("equity")
+    if not isinstance(timestamps, list) or not isinstance(equities, list):
+        return []
+
+    points_by_timestamp: dict[str, dict[str, Any]] = {}
+    for timestamp, raw_equity in zip(timestamps, equities, strict=False):
+        try:
+            parsed_timestamp = datetime.fromtimestamp(float(timestamp), tz=UTC)
+            equity = _decimal(raw_equity, field="portfolio_equity")
+        except (OSError, OverflowError, TypeError, ValueError, PublicSnapshotError):
+            continue
+        if equity <= 0:
+            continue
+        captured_at = parsed_timestamp.isoformat().replace("+00:00", "Z")
+        points_by_timestamp[captured_at] = {
+            "timestamp": captured_at,
+            "equity": _money(equity),
+            "total_pnl": _money(equity - baseline),
+            "total_return": float((equity / baseline) - Decimal("1")),
+        }
+    return [points_by_timestamp[key] for key in sorted(points_by_timestamp)][-366:]
+
+
 def build_snapshot(
     *,
     account: dict[str, Any],
     orders: list[dict[str, Any]],
     expected_account_id: str,
     generated_at: datetime,
+    portfolio_history: dict[str, Any] | None = None,
     baseline: Decimal = _DEFAULT_BASELINE,
     client_order_prefix: str = _DEFAULT_PREFIX,
 ) -> dict[str, Any]:
@@ -141,14 +174,15 @@ def build_snapshot(
     public_orders.sort(key=lambda item: item["filled_at"], reverse=True)
     public_orders = public_orders[:10]
     captured_at = generated_at.astimezone(UTC).isoformat().replace("+00:00", "Z")
+    history_points = _portfolio_points(portfolio_history, baseline=baseline)
     payload: dict[str, Any] = {
-        "schema_version": "stable-income-generator-live-paper/v2",
+        "schema_version": "stable-income-generator-live-paper/v3",
         "source": "broker_reported_paper",
         "generated_at": captured_at,
         "refresh_contract": {
-            "scheduled_interval_seconds": 300,
+            "scheduled_interval_seconds": 1800,
             "browser_poll_seconds": 60,
-            "stale_after_seconds": 900,
+            "stale_after_seconds": 5400,
             "publishing_window": {
                 "timezone": "America/New_York",
                 "weekdays": ["MON", "TUE", "WED", "THU", "FRI"],
@@ -176,6 +210,12 @@ def build_snapshot(
             "client_order_prefix": client_order_prefix,
         },
         "recent_filled_system_orders": public_orders,
+        "portfolio_history": {
+            "status": "available" if history_points else "unavailable",
+            "period": "1A",
+            "timeframe": "1D",
+            "points": history_points,
+        },
         "publication_scope": {
             "paper_only": True,
             "account_id_publication_approved": True,
@@ -235,6 +275,22 @@ def publish(*, output: Path) -> dict[str, Any]:
         key=values["ALPACA_PAPER_API_KEY"],
         secret=values["ALPACA_PAPER_API_SECRET"],
     )
+    history_query = urlencode(
+        {
+            "period": "1A",
+            "timeframe": "1D",
+            "intraday_reporting": "market_hours",
+        }
+    )
+    try:
+        portfolio_history = _request_json(
+            base_url=values["ALPACA_PAPER_BASE_URL"],
+            path=f"/v2/account/portfolio/history?{history_query}",
+            key=values["ALPACA_PAPER_API_KEY"],
+            secret=values["ALPACA_PAPER_API_SECRET"],
+        )
+    except PublicSnapshotError:
+        portfolio_history = None
     if not isinstance(account, dict) or not isinstance(orders, list):
         raise PublicSnapshotError("PUBLIC_SNAPSHOT_BROKER_PAYLOAD_INVALID")
     snapshot = build_snapshot(
@@ -242,6 +298,7 @@ def publish(*, output: Path) -> dict[str, Any]:
         orders=orders,
         expected_account_id=values["ALPACA_PAPER_ACCOUNT_ID"],
         generated_at=datetime.now(tz=UTC),
+        portfolio_history=portfolio_history if isinstance(portfolio_history, dict) else None,
     )
     output.parent.mkdir(parents=True, exist_ok=True)
     temporary = output.with_name(f".{output.name}.tmp")

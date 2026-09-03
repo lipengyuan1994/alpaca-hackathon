@@ -249,6 +249,89 @@ footer { display: grid; grid-template-columns: 1fr auto auto; align-items: cente
 footer > div { display: flex; align-items: center; gap: .7rem; color: var(--ink); }
 footer p { margin: 0; }
 
+/* Dedicated paper-account surface: deliberately lighter than the narrative site. */
+.paper-performance-page {
+  color-scheme: light;
+  --ink: #173229;
+  --muted: #61776d;
+  --dim: #819188;
+  --bg: #edf4ec;
+  --panel: #f8fbf5;
+  --panel-2: #e3eee4;
+  --panel-3: #d7e7d9;
+  --line: rgba(23, 50, 41, .13);
+  --line-strong: rgba(23, 50, 41, .24);
+  --mint: #1a6847;
+  --green: #158a55;
+  --amber: #94661f;
+  --red: #bb4b3f;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 84% 4%, rgba(123, 186, 145, .24), transparent 28rem),
+    linear-gradient(180deg, #f5f8ef 0%, #edf4ec 42%, #e7efe7 100%);
+}
+.paper-performance-page ::selection { color: #f7fbf6; background: #1a6847; }
+.paper-performance-page .site-header {
+  color: var(--ink);
+  background: rgba(248, 251, 245, .86);
+  box-shadow: 0 12px 40px rgba(39, 75, 59, .1);
+}
+.paper-performance-page .brand-mark { border-color: rgba(26, 104, 71, .38); color: var(--mint); }
+.paper-performance-page nav a { color: var(--muted); }
+.paper-performance-page nav a:hover,
+.paper-performance-page nav a:focus-visible,
+.paper-performance-page nav a.nav-current { color: var(--ink); }
+.paper-performance-main { max-width: var(--max); margin: 0 auto; padding: 9rem 1.5rem 4rem; }
+.paper-performance-hero { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(320px, .75fr); align-items: end; gap: clamp(2.5rem, 8vw, 7rem); min-height: 610px; padding: 4rem 0 5rem; border-bottom: 1px solid var(--line); }
+.paper-performance-hero h1 { color: var(--ink); font-size: clamp(4rem, 8vw, 7.2rem); }
+.paper-performance-hero h1 em { color: var(--mint); }
+.paper-performance-hero .lede { color: var(--muted); }
+.paper-status-card { padding: 1.5rem; border: 1px solid var(--line-strong); border-radius: 1.35rem; background: rgba(248, 251, 245, .82); box-shadow: 0 28px 70px rgba(49, 83, 67, .13); }
+.paper-status-card > strong { display: block; margin-top: 1.2rem; font-family: Georgia, serif; font-size: clamp(2.7rem, 5vw, 4.5rem); font-weight: 400; letter-spacing: -.055em; }
+.paper-status-card > p { margin: -.25rem 0 1.4rem; font-size: .9rem; }
+.paper-status-card dl { margin: 0; border-top: 1px solid var(--line); }
+.paper-status-card dl div { display: flex; justify-content: space-between; gap: 1rem; padding: .75rem 0; border-bottom: 1px solid var(--line); }
+.paper-status-card dt { color: var(--muted); font-size: .67rem; letter-spacing: .08em; text-transform: uppercase; }
+.paper-status-card dd { margin: 0; text-align: right; font-size: .76rem; }
+.paper-performance-section { padding: 5.5rem 0; border-bottom: 1px solid var(--line); }
+.paper-section-heading { display: grid; grid-template-columns: minmax(0, .9fr) minmax(360px, 1.1fr); align-items: end; gap: 3rem; margin-bottom: 2rem; }
+.paper-section-heading h2,
+.paper-method h2,
+.paper-trades-card h2 { color: var(--ink); font-size: clamp(2.5rem, 5vw, 4.4rem); }
+.paper-performance-page .freshness-line { margin: 0; background: rgba(248, 251, 245, .72); }
+.paper-performance-page .freshness-line strong { color: var(--mint); }
+.paper-metric-grid { grid-template-columns: repeat(5, 1fr); border-color: var(--line-strong); background: rgba(248, 251, 245, .78); }
+.paper-metric-grid article { background: transparent; }
+.paper-metric-grid strong { color: var(--ink); font-size: clamp(1.45rem, 2.6vw, 2.25rem); }
+.paper-chart-heading { grid-template-columns: 1fr auto; }
+.paper-chart-meta { text-align: right; }
+.paper-chart-meta span,
+.paper-chart-meta strong { display: block; }
+.paper-chart-meta span { color: var(--muted); font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; }
+.paper-chart-meta strong { margin-top: .3rem; color: var(--mint); font-family: Georgia, serif; font-size: 1.4rem; font-weight: 400; }
+.paper-pnl-card { position: relative; margin: 0; padding: 1.15rem; border: 1px solid var(--line-strong); border-radius: 1.25rem; background: rgba(248, 251, 245, .82); box-shadow: 0 24px 64px rgba(49, 83, 67, .08); overflow: hidden; }
+.paper-pnl-card svg { display: block; width: 100%; min-height: 300px; }
+.paper-pnl-card figcaption { padding: .8rem .45rem .1rem; border-top: 1px solid var(--line); color: var(--muted); font-size: .72rem; }
+.pnl-chart-empty { display: none; min-height: 300px; margin: 0; place-items: center; color: var(--muted); text-align: center; }
+.pnl-grid-line { stroke: rgba(23, 50, 41, .1); stroke-width: 1; }
+.pnl-zero-line { stroke: rgba(148, 102, 31, .48); stroke-width: 1.5; stroke-dasharray: 7 7; }
+.pnl-axis-label { fill: #61776d; font: 12px Inter, ui-sans-serif, sans-serif; }
+.pnl-area { fill: url(#pnl-area-gradient); }
+.pnl-line { fill: none; stroke: #158a55; stroke-width: 4; stroke-linejoin: round; stroke-linecap: round; }
+.pnl-latest-dot { fill: #f8fbf5; stroke: #158a55; stroke-width: 4; }
+.paper-trades-card { margin-top: 0; background: rgba(248, 251, 245, .78); }
+.paper-trades-card .trades-card-head { border-color: var(--line); }
+.paper-trades-card .trade-meta a,
+.paper-performance-page .eyebrow { color: var(--mint); }
+.paper-performance-page .live-trades-table td strong { color: var(--ink); }
+.paper-performance-page .trade-action.sell { color: #126d46; background: rgba(21, 138, 85, .08); }
+.paper-performance-page .trade-action.buy { color: #805513; background: rgba(148, 102, 31, .08); }
+.paper-method { display: grid; grid-template-columns: minmax(0, .9fr) minmax(360px, 1.1fr); gap: 4rem; }
+.paper-method > div:last-child { color: var(--muted); font-size: 1.03rem; }
+.paper-method > div:last-child p { margin-top: 0; }
+.paper-footer { color: var(--muted); }
+.paper-footer > div { color: var(--ink); }
+
 @media (max-width: 1000px) {
   .hero { grid-template-columns: 1fr; min-height: 900px; align-content: center; }
   .proof-card { width: min(100%, 520px); margin: 0; }
@@ -267,6 +350,9 @@ footer p { margin: 0; }
   .refresh-flow { grid-template-columns: repeat(3, 1fr); }
   .refresh-flow li:nth-child(3) { border-right: 0; }
   .refresh-flow li:nth-child(-n+3) { border-bottom: 1px solid var(--line); }
+  .paper-metric-grid { grid-template-columns: repeat(3, 1fr); }
+  .paper-metric-grid article:nth-child(3) { border-right: 0; }
+  .paper-metric-grid article:nth-child(-n+3) { border-bottom: 1px solid var(--line); }
 }
 
 @media (max-width: 820px) {
@@ -287,6 +373,16 @@ footer p { margin: 0; }
   .trades-card-head { display: block; }
   .trade-meta { align-items: flex-start; margin-top: .8rem; }
   footer { grid-template-columns: 1fr; }
+  .paper-performance-hero,
+  .paper-section-heading,
+  .paper-method { grid-template-columns: 1fr; }
+  .paper-performance-hero { min-height: auto; align-items: start; }
+  .paper-section-heading { gap: 1.5rem; }
+  .paper-chart-meta { text-align: left; }
+  .paper-metric-grid { grid-template-columns: 1fr 1fr; }
+  .paper-metric-grid article:nth-child(3) { border-right: 1px solid var(--line); }
+  .paper-metric-grid article:nth-child(2n) { border-right: 0; }
+  .paper-metric-grid article:nth-child(-n+4) { border-bottom: 1px solid var(--line); }
 }
 
 @media (max-width: 560px) {
@@ -320,6 +416,18 @@ footer p { margin: 0; }
   .refresh-flow li { min-height: auto; }
   .refresh-flow strong { margin-top: .9rem; }
   .config-window pre, .code-card pre { font-size: .66rem; }
+  .paper-performance-main { padding: 7rem 1rem 2rem; }
+  .paper-performance-hero { padding-top: 2rem; }
+  .paper-performance-section { padding: 4rem 0; }
+  .paper-metric-grid { grid-template-columns: 1fr; }
+  .paper-metric-grid article,
+  .paper-metric-grid article:nth-child(3) { border-right: 0; border-bottom: 1px solid var(--line); }
+  .paper-metric-grid article:last-child { border-bottom: 0; }
+  .paper-status-card dl div { display: block; }
+  .paper-status-card dd { margin-top: .2rem; text-align: left; }
+  .paper-pnl-card { margin-inline: -.35rem; padding: .55rem; }
+  .paper-pnl-card svg,
+  .pnl-chart-empty { min-height: 245px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

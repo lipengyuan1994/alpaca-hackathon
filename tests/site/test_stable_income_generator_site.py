@@ -13,6 +13,7 @@ from packages.contracts.canonical import canonical_hash
 ROOT = Path(__file__).resolve().parents[2]
 DOCS = ROOT / "docs"
 HTML_PATH = DOCS / "index.html"
+PAPER_PERFORMANCE_PATH = DOCS / "paper-performance.html"
 ARCHITECTURE_PATH = DOCS / "architecture" / "ARCHITECTURE_DESIGN.html"
 BENCHMARK_PATH = DOCS / "assets" / "data" / "v13-5-benchmark.json"
 LIVE_PATH = DOCS / "assets" / "data" / "live-paper-snapshot.json"
@@ -31,7 +32,7 @@ class _References(HTMLParser):
 
 def test_public_site_references_existing_local_assets() -> None:
     missing: list[str] = []
-    for html_path in (HTML_PATH, ARCHITECTURE_PATH):
+    for html_path in (HTML_PATH, PAPER_PERFORMANCE_PATH, ARCHITECTURE_PATH):
         parser = _References()
         parser.feed(html_path.read_text(encoding="utf-8"))
         for reference in parser.references:
@@ -52,8 +53,9 @@ def test_pages_workflow_publishes_only_the_curated_site() -> None:
     )
     assert "path: _site" in workflow
     assert "path: docs" not in workflow
-    assert "cp docs/index.html docs/.nojekyll _site/" in workflow
-    assert 'cron: "*/5 9-16 * * 1-5"' in workflow
+    assert "cp docs/index.html docs/paper-performance.html docs/.nojekyll _site/" in workflow
+    assert "docs/paper-performance.html" in workflow
+    assert 'cron: "*/30 9-16 * * 1-5"' in workflow
     assert 'cron: "0 17 * * 1-5"' in workflow
     assert workflow.count('timezone: "America/New_York"') == 2
     assert "packages/paper_wheel/public_snapshot.py" in workflow
@@ -64,21 +66,30 @@ def test_pages_workflow_publishes_only_the_curated_site() -> None:
 
 def test_public_copy_matches_approved_paper_snapshot() -> None:
     html = HTML_PATH.read_text(encoding="utf-8")
+    paper_performance = PAPER_PERFORMANCE_PATH.read_text(encoding="utf-8")
     architecture = ARCHITECTURE_PATH.read_text(encoding="utf-8")
     snapshot = json.loads(LIVE_PATH.read_text(encoding="utf-8"))
     assert snapshot["source"] == "broker_reported_paper"
-    assert snapshot["schema_version"] == "stable-income-generator-live-paper/v2"
+    assert snapshot["schema_version"] == "stable-income-generator-live-paper/v3"
     assert snapshot["account"]["account_id"] in html
     assert "$100,079.73" in html
     assert "+$79.73" in html
     assert "Gemini 3.6 Flash" in html
-    assert "Last 10 filled V13.5 orders" in html
+    assert 'href="paper-performance.html"' in html
+    assert "Top 10 recent fills" in paper_performance
+    assert "data-pnl-chart" in paper_performance
+    assert "paper-performance-page" in paper_performance
     assert "architecture/ARCHITECTURE_DESIGN.html" in html
     assert len(snapshot["recent_filled_system_orders"]) <= 10
     artifact_hash = snapshot.pop("artifact_hash")
     assert artifact_hash == canonical_hash(snapshot)
     forbidden = ("paper-api.alpaca.markets", "paper_alpaca_api_key", "api_secret")
-    public_copy = html + architecture + LIVE_PATH.read_text(encoding="utf-8")
+    public_copy = (
+        html
+        + paper_performance
+        + architecture
+        + LIVE_PATH.read_text(encoding="utf-8")
+    )
     assert all(value not in public_copy for value in forbidden)
 
 

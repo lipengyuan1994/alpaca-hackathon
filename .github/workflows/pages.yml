@@ -8,10 +8,10 @@ on:
       - "packages/paper_wheel/public_snapshot.py"
       - ".github/workflows/pages.yml"
   schedule:
-    # Five-minute broker captures during the public monitoring window only.
+    # Thirty-minute broker captures during the public monitoring window only.
     # The separate final trigger includes exactly 5:00 PM without continuing
     # through the rest of the 5 PM hour.
-    - cron: "*/5 9-16 * * 1-5"
+    - cron: "*/30 9-16 * * 1-5"
       timezone: "America/New_York"
     - cron: "0 17 * * 1-5"
       timezone: "America/New_York"
@@ -49,7 +49,7 @@ jobs:
       - name: Assemble public site
         run: |
           mkdir -p _site/architecture
-          cp docs/index.html docs/.nojekyll _site/
+          cp docs/index.html docs/paper-performance.html docs/.nojekyll _site/
           cp -R docs/assets _site/assets
           cp docs/architecture/ARCHITECTURE_DESIGN.html _site/architecture/ARCHITECTURE_DESIGN.html
       - name: Upload static site

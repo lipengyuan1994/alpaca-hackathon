@@ -6,7 +6,7 @@ live-trading mode, endpoint, or live credential path.
 
 The public judge-facing product story is the
 [Stable Income Generator website](https://lipengyuan1994.github.io/alpaca-hackathon/),
-with separated backtest, deterministic-system, and five-minute broker-reported
+with separated backtest, deterministic-system, and 30-minute broker-reported
 paper evidence. Its dedicated
 [architecture page](https://lipengyuan1994.github.io/alpaca-hackathon/architecture/ARCHITECTURE_DESIGN.html)
 shows the physical, logical, data-flow, PostgreSQL, and container boundaries.

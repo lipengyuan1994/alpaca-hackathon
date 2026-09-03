@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Broker-reported Alpaca paper account performance for Stable Income Generator, including P&L history and recent system fills.">
+  <meta name="theme-color" content="#edf4ec">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://lipengyuan1994.github.io/alpaca-hackathon/paper-performance.html">
+  <meta property="og:title" content="Paper Account Performance · Stable Income Generator">
+  <meta property="og:description" content="A lighter, dedicated view of the Alpaca paper account, its P&L path, and the ten most recent V13.5 system fills.">
+  <meta property="og:image" content="https://lipengyuan1994.github.io/alpaca-hackathon/assets/stable-income-generator-banner.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Paper Account Performance · Stable Income Generator">
+  <meta name="twitter:description" content="Broker-reported paper equity, P&L history, and recent system fills.">
+  <meta name="twitter:image" content="https://lipengyuan1994.github.io/alpaca-hackathon/assets/stable-income-generator-banner.png">
+  <title>Paper Account Performance · Stable Income Generator</title>
+  <link rel="stylesheet" href="assets/site.css">
+</head>
+<body class="paper-performance-page">
+  <a class="skip-link" href="#main">Skip to account performance</a>
+  <header class="site-header paper-header">
+    <a class="brand" href="index.html" aria-label="Stable Income Generator home">
+      <span class="brand-mark" aria-hidden="true">SIG</span>
+      <span>Stable Income Generator</span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a class="nav-current" href="paper-performance.html" aria-current="page">Paper account</a>
+      <a href="index.html#performance">Research</a>
+      <a href="architecture/ARCHITECTURE_DESIGN.html">Architecture</a>
+      <a class="nav-cta" href="index.html">Back to overview</a>
+    </nav>
+  </header>
+
+  <main id="main" class="paper-performance-main">
+    <section class="paper-performance-hero">
+      <div>
+        <p class="eyebrow"><span class="live-dot" aria-hidden="true"></span> Alpaca paper account</p>
+        <h1>Performance,<br><em>in the open.</em></h1>
+        <p class="lede">A dedicated, broker-reported view of the paper account. It separates live paper behavior from the frozen V13.5 backtest and exposes only the fields approved for public evidence.</p>
+      </div>
+      <aside class="paper-status-card" aria-label="Paper account refresh status">
+        <span class="status-pill" data-live-freshness><span class="live-dot" aria-hidden="true"></span> Checking latest snapshot</span>
+        <strong data-live-equity>$100,079.73</strong>
+        <p class="positive" data-live-total-pnl>+$79.73 since fresh $100K baseline</p>
+        <dl>
+          <div><dt>Account status</dt><dd data-live-account-status>ACTIVE</dd></div>
+          <div><dt>Last captured</dt><dd><time data-live-generated-at datetime="2026-09-02T22:04:11.865285Z">Sep 2, 2026 · 6:04 PM ET</time></dd></div>
+          <div><dt>Refresh target</dt><dd>Every 30 minutes · weekdays</dd></div>
+        </dl>
+      </aside>
+    </section>
+
+    <section class="paper-performance-section" aria-labelledby="account-summary-title">
+      <div class="paper-section-heading">
+        <div>
+          <p class="eyebrow">Current account</p>
+          <h2 id="account-summary-title">Broker snapshot</h2>
+        </div>
+        <p class="freshness-line"><strong data-live-feed-status>Loading latest deployed snapshot…</strong><br><span>Browser checks every 60 seconds · backend target every 30 minutes, Monday–Friday, 9:00 AM–5:00 PM ET · marked stale after 90 active minutes</span></p>
+      </div>
+
+      <div class="live-metric-grid paper-metric-grid" aria-label="Paper account metrics">
+        <article><span>Equity</span><strong data-live-equity>$100,079.73</strong><small>Broker reported</small></article>
+        <article><span>Total paper P&amp;L</span><strong class="positive" data-live-total-pnl-short>+$79.73</strong><small>vs fresh $100K baseline</small></article>
+        <article><span>Today</span><strong class="positive" data-live-day-pnl>+$150.00</strong><small data-live-day-return>+0.15%</small></article>
+        <article><span>Cash</span><strong data-live-cash>$100,375.73</strong><small>Uncommitted balance</small></article>
+        <article><span>Buying power</span><strong data-live-buying-power-value>$119,902.92</strong><small>Broker reported</small></article>
+      </div>
+    </section>
+
+    <section class="paper-performance-section" aria-labelledby="pnl-history-title">
+      <div class="paper-section-heading paper-chart-heading">
+        <div>
+          <p class="eyebrow">Movement</p>
+          <h2 id="pnl-history-title">Paper P&amp;L history</h2>
+        </div>
+        <div class="paper-chart-meta">
+          <span data-pnl-range>One-year daily history</span>
+          <strong data-pnl-change>Waiting for broker history</strong>
+        </div>
+      </div>
+      <figure class="paper-pnl-card">
+        <svg data-pnl-chart viewBox="0 0 1000 360" role="img" aria-labelledby="pnl-history-title pnl-chart-description"></svg>
+        <p class="pnl-chart-empty" data-pnl-empty>Portfolio history will appear after the next successful broker refresh.</p>
+        <figcaption id="pnl-chart-description">Daily account equity translated to profit or loss against the approved $100,000 starting baseline. The final point is the latest available Alpaca portfolio-history observation.</figcaption>
+      </figure>
+    </section>
+
+    <section class="paper-performance-section" aria-labelledby="recent-trades-title">
+      <div class="trades-card paper-trades-card">
+        <div class="trades-card-head">
+          <div>
+            <p class="eyebrow">Most recent system activity</p>
+            <h2 id="recent-trades-title">Top 10 recent fills</h2>
+          </div>
+          <div class="trade-meta"><span data-live-order-count>5 fills available</span><a href="assets/data/live-paper-snapshot.json">Download hash-bound JSON ↓</a></div>
+        </div>
+        <div class="live-table-wrap">
+          <table class="live-trades-table">
+            <caption>Newest ten filled broker orders carrying the <code>rs-v135</code> system prefix. Manual, canceled, unfilled, and foreign orders are excluded.</caption>
+            <thead><tr><th scope="col">Filled</th><th scope="col">Action</th><th scope="col">Contract</th><th scope="col">Qty</th><th scope="col">Avg fill</th><th scope="col">System ref</th></tr></thead>
+            <tbody data-live-orders>
+              <tr><td>Sep 1 · 11:42 AM ET</td><td><span class="trade-action sell">Sell to open</span></td><td><strong>QQQ $704 PUT</strong><small>Expires Sep 8, 2026</small></td><td>1</td><td>$2.78</td><td><code>805c2262</code></td></tr>
+              <tr><td>Sep 1 · 11:41 AM ET</td><td><span class="trade-action buy">Buy to close</span></td><td><strong>QQQ $702 PUT</strong><small>Expires Sep 8, 2026</small></td><td>1</td><td>$2.37</td><td><code>771c164a</code></td></tr>
+              <tr><td>Sep 1 · 10:31 AM ET</td><td><span class="trade-action sell">Sell to open</span></td><td><strong>QQQ $702 PUT</strong><small>Expires Sep 8, 2026</small></td><td>1</td><td>$2.86</td><td><code>2dd0bb46</code></td></tr>
+              <tr><td>Sep 1 · 10:30 AM ET</td><td><span class="trade-action buy">Buy to close</span></td><td><strong>QQQ $700 PUT</strong><small>Expires Sep 8, 2026</small></td><td>1</td><td>$2.57</td><td><code>c46ad52f</code></td></tr>
+              <tr><td>Sep 1 · 10:01 AM ET</td><td><span class="trade-action sell">Sell to open</span></td><td><strong>QQQ $700 PUT</strong><small>Expires Sep 8, 2026</small></td><td>1</td><td>$3.06</td><td><code>4f4492d1</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="paper-performance-section paper-method" aria-labelledby="method-title">
+      <div>
+        <p class="eyebrow">Evidence boundary</p>
+        <h2 id="method-title">Paper behavior, not a return promise.</h2>
+      </div>
+      <div>
+        <p>Account values and portfolio history come from Alpaca’s paper Trading API. The trade table is restricted to filled orders with the system-owned <code>rs-v135</code> client-order prefix.</p>
+        <p>API credentials, broker origin, broker order IDs, and every order-control capability remain private. Paper trading is simulated and is not live-money performance.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="paper-footer">
+    <div><span class="brand-mark" aria-hidden="true">SIG</span><strong>Stable Income Generator</strong></div>
+    <p>Broker-reported paper evidence · refreshed every 30 minutes on weekdays</p>
+    <nav aria-label="Footer navigation">
+      <a href="index.html">Overview</a>
+      <a href="https://github.com/lipengyuan1994/alpaca-hackathon">GitHub</a>
+      <a href="#main">Back to top ↑</a>
+    </nav>
+  </footer>
+  <script src="assets/site.js" defer></script>
+</body>
+</html>

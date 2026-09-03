@@ -45,7 +45,7 @@ def test_public_snapshot_filters_sorts_limits_and_hashes_orders() -> None:
         baseline=Decimal("100000"),
     )
 
-    assert snapshot["schema_version"] == "stable-income-generator-live-paper/v2"
+    assert snapshot["schema_version"] == "stable-income-generator-live-paper/v3"
     assert snapshot["refresh_contract"]["publishing_window"] == {
         "timezone": "America/New_York",
         "weekdays": ["MON", "TUE", "WED", "THU", "FRI"],
@@ -54,6 +54,14 @@ def test_public_snapshot_filters_sorts_limits_and_hashes_orders() -> None:
     }
     assert snapshot["account"]["total_pnl"] == 79.73
     assert snapshot["account"]["day_pnl"] == 150.0
+    assert snapshot["refresh_contract"]["scheduled_interval_seconds"] == 1800
+    assert snapshot["refresh_contract"]["stale_after_seconds"] == 5400
+    assert snapshot["portfolio_history"] == {
+        "status": "unavailable",
+        "period": "1A",
+        "timeframe": "1D",
+        "points": [],
+    }
     assert len(snapshot["recent_filled_system_orders"]) == 10
     assert snapshot["recent_filled_system_orders"][0]["system_ref"] == "00000011"
     assert snapshot["recent_filled_system_orders"][-1]["system_ref"] == "00000002"
@@ -65,6 +73,28 @@ def test_public_snapshot_filters_sorts_limits_and_hashes_orders() -> None:
         "option_type": "PUT",
         "strike": 704.0,
     }
+    artifact_hash = snapshot.pop("artifact_hash")
+    assert artifact_hash == canonical_hash(snapshot)
+
+
+def test_public_snapshot_sanitizes_and_binds_portfolio_history() -> None:
+    snapshot = build_snapshot(
+        account=_account(),
+        orders=[],
+        expected_account_id="paper-account-id",
+        generated_at=datetime(2026, 9, 2, 21, 31, tzinfo=UTC),
+        portfolio_history={
+            "timestamp": [1_788_278_400, 1_788_364_800, "invalid"],
+            "equity": ["99929.73", "100079.73", "not-money"],
+        },
+    )
+
+    history = snapshot["portfolio_history"]
+    assert history["status"] == "available"
+    assert len(history["points"]) == 2
+    assert history["points"][0]["total_pnl"] == -70.27
+    assert history["points"][1]["total_pnl"] == 79.73
+    assert history["points"][1]["total_return"] == pytest.approx(0.0007973)
     artifact_hash = snapshot.pop("artifact_hash")
     assert artifact_hash == canonical_hash(snapshot)
 

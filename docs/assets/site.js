@@ -135,6 +135,110 @@ function renderOrders(orders) {
   });
 }
 
+const chartDate = new Intl.DateTimeFormat("en-US", {
+  timeZone: "America/New_York",
+  month: "short",
+  day: "numeric",
+});
+
+function svgNode(name, attributes = {}, text = "") {
+  const node = document.createElementNS("http://www.w3.org/2000/svg", name);
+  Object.entries(attributes).forEach(([key, value]) => node.setAttribute(key, value));
+  if (text) node.textContent = text;
+  return node;
+}
+
+function renderPnlChart(history) {
+  const svg = document.querySelector("[data-pnl-chart]");
+  if (!svg) return;
+  const empty = document.querySelector("[data-pnl-empty]");
+  const rawPoints = Array.isArray(history?.points) ? history.points : [];
+  const points = rawPoints
+    .map((point) => ({
+      timestamp: new Date(point.timestamp),
+      pnl: Number(point.total_pnl),
+    }))
+    .filter((point) => Number.isFinite(point.timestamp.getTime()) && Number.isFinite(point.pnl))
+    .sort((left, right) => left.timestamp - right.timestamp);
+
+  if (points.length < 2) {
+    svg.replaceChildren();
+    svg.hidden = true;
+    if (empty) empty.style.display = "grid";
+    updateText("[data-pnl-change]", "History unavailable");
+    return;
+  }
+
+  svg.hidden = false;
+  if (empty) empty.style.display = "none";
+  svg.replaceChildren();
+
+  const width = 1000;
+  const height = 360;
+  const padding = { top: 26, right: 34, bottom: 46, left: 88 };
+  const plotWidth = width - padding.left - padding.right;
+  const plotHeight = height - padding.top - padding.bottom;
+  const values = points.map((point) => point.pnl);
+  let minimum = Math.min(0, ...values);
+  let maximum = Math.max(0, ...values);
+  const range = maximum - minimum || 1;
+  minimum -= range * 0.12;
+  maximum += range * 0.12;
+  const scaleX = (index) => padding.left + (index / (points.length - 1)) * plotWidth;
+  const scaleY = (value) => padding.top + ((maximum - value) / (maximum - minimum)) * plotHeight;
+
+  const definitions = svgNode("defs");
+  const gradient = svgNode("linearGradient", { id: "pnl-area-gradient", x1: "0", y1: "0", x2: "0", y2: "1" });
+  gradient.append(
+    svgNode("stop", { offset: "0%", "stop-color": "#42a973", "stop-opacity": ".28" }),
+    svgNode("stop", { offset: "100%", "stop-color": "#42a973", "stop-opacity": "0" }),
+  );
+  definitions.append(gradient);
+  svg.append(definitions);
+
+  for (let step = 0; step <= 4; step += 1) {
+    const value = minimum + ((maximum - minimum) * step) / 4;
+    const y = scaleY(value);
+    svg.append(
+      svgNode("line", { x1: padding.left, y1: y, x2: width - padding.right, y2: y, class: "pnl-grid-line" }),
+      svgNode("text", { x: padding.left - 14, y: y + 4, "text-anchor": "end", class: "pnl-axis-label" }, signedMoney(value)),
+    );
+  }
+
+  if (minimum <= 0 && maximum >= 0) {
+    const zeroY = scaleY(0);
+    svg.append(svgNode("line", { x1: padding.left, y1: zeroY, x2: width - padding.right, y2: zeroY, class: "pnl-zero-line" }));
+  }
+
+  const linePath = points
+    .map((point, index) => `${index === 0 ? "M" : "L"}${scaleX(index).toFixed(2)},${scaleY(point.pnl).toFixed(2)}`)
+    .join(" ");
+  const areaPath = `${linePath} L${scaleX(points.length - 1).toFixed(2)},${(height - padding.bottom).toFixed(2)} L${scaleX(0).toFixed(2)},${(height - padding.bottom).toFixed(2)} Z`;
+  svg.append(
+    svgNode("path", { d: areaPath, class: "pnl-area" }),
+    svgNode("path", { d: linePath, class: "pnl-line" }),
+  );
+
+  const last = points[points.length - 1];
+  svg.append(svgNode("circle", { cx: scaleX(points.length - 1), cy: scaleY(last.pnl), r: 7, class: "pnl-latest-dot" }));
+  const labelIndexes = [...new Set([0, Math.floor((points.length - 1) / 2), points.length - 1])];
+  labelIndexes.forEach((index) => {
+    svg.append(svgNode("text", {
+      x: scaleX(index),
+      y: height - 16,
+      "text-anchor": index === 0 ? "start" : index === points.length - 1 ? "end" : "middle",
+      class: "pnl-axis-label",
+    }, chartDate.format(points[index].timestamp)));
+  });
+
+  updateText(
+    "[data-pnl-range]",
+    `${chartDate.format(points[0].timestamp)}–${chartDate.format(last.timestamp)} · ${points.length} daily points`,
+  );
+  updateText("[data-pnl-change]", `${signedMoney(last.pnl)} vs $100K baseline`);
+  updateTone("[data-pnl-change]", last.pnl);
+}
+
 function setFreshness(snapshot) {
   const generated = new Date(snapshot.generated_at);
   const timestampValid = Number.isFinite(generated.getTime());
@@ -185,6 +289,8 @@ function applySnapshot(snapshot) {
   updateTone("[data-live-day-pnl]", account.day_pnl);
   updateText("[data-live-day-return]", signedPercent(account.day_return));
   updateText("[data-live-cash]", money.format(Number(account.cash)));
+  updateText("[data-live-account-status]", account.status || "UNKNOWN");
+  updateText("[data-live-buying-power-value]", money.format(Number(account.buying_power)));
   updateText(
     "[data-live-buying-power]",
     `${money.format(Number(account.buying_power))} buying power`,
@@ -206,6 +312,7 @@ function applySnapshot(snapshot) {
     `${orders.length} ${orders.length === 1 ? "fill" : "fills"} available`,
   );
   renderOrders(orders);
+  renderPnlChart(snapshot.portfolio_history);
   setFreshness(snapshot);
 }
 
