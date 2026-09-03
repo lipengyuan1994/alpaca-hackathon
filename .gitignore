@@ -177,3 +177,4 @@ data/alpaca/
 # Local paper-runtime control, outbox, journal, and logs are host evidence and
 # can contain account-derived hashes. They must never be committed.
 artifacts/paper_wheel/
+local_secrets/
