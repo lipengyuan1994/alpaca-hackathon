@@ -1,0 +1,20 @@
+{
+  "$schema": "https://raw.githubusercontent.com/cloudflare/workers-sdk/main/packages/wrangler/config-schema.json",
+  "name": "alpaca-paper-refresh-native",
+  "main": "index.js",
+  "compatibility_date": "2026-09-03",
+  "workers_dev": true,
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1,
+    "logs": {
+      "enabled": true,
+      "invocation_logs": true,
+      "head_sampling_rate": 1,
+      "persist": true
+    }
+  },
+  "triggers": {
+    "crons": ["*/30 * * * MON-FRI"]
+  }
+}
