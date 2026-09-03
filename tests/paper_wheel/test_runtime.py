@@ -402,20 +402,34 @@ def test_unmanaged_position_halts_before_any_order(tmp_path: Path) -> None:
     assert broker.submit_count == 0
 
 
-def test_stale_open_order_is_canceled_and_client_id_is_never_reused(tmp_path: Path) -> None:
+def test_confirmed_canceled_entry_retries_with_fresh_client_id(tmp_path: Path) -> None:
     broker = FakePaperBroker(submission="accepted")
     runtime = _runtime(tmp_path, broker)
-    assert runtime.run_once(now=MONDAY).status == "ORDER_SUBMITTED"
+    first = runtime.run_once(now=MONDAY)
+    assert first.status == "ORDER_SUBMITTED"
 
     broker.now = MONDAY + timedelta(minutes=3, seconds=1)
     cancel_requested = runtime.run_once(now=broker.now)
     broker.now += timedelta(seconds=30)
-    no_retry = runtime.run_once(now=broker.now)
+    retry = runtime.run_once(now=broker.now)
 
     assert cancel_requested.status == "ORDER_PENDING"
     assert broker.cancel_count == 1
-    assert no_retry.status == "NO_ACTION"
-    assert no_retry.reason_codes == ("WHEEL_CLIENT_ORDER_ID_ALREADY_USED",)
+    assert retry.status == "ORDER_SUBMITTED"
+    assert retry.client_order_id != first.client_order_id
+    assert broker.submit_count == 2
+
+
+def test_rejected_entry_is_not_blindly_retried(tmp_path: Path) -> None:
+    broker = FakePaperBroker(submission="rejected")
+    runtime = _runtime(tmp_path, broker)
+    first = runtime.run_once(now=MONDAY)
+    broker.now += timedelta(minutes=1)
+    second = runtime.run_once(now=broker.now)
+
+    assert first.status == "ORDER_SUBMITTED"
+    assert second.status == "NO_ACTION"
+    assert second.reason_codes == ("WHEEL_CLIENT_ORDER_ID_ALREADY_USED",)
     assert broker.submit_count == 1
 
 

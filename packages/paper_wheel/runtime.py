@@ -51,6 +51,8 @@ _TERMINAL = {
     "suspended",
     "calculated",
 }
+_RETRYABLE_CLOSE_TERMINAL = frozenset({"canceled", "cancelled", "expired"})
+_RETRYABLE_ENTRY_TERMINAL = frozenset({*_RETRYABLE_CLOSE_TERMINAL, "filled"})
 _NONTERMINAL = {
     "new",
     "accepted",
@@ -719,6 +721,13 @@ class PaperWheelRuntime:
             "date": str(now.astimezone(_EASTERN).date()),
             "config_hash": self.loaded.config_hash,
         }
+        retry_ordinal = self._retry_ordinal(
+            action=action,
+            option_symbol=contract.symbol,
+            retryable_statuses=_RETRYABLE_ENTRY_TERMINAL,
+        )
+        if retry_ordinal:
+            semantics["retry_ordinal"] = retry_ordinal
         return WheelOrderPlanV1(
             strategy_id="v13.5",
             underlying=contract.underlying,
@@ -741,19 +750,11 @@ class PaperWheelRuntime:
         )
 
     def _close_plan(self, *, managed: ManagedOptionV1, quote: Any, trend_up: bool, now: datetime) -> WheelOrderPlanV1:
-        prior_attempts = 0
-        for event in self.store.events():
-            if event.event_type != "ORDER_PREPARED":
-                continue
-            raw_plan = event.detail.get("plan")
-            if not isinstance(raw_plan, dict):
-                continue
-            if (
-                raw_plan.get("action") == WheelAction.BUY_TO_CLOSE
-                and raw_plan.get("option_symbol") == managed.option_symbol
-                and raw_plan.get("config_hash") == self.loaded.config_hash
-            ):
-                prior_attempts += 1
+        retry_ordinal = self._retry_ordinal(
+            action=WheelAction.BUY_TO_CLOSE,
+            option_symbol=managed.option_symbol,
+            retryable_statuses=_RETRYABLE_CLOSE_TERMINAL,
+        )
         semantics = {
             "strategy_id": "v13.5",
             "underlying": managed.underlying,
@@ -763,8 +764,8 @@ class PaperWheelRuntime:
             "entry_client_order_id": managed.entry_client_order_id,
             "config_hash": self.loaded.config_hash,
         }
-        if prior_attempts:
-            semantics["retry_ordinal"] = prior_attempts
+        if retry_ordinal:
+            semantics["retry_ordinal"] = retry_ordinal
         return WheelOrderPlanV1(
             strategy_id="v13.5",
             underlying=managed.underlying,
@@ -785,6 +786,38 @@ class PaperWheelRuntime:
             config_hash=self.loaded.config_hash,
             created_at=now,
         )
+
+    def _retry_ordinal(
+        self,
+        *,
+        action: WheelAction,
+        option_symbol: str,
+        retryable_statuses: frozenset[str],
+    ) -> int:
+        matching_client_ids: list[str] = []
+        latest_by_client_id: dict[str, Any] = {}
+        for event in self.store.events():
+            if event.client_order_id:
+                latest_by_client_id[event.client_order_id] = event
+            if event.event_type != "ORDER_PREPARED":
+                continue
+            raw_plan = event.detail.get("plan")
+            if not isinstance(raw_plan, dict):
+                continue
+            if (
+                raw_plan.get("action") == action
+                and raw_plan.get("option_symbol") == option_symbol
+                and raw_plan.get("config_hash") == self.loaded.config_hash
+            ):
+                matching_client_ids.append(event.client_order_id or "")
+        if not matching_client_ids:
+            return 0
+        latest = latest_by_client_id.get(matching_client_ids[-1])
+        if latest is None or latest.event_type != "ORDER_TERMINAL":
+            return 0
+        if str(latest.detail.get("status", "")).lower() not in retryable_statuses:
+            return 0
+        return len(matching_client_ids)
 
     def _submit(
         self,
