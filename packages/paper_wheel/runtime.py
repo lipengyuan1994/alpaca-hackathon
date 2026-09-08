@@ -20,7 +20,7 @@ from .broker import (
     PaperSubmissionUnknown,
     PaperWheelBroker,
 )
-from .config import LoadedWheelConfig
+from .config import LoadedWheelConfig, WheelPaperConfig
 from .models import (
     ManagedOptionV1,
     WheelAction,
@@ -103,6 +103,15 @@ def _is_canonical_hash(value: str) -> bool:
     return value.startswith("sha256:") and len(digest) == 64 and all(character in "0123456789abcdef" for character in digest)
 
 
+def _activation_arm_window(config: WheelPaperConfig) -> tuple[datetime, datetime | None]:
+    """Return the Eastern activation bounds encoded into the operator arm."""
+    start = datetime.combine(config.activation.start_date, time.min, tzinfo=_EASTERN).astimezone(UTC)
+    if config.activation.end_date is None:
+        return start, None
+    expiry = datetime.combine(config.activation.end_date + timedelta(days=1), time.min, tzinfo=_EASTERN).astimezone(UTC)
+    return start, expiry
+
+
 class PaperWheelRuntime:
     def __init__(self, *, loaded: LoadedWheelConfig, broker: PaperWheelBroker, project_root: Any) -> None:
         self.loaded = loaded
@@ -115,13 +124,12 @@ class PaperWheelRuntime:
         account = self.broker.account()
         if account.account_id != self.broker.expected_account_id:
             raise RuntimeError("WHEEL_ARM_ACCOUNT_MISMATCH")
-        local_start = datetime.combine(self.config.activation.start_date, time.min, tzinfo=_EASTERN)
-        local_expiry = datetime.combine(self.config.activation.end_date + timedelta(days=1), time.min, tzinfo=_EASTERN)
+        valid_from, expires_at = _activation_arm_window(self.config)
         token = WheelArmTokenV1(
             config_hash=self.loaded.config_hash,
             account_id_hash=_account_hash(account.account_id),
-            valid_from=local_start.astimezone(UTC),
-            expires_at=local_expiry.astimezone(UTC),
+            valid_from=valid_from,
+            expires_at=expires_at,
             operator_reason=operator_reason,
         )
         self.store.save_arm(token)
@@ -166,19 +174,15 @@ class PaperWheelRuntime:
                 raise RuntimeError((structural or position_reasons)[0])
             if arm is None:
                 raise RuntimeError("WHEEL_CONFIG_MIGRATION_ARM_MISSING")
-            expected_start = datetime.combine(
-                self.config.activation.start_date,
-                time.min,
-                tzinfo=_EASTERN,
-            ).astimezone(UTC)
-            expected_expiry = datetime.combine(
-                self.config.activation.end_date + timedelta(days=1),
-                time.min,
-                tzinfo=_EASTERN,
-            ).astimezone(UTC)
+            expected_start, expected_expiry = _activation_arm_window(self.config)
             if arm.account_id_hash != _account_hash(account.account_id):
                 raise RuntimeError("WHEEL_CONFIG_MIGRATION_ARM_ACCOUNT_MISMATCH")
-            if arm.valid_from != expected_start or arm.expires_at != expected_expiry:
+            # Moving a reconciled paper runtime from a dated canary arm to an
+            # explicitly configured indefinite arm is the one intentional
+            # window change supported by this audited migration path.
+            if arm.valid_from != expected_start or (
+                expected_expiry is not None and arm.expires_at != expected_expiry
+            ):
                 raise RuntimeError("WHEEL_CONFIG_MIGRATION_ARM_WINDOW_MISMATCH")
             allowed_hashes = {expected_current_config_hash, self.loaded.config_hash}
             if state.config_hash not in allowed_hashes or arm.config_hash not in allowed_hashes:
@@ -232,7 +236,7 @@ class PaperWheelRuntime:
                 config_hash=self.loaded.config_hash,
                 account_id_hash=arm.account_id_hash,
                 valid_from=arm.valid_from,
-                expires_at=arm.expires_at,
+                expires_at=expected_expiry,
                 operator_reason=reason,
             )
             self.store.save_arm(migrated_arm)
@@ -311,16 +315,7 @@ class PaperWheelRuntime:
         if token is None:
             reasons.append("WHEEL_OPERATOR_ARM_MISSING")
         else:
-            expected_start = datetime.combine(
-                self.config.activation.start_date,
-                time.min,
-                tzinfo=_EASTERN,
-            ).astimezone(UTC)
-            expected_expiry = datetime.combine(
-                self.config.activation.end_date + timedelta(days=1),
-                time.min,
-                tzinfo=_EASTERN,
-            ).astimezone(UTC)
+            expected_start, expected_expiry = _activation_arm_window(self.config)
             if token.config_hash != self.loaded.config_hash:
                 reasons.append("WHEEL_ARM_CONFIG_HASH_MISMATCH")
             if token.account_id_hash != _account_hash(account.account_id):
@@ -365,7 +360,9 @@ class PaperWheelRuntime:
         account_reasons = account_violations(account, clock, now=now, config=self.config)
         arm_reasons = self._arm_violations(account=account, now=now)
         local = now.astimezone(_EASTERN)
-        if local.date() < self.config.activation.start_date or local.date() > self.config.activation.end_date:
+        if local.date() < self.config.activation.start_date or (
+            self.config.activation.end_date is not None and local.date() > self.config.activation.end_date
+        ):
             arm_reasons = (*arm_reasons, "WHEEL_OUTSIDE_ACTIVATION_WINDOW")
         if not clock.is_open:
             next_state = self._advance(state, now=now)
@@ -430,7 +427,7 @@ class PaperWheelRuntime:
             reasons.append("WHEEL_ARM_CONFIG_HASH_MISMATCH")
         if token.account_id_hash != _account_hash(account.account_id):
             reasons.append("WHEEL_ARM_ACCOUNT_MISMATCH")
-        if not (token.valid_from <= now < token.expires_at):
+        if now < token.valid_from or (token.expires_at is not None and now >= token.expires_at):
             reasons.append("WHEEL_ARM_EXPIRED_OR_NOT_YET_VALID")
         return tuple(reasons)
 
