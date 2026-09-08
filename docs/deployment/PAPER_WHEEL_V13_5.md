@@ -1,7 +1,7 @@
 # QQQ V13.5 Alpaca paper-wheel runbook
 
-Status: implementation runbook for the bounded 2026-08-31 through 2026-09-04
-paper canary
+Status: implementation runbook for the explicitly authorized, indefinite
+paper-only deployment
 
 Scope: Alpaca **paper account only**. This path cannot construct a live client,
 accept a live hostname, load a live credential, or place a live-money order.
@@ -30,7 +30,13 @@ paper canary permits evaluation throughout regular market hours so a transient
 provider or repository-controlled failure does not spend the week's only entry
 opportunity. This changes deployment timing evidence and must not be represented
 as a replay of the frozen research backtest. Config schema
-`paper-wheel-config/v4` makes the breaking schedule and collateral-policy
+`paper-wheel-config/v5` makes the breaking schedule, collateral-policy, and
+indefinite-paper-activation changes explicit. The checked-in `end_date: null`
+means the paper authorization does not expire by calendar date. It remains
+paper-only, requires an operator arm, and can always be stopped with the
+operator halt command; it does not authorize live trading.
+
+`paper-wheel-config/v4` made the breaking schedule and collateral-policy
 changes explicit; legacy clock-window, fixed assignment-cap, and unreserved-cash
 keys are rejected rather than silently ignored.
 
@@ -99,13 +105,12 @@ Preflight reads the paper account but submits and cancels nothing:
 open order, and exact agreement between persisted wheel state and account
 positions. Do not weaken the YAML or delete state to bypass a refusal.
 
-After a green preflight, create the short-lived, config-hash/account-hash-bound
-arm token:
+After a green preflight, create the config-hash/account-hash-bound operator arm:
 
 ```zsh
 .venv/bin/python -m packages.paper_wheel.cli arm \
   --config configs/paper/v13_5_qqq.yaml \
-  --reason "Authorized QQQ V13.5 market-hours Alpaca paper canary through 2026-09-04"
+  --reason "Authorized indefinite QQQ V13.5 Alpaca paper deployment"
 ```
 
 Any semantic YAML change changes `config_hash` and invalidates the arm. Normally,
@@ -115,8 +120,9 @@ or runtime root.
 For an explicitly authorized in-place paper-policy change while a managed
 position is open, use the audited migration command instead of editing runtime
 state or deleting the arm. It requires the exact previous config hash, a
-reconciled position, no open order, the same paper account and activation
-window, and records start/completion events in the hash-chained journal:
+reconciled position, no open order, and the same paper account, and records
+start/completion events in the hash-chained journal. The migration can
+explicitly rebind a dated legacy arm to the configured indefinite arm:
 
 ```zsh
 .venv/bin/python -m packages.paper_wheel.cli migrate-config \

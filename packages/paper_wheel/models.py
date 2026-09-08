@@ -96,13 +96,13 @@ class WheelArmTokenV1(TimestampedModel):
     config_hash: str
     account_id_hash: str
     valid_from: datetime
-    expires_at: datetime
+    expires_at: datetime | None
     operator_reason: str = Field(min_length=8, max_length=256)
     token_hash: str | None = Field(default=None, pattern=r"^sha256:[0-9a-f]{64}$")
 
     @model_validator(mode="after")
     def _derived_hash(self) -> "WheelArmTokenV1":
-        if self.expires_at <= self.valid_from:
+        if self.expires_at is not None and self.expires_at <= self.valid_from:
             raise ValueError("WHEEL_ARM_WINDOW_INVALID")
         computed = hash_without(self, "token_hash")
         if self.token_hash is not None and self.token_hash != computed:

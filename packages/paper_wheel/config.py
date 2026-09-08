@@ -95,11 +95,16 @@ class WheelRiskConfig(StrictModel):
 
 class WheelActivationConfig(StrictModel):
     start_date: date
-    end_date: date
+    # A null end date is an explicit, indefinite paper-only authorization. It
+    # still requires the separately hash-bound operator arm and all runtime
+    # risk checks; it is not an implicit live-trading authority.
+    end_date: date | None
     require_operator_arm: bool = True
 
     @model_validator(mode="after")
     def _ordered(self) -> "WheelActivationConfig":
+        if self.end_date is None:
+            return self
         if self.end_date < self.start_date:
             raise ValueError("WHEEL_ACTIVATION_RANGE_INVALID")
         if (self.end_date - self.start_date).days > 10:
@@ -123,7 +128,7 @@ class WheelRuntimeConfig(StrictModel):
 
 
 class WheelPaperConfig(StrictModel):
-    schema_version: Literal["paper-wheel-config/v4"] = "paper-wheel-config/v4"
+    schema_version: Literal["paper-wheel-config/v5"] = "paper-wheel-config/v5"
     runtime: WheelRuntimeConfig
     strategy: WheelStrategyConfig
     schedule: WheelScheduleConfig

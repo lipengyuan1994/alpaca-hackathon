@@ -1,4 +1,4 @@
-schema_version: paper-wheel-config/v4
+schema_version: paper-wheel-config/v5
 
 runtime:
   mode: paper
@@ -41,5 +41,5 @@ risk:
 
 activation:
   start_date: 2026-08-31
-  end_date: 2026-09-04
+  end_date: null
   require_operator_arm: true

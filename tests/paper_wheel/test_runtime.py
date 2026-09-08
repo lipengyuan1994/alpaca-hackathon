@@ -183,7 +183,7 @@ class FakePaperBroker:
         return order
 
 
-def _loaded(tmp_path: Path, *, end_date: date = date(2026, 9, 4)) -> LoadedWheelConfig:
+def _loaded(tmp_path: Path, *, end_date: date | None = date(2026, 9, 4)) -> LoadedWheelConfig:
     base = load_config(Path("configs/paper/v13_5_qqq.yaml")).config
     config = WheelPaperConfig.model_validate(
         {
@@ -202,7 +202,7 @@ def _loaded(tmp_path: Path, *, end_date: date = date(2026, 9, 4)) -> LoadedWheel
     )
 
 
-def _runtime(tmp_path: Path, broker: FakePaperBroker, *, end_date: date = date(2026, 9, 4)) -> PaperWheelRuntime:
+def _runtime(tmp_path: Path, broker: FakePaperBroker, *, end_date: date | None = date(2026, 9, 4)) -> PaperWheelRuntime:
     runtime = PaperWheelRuntime(loaded=_loaded(tmp_path, end_date=end_date), broker=broker, project_root=tmp_path)
     runtime.create_arm(now=MONDAY - timedelta(days=1), operator_reason="user authorized QQQ paper canary")
     return runtime
@@ -522,6 +522,16 @@ def test_schedule_verification_requires_exact_bound_arm(tmp_path: Path) -> None:
     assert ready.status == "PAPER_ARM_SCHEDULE_READY"
 
 
+def test_indefinite_activation_arm_remains_valid_after_former_canary_end(tmp_path: Path) -> None:
+    broker = FakePaperBroker(now=MONDAY - timedelta(days=1))
+    runtime = _runtime(tmp_path, broker, end_date=None)
+    broker.now = datetime(2026, 10, 1, 14, 0, tzinfo=UTC)
+
+    arm = runtime.store.load_arm()
+    assert arm is not None and arm.expires_at is None
+    assert runtime.scheduled_arm_preflight(now=broker.now).status == "PAPER_ARM_SCHEDULE_READY"
+
+
 def test_config_migration_preserves_managed_position_and_rebinds_arm(tmp_path: Path) -> None:
     broker = FakePaperBroker()
     current_runtime = _runtime(tmp_path, broker)
@@ -553,6 +563,38 @@ def test_config_migration_preserves_managed_position_and_rebinds_arm(tmp_path: P
     assert [event.event_type for event in events[-2:]] == ["CONFIG_MIGRATION_STARTED", "CONFIG_MIGRATION_COMPLETED"]
     assert broker.submit_count == submissions_before_migration
     assert broker.cancel_count == 0
+
+
+def test_config_migration_can_rebind_a_dated_arm_to_indefinite_paper_authority(tmp_path: Path) -> None:
+    broker = FakePaperBroker()
+    current_runtime = _runtime(tmp_path, broker)
+    assert current_runtime.run_once(now=MONDAY).status == "ORDER_SUBMITTED"
+    previous_hash = current_runtime.loaded.config_hash
+    indefinite_config = WheelPaperConfig.model_validate(
+        {
+            **current_runtime.config.model_dump(mode="python"),
+            "activation": {
+                **current_runtime.config.activation.model_dump(mode="python"),
+                "end_date": None,
+            },
+        }
+    )
+    migrated_hash = canonical_hash(indefinite_config.model_dump(mode="json"))
+    migrated_runtime = PaperWheelRuntime(
+        loaded=LoadedWheelConfig(path=tmp_path / "indefinite.yaml", config=indefinite_config, config_hash=migrated_hash),
+        broker=broker,
+        project_root=tmp_path,
+    )
+
+    outcome = migrated_runtime.migrate_config(
+        now=MONDAY,
+        expected_current_config_hash=previous_hash,
+        operator_reason="operator authorized indefinite paper activation",
+    )
+
+    arm = migrated_runtime.store.load_arm()
+    assert outcome.status == "PAPER_CONFIG_MIGRATED"
+    assert arm is not None and arm.config_hash == migrated_hash and arm.expires_at is None
 
 
 def test_config_migration_rejects_wrong_source_hash_without_writes(tmp_path: Path) -> None:
