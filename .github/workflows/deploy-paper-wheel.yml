@@ -1,0 +1,54 @@
+name: deploy-paper-wheel
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_digest:
+        description: Full sha256 digest produced by the paper-wheel image workflow
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  packages: read
+
+concurrency:
+  group: vultr-paper-wheel
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    environment: vultr-paper
+    steps:
+      - name: Deploy immutable image to Vultr
+        env:
+          DEPLOY_HOST: ${{ vars.VULTR_DEPLOY_HOST }}
+          DEPLOY_USER: ${{ vars.VULTR_DEPLOY_USER }}
+          DEPLOY_KEY: ${{ secrets.VULTR_DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.VULTR_SSH_KNOWN_HOSTS }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHCR_USER: ${{ github.actor }}
+          IMAGE_DIGEST: ${{ inputs.image_digest }}
+        run: |
+          set -euo pipefail
+          case "$IMAGE_DIGEST" in
+            sha256:[0-9a-f][0-9a-f]*) ;;
+            *) echo "IMAGE_DIGEST_INVALID" >&2; exit 64 ;;
+          esac
+          test "${#IMAGE_DIGEST}" -eq 71
+          install -m 700 -d "$HOME/.ssh"
+          printf '%s\n' "$DEPLOY_KEY" > "$HOME/.ssh/deploy_key"
+          chmod 600 "$HOME/.ssh/deploy_key"
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          ssh_target="${DEPLOY_USER}@${DEPLOY_HOST}"
+          ssh_args=(-i "$HOME/.ssh/deploy_key" -o BatchMode=yes -o StrictHostKeyChecking=yes)
+          cleanup() {
+            ssh "${ssh_args[@]}" "$ssh_target" 'sudo docker logout ghcr.io >/dev/null 2>&1 || true'
+          }
+          trap cleanup EXIT
+          printf '%s' "$GHCR_TOKEN" | ssh "${ssh_args[@]}" "$ssh_target" \
+            "sudo docker login ghcr.io --username '$GHCR_USER' --password-stdin"
+          ssh "${ssh_args[@]}" "$ssh_target" \
+            "sudo /usr/local/sbin/deploy-alpaca-paper 'ghcr.io/lipengyuan1994/alpaca-hackathon-paper-wheel@${IMAGE_DIGEST}'"
+

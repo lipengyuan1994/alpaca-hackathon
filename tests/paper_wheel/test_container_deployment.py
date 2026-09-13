@@ -1,0 +1,46 @@
+from __future__ import annotations
+
+import re
+from pathlib import Path
+
+import yaml
+
+ROOT = Path(__file__).parents[2]
+
+
+def test_paper_wheel_container_is_amd64_non_root_and_paper_only() -> None:
+    dockerfile = (ROOT / "infra/paper-wheel/Dockerfile").read_text(encoding="utf-8")
+    compose = yaml.safe_load(
+        (ROOT / "infra/paper-wheel/compose.yaml").read_text(encoding="utf-8")
+    )
+    service = compose["services"]["paper-wheel"]
+
+    assert 'test "$TARGETARCH" = "amd64"' in dockerfile
+    assert "FROM python:3.12-slim@sha256:" in dockerfile
+    assert "COPY apps/common apps/common" in dockerfile
+    assert "COPY pyproject.toml pyproject.toml" in dockerfile
+    assert service["platform"] == "linux/amd64"
+    assert service["user"] == "10001:10001"
+    assert service["read_only"] is True
+    assert service["cap_drop"] == ["ALL"]
+    assert service["environment"]["PAPER_API_BASE_URL"] == "https://paper-api.alpaca.markets"
+    assert service["environment"]["PAPER_WHEEL_ENABLED"] == "${PAPER_WHEEL_ENABLED:-0}"
+    assert "/etc/alpaca-paper/secrets:/run/paper-secrets:ro" in service["volumes"]
+
+
+def test_deployer_accepts_only_the_repository_image_by_digest() -> None:
+    deployer = (ROOT / "infra/paper-wheel/deploy.sh").read_text(encoding="utf-8")
+    assert "ghcr.io/lipengyuan1994/alpaca-hackathon-paper-wheel@sha256:*" in deployer
+    assert re.search(r'if \[ "\$\{#digest\}" -ne 64 \]', deployer)
+    assert "PAPER_WHEEL_IMAGE_STAGED_DISABLED" in deployer
+    assert "enabled_file=\"/etc/alpaca-paper/enabled\"" in deployer
+    assert "paper-wheel preflight" in deployer
+    assert "paper-wheel verify-arm" in deployer
+    assert deployer.index("paper-wheel preflight") < deployer.index("up --detach")
+
+
+def test_image_workflow_pins_every_action_to_a_full_sha() -> None:
+    workflow = (ROOT / ".github/workflows/paper-wheel-image.yml").read_text(encoding="utf-8")
+    uses = re.findall(r"uses:\s+[^@\s]+@([^\s]+)", workflow)
+    assert uses
+    assert all(re.fullmatch(r"[0-9a-f]{40}", revision) for revision in uses)

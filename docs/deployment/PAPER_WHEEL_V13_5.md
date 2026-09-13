@@ -235,6 +235,8 @@ hash drift fails closed.
 - launchd is macOS-specific. The deterministic config, contracts, risk logic,
   and broker adapter remain portable; another scheduler must preserve the same
   single-process lease and one-shot command.
+- The dedicated Vultr Docker deployment and its single-scheduler cutover are
+  documented in [`PAPER_WHEEL_VULTR.md`](PAPER_WHEEL_VULTR.md).
 - The market-hours deployment policy has not been backtested as the frozen
   first-weekly-slot policy. Its paper results are operational evidence only.
 
