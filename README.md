@@ -18,6 +18,17 @@ publication, separate from the paper trading loop. The
 [refresh operations runbook](docs/deployment/PAPER_PERFORMANCE_REFRESH.md)
 covers scheduling, fallback triggers, credentials, freshness, and recovery.
 
+Install the repository-managed Git hooks once per checkout:
+
+```zsh
+./scripts/install_git_hooks.sh
+```
+
+The pre-commit hook uses the native `.venv` Python and the existing local paper
+credential bundle to refresh and stage the sanitized JSON and browser fallback.
+The pre-push hook rejects a snapshot older than 90 minutes or a browser fallback
+that does not match the hash-bound JSON. No API credential is written to Git.
+
 The following are **core-platform macOS/ARM64** fixture paths. They run without network or broker credentials:
 
 ```zsh

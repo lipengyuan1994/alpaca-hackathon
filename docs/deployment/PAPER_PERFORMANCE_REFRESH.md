@@ -127,6 +127,15 @@ the deployed JSON. Missing required secrets, account mismatch, or failure of
 required account/order reads stops publication and leaves the previous site
 deployment available.
 
+For a local checkout, run `./scripts/install_git_hooks.sh` once. Its pre-commit
+hook refreshes and stages both the hash-bound JSON and its sanitized browser
+fallback from the local paper credential bundle. The fallback lets `file://`
+previews render the same snapshot when browsers block a JSON fetch. Its
+pre-push hook rejects a snapshot older than 90 minutes or a fallback that does
+not exactly match the JSON. These local hooks are fail closed: missing
+credentials, an unavailable broker, a non-native macOS Python, or invalid
+evidence stops the commit or push.
+
 ## Operator controls
 
 Worker base URL:

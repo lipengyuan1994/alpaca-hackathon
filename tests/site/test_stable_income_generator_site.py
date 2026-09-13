@@ -18,6 +18,7 @@ PAPER_PERFORMANCE_PATH = DOCS / "paper-performance.html"
 ARCHITECTURE_PATH = DOCS / "architecture" / "ARCHITECTURE_DESIGN.html"
 BENCHMARK_PATH = DOCS / "assets" / "data" / "v13-5-benchmark.json"
 LIVE_PATH = DOCS / "assets" / "data" / "live-paper-snapshot.json"
+BROWSER_LIVE_PATH = DOCS / "assets" / "data" / "live-paper-snapshot.js"
 
 
 class _References(HTMLParser):
@@ -134,11 +135,7 @@ def test_public_copy_matches_approved_paper_snapshot() -> None:
     assert snapshot["source"] == "broker_reported_paper"
     assert snapshot["schema_version"] == "stable-income-generator-live-paper/v3"
     assert snapshot["account"]["account_id"] in html
-    equity = f'${snapshot["account"]["equity"]:,.2f}'
-    total_pnl = snapshot["account"]["total_pnl"]
-    signed_total_pnl = f'{"+" if total_pnl >= 0 else "−"}${abs(total_pnl):,.2f}'
-    assert equity in html and equity in paper_performance
-    assert signed_total_pnl in html and signed_total_pnl in paper_performance
+    assert "Loading snapshot…" in html and "Loading snapshot…" in paper_performance
     assert "Gemini 3.6 Flash" in html
     assert 'href="paper-performance.html"' in html
     assert "Top 10 recent fills" in paper_performance
@@ -157,8 +154,38 @@ def test_public_copy_matches_approved_paper_snapshot() -> None:
         + paper_performance
         + architecture
         + LIVE_PATH.read_text(encoding="utf-8")
+        + BROWSER_LIVE_PATH.read_text(encoding="utf-8")
     )
     assert all(value not in public_copy for value in forbidden)
+
+
+def test_local_file_browser_snapshot_matches_hash_bound_json() -> None:
+    snapshot = json.loads(LIVE_PATH.read_text(encoding="utf-8"))
+    encoded = json.dumps(
+        snapshot,
+        ensure_ascii=False,
+        allow_nan=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+    assert BROWSER_LIVE_PATH.read_text(encoding="utf-8") == (
+        f"globalThis.__LIVE_PAPER_SNAPSHOT__ = Object.freeze({encoded});\n"
+    )
+    for html_path in (HTML_PATH, PAPER_PERFORMANCE_PATH):
+        html = html_path.read_text(encoding="utf-8")
+        assert '<script src="assets/data/live-paper-snapshot.js"></script>' in html
+
+
+def test_repository_hooks_refresh_before_commit_and_guard_push() -> None:
+    pre_commit = ROOT / ".githooks" / "pre-commit"
+    pre_push = ROOT / ".githooks" / "pre-push"
+    installer = ROOT / "scripts" / "install_git_hooks.sh"
+    assert pre_commit.stat().st_mode & 0o111
+    assert pre_push.stat().st_mode & 0o111
+    assert installer.stat().st_mode & 0o111
+    assert "refresh_public_paper_snapshot.py --stage" in pre_commit.read_text()
+    assert "refresh_public_paper_snapshot.py --check" in pre_push.read_text()
+    assert "core.hooksPath .githooks" in installer.read_text()
 
 
 def test_benchmark_artifact_is_hash_bound_and_copy_is_exact() -> None:
