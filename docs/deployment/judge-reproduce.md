@@ -26,6 +26,11 @@ or risk limits.
   `.env`, source, tests, documentation, a Docker image, or the public UI.
 - The public `api` is read-only. The Gemini key, if supplied, is mounted only
   into `agent`; the execution and public API roles never receive it.
+- The GHCR/Vultr CI/CD path is an operator deployment mechanism, not part of
+  judge reproduction. Judges do not need deployment approval, an SSH key,
+  Alpaca credentials, the private runtime journal, or access to the Vultr host.
+  Merges may publish a paper-wheel image, but the protected deployment gate and
+  broker preflight do not widen the credential-free replay path.
 
 ## A. Credential-free deterministic replay
 
@@ -167,6 +172,7 @@ database secrets outside the repository and starts only the private
 | Gemini error, timeout, or invalid response | Expected fail-closed behavior: advisory veto then `NO_TRADE`; use deterministic fixtures for evaluation. |
 | Need exact replay | Use the frozen thesis fixture; never issue a second provider call to recreate a past result. |
 | Need a paper order | Out of scope for judge reproduction. It requires a separately controlled paper account, approved hashes, reconciliation, and private operator procedure. |
+| GitHub deployment waits for approval | Expected operator CI/CD behavior, unrelated to judge replay. Do not approve or configure the `vultr-paper` environment for reproduction. |
 
 For secret-role details and the precise file mount boundary, see
 [COMPOSE_SECRETS.md](COMPOSE_SECRETS.md). Do not include a judge's secret files

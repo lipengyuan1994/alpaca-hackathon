@@ -464,5 +464,8 @@ document.querySelectorAll("[data-copy]").forEach((button) => {
   });
 });
 
+if (globalThis.__LIVE_PAPER_SNAPSHOT__) {
+  applySnapshot(globalThis.__LIVE_PAPER_SNAPSHOT__);
+}
 refreshSnapshot();
 window.setInterval(refreshSnapshot, 60_000);

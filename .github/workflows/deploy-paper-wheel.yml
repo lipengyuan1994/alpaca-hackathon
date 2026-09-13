@@ -1,0 +1,33 @@
+name: deploy-paper-wheel
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_digest:
+        description: Full sha256 digest produced by the paper-wheel image workflow
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  packages: read
+
+concurrency:
+  group: vultr-paper-wheel
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    environment: vultr-paper
+    steps:
+      - name: Checkout deployment client
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - name: Deploy immutable image to Vultr
+        env:
+          DEPLOY_HOST: ${{ vars.VULTR_DEPLOY_HOST }}
+          DEPLOY_USER: ${{ vars.VULTR_DEPLOY_USER }}
+          DEPLOY_KEY: ${{ secrets.VULTR_DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.VULTR_SSH_KNOWN_HOSTS }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: infra/paper-wheel/github-deploy.sh '${{ inputs.image_digest }}'

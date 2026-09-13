@@ -1,0 +1,36 @@
+name: alpaca-paper-wheel
+
+services:
+  paper-wheel:
+    image: "${PAPER_WHEEL_IMAGE:?set PAPER_WHEEL_IMAGE to an immutable GHCR digest}"
+    platform: linux/amd64
+    environment:
+      PAPER_WHEEL_ENABLED: "${PAPER_WHEEL_ENABLED:-0}"
+      PAPER_API_BASE_URL: https://paper-api.alpaca.markets
+      REGIMESWITCH_SECRETS_DIR: /run/paper-secrets
+    volumes:
+      - /var/lib/alpaca-paper/v13_5_qqq_market_hours_cash_secured:/app/artifacts/paper_wheel/v13_5_qqq_market_hours_cash_secured
+      - /etc/alpaca-paper/secrets:/run/paper-secrets:ro
+    read_only: true
+    init: true
+    user: "10001:10001"
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=32m
+    restart: unless-stopped
+    stop_grace_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.75"
+          memory: 512M
+          pids: 64
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "5"
+

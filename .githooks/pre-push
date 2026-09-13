@@ -1,0 +1,19 @@
+#!/bin/sh
+set -eu
+
+repo_root=$(git rev-parse --show-toplevel)
+cd "$repo_root"
+
+python_path="$repo_root/.venv/bin/python"
+if [ ! -x "$python_path" ]; then
+  echo "pre-push: create the repository's native Python environment first" >&2
+  exit 1
+fi
+
+if ! git diff --quiet -- docs/assets/data/live-paper-snapshot.json docs/assets/data/live-paper-snapshot.js \
+  || ! git diff --cached --quiet -- docs/assets/data/live-paper-snapshot.json docs/assets/data/live-paper-snapshot.js; then
+  echo "pre-push: commit the refreshed public snapshot before pushing" >&2
+  exit 1
+fi
+
+exec "$python_path" scripts/refresh_public_paper_snapshot.py --check

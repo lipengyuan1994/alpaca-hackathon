@@ -41,12 +41,12 @@
       </div>
       <aside class="paper-status-card" aria-label="Paper account refresh status">
         <span class="status-pill" data-live-freshness><span class="live-dot" aria-hidden="true"></span> Checking latest snapshot</span>
-        <strong data-live-equity>$100,079.73</strong>
-        <p class="positive" data-live-total-pnl>+$79.73 since fresh $100K baseline · live since Sep 1, 2026</p>
+        <strong data-live-equity>Loading snapshot…</strong>
+        <p class="positive" data-live-total-pnl>Loading broker P&amp;L…</p>
         <dl>
           <div><dt>Live-market launch</dt><dd><time datetime="2026-09-01">Sep 1, 2026</time></dd></div>
           <div><dt>Account status</dt><dd data-live-account-status>ACTIVE</dd></div>
-          <div><dt>Last captured</dt><dd><time data-live-generated-at datetime="2026-09-02T22:04:11.865285Z">Sep 2, 2026 · 6:04 PM ET</time></dd></div>
+          <div><dt>Last captured</dt><dd><time data-live-generated-at>Loading…</time></dd></div>
           <div><dt>Refresh target</dt><dd>Every 30 minutes · weekdays</dd></div>
         </dl>
       </aside>
@@ -62,11 +62,11 @@
       </div>
 
       <div class="live-metric-grid paper-metric-grid" aria-label="Paper account metrics">
-        <article><span>Equity</span><strong data-live-equity>$100,079.73</strong><small>Broker reported</small></article>
-        <article><span>Total paper P&amp;L</span><strong class="positive" data-live-total-pnl-short>+$79.73</strong><small>vs fresh $100K baseline</small></article>
-        <article><span>Today</span><strong class="positive" data-live-day-pnl>+$150.00</strong><small data-live-day-return>+0.15%</small></article>
-        <article><span>Cash</span><strong data-live-cash>$100,375.73</strong><small>Uncommitted balance</small></article>
-        <article><span>Buying power</span><strong data-live-buying-power-value>$119,902.92</strong><small>Broker reported</small></article>
+        <article><span>Equity</span><strong data-live-equity>Loading…</strong><small>Broker reported</small></article>
+        <article><span>Total paper P&amp;L</span><strong class="positive" data-live-total-pnl-short>Loading…</strong><small>vs fresh $100K baseline</small></article>
+        <article><span>Today</span><strong class="positive" data-live-day-pnl>Loading…</strong><small data-live-day-return>Loading…</small></article>
+        <article><span>Cash</span><strong data-live-cash>Loading…</strong><small>Uncommitted balance</small></article>
+        <article><span>Buying power</span><strong data-live-buying-power-value>Loading…</strong><small>Broker reported</small></article>
       </div>
     </section>
 
@@ -87,10 +87,10 @@
         <figcaption id="pnl-chart-description">Paper account P&amp;L against the $100,000 starting baseline. Daily broker history is extended to the latest account snapshot when available, using the same P&amp;L as the account cards. The dashed final segment marks that snapshot—not another daily close. This is sampled history, not a continuous intraday record.</figcaption>
       </figure>
       <div class="live-metric-grid paper-pnl-metrics" aria-label="Calculated live paper performance metrics">
-        <article><span>Cumulative P&amp;L</span><strong class="positive" data-pnl-cumulative>+$79.73</strong><small>Since the Sep 1 launch baseline</small></article>
-        <article><span>Cumulative return</span><strong class="positive" data-pnl-cumulative-return>+0.08%</strong><small>Broker equity vs $100K baseline</small></article>
-        <article><span>Annualized P&amp;L rate</span><strong class="positive" data-pnl-annualized-rate>+16.61%</strong><small data-pnl-annualized-detail>+$16,612.80/yr · 1.8 elapsed days</small></article>
-        <article><span>Max drawdown</span><strong data-pnl-max-drawdown>History pending</strong><small data-pnl-max-drawdown-detail>Needs at least 2 daily observations</small></article>
+        <article><span>Cumulative P&amp;L</span><strong class="positive" data-pnl-cumulative>Calculating…</strong><small>Since the Sep 1 launch baseline</small></article>
+        <article><span>Cumulative return</span><strong class="positive" data-pnl-cumulative-return>Calculating…</strong><small>Broker equity vs $100K baseline</small></article>
+        <article><span>Annualized P&amp;L rate</span><strong class="positive" data-pnl-annualized-rate>Calculating…</strong><small data-pnl-annualized-detail>Waiting for snapshot</small></article>
+        <article><span>Max drawdown</span><strong data-pnl-max-drawdown>Calculating…</strong><small data-pnl-max-drawdown-detail>Waiting for history</small></article>
       </div>
       <p class="paper-calculation-note" data-pnl-calculation-note>Annualized P&amp;L rate scales cumulative return over the elapsed calendar time since the Sep 1, 2026 launch. It is an early live-paper run-rate, not a forecast.</p>
     </section>
@@ -102,18 +102,14 @@
             <p class="eyebrow">Most recent system activity</p>
             <h2 id="recent-trades-title">Top 10 recent fills</h2>
           </div>
-          <div class="trade-meta"><span data-live-order-count>5 fills available</span><a href="assets/data/live-paper-snapshot.json">Download hash-bound JSON ↓</a></div>
+          <div class="trade-meta"><span data-live-order-count>Loading fills…</span><a href="assets/data/live-paper-snapshot.json">Download hash-bound JSON ↓</a></div>
         </div>
         <div class="live-table-wrap">
           <table class="live-trades-table">
             <caption>Newest ten filled broker orders carrying the <code>rs-v135</code> system prefix. Manual, canceled, unfilled, and foreign orders are excluded.</caption>
             <thead><tr><th scope="col">Filled</th><th scope="col">Action</th><th scope="col">Contract</th><th scope="col">Qty</th><th scope="col">Avg fill</th><th scope="col">System ref</th></tr></thead>
             <tbody data-live-orders>
-              <tr><td>Sep 1 · 11:42 AM ET</td><td><span class="trade-action sell">Sell to open</span></td><td><strong>QQQ $704 PUT</strong><small>Expires Sep 8, 2026</small></td><td>1</td><td>$2.78</td><td><code>805c2262</code></td></tr>
-              <tr><td>Sep 1 · 11:41 AM ET</td><td><span class="trade-action buy">Buy to close</span></td><td><strong>QQQ $702 PUT</strong><small>Expires Sep 8, 2026</small></td><td>1</td><td>$2.37</td><td><code>771c164a</code></td></tr>
-              <tr><td>Sep 1 · 10:31 AM ET</td><td><span class="trade-action sell">Sell to open</span></td><td><strong>QQQ $702 PUT</strong><small>Expires Sep 8, 2026</small></td><td>1</td><td>$2.86</td><td><code>2dd0bb46</code></td></tr>
-              <tr><td>Sep 1 · 10:30 AM ET</td><td><span class="trade-action buy">Buy to close</span></td><td><strong>QQQ $700 PUT</strong><small>Expires Sep 8, 2026</small></td><td>1</td><td>$2.57</td><td><code>c46ad52f</code></td></tr>
-              <tr><td>Sep 1 · 10:01 AM ET</td><td><span class="trade-action sell">Sell to open</span></td><td><strong>QQQ $700 PUT</strong><small>Expires Sep 8, 2026</small></td><td>1</td><td>$3.06</td><td><code>4f4492d1</code></td></tr>
+              <tr><td colspan="6">Loading sanitized system fills…</td></tr>
             </tbody>
           </table>
         </div>
@@ -141,6 +137,7 @@
       <a href="#main">Back to top ↑</a>
     </nav>
   </footer>
-  <script src="assets/site.js?v=b980e16bd163" defer></script>
+  <script src="assets/data/live-paper-snapshot.js"></script>
+  <script src="assets/site.js?v=47791fc2a10a" defer></script>
 </body>
 </html>

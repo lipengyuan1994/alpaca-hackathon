@@ -46,6 +46,7 @@ jobs:
         run: >-
           python3 packages/paper_wheel/public_snapshot.py
           --output docs/assets/data/live-paper-snapshot.json
+          --browser-output docs/assets/data/live-paper-snapshot.js
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
       - name: Assemble public site

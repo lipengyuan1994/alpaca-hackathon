@@ -310,11 +310,32 @@ def publish(*, output: Path) -> dict[str, Any]:
     return snapshot
 
 
+def write_browser_snapshot(*, snapshot: dict[str, Any], output: Path) -> None:
+    """Write the sanitized snapshot as a local-file-compatible browser asset."""
+    encoded = json.dumps(
+        snapshot,
+        ensure_ascii=False,
+        allow_nan=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+    output.parent.mkdir(parents=True, exist_ok=True)
+    temporary = output.with_name(f".{output.name}.tmp")
+    temporary.write_text(
+        f"globalThis.__LIVE_PAPER_SNAPSHOT__ = Object.freeze({encoded});\n",
+        encoding="utf-8",
+    )
+    temporary.replace(output)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--browser-output", type=Path)
     args = parser.parse_args()
     snapshot = publish(output=args.output)
+    if args.browser_output is not None:
+        write_browser_snapshot(snapshot=snapshot, output=args.browser_output)
     print(
         "PUBLIC_PAPER_SNAPSHOT_READY "
         f"generated_at={snapshot['generated_at']} "
