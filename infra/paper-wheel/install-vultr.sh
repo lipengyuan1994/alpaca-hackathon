@@ -12,6 +12,6 @@ install -d -m 0750 -o 10001 -g 10001 /var/lib/alpaca-paper/v13_5_qqq_market_hour
 install -d -m 0750 -o 10001 -g 10001 /etc/alpaca-paper/secrets
 install -m 0644 infra/paper-wheel/compose.yaml /opt/alpaca-paper/compose.yaml
 install -m 0755 infra/paper-wheel/deploy.sh /usr/local/sbin/deploy-alpaca-paper
+install -m 0755 infra/paper-wheel/ssh-dispatch.sh /usr/local/sbin/alpaca-paper-ssh-dispatch
 
 echo "PAPER_WHEEL_HOST_READY_DISABLED"
-

@@ -32,6 +32,12 @@ Configure the environment with:
 - secret `VULTR_SSH_KNOWN_HOSTS` containing the pinned Vultr host key;
 - a required reviewer and a `main` deployment-branch restriction.
 
+Install the generated deployment public key in the Vultr user's
+`authorized_keys` with `restrict` and the forced command
+`/usr/local/sbin/alpaca-paper-ssh-dispatch`. The dispatcher accepts only
+`ghcr-login`, `deploy <allowed-digest>`, and `ghcr-logout`; the key cannot open
+an interactive shell or forward connections.
+
 The deployer pulls only
 `ghcr.io/lipengyuan1994/alpaca-hackathon-paper-wheel@sha256:<digest>`. While the
 enable file is absent, deployment only stages the image and prints

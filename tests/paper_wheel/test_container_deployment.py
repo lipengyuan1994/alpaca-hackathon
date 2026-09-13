@@ -44,3 +44,13 @@ def test_image_workflow_pins_every_action_to_a_full_sha() -> None:
     uses = re.findall(r"uses:\s+[^@\s]+@([^\s]+)", workflow)
     assert uses
     assert all(re.fullmatch(r"[0-9a-f]{40}", revision) for revision in uses)
+
+
+def test_deployment_ssh_key_is_limited_to_three_commands() -> None:
+    dispatcher = (ROOT / "infra/paper-wheel/ssh-dispatch.sh").read_text(encoding="utf-8")
+    assert 'original_command="${SSH_ORIGINAL_COMMAND:-}"' in dispatcher
+    assert "ghcr-login)" in dispatcher
+    assert "deploy)" in dispatcher
+    assert "ghcr-logout)" in dispatcher
+    assert "PAPER_WHEEL_SSH_COMMAND_NOT_ALLOWED" in dispatcher
+    assert "sh -c" not in dispatcher
