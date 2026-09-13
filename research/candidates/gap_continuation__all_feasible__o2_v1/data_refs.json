@@ -1,0 +1,1 @@
+{"status":"SPEC_FROZEN_DATA_PENDING_STEWARD_COLLECTION","required":{"collector_status":"COLLECTED","feasibility_status":"READY_FOR_REPLAY","feed":"iex","symbols":["SMH","SOXL"],"stock_adjustment":"split"},"evidence":{"corrected_replay_report_hash":null,"option_observation_manifest_hash":null,"option_request_manifest_hash":null,"underlying_manifest_hash":null}}

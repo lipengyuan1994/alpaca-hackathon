@@ -1,0 +1,111 @@
+schema_version: feature-contract/v1
+candidate_id: opening_range_breakout__all_feasible__o2_v1
+source: alpaca_iex_1min_completed_v1
+symbols: [SPY, QQQ, TQQQ, SMH, SOXL, IGV]
+namespacing: <SYMBOL>__<feature_key>
+key_order: symbols ordered [SPY, QQQ, TQQQ, SMH, SOXL, IGV], then lexicographic within symbol
+features:
+  close_completed_15m_v1:
+    type: decimal
+    unit: price
+    formula: completed ET half-open 15-minute interval close (last one-minute close)
+    source_feed: iex_split_adjusted
+    event_rule: completed_interval_end
+    availability_rule: interval_end_plus_1_second
+    maximum_age_seconds: 60
+    missing_behavior: NO_TRADE
+  opening_range_high_0930_1000_adjusted_v1:
+    type: decimal
+    unit: price
+    formula: max(one_minute_high) over [09:30,10:00) ET
+    source_feed: iex_split_adjusted
+    event_rule: opening_range_completion_10_00_et
+    availability_rule: 10_00_01_et
+    maximum_age_seconds: 23400
+    missing_behavior: NO_TRADE
+  opening_range_low_0930_1000_adjusted_v1:
+    type: decimal
+    unit: price
+    formula: min(one_minute_low) over [09:30,10:00) ET
+    source_feed: iex_split_adjusted
+    event_rule: opening_range_completion_10_00_et
+    availability_rule: 10_00_01_et
+    maximum_age_seconds: 23400
+    missing_behavior: NO_TRADE
+  opening_range_width_log_v1:
+    type: decimal
+    unit: log_price
+    formula: max(log(opening_range_high/opening_range_low), 0.000001)
+    source_feed: iex_split_adjusted
+    event_rule: opening_range_completion_10_00_et
+    availability_rule: 10_00_01_et
+    maximum_age_seconds: 23400
+    missing_behavior: NO_TRADE
+  up_break_fraction_or30_v1:
+    type: decimal
+    unit: log_fraction
+    formula: log(close_completed_15m/opening_range_high)/opening_range_width_log
+    source_feed: iex_split_adjusted
+    event_rule: completed_interval_end
+    availability_rule: interval_end_plus_1_second
+    maximum_age_seconds: 60
+    missing_behavior: NO_TRADE
+  down_break_fraction_or30_v1:
+    type: decimal
+    unit: log_fraction
+    formula: log(opening_range_low/close_completed_15m)/opening_range_width_log
+    source_feed: iex_split_adjusted
+    event_rule: completed_interval_end
+    availability_rule: interval_end_plus_1_second
+    maximum_age_seconds: 60
+    missing_behavior: NO_TRADE
+  volume_ratio_same_time_20_v1:
+    type: decimal
+    unit: ratio
+    formula: completed_interval_volume / median_prior_20_sessions_same_time_interval_volume
+    lookback: 20 prior sessions, same ET 15-minute interval
+    source_feed: iex
+    event_rule: completed_interval_end
+    availability_rule: interval_end_plus_1_second
+    maximum_age_seconds: 60
+    missing_behavior: NO_TRADE
+  session_iex_vwap_v1:
+    type: decimal
+    unit: price
+    formula: cumulative_sum(minute_vwap*minute_volume)/cumulative_sum(minute_volume)
+    source_feed: iex_split_adjusted
+    event_rule: completed_interval_end
+    availability_rule: interval_end_plus_1_second
+    maximum_age_seconds: 60
+    missing_behavior: NO_TRADE
+  early_close_session_v1:
+    type: boolean
+    unit: flag
+    formula: session is an XNYS half day per the frozen market calendar
+    source_feed: alpaca_market_calendar
+    event_rule: session_open
+    availability_rule: session_open
+    maximum_age_seconds: 23400
+    missing_behavior: NO_TRADE
+  corporate_action_continuity_clear_v1:
+    type: boolean
+    unit: flag
+    formula: no split/distribution with uncertain raw-price continuity affects this session
+    source_feed: alpaca_corporate_actions
+    event_rule: session_open
+    availability_rule: session_open
+    maximum_age_seconds: 23400
+    missing_behavior: NO_TRADE
+  adjustment_basis_v1:
+    type: string
+    unit: enum
+    formula: adjustment basis of the price series, expected exactly split_adjusted
+    source_feed: alpaca_stock_adjustment_setting
+    event_rule: session_open
+    availability_rule: session_open
+    maximum_age_seconds: 23400
+    missing_behavior: NO_TRADE
+quality_flags: [FULL_XNYS_SESSION, IEX_COMPLETE, NO_DUPLICATE_BARS, OHLC_VALID, CORPORATE_ACTION_CONTINUITY_CLEAR]
+worked_examples:
+  status: TO_BE_HASHED_WITH_GOLDEN_FIXTURES_BEFORE_OUTCOME_RUN
+missing_policy: missing, stale, nonfinite, schema-mismatched, or adjustment-ambiguous features produce NO_TRADE

@@ -1,0 +1,201 @@
+{
+  "schema_version": "gap-signal-golden/v1",
+  "candidate_id": "gap_continuation__all_feasible__o2_v1",
+  "note": "Frozen delivered-feature snapshots; see tests/fixtures/README.md. Decimals are strings.",
+  "cases": [
+    {
+      "name": "smh_bullish_entry_low_bucket",
+      "underlying": "SMH",
+      "features": {
+        "close_completed_15m_v1": "192.89830",
+        "continuation_ratio_v1": "0.28",
+        "gap_log_adjusted_v1": "0.05406722",
+        "gap_z_60_v1": "1.12",
+        "session_iex_vwap_v1": "191",
+        "sigma_gap_60_v1": "0.04827430"
+      },
+      "expected_action": "BUY",
+      "expected_score": "1.12",
+      "expected_reason_codes": ["GAP_CONTINUATION_BULLISH"]
+    },
+    {
+      "name": "soxl_bearish_entry_medium_bucket_boundary",
+      "underlying": "SOXL",
+      "features": {
+        "close_completed_15m_v1": "37.39572",
+        "continuation_ratio_v1": "0.3125",
+        "gap_log_adjusted_v1": "-0.05129329",
+        "gap_z_60_v1": "-1.25",
+        "session_iex_vwap_v1": "37.75",
+        "sigma_gap_60_v1": "0.04103463"
+      },
+      "expected_action": "SELL",
+      "expected_score": "1.25",
+      "expected_reason_codes": ["GAP_CONTINUATION_BEARISH"]
+    },
+    {
+      "name": "spy_bullish_entry_high_bucket_boundary",
+      "underlying": "SPY",
+      "features": {
+        "close_completed_15m_v1": "409.07780",
+        "continuation_ratio_v1": "0.4375",
+        "gap_log_adjusted_v1": "0.05129329",
+        "gap_z_60_v1": "1.75",
+        "session_iex_vwap_v1": "405",
+        "sigma_gap_60_v1": "0.02931045"
+      },
+      "expected_action": "BUY",
+      "expected_score": "1.75",
+      "expected_reason_codes": ["GAP_CONTINUATION_BULLISH"]
+    },
+    {
+      "name": "qqq_equality_at_both_thresholds_is_entry",
+      "underlying": "QQQ",
+      "features": {
+        "close_completed_15m_v1": "102.53184",
+        "continuation_ratio_v1": "0.25",
+        "gap_log_adjusted_v1": "0.02",
+        "gap_z_60_v1": "1",
+        "session_iex_vwap_v1": "102.4",
+        "sigma_gap_60_v1": "0.02"
+      },
+      "expected_action": "BUY",
+      "expected_score": "1",
+      "expected_reason_codes": ["GAP_CONTINUATION_BULLISH"]
+    },
+    {
+      "name": "tqqq_equality_at_both_thresholds_is_bearish_entry",
+      "underlying": "TQQQ",
+      "features": {
+        "close_completed_15m_v1": "97.53096",
+        "continuation_ratio_v1": "0.25",
+        "gap_log_adjusted_v1": "-0.02",
+        "gap_z_60_v1": "-1",
+        "session_iex_vwap_v1": "97.6",
+        "sigma_gap_60_v1": "0.02"
+      },
+      "expected_action": "SELL",
+      "expected_score": "1",
+      "expected_reason_codes": ["GAP_CONTINUATION_BEARISH"]
+    },
+    {
+      "name": "igv_gap_z_just_below_threshold",
+      "underlying": "IGV",
+      "features": {
+        "close_completed_15m_v1": "100.20111",
+        "continuation_ratio_v1": "0.28",
+        "gap_log_adjusted_v1": "0.03",
+        "gap_z_60_v1": "0.999999",
+        "session_iex_vwap_v1": "100",
+        "sigma_gap_60_v1": "0.02"
+      },
+      "expected_action": "NO_TRADE",
+      "expected_score": null,
+      "expected_reason_codes": ["GAP_CONTINUATION_GATE_NOT_MET"]
+    },
+    {
+      "name": "smh_continuation_ratio_just_below_threshold",
+      "underlying": "SMH",
+      "features": {
+        "close_completed_15m_v1": "192.89830",
+        "continuation_ratio_v1": "0.249999",
+        "gap_log_adjusted_v1": "0.05406722",
+        "gap_z_60_v1": "1.12",
+        "session_iex_vwap_v1": "191",
+        "sigma_gap_60_v1": "0.04827430"
+      },
+      "expected_action": "NO_TRADE",
+      "expected_score": null,
+      "expected_reason_codes": ["GAP_CONTINUATION_GATE_NOT_MET"]
+    },
+    {
+      "name": "smh_vwap_equal_close_refuses_strictly",
+      "underlying": "SMH",
+      "features": {
+        "close_completed_15m_v1": "192.89830",
+        "continuation_ratio_v1": "0.28",
+        "gap_log_adjusted_v1": "0.05406722",
+        "gap_z_60_v1": "1.12",
+        "session_iex_vwap_v1": "192.89830",
+        "sigma_gap_60_v1": "0.04827430"
+      },
+      "expected_action": "NO_TRADE",
+      "expected_score": null,
+      "expected_reason_codes": ["GAP_CONTINUATION_GATE_NOT_MET"]
+    },
+    {
+      "name": "soxl_bearish_close_above_vwap_refuses",
+      "underlying": "SOXL",
+      "features": {
+        "close_completed_15m_v1": "37.39572",
+        "continuation_ratio_v1": "0.3125",
+        "gap_log_adjusted_v1": "-0.05129329",
+        "gap_z_60_v1": "-1.25",
+        "session_iex_vwap_v1": "37",
+        "sigma_gap_60_v1": "0.04103463"
+      },
+      "expected_action": "NO_TRADE",
+      "expected_score": null,
+      "expected_reason_codes": ["GAP_CONTINUATION_GATE_NOT_MET"]
+    },
+    {
+      "name": "spy_sigma_pinned_at_floor_refuses",
+      "underlying": "SPY",
+      "features": {
+        "close_completed_15m_v1": "102",
+        "continuation_ratio_v1": "0.3",
+        "gap_log_adjusted_v1": "0.03",
+        "gap_z_60_v1": "1.5",
+        "session_iex_vwap_v1": "101",
+        "sigma_gap_60_v1": "0.000001"
+      },
+      "expected_action": "NO_TRADE",
+      "expected_score": null,
+      "expected_reason_codes": ["GAP_CONTINUATION_GATE_NOT_MET"]
+    },
+    {
+      "name": "qqq_zero_gap_log_refuses",
+      "underlying": "QQQ",
+      "features": {
+        "close_completed_15m_v1": "102",
+        "continuation_ratio_v1": "0.3",
+        "gap_log_adjusted_v1": "0",
+        "gap_z_60_v1": "1.5",
+        "session_iex_vwap_v1": "101",
+        "sigma_gap_60_v1": "0.02"
+      },
+      "expected_action": "NO_TRADE",
+      "expected_score": null,
+      "expected_reason_codes": ["GAP_CONTINUATION_GATE_NOT_MET"]
+    },
+    {
+      "name": "tqqq_missing_sigma_is_data_missing",
+      "underlying": "TQQQ",
+      "features": {
+        "close_completed_15m_v1": "100.10",
+        "continuation_ratio_v1": "0.3",
+        "gap_log_adjusted_v1": "0.02",
+        "gap_z_60_v1": "1.1",
+        "session_iex_vwap_v1": "100"
+      },
+      "expected_action": "NO_TRADE",
+      "expected_score": null,
+      "expected_reason_codes": ["DATA_MISSING"]
+    },
+    {
+      "name": "igv_neutral_zeros_refuse_at_the_gate",
+      "underlying": "IGV",
+      "features": {
+        "close_completed_15m_v1": "100",
+        "continuation_ratio_v1": "0",
+        "gap_log_adjusted_v1": "0",
+        "gap_z_60_v1": "0",
+        "session_iex_vwap_v1": "100",
+        "sigma_gap_60_v1": "0.02"
+      },
+      "expected_action": "NO_TRADE",
+      "expected_score": null,
+      "expected_reason_codes": ["GAP_CONTINUATION_GATE_NOT_MET"]
+    }
+  ]
+}

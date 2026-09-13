@@ -1,0 +1,227 @@
+{
+  "schema_version": "orb-signal-golden/v1",
+  "candidate_id": "opening_range_breakout__all_feasible__o2_v1",
+  "note": "Frozen delivered-feature snapshots; see tests/fixtures/README.md. Decimals are strings.",
+  "cases": [
+    {
+      "name": "smh_bullish_entry_low_bucket",
+      "underlying": "SMH",
+      "features": {
+        "close_completed_15m_v1": "203.18592",
+        "down_break_fraction_or30_v1": "-1.15",
+        "opening_range_high_0930_1000_adjusted_v1": "200",
+        "opening_range_low_0930_1000_adjusted_v1": "180",
+        "opening_range_width_log_v1": "0.10536052",
+        "session_iex_vwap_v1": "195",
+        "up_break_fraction_or30_v1": "0.15",
+        "volume_ratio_same_time_20_v1": "1.40"
+      },
+      "expected_action": "BUY",
+      "expected_score": "1.12",
+      "expected_reason_codes": ["OPENING_RANGE_BREAKOUT_BULLISH"]
+    },
+    {
+      "name": "soxl_bearish_entry_medium_bucket_boundary",
+      "underlying": "SOXL",
+      "features": {
+        "close_completed_15m_v1": "37.75710",
+        "down_break_fraction_or30_v1": "0.125",
+        "opening_range_high_0930_1000_adjusted_v1": "40",
+        "opening_range_low_0930_1000_adjusted_v1": "38",
+        "opening_range_width_log_v1": "0.05129329",
+        "session_iex_vwap_v1": "38.20",
+        "up_break_fraction_or30_v1": "-1.125",
+        "volume_ratio_same_time_20_v1": "1.5625"
+      },
+      "expected_action": "SELL",
+      "expected_score": "1.25",
+      "expected_reason_codes": ["OPENING_RANGE_BREAKOUT_BEARISH"]
+    },
+    {
+      "name": "spy_bullish_entry_high_bucket_boundary",
+      "underlying": "SPY",
+      "features": {
+        "close_completed_15m_v1": "404.12457",
+        "down_break_fraction_or30_v1": "-1.20",
+        "opening_range_high_0930_1000_adjusted_v1": "400",
+        "opening_range_low_0930_1000_adjusted_v1": "380",
+        "opening_range_width_log_v1": "0.05129329",
+        "session_iex_vwap_v1": "400.50",
+        "up_break_fraction_or30_v1": "0.20",
+        "volume_ratio_same_time_20_v1": "2.1875"
+      },
+      "expected_action": "BUY",
+      "expected_score": "1.75",
+      "expected_reason_codes": ["OPENING_RANGE_BREAKOUT_BULLISH"]
+    },
+    {
+      "name": "qqq_equality_at_both_thresholds_is_entry",
+      "underlying": "QQQ",
+      "features": {
+        "close_completed_15m_v1": "302.07693",
+        "down_break_fraction_or30_v1": "-1.10",
+        "opening_range_high_0930_1000_adjusted_v1": "300",
+        "opening_range_low_0930_1000_adjusted_v1": "280",
+        "opening_range_width_log_v1": "0.06899287",
+        "session_iex_vwap_v1": "301",
+        "up_break_fraction_or30_v1": "0.10",
+        "volume_ratio_same_time_20_v1": "1.25"
+      },
+      "expected_action": "BUY",
+      "expected_score": "1",
+      "expected_reason_codes": ["OPENING_RANGE_BREAKOUT_BULLISH"]
+    },
+    {
+      "name": "tqqq_break_fraction_just_below_threshold",
+      "underlying": "TQQQ",
+      "features": {
+        "close_completed_15m_v1": "100.10055",
+        "down_break_fraction_or30_v1": "-1.099999",
+        "opening_range_high_0930_1000_adjusted_v1": "100",
+        "opening_range_low_0930_1000_adjusted_v1": "99",
+        "opening_range_width_log_v1": "0.01005034",
+        "session_iex_vwap_v1": "100",
+        "up_break_fraction_or30_v1": "0.099999",
+        "volume_ratio_same_time_20_v1": "2.0"
+      },
+      "expected_action": "NO_TRADE",
+      "expected_score": null,
+      "expected_reason_codes": ["OPENING_RANGE_BREAKOUT_GATE_NOT_MET"]
+    },
+    {
+      "name": "igv_volume_ratio_just_below_threshold",
+      "underlying": "IGV",
+      "features": {
+        "close_completed_15m_v1": "100.20111",
+        "down_break_fraction_or30_v1": "-1.20",
+        "opening_range_high_0930_1000_adjusted_v1": "100",
+        "opening_range_low_0930_1000_adjusted_v1": "99",
+        "opening_range_width_log_v1": "0.01005034",
+        "session_iex_vwap_v1": "100",
+        "up_break_fraction_or30_v1": "0.20",
+        "volume_ratio_same_time_20_v1": "1.249999"
+      },
+      "expected_action": "NO_TRADE",
+      "expected_score": null,
+      "expected_reason_codes": ["OPENING_RANGE_BREAKOUT_GATE_NOT_MET"]
+    },
+    {
+      "name": "smh_vwap_misaligned_bullish_refuses",
+      "underlying": "SMH",
+      "features": {
+        "close_completed_15m_v1": "203.18592",
+        "down_break_fraction_or30_v1": "-1.15",
+        "opening_range_high_0930_1000_adjusted_v1": "200",
+        "opening_range_low_0930_1000_adjusted_v1": "180",
+        "opening_range_width_log_v1": "0.10536052",
+        "session_iex_vwap_v1": "205",
+        "up_break_fraction_or30_v1": "0.15",
+        "volume_ratio_same_time_20_v1": "1.40"
+      },
+      "expected_action": "NO_TRADE",
+      "expected_score": null,
+      "expected_reason_codes": ["OPENING_RANGE_BREAKOUT_GATE_NOT_MET"]
+    },
+    {
+      "name": "smh_vwap_equal_close_refuses_strictly",
+      "underlying": "SMH",
+      "features": {
+        "close_completed_15m_v1": "203.18592",
+        "down_break_fraction_or30_v1": "-1.15",
+        "opening_range_high_0930_1000_adjusted_v1": "200",
+        "opening_range_low_0930_1000_adjusted_v1": "180",
+        "opening_range_width_log_v1": "0.10536052",
+        "session_iex_vwap_v1": "203.18592",
+        "up_break_fraction_or30_v1": "0.15",
+        "volume_ratio_same_time_20_v1": "1.40"
+      },
+      "expected_action": "NO_TRADE",
+      "expected_score": null,
+      "expected_reason_codes": ["OPENING_RANGE_BREAKOUT_GATE_NOT_MET"]
+    },
+    {
+      "name": "soxl_zero_width_floor_refuses",
+      "underlying": "SOXL",
+      "features": {
+        "close_completed_15m_v1": "50.10",
+        "down_break_fraction_or30_v1": "-1.15",
+        "opening_range_high_0930_1000_adjusted_v1": "50",
+        "opening_range_low_0930_1000_adjusted_v1": "50",
+        "opening_range_width_log_v1": "0.000001",
+        "session_iex_vwap_v1": "49",
+        "up_break_fraction_or30_v1": "0.15",
+        "volume_ratio_same_time_20_v1": "1.5"
+      },
+      "expected_action": "NO_TRADE",
+      "expected_score": null,
+      "expected_reason_codes": ["OPENING_RANGE_BREAKOUT_GATE_NOT_MET"]
+    },
+    {
+      "name": "spy_inverted_opening_range_refuses",
+      "underlying": "SPY",
+      "features": {
+        "close_completed_15m_v1": "100.50",
+        "down_break_fraction_or30_v1": "-1.15",
+        "opening_range_high_0930_1000_adjusted_v1": "95",
+        "opening_range_low_0930_1000_adjusted_v1": "100",
+        "opening_range_width_log_v1": "-0.05129329",
+        "session_iex_vwap_v1": "99",
+        "up_break_fraction_or30_v1": "0.15",
+        "volume_ratio_same_time_20_v1": "1.5"
+      },
+      "expected_action": "NO_TRADE",
+      "expected_score": null,
+      "expected_reason_codes": ["OPENING_RANGE_BREAKOUT_GATE_NOT_MET"]
+    },
+    {
+      "name": "qqq_nonpositive_opening_range_low_refuses",
+      "underlying": "QQQ",
+      "features": {
+        "close_completed_15m_v1": "100.50",
+        "down_break_fraction_or30_v1": "-1.15",
+        "opening_range_high_0930_1000_adjusted_v1": "100",
+        "opening_range_low_0930_1000_adjusted_v1": "0",
+        "opening_range_width_log_v1": "1",
+        "session_iex_vwap_v1": "99",
+        "up_break_fraction_or30_v1": "0.15",
+        "volume_ratio_same_time_20_v1": "1.5"
+      },
+      "expected_action": "NO_TRADE",
+      "expected_score": null,
+      "expected_reason_codes": ["OPENING_RANGE_BREAKOUT_GATE_NOT_MET"]
+    },
+    {
+      "name": "tqqq_nonfinite_break_fraction_is_data_missing",
+      "underlying": "TQQQ",
+      "features": {
+        "close_completed_15m_v1": "100.10",
+        "down_break_fraction_or30_v1": "-1",
+        "opening_range_high_0930_1000_adjusted_v1": "100",
+        "opening_range_low_0930_1000_adjusted_v1": "99",
+        "opening_range_width_log_v1": "0.01005034",
+        "session_iex_vwap_v1": "100",
+        "up_break_fraction_or30_v1": "NaN",
+        "volume_ratio_same_time_20_v1": "1.5"
+      },
+      "expected_action": "NO_TRADE",
+      "expected_score": null,
+      "expected_reason_codes": ["DATA_MISSING"]
+    },
+    {
+      "name": "spy_missing_volume_ratio_is_data_missing",
+      "underlying": "SPY",
+      "features": {
+        "close_completed_15m_v1": "100.20",
+        "down_break_fraction_or30_v1": "-1.15",
+        "opening_range_high_0930_1000_adjusted_v1": "100",
+        "opening_range_low_0930_1000_adjusted_v1": "99",
+        "opening_range_width_log_v1": "0.01005034",
+        "session_iex_vwap_v1": "100",
+        "up_break_fraction_or30_v1": "0.15"
+      },
+      "expected_action": "NO_TRADE",
+      "expected_score": null,
+      "expected_reason_codes": ["DATA_MISSING"]
+    }
+  ]
+}

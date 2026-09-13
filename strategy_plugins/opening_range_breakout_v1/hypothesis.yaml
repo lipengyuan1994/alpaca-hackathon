@@ -1,0 +1,14 @@
+hypothesis_id: OPENING_RANGE_BREAKOUT
+candidate_id: opening_range_breakout__all_feasible__o2_v1
+frozen_before_outcomes: true
+statement: >-
+  Opening-range breakouts confirmed by same-time participation continue
+  intraday: a completed 15-minute close breaking the 09:30-10:00 ET range by at
+  least 0.10 range-width fractions with same-time volume at least 1.25x the
+  prior-20-session median, aligned with the session VWAP, predicts continued
+  intraday movement in the break direction.
+expression: O2_DEBIT_VERTICAL_ONLY
+templates: [CALL_DEBIT_SPREAD_V1, PUT_DEBIT_SPREAD_V1]
+pair_cell_symbols: [SMH, SOXL]
+position_policy: TREND_VWAP_OR_60M_V1
+non_authorizing: true

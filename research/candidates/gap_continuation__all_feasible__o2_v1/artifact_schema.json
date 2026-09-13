@@ -1,0 +1,1 @@
+{"parquet_row_group_size":65536,"signals_columns":["candidate_id","symbol","decision_time","variant_id","action","score","reason_code"],"timestamps":"UTC"}

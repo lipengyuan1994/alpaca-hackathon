@@ -1,0 +1,38 @@
+{
+  "schema_version": "group-b-promotion-evidence/v1",
+  "candidate_id": "opening_range_breakout__all_feasible__o2_v1",
+  "plugin_id": "opening_range_breakout",
+  "plugin_version": "1.0.0",
+  "status": "NOT_PROMOTED",
+  "reason_code": "PENDING_OUTCOME_EVIDENCE",
+  "terminal_state": "RESEARCH_NOT_RUN",
+  "non_authorizing": true,
+  "gates": {
+    "B0_immutable_inputs": {
+      "status": "PARTIAL_BLOCKED_ON_STEWARD_ARTIFACTS",
+      "note": "research/shared/ currently holds only the coverage exception; steward data_manifest, entitlement_probe, and option_proxy_feasibility_manifest remain pending."
+    },
+    "B1_outcome_evidence": {
+      "status": "NOT_RUN",
+      "note": "Phase 4 pair-cell engine and runs/<run_id>/ artifact trees are not yet produced."
+    },
+    "B2_spec_freeze": {
+      "status": "PASSED",
+      "anchor_commit": "10b38e2",
+      "note": "Both Group B candidate spec trees frozen and hash-bound before implementation."
+    },
+    "B3_integration_review": {
+      "status": "PENDING",
+      "note": "Group C reviewer reproduction is scheduled after Phase 5 integration artifacts."
+    }
+  },
+  "package_verification": {
+    "verified_at": "2026-08-30T22:40:00Z",
+    "environment": "Windows 10 x64, Python 3.12.10, local gitignored .venv (pydantic 2.13.5, pytest 8.4.2, ruff 0.16.5, PyYAML 6.0.3, tzdata)",
+    "lint": "ruff check clean (repo gate E,F,I,B; one I001 import-section autofix applied to tests/orb_test_support.py before the clean run)",
+    "tests": "pytest 92/92 passed (exit 0) via tests/conftest.py sys.path bootstrap; no network, no credentials",
+    "reproduce_preflight": "scripts/reproduce.py refusal smoke: exit 2 with reproduction_refusal.json {reason: DATA_MANIFEST_MISSING, status: REFUSED}; overwrite guard returns exit 1 REPRODUCTION_OUTPUT_NOT_EMPTY; scripts/reproduce.sh verified LF-only",
+    "scope_note": "Verification covers the deterministic signal layer only; this record makes no outcome or promotion claim."
+  },
+  "recorded_at": "2026-08-30T22:40:00Z"
+}

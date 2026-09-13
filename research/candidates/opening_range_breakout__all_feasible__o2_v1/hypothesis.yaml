@@ -1,0 +1,14 @@
+hypothesis_id: OPENING_RANGE_BREAKOUT
+candidate_id: opening_range_breakout__all_feasible__o2_v1
+frozen_before_outcomes: true
+economic_statement: >-
+  A completed 15-minute close that breaks the 09:30-10:00 ET opening range by
+  at least 0.10 normalized log-width fraction, with same-time participation at
+  least 1.25 times the prior-20-session median and alignment with the completed
+  session IEX VWAP, continues directionally over the next 15 to 60 minutes.
+expression: O2_DEBIT_VERTICAL_ONLY
+bullish_template: CALL_DEBIT_SPREAD_V1
+bearish_template: PUT_DEBIT_SPREAD_V1
+eligible_symbols: [SPY, QQQ, TQQQ, SMH, SOXL, IGV]
+pair_cell_symbols: [SMH, SOXL]
+terminal_state: RESEARCH_NOT_RUN

@@ -1,0 +1,12 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "opening_range_breakout_v1"
+version = "1.0.0"
+description = "Group B deterministic opening-range-breakout research signal package."
+requires-python = ">=3.12,<3.13"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/opening_range_breakout_v1"]

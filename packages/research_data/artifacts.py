@@ -29,6 +29,20 @@ def ensure_empty_output(path: Path) -> Path:
     return output
 
 
+def _fsync_directory(path: Path) -> None:
+    """Best-effort directory fsync; a no-op where the platform refuses it."""
+    try:
+        descriptor = os.open(path, os.O_RDONLY)
+    except OSError:
+        return
+    try:
+        os.fsync(descriptor)
+    except OSError:
+        pass
+    finally:
+        os.close(descriptor)
+
+
 def atomic_bytes(path: Path, payload: bytes) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     descriptor, temporary_name = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
@@ -39,11 +53,7 @@ def atomic_bytes(path: Path, payload: bytes) -> None:
             handle.flush()
             os.fsync(handle.fileno())
         os.replace(temporary, path)
-        directory = os.open(path.parent, os.O_RDONLY)
-        try:
-            os.fsync(directory)
-        finally:
-            os.close(directory)
+        _fsync_directory(path.parent)
     finally:
         if temporary.exists():
             temporary.unlink()
@@ -90,14 +100,10 @@ def write_parquet(root: Path, dataset_id: str, rows: list[dict[str, Any]], colum
     try:
         os.close(descriptor)
         frame.to_parquet(temporary, index=False, engine="pyarrow", compression="zstd", row_group_size=65536)
-        with temporary.open("rb") as handle:
+        with temporary.open("r+b") as handle:
             os.fsync(handle.fileno())
         os.replace(temporary, target)
-        directory = os.open(target.parent, os.O_RDONLY)
-        try:
-            os.fsync(directory)
-        finally:
-            os.close(directory)
+        _fsync_directory(target.parent)
     finally:
         if temporary.exists():
             temporary.unlink()
