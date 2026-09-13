@@ -92,8 +92,8 @@
         <article class="feature-card">
           <span class="card-index">02 · AUTOMATION</span>
           <h3>Executing the lifecycle</h3>
-          <p>The paper scheduler wakes every 60 seconds. Its hash-chained journal recorded five filled orders on September 1: three cash-secured put entries and two deterministic profit-taking closes.</p>
-          <a href="https://github.com/lipengyuan1994/alpaca-hackathon/blob/main/docs/deployment/PAPER_WHEEL_V13_5.md">Read the paper runbook ↗</a>
+          <p>The paper scheduler wakes every 60 seconds. A protected release pipeline publishes immutable Linux images from <code>main</code> and deploys to an always-on Vultr host only after approval, preflight, and arm verification.</p>
+          <a href="https://github.com/lipengyuan1994/alpaca-hackathon/blob/main/docs/deployment/PAPER_WHEEL_VULTR.md">Read the deployment runbook ↗</a>
         </article>
         <article class="feature-card feature-card-accent">
           <span class="card-index">03 · PAPER ACCOUNT</span>
@@ -101,6 +101,31 @@
           <p>Running since Tuesday, September 1, 2026. Cloudflare Durable Object alarms trigger broker snapshots every 30 minutes on weekdays, 9:00 AM–5:00 PM ET. Equity, P&amp;L history, and filled V13.5 orders come from Alpaca paper—not a backtest.</p>
           <a href="paper-performance.html">Open paper account performance →</a>
         </article>
+      </div>
+    </section>
+
+    <section class="section refresh-section" id="delivery" aria-labelledby="delivery-heading">
+      <div class="section-heading split">
+        <div>
+          <p class="eyebrow">From merge to always-on runtime</p>
+          <h2 id="delivery-heading">Automatic publishing.<br>Controlled deployment.</h2>
+        </div>
+        <p class="section-intro">Execution-relevant changes pass credential-free tests before a merge to <code>main</code> publishes an immutable Linux image. Deployment is queued automatically, then waits for operator approval and broker safety gates.</p>
+      </div>
+      <ol class="refresh-flow" aria-label="Paper trader CI/CD flow">
+        <li><span>01 · VERIFY</span><strong>Pull request</strong><small>Native ARM tests and a Linux AMD64 image build run without paper credentials.</small></li>
+        <li><span>02 · PUBLISH</span><strong>GHCR digest</strong><small>A merge to main automatically publishes the exact commit with provenance and an SBOM.</small></li>
+        <li><span>03 · APPROVE</span><strong>Protected environment</strong><small>The main-only Vultr deployment waits for an operator review; deployments cannot overlap.</small></li>
+        <li><span>04 · GATE</span><strong>Broker preflight</strong><small>The server verifies the paper account, newest state, configuration-bound arm, and exact image digest.</small></li>
+        <li><span>05 · RUN</span><strong>Vultr container</strong><small>One hardened scheduler uses durable host state and continues while the laptop is offline.</small></li>
+      </ol>
+      <div class="boundary-callout">
+        <strong>Delivery authority stays narrow</strong>
+        <p>GitHub exposes the protected forced-command deployment key and an ephemeral registry token only to an approved job. Alpaca paper credentials, the hash-chained journal, and the arm token stay on Vultr. During migration, the absent enable file makes delivery stage-only; after cutover, a model or configuration change cannot deploy through a stale arm.</p>
+      </div>
+      <div class="hero-actions">
+        <a class="button button-primary" href="https://github.com/lipengyuan1994/alpaca-hackathon/actions">Inspect GitHub Actions ↗</a>
+        <a class="button button-secondary" href="https://github.com/lipengyuan1994/alpaca-hackathon/blob/main/docs/deployment/PAPER_WHEEL_VULTR.md">Read the CI/CD runbook ↗</a>
       </div>
     </section>
 
@@ -276,7 +301,7 @@
       </div>
       <div class="portability-note">
         <strong>Portable where it matters.</strong>
-        <p>The verified release targets native ARM64—from this M1 Pro development host to Linux/ARM cloud VMs and container runners. Moving the one-shot workers to another scheduler is configuration and operations work, not a strategy rewrite. The current macOS <code>launchd</code> wrapper is replaceable; the contracts, risk logic, broker adapter, and containers remain the portable core.</p>
+        <p>Local development is verified on native Apple Silicon ARM64, while the always-on Vultr production image is built and verified separately for native Linux AMD64. Moving the scheduler across those hosts is controlled packaging and operations work, not a strategy rewrite; the contracts, risk logic, broker adapter, hashes, and paper-only boundary remain the portable core.</p>
       </div>
     </section>
 

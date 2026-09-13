@@ -52,6 +52,12 @@ the [local Docker PostgreSQL runbook](docs/deployment/LOCAL_POSTGRES.md).
 The bounded QQQ V13.5 paper-wheel canary has a separate
 [preflight, arming, scheduling, reconciliation, and halt runbook](docs/deployment/PAPER_WHEEL_V13_5.md).
 It is Alpaca-paper-only and does not create a live-trading path.
+Its [Vultr CI/CD runbook](docs/deployment/PAPER_WHEEL_VULTR.md) documents the
+always-on `linux/amd64` container: relevant pull requests validate the image,
+merges to `main` publish an immutable GHCR digest automatically, and the
+resulting deployment waits at the protected `vultr-paper` approval gate before
+Vultr stages or replaces the container. Paper credentials and durable trading
+state remain on Vultr and are never supplied to CI.
 The one-capture-per-day economic support/veto gate, its PostgreSQL audit table,
 and its external morning scheduler trigger are described in the
 [daily economic-context runbook](docs/deployment/ECONOMIC_CONTEXT.md).

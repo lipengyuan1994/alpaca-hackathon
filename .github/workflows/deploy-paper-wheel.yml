@@ -21,6 +21,8 @@ jobs:
     runs-on: ubuntu-24.04
     environment: vultr-paper
     steps:
+      - name: Checkout deployment client
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - name: Deploy immutable image to Vultr
         env:
           DEPLOY_HOST: ${{ vars.VULTR_DEPLOY_HOST }}
@@ -28,25 +30,4 @@ jobs:
           DEPLOY_KEY: ${{ secrets.VULTR_DEPLOY_SSH_KEY }}
           DEPLOY_KNOWN_HOSTS: ${{ secrets.VULTR_SSH_KNOWN_HOSTS }}
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          IMAGE_DIGEST: ${{ inputs.image_digest }}
-        run: |
-          set -euo pipefail
-          case "$IMAGE_DIGEST" in
-            sha256:[0-9a-f][0-9a-f]*) ;;
-            *) echo "IMAGE_DIGEST_INVALID" >&2; exit 64 ;;
-          esac
-          test "${#IMAGE_DIGEST}" -eq 71
-          install -m 700 -d "$HOME/.ssh"
-          printf '%s\n' "$DEPLOY_KEY" > "$HOME/.ssh/deploy_key"
-          chmod 600 "$HOME/.ssh/deploy_key"
-          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
-          ssh_target="${DEPLOY_USER}@${DEPLOY_HOST}"
-          ssh_args=(-i "$HOME/.ssh/deploy_key" -o BatchMode=yes -o StrictHostKeyChecking=yes)
-          cleanup() {
-            ssh "${ssh_args[@]}" "$ssh_target" ghcr-logout >/dev/null 2>&1 || true
-          }
-          trap cleanup EXIT
-          printf '%s' "$GHCR_TOKEN" | ssh "${ssh_args[@]}" "$ssh_target" \
-            ghcr-login
-          ssh "${ssh_args[@]}" "$ssh_target" \
-            "deploy ghcr.io/lipengyuan1994/alpaca-hackathon-paper-wheel@${IMAGE_DIGEST}"
+        run: infra/paper-wheel/github-deploy.sh '${{ inputs.image_digest }}'

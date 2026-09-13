@@ -8,6 +8,8 @@ on:
       - "packages/contracts/**"
       - "packages/paper_wheel/**"
       - "packages/runtime_secrets.py"
+      - "pyproject.toml"
+      - "uv.lock"
       - ".github/workflows/paper-wheel-image.yml"
   push:
     branches: [main]
@@ -17,6 +19,8 @@ on:
       - "packages/contracts/**"
       - "packages/paper_wheel/**"
       - "packages/runtime_secrets.py"
+      - "pyproject.toml"
+      - "uv.lock"
       - ".github/workflows/paper-wheel-image.yml"
   workflow_dispatch:
 
@@ -31,6 +35,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-24.04
+    outputs:
+      image_digest: ${{ steps.build.outputs.digest }}
     steps:
       - name: Checkout
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
@@ -58,3 +64,23 @@ jobs:
       - name: Record published digest
         if: github.event_name != 'pull_request'
         run: echo 'Image digest `${{ steps.build.outputs.digest }}`' >> "$GITHUB_STEP_SUMMARY"
+
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-24.04
+    environment: vultr-paper
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - name: Checkout deployment client
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - name: Deploy published digest to Vultr
+        env:
+          DEPLOY_HOST: ${{ vars.VULTR_DEPLOY_HOST }}
+          DEPLOY_USER: ${{ vars.VULTR_DEPLOY_USER }}
+          DEPLOY_KEY: ${{ secrets.VULTR_DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.VULTR_SSH_KNOWN_HOSTS }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: infra/paper-wheel/github-deploy.sh '${{ needs.build.outputs.image_digest }}'

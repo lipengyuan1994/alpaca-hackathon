@@ -1,11 +1,17 @@
 from __future__ import annotations
 
 import re
+import tomllib
 from pathlib import Path
 
 import yaml
 
 ROOT = Path(__file__).parents[2]
+
+
+def _locked_versions() -> dict[str, str]:
+    lock = tomllib.loads((ROOT / "uv.lock").read_text(encoding="utf-8"))
+    return {package["name"]: package["version"] for package in lock["package"]}
 
 
 def test_paper_wheel_container_is_amd64_non_root_and_paper_only() -> None:
@@ -28,6 +34,23 @@ def test_paper_wheel_container_is_amd64_non_root_and_paper_only() -> None:
     assert "/etc/alpaca-paper/secrets:/run/paper-secrets:ro" in service["volumes"]
 
 
+def test_paper_wheel_image_dependencies_match_the_repository_lock() -> None:
+    dockerfile = (ROOT / "infra/paper-wheel/Dockerfile").read_text(encoding="utf-8")
+    locked = _locked_versions()
+    distributions = {
+        "alpaca-py": "alpaca-py",
+        "numpy": "numpy",
+        "pandas": "pandas",
+        "pydantic": "pydantic",
+        "pydantic-core": "pydantic-core",
+        "pyyaml": "PyYAML",
+        "requests": "requests",
+        "websockets": "websockets",
+    }
+    for lock_name, distribution_name in distributions.items():
+        assert f'"{distribution_name}=={locked[lock_name]}"' in dockerfile
+
+
 def test_deployer_accepts_only_the_repository_image_by_digest() -> None:
     deployer = (ROOT / "infra/paper-wheel/deploy.sh").read_text(encoding="utf-8")
     assert "ghcr.io/lipengyuan1994/alpaca-hackathon-paper-wheel@sha256:*" in deployer
@@ -44,6 +67,19 @@ def test_image_workflow_pins_every_action_to_a_full_sha() -> None:
     uses = re.findall(r"uses:\s+[^@\s]+@([^\s]+)", workflow)
     assert uses
     assert all(re.fullmatch(r"[0-9a-f]{40}", revision) for revision in uses)
+    assert "github.event_name == 'push' && github.ref == 'refs/heads/main'" in workflow
+    assert "environment: vultr-paper" in workflow
+    assert "needs.build.outputs.image_digest" in workflow
+
+
+def test_manual_deployment_workflow_pins_every_action_to_a_full_sha() -> None:
+    workflow = (ROOT / ".github/workflows/deploy-paper-wheel.yml").read_text(
+        encoding="utf-8"
+    )
+    uses = re.findall(r"uses:\s+[^@\s]+@([^\s]+)", workflow)
+    assert uses
+    assert all(re.fullmatch(r"[0-9a-f]{40}", revision) for revision in uses)
+    assert "infra/paper-wheel/github-deploy.sh" in workflow
 
 
 def test_deployment_ssh_key_is_limited_to_three_commands() -> None:

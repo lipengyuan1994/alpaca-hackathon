@@ -20,10 +20,15 @@ The image contains no Alpaca credentials or runtime state. Vultr owns:
 
 ## CI and delivery
 
-Pull requests build the `linux/amd64` image without publishing it. A merge to
-`main` publishes a commit-tagged image to GHCR with provenance and an SBOM. The
-manual `deploy-paper-wheel` workflow accepts the resulting full digest and uses
-the protected `vultr-paper` GitHub environment.
+Relevant pull requests build the `linux/amd64` image without publishing it. A
+merge to `main` automatically publishes a commit-tagged image to GHCR with
+provenance and an SBOM. The same workflow passes the immutable digest to a
+deployment job, which waits for approval in the protected `vultr-paper` GitHub
+environment. No operator needs to copy the digest for a normal release.
+
+The separate manual `deploy-paper-wheel` workflow remains available for an
+explicit digest rollback or repeat deployment. It uses the same protected
+environment, restricted SSH path, server gates, and newest durable state.
 
 Configure the environment with:
 
@@ -38,7 +43,8 @@ Install the generated deployment public key in the Vultr user's
 `ghcr-login`, `deploy <allowed-digest>`, and `ghcr-logout`; the key cannot open
 an interactive shell or forward connections.
 
-The deployer pulls only
+Both automatic and manual delivery call the same deployment client and server
+deployer. The deployer pulls only
 `ghcr.io/lipengyuan1994/alpaca-hackathon-paper-wheel@sha256:<digest>`. While the
 enable file is absent, deployment only stages the image and prints
 `PAPER_WHEEL_IMAGE_STAGED_DISABLED`.
@@ -48,6 +54,19 @@ broker preflight and arm verification against the new image and newest durable
 state, and starts the replacement only after both gates pass. A blocked gate
 attempts to restart the previously running container and leaves the staged
 image identity unchanged.
+
+Normal release sequence:
+
+1. Push a feature branch and open a pull request.
+2. Pass the repository suite and the credential-free `linux/amd64` image build.
+3. Merge to `main`; GitHub publishes the exact commit image automatically.
+4. Review and approve the waiting `vultr-paper` deployment job.
+5. Vultr stages the digest while disabled, or runs preflight and arm verification
+   before replacement once the server has been enabled.
+
+A configuration or model change that changes the config hash will fail arm
+verification until the operator completes the documented reconciliation and
+audited `migrate-config` or re-arm procedure. CI/CD never creates an arm token.
 
 ## Initial host setup
 

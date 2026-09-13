@@ -106,6 +106,26 @@ def test_refresh_docs_and_home_explain_the_deployed_alarm_pipeline() -> None:
     assert "Cron Events are expected" in docs
 
 
+def test_home_and_runbooks_explain_the_protected_paper_trader_delivery() -> None:
+    html = HTML_PATH.read_text(encoding="utf-8")
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    index = (DOCS / "index.md").read_text(encoding="utf-8")
+    deployment = (DOCS / "deployment" / "PAPER_WHEEL_VULTR.md").read_text(
+        encoding="utf-8"
+    )
+    judge = (DOCS / "deployment" / "judge-reproduce.md").read_text(encoding="utf-8")
+
+    assert 'id="delivery"' in html
+    assert "Automatic publishing" in html
+    assert "native Linux AMD64" in html
+    assert "PAPER_WHEEL_VULTR.md" in html
+    assert "PAPER_WHEEL_VULTR.md" in readme
+    assert "PAPER_WHEEL_VULTR.md" in index
+    assert "automatically publishes" in deployment
+    assert "No operator needs to copy the digest" in deployment
+    assert "not part of\n  judge reproduction" in judge
+
+
 def test_public_copy_matches_approved_paper_snapshot() -> None:
     html = HTML_PATH.read_text(encoding="utf-8")
     paper_performance = PAPER_PERFORMANCE_PATH.read_text(encoding="utf-8")

@@ -33,7 +33,7 @@ RUN pip install --no-cache-dir \
         "charset-normalizer==3.5.1" \
         "idna==3.19" \
         "msgpack==1.2.2" \
-        "numpy==2.5.3" \
+        "numpy==2.5.2" \
         "pandas==3.0.5" \
         "pydantic==2.13.5" \
         "pydantic-core==2.46.5" \
