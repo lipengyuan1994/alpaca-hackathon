@@ -134,8 +134,11 @@ def test_public_copy_matches_approved_paper_snapshot() -> None:
     assert snapshot["source"] == "broker_reported_paper"
     assert snapshot["schema_version"] == "stable-income-generator-live-paper/v3"
     assert snapshot["account"]["account_id"] in html
-    assert "$100,079.73" in html
-    assert "+$79.73" in html
+    equity = f'${snapshot["account"]["equity"]:,.2f}'
+    total_pnl = snapshot["account"]["total_pnl"]
+    signed_total_pnl = f'{"+" if total_pnl >= 0 else "−"}${abs(total_pnl):,.2f}'
+    assert equity in html and equity in paper_performance
+    assert signed_total_pnl in html and signed_total_pnl in paper_performance
     assert "Gemini 3.6 Flash" in html
     assert 'href="paper-performance.html"' in html
     assert "Top 10 recent fills" in paper_performance
