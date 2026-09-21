@@ -1,0 +1,27 @@
+Stable Income Generator hackathon submission deck
+
+Communication job
+By the end, hackathon judges should believe this is an operating, auditable options platform rather than a strategy concept because the team can show frozen research, broker-reported paper telemetry, deterministic authority boundaries, and portable container architecture.
+
+Visual direction
+Match the public website: near-black green background, mint evidence accents, amber caution accents, Georgia display titles, restrained technical diagrams, and generous 16:9 spacing.
+
+Primary repository sources
+- docs/index.html: judge narrative, V13.5 posture, benchmark copy, live-paper disclosure, AI boundary, portability, and reproduction path.
+- docs/assets/stable-income-generator-banner.png: title-slide visual generated for the public project page.
+- docs/assets/v13-5-performance.svg: frozen growth comparison used on the public project page.
+- docs/assets/data/v13-5-benchmark.json: exact 644-session metrics, period, hashes, methodology, and limitations.
+- tmp/presentation-stable-income-generator/live-paper-snapshot.json: public sanitized snapshot retrieved from the deployed GitHub Pages endpoint on 2026-09-02.
+- docs/architecture/ARCHITECTURE_DESIGN.html: physical, logical, authority, PostgreSQL, container, and data-flow architecture.
+- docs/deployment/judge-reproduce.md: credential-free judge replay commands and safety boundaries.
+
+Public URLs
+- https://lipengyuan1994.github.io/alpaca-hackathon/
+- https://lipengyuan1994.github.io/alpaca-hackathon/assets/data/live-paper-snapshot.json
+- https://github.com/lipengyuan1994/alpaca-hackathon
+
+Evidence boundaries retained in visible slide copy
+- V13.5 comparison is exploratory and in-sample.
+- Historical options use a booked-equity proxy, not continuous mark-to-market.
+- Paper trading is simulated and does not prove future performance.
+- Current V13.5 paper canary is deterministic-only; Gemini is implemented as a constrained broader-platform advisory gate.

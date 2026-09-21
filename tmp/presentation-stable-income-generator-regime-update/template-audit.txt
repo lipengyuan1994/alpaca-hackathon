@@ -1,0 +1,23 @@
+Source deck: output/presentation/stable-income-generator-hackathon-deck.pptx
+Slides: 8, 1280 x 720, 16:9.
+Audience: Alpaca hackathon judges.
+Communication job: By the end, judges should believe the system has credible evidence across rising and falling market conditions because V13.5 participates in uptrend-labeled sessions and limits damage across the largest observed QQQ drawdowns.
+
+Visual system:
+- Dark emerald canvas (#06130F), off-white headlines, mint evidence accents, amber benchmark/stress accents.
+- Calibri Light headlines and Calibri body copy.
+- Slide 4 is the reusable evidence pattern: section kicker, single-line claim title, evidence subtitle, top-right metric, large central visual region, methodology footer, page chrome.
+- All eight source slides were visually inspected at full-slide scale. No inherited master or layout elements contain visible content; all visible content is slide-local.
+
+Insertion contract:
+- Preserve source slides 1-4.
+- Duplicate source slide 4 for new output slide 5.
+- Replace its benchmark chart with native editable regime evidence inside the former chart region.
+- Preserve source slides 5-8 as output slides 6-9, changing only their visible page numbers.
+- Preserve every existing speaker-note source block; add a new source block to output slide 5.
+
+Evidence source:
+- docs/assets/data/v13-5-benchmark.json, artifact hash sha256:f37bbf10e548500670129193500fe2cc2ece646b9992bf18409dbba5fb49ff9a.
+- Drawdown episodes are QQQ peak-to-trough windows with the corresponding V13.5 booked-equity change.
+- Bull-side comparison is the conditional compounded return across 428 UPTREND-labeled sessions.
+- All claims remain RESEARCH_ONLY_EXPLORATORY_IN_SAMPLE and are not proof of future performance.

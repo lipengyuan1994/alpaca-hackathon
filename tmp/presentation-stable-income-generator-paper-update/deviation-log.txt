@@ -1,0 +1,4 @@
+Slide 6: updated only inherited text fields with the deployed broker-reported paper snapshot and latest system fills. No geometry, typography, or visual redesign.
+Slide 9: changed only the inherited operating description and proof URL; the proof panel, hierarchy, and styling are unchanged.
+All other slides: preserved exactly from the v2 source deck.
+

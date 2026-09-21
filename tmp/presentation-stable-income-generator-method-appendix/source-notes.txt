@@ -1,0 +1,11 @@
+[Sources]
+- /Users/lipengyuan/PycharmProjects/alpaca-hackathon/docs/assets/data/v13-5-benchmark.json
+- /Users/lipengyuan/PycharmProjects/alpaca-hackathon/packages/research_data/stable_income_generator_benchmark.py
+- Benchmark artifact hash verified: sha256:f37bbf10e548500670129193500fe2cc2ece646b9992bf18409dbba5fb49ff9a
+- Formula: product over selected UPTREND sessions of (1 + daily return), minus 1.
+- Regime label: previous QQQ close above the previous 50-session simple moving average.
+- Conditional result: 428 UPTREND-labeled sessions; V13.5 +43.4262%; QQQ +37.0478%.
+- Full sample: 644 sessions; V13.5 +30.2858%; QQQ +66.7091%.
+- V13.5 is a frozen booked-equity proxy and is not continuous daily mark-to-market equity.
+- QQQ is split-adjusted IEX price-only return and excludes dividends, fees, slippage, and taxes.
+

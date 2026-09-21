@@ -1,0 +1,125 @@
+{
+  "sourcePptx": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/output/presentation/stable-income-generator-hackathon-deck-v2.pptx",
+  "workspace": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-regime-update",
+  "outDir": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-regime-update/final-inspect",
+  "generatedAt": "2026-09-03T01:21:38.577Z",
+  "slideCount": 9,
+  "slideArtifacts": [
+    {
+      "slide": 1,
+      "previewPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-regime-update/final-inspect/source-slides/source-slide-01.png",
+      "previewRelativePath": "final-inspect/source-slides/source-slide-01.png",
+      "layoutPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-regime-update/final-inspect/layouts/source-slide-01.layout.json",
+      "layoutRelativePath": "final-inspect/layouts/source-slide-01.layout.json"
+    },
+    {
+      "slide": 2,
+      "previewPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-regime-update/final-inspect/source-slides/source-slide-02.png",
+      "previewRelativePath": "final-inspect/source-slides/source-slide-02.png",
+      "layoutPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-regime-update/final-inspect/layouts/source-slide-02.layout.json",
+      "layoutRelativePath": "final-inspect/layouts/source-slide-02.layout.json"
+    },
+    {
+      "slide": 3,
+      "previewPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-regime-update/final-inspect/source-slides/source-slide-03.png",
+      "previewRelativePath": "final-inspect/source-slides/source-slide-03.png",
+      "layoutPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-regime-update/final-inspect/layouts/source-slide-03.layout.json",
+      "layoutRelativePath": "final-inspect/layouts/source-slide-03.layout.json"
+    },
+    {
+      "slide": 4,
+      "previewPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-regime-update/final-inspect/source-slides/source-slide-04.png",
+      "previewRelativePath": "final-inspect/source-slides/source-slide-04.png",
+      "layoutPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-regime-update/final-inspect/layouts/source-slide-04.layout.json",
+      "layoutRelativePath": "final-inspect/layouts/source-slide-04.layout.json"
+    },
+    {
+      "slide": 5,
+      "previewPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-regime-update/final-inspect/source-slides/source-slide-05.png",
+      "previewRelativePath": "final-inspect/source-slides/source-slide-05.png",
+      "layoutPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-regime-update/final-inspect/layouts/source-slide-05.layout.json",
+      "layoutRelativePath": "final-inspect/layouts/source-slide-05.layout.json"
+    },
+    {
+      "slide": 6,
+      "previewPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-regime-update/final-inspect/source-slides/source-slide-06.png",
+      "previewRelativePath": "final-inspect/source-slides/source-slide-06.png",
+      "layoutPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-regime-update/final-inspect/layouts/source-slide-06.layout.json",
+      "layoutRelativePath": "final-inspect/layouts/source-slide-06.layout.json"
+    },
+    {
+      "slide": 7,
+      "previewPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-regime-update/final-inspect/source-slides/source-slide-07.png",
+      "previewRelativePath": "final-inspect/source-slides/source-slide-07.png",
+      "layoutPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-regime-update/final-inspect/layouts/source-slide-07.layout.json",
+      "layoutRelativePath": "final-inspect/layouts/source-slide-07.layout.json"
+    },
+    {
+      "slide": 8,
+      "previewPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-regime-update/final-inspect/source-slides/source-slide-08.png",
+      "previewRelativePath": "final-inspect/source-slides/source-slide-08.png",
+      "layoutPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-regime-update/final-inspect/layouts/source-slide-08.layout.json",
+      "layoutRelativePath": "final-inspect/layouts/source-slide-08.layout.json"
+    },
+    {
+      "slide": 9,
+      "previewPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-regime-update/final-inspect/source-slides/source-slide-09.png",
+      "previewRelativePath": "final-inspect/source-slides/source-slide-09.png",
+      "layoutPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-regime-update/final-inspect/layouts/source-slide-09.layout.json",
+      "layoutRelativePath": "final-inspect/layouts/source-slide-09.layout.json"
+    }
+  ],
+  "inspectPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-regime-update/final-inspect/template-inspect.ndjson",
+  "inspectRelativePath": "final-inspect/template-inspect.ndjson",
+  "inspectTruncated": true,
+  "inspectMetadata": {
+    "revision": "w0zvt9",
+    "target": {
+      "id": "pr/zf2kcx"
+    },
+    "kind": {
+      "requested": "slide,textbox,shape,image,table,chart",
+      "tokens": [
+        "slide",
+        "textbox",
+        "shape",
+        "image",
+        "table",
+        "chart"
+      ]
+    },
+    "include": {
+      "tokens": []
+    },
+    "exclude": {
+      "tokens": []
+    },
+    "notices": []
+  },
+  "extractedMedia": [
+    {
+      "entry": "ppt/media/image.png",
+      "path": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-regime-update/final-inspect/assets/ppt/media/image.png",
+      "relativePath": "final-inspect/assets/ppt/media/image.png",
+      "bytes": 1903330
+    },
+    {
+      "entry": "ppt/media/image2.png",
+      "path": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-regime-update/final-inspect/assets/ppt/media/image2.png",
+      "relativePath": "final-inspect/assets/ppt/media/image2.png",
+      "bytes": 128332
+    }
+  ],
+  "fonts": [
+    "+mj-lt",
+    "+mn-lt",
+    "Calibri",
+    "Calibri Light"
+  ],
+  "packageParts": {
+    "mediaCount": 2,
+    "slideXmlCount": 9,
+    "chartCount": 0,
+    "tableSlideCount": 0
+  }
+}

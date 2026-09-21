@@ -1,0 +1,91 @@
+{
+  "outputSlides": [
+    {
+      "outputSlide": 1,
+      "sourceSlide": 1,
+      "narrativeRole": "preserve-only source slide 1",
+      "reuseMode": "duplicate-slide",
+      "editTargets": []
+    },
+    {
+      "outputSlide": 2,
+      "sourceSlide": 2,
+      "narrativeRole": "preserve-only income mandate",
+      "reuseMode": "duplicate-slide",
+      "editTargets": []
+    },
+    {
+      "outputSlide": 3,
+      "sourceSlide": 3,
+      "narrativeRole": "preserve-only strategy mechanics",
+      "reuseMode": "duplicate-slide",
+      "editTargets": []
+    },
+    {
+      "outputSlide": 4,
+      "sourceSlide": 4,
+      "narrativeRole": "preserve-only source slide 4",
+      "reuseMode": "duplicate-slide",
+      "editTargets": []
+    },
+    {
+      "outputSlide": 5,
+      "sourceSlide": 4,
+      "narrativeRole": "bull and bear regime evidence",
+      "reuseMode": "duplicate-slide",
+      "editTargets": [
+        { "sourceElementId": "sh/kbm987y5", "action": "rewrite" },
+        { "sourceElementId": "sh/1cj2d8b6", "action": "rewrite" },
+        { "sourceElementId": "sh/0ba143al", "action": "rewrite" },
+        { "sourceElementId": "sh/rm1k7yt4", "action": "rewrite" },
+        { "sourceElementId": "im/ed4nel0n", "action": "delete" },
+        { "sourceElementId": "sh/doj29oba", "action": "rewrite" },
+        { "sourceElementId": "sh/ih8ju9sn", "action": "rewrite" },
+        {
+          "action": "add",
+          "newPrimitiveAllowed": true,
+          "zone": { "left": 72, "top": 195, "width": 1136, "height": 415 },
+          "reason": "Replace the deleted chart with editable bull participation and QQQ drawdown evidence derived from the frozen benchmark artifact.",
+          "mustNotOverlapInherited": true
+        }
+      ]
+    },
+    {
+      "outputSlide": 6,
+      "sourceSlide": 5,
+      "narrativeRole": "paper-account operating evidence",
+      "reuseMode": "duplicate-slide",
+      "editTargets": [
+        { "sourceElementId": "sh/zmlk3yhk", "action": "rewrite" }
+      ]
+    },
+    {
+      "outputSlide": 7,
+      "sourceSlide": 6,
+      "narrativeRole": "deterministic and LLM authority boundary",
+      "reuseMode": "duplicate-slide",
+      "editTargets": [
+        { "sourceElementId": "sh/1k3mhozu", "action": "rewrite" }
+      ]
+    },
+    {
+      "outputSlide": 8,
+      "sourceSlide": 7,
+      "narrativeRole": "portable container architecture",
+      "reuseMode": "duplicate-slide",
+      "editTargets": [
+        { "sourceElementId": "sh/b2h4nupk", "action": "rewrite" }
+      ]
+    },
+    {
+      "outputSlide": 9,
+      "sourceSlide": 8,
+      "narrativeRole": "submission close and proof link",
+      "reuseMode": "duplicate-slide",
+      "editTargets": [
+        { "sourceElementId": "sh/6twve1oz", "action": "rewrite" }
+      ]
+    }
+  ],
+  "omittedSourceSlides": []
+}

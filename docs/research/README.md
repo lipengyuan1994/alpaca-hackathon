@@ -8,6 +8,13 @@ Pinned `uv.lock` SHA-256: `b846dc0b4d52be240cbb131e8267a5bf5ed4659b21570573b9ea1
 
 This page is the front door for three research owners. Each owner receives one packet, researches both strategy families in that packet, and returns two separately versioned integration-shaped packages plus reproducible evidence. Researchers do not need a broker account, deployment access, or permission to trade. They may use a separate approved development credential solely through the repository's GET-only collection helper; see [Historical Alpaca data for individual research](ALPACA_HISTORICAL_DATA_GUIDE.md).
 
+The deterministic QQQM plus semiconductor ETF cash study is documented in
+[ETF cash research](ETF_CASH_RESEARCH.md), with the latest release evidence in
+[ETF cash release results](ETF_CASH_RELEASE_RESULTS.md).
+
+The parallel QQQM+SMH and leveraged ETF study is documented in
+[ETF cash research v2](ETF_CASH_V2_RESEARCH.md).
+
 ## 1. Assignments
 
 | Packet recipient | Owned families | Required pair cells | Independent review |
@@ -176,3 +183,7 @@ Stop and report the exact failed gate if any of these occur:
 - the only way to pass is to tune an unregistered parameter, switch symbols, or discard an unfavorable trial.
 
 Returning `NO_TRADE`, `REJECTED`, or `INSUFFICIENT_EVIDENCE` is a successful research outcome when the data do not support safe promotion.
+
+## Repaired ETF cash research
+
+See [ETF cash research v3](ETF_CASH_V3_RESEARCH.md) for the explicit-intent engine, the registered 63-candidate comparison, immutable T9 input manifest, acceptance gate, and offline reproduction commands. V1/v2 results remain separate historical artifacts.

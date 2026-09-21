@@ -1,0 +1,17 @@
+{
+  "schema_version": "etf-action-resolutions/v1",
+  "input_manifest_hash": "sha256:36733396b8a35f067979f316e7b3ef360869389a5c4bffa5434cd8ddec051ba6",
+  "resolutions": [
+    {
+      "symbol": "QQQ",
+      "ex_date": "2022-09-19",
+      "rate": 0.51856,
+      "retain_id": "1966d92d-c3ae-4da1-8daa-483789298533",
+      "exclude_id": "d0409c14-2b32-4cdb-9d5d-57a8a9a0818f",
+      "verified_payable_date": "2022-10-31",
+      "source": "https://www.invesco.com/us/financial-products/etfs/product-detail?audienceType=investors&productId=QQQ&ticker=QQQ",
+      "verified_on": "2026-09-20",
+      "reason": "Provider includes the same distribution twice with conflicting payable dates; issuer distribution table confirms October 31. Preserve raw records and exclude the erroneous September 23 duplicate only in the derived study inputs."
+    }
+  ]
+}

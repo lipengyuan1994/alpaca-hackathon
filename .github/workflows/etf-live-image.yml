@@ -1,0 +1,53 @@
+name: etf-live-image
+on:
+  pull_request:
+    paths: ["packages/etf_live/**", "configs/live/**", "infra/etf-live/**", "packages/contracts/**", "packages/runtime_secrets.py", "pyproject.toml", "uv.lock", ".github/workflows/etf-live-image.yml"]
+  push:
+    branches: [main]
+    paths: ["packages/etf_live/**", "configs/live/**", "infra/etf-live/**", "packages/contracts/**", "packages/runtime_secrets.py", "pyproject.toml", "uv.lock", ".github/workflows/etf-live-image.yml"]
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: write
+concurrency:
+  group: etf-live-image-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9
+        with:
+          version: "0.12.1"
+          enable-cache: true
+      - run: test "$(uname -m)" = arm64 && uv sync --frozen
+      - run: uv run python -m pytest tests/etf_live tests/paper_wheel tests/architecture/test_deployment_packaging.py
+  build:
+    needs: verify
+    runs-on: ubuntu-24.04
+    outputs:
+      image_digest: ${{ steps.build.outputs.digest }}
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+      - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        if: github.event_name != 'pull_request'
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - id: build
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        with:
+          context: .
+          file: infra/etf-live/Dockerfile
+          platforms: linux/amd64
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ghcr.io/lipengyuan1994/alpaca-hackathon-etf-live:${{ github.sha }}
+          build-args: VCS_REF=${{ github.sha }}
+          provenance: true
+          sbom: true
+      - name: Record published digest
+        if: github.event_name != 'pull_request'
+        run: echo 'Image digest `${{ steps.build.outputs.digest }}`' >> "$GITHUB_STEP_SUMMARY"

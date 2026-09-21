@@ -1,0 +1,23 @@
+Source deck: output/presentation/stable-income-generator-hackathon-deck-v2.pptx
+Source inventory: 9 slides, 16:9 at 1280 x 720, dark green presentation system.
+
+Reusable structure:
+- Slides 1-9 already form the intended judge narrative and will be preserved in order.
+- Slide 6 is the broker-reported paper evidence pattern with inherited metric and five-row fill slots.
+- Slide 9 is the closing submission pattern with an inherited proof URL slot.
+
+Typography and spacing:
+- Calibri/Calibri Light from the source package.
+- Existing font sizes, weights, color, alignment, insets, and frames are preserved.
+- No master or layout edits are planned; all changes are one-off slide-level text rewrites.
+
+Brand and assets:
+- Dark green background, mint proof accents, amber fill/action accents, and existing footer/page numbering remain unchanged.
+- No images, charts, diagrams, or brand furniture will be added, removed, or replaced.
+
+Insertion contract:
+- Slides 1-5, 7, and 8 are preserve-only.
+- Slide 6 updates the inherited subtitle, account metrics, account state, five existing fill rows, capture timestamp, speaker notes, and public dashboard link source.
+- Slide 9 updates the inherited operating description and proof URL, retaining the existing proof panel.
+- Output is a new v3 PPTX; v2 remains untouched.
+

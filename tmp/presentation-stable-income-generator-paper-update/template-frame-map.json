@@ -1,0 +1,76 @@
+{
+  "outputSlides": [
+    {
+      "outputSlide": 1,
+      "sourceSlide": 1,
+      "narrativeRole": "brand-preserved opening thesis",
+      "reuseMode": "duplicate-slide",
+      "editTargets": []
+    },
+    {
+      "outputSlide": 2,
+      "sourceSlide": 2,
+      "narrativeRole": "income objective",
+      "reuseMode": "duplicate-slide",
+      "editTargets": []
+    },
+    {
+      "outputSlide": 3,
+      "sourceSlide": 3,
+      "narrativeRole": "strategy mechanics",
+      "reuseMode": "duplicate-slide",
+      "editTargets": []
+    },
+    {
+      "outputSlide": 4,
+      "sourceSlide": 4,
+      "narrativeRole": "section-preserved full-sample benchmark evidence",
+      "reuseMode": "duplicate-slide",
+      "editTargets": []
+    },
+    {
+      "outputSlide": 5,
+      "sourceSlide": 5,
+      "narrativeRole": "section-preserved bull and bear evidence",
+      "reuseMode": "duplicate-slide",
+      "editTargets": []
+    },
+    {
+      "outputSlide": 6,
+      "sourceSlide": 6,
+      "narrativeRole": "current broker-reported paper evidence",
+      "reuseMode": "duplicate-slide",
+      "editTargets": [
+        {"action": "rewrite", "sourceElementId": "sh/zi98nu94", "reason": "mention new public account page"},
+        {"action": "rewrite", "sourceElementIds": ["sh/87ipkzal", "sh/ml07i9sv", "sh/7m98ru9g", "sh/oryp8fah", "sh/pc76hkr2"], "reason": "refresh account metrics and status"},
+        {"action": "rewrite", "sourceElementIds": ["sh/w32twb6l", "sh/v2tcn650", "sh/u1kbu1ov", "sh/5svutgni", "sh/47mt0b6x", "sh/i54bylor", "sh/twfux0ne", "sh/svmt4v6t", "sh/cbe5g3ih", "sh/qpwnet0b", "sh/bq547yhw", "sh/0fy5k3id", "sh/lg76d8zy", "sh/zep4byhs", "sh/gju58ji9", "sh/1k3mhozu", "sh/jet8nm1c", "sh/50bqpcj2", "sh/4f2pgr2h", "sh/va98j210", "sh/u907axkf"], "reason": "refresh five inherited fill rows from ten-fill public ledger"},
+        {"action": "rewrite", "sourceElementId": "sh/hcrqlcj6", "reason": "refresh capture timestamp and paper disclaimer"}
+      ]
+    },
+    {
+      "outputSlide": 7,
+      "sourceSlide": 7,
+      "narrativeRole": "deterministic and constrained AI boundary",
+      "reuseMode": "duplicate-slide",
+      "editTargets": []
+    },
+    {
+      "outputSlide": 8,
+      "sourceSlide": 8,
+      "narrativeRole": "container and PostgreSQL architecture",
+      "reuseMode": "duplicate-slide",
+      "editTargets": []
+    },
+    {
+      "outputSlide": 9,
+      "sourceSlide": 9,
+      "narrativeRole": "submission proof and call to action",
+      "reuseMode": "duplicate-slide",
+      "editTargets": [
+        {"action": "rewrite", "sourceElementId": "sh/oza1gfyh", "reason": "describe new public account telemetry"},
+        {"action": "rewrite", "sourceElementId": "sh/0ru1ozyp", "reason": "point proof panel to new paper account page"}
+      ]
+    }
+  ],
+  "omittedSourceSlides": []
+}

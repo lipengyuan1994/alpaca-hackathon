@@ -1,5 +1,9 @@
 # Vultr Docker deployment for the QQQ paper wheel
 
+The separate L11 live service uses [ETF_LIVE_L11.md](ETF_LIVE_L11.md), its own
+image, state directory, secret root and protected GitHub environment. Do not
+run its deployment commands against the paper-wheel Compose project.
+
 This deployment keeps the V13.5 QQQ paper wheel running when the operator Mac is
 offline. The container remains paper-only and uses the same configuration,
 broker-origin restriction, arm token, state hashes, and journal chain as the Mac
