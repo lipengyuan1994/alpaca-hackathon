@@ -1,0 +1,2188 @@
+{
+  "schema": "openai.presentation.layout/v4",
+  "unit": "px",
+  "slide": {
+    "aid": "sl/ju25ku",
+    "id": "ju25ku",
+    "slide": 6,
+    "layoutId": "/ppt/slideLayouts/slideLayout1.xml",
+    "layoutName": "Title Slide",
+    "layoutType": "title",
+    "masterLayoutId": "/ppt/slideMasters/slideMaster1.xml",
+    "masterLayoutName": "Master",
+    "backgroundColor": "#06130F",
+    "frame": {
+      "left": 0,
+      "top": 0,
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "theme": {
+    "colorSchemeName": "ChatGPT",
+    "colors": {
+      "accent1": "#156082",
+      "accent2": "#E97132",
+      "accent3": "#196B24",
+      "accent4": "#0F9ED5",
+      "accent5": "#A02B93",
+      "accent6": "#4EA72E",
+      "dk1": "#000000",
+      "lt1": "#FFFFFF",
+      "dk2": "#0E2841",
+      "lt2": "#E8E8E8",
+      "hlink": "#467886",
+      "folHlink": "#96607D"
+    },
+    "fontScheme": {
+      "name": "Office",
+      "majorFont": {
+        "latinTypeface": "Calibri Light",
+        "eastAsianTypeface": "Calibri Light",
+        "complexScriptTypeface": "Calibri Light"
+      },
+      "minorFont": {
+        "latinTypeface": "Calibri",
+        "eastAsianTypeface": "Calibri",
+        "complexScriptTypeface": "Calibri"
+      }
+    },
+    "typefaces": [
+      "Calibri",
+      "Calibri Light"
+    ]
+  },
+  "inheritedLayers": [
+    {
+      "scope": "layout",
+      "id": "/ppt/slideLayouts/slideLayout1.xml",
+      "name": "Title Slide",
+      "type": "title",
+      "parentLayoutId": "/ppt/slideMasters/slideMaster1.xml",
+      "elements": []
+    },
+    {
+      "scope": "master",
+      "id": "/ppt/slideMasters/slideMaster1.xml",
+      "name": "Master",
+      "type": "master",
+      "elements": []
+    }
+  ],
+  "elements": [
+    {
+      "order": 1,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/nad4nits",
+      "id": "40",
+      "name": "section-kicker",
+      "bbox": [
+        72,
+        42,
+        500,
+        28
+      ],
+      "geometry": "rect",
+      "text": "BROKER-REPORTED PAPER EVIDENCE",
+      "textPreview": "BROKER-REPORTED PAPER EVIDENCE",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "BROKER-REPORTED PAPER EVIDENCE"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "BROKER-REPORTED PAPER EVIDENCE",
+          "resolvedTextStyle": {
+            "fontSize": 14,
+            "color": "#6EE7B7",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "BROKER-REPORTED PAPER EVIDENCE",
+              "fontSize": 14,
+              "color": "#6EE7B7",
+              "bold": true
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 2,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/x8vahkf6",
+      "id": "2",
+      "name": "slide-title",
+      "bbox": [
+        72,
+        78,
+        1000,
+        58
+      ],
+      "geometry": "rect",
+      "text": "The system is already operating on Alpaca paper",
+      "textPreview": "The system is already operating on Alpaca paper",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "The system is already operating on Alpaca paper"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "The system is already operating on Alpaca paper",
+          "resolvedTextStyle": {
+            "fontSize": 40,
+            "color": "#EDF7F1",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "The system is already operating on Alpaca paper",
+              "fontSize": 40,
+              "color": "#EDF7F1"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 3,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/c7mt8fel",
+      "id": "3",
+      "name": "slide-subtitle",
+      "bbox": [
+        72,
+        137,
+        1050,
+        40
+      ],
+      "geometry": "rect",
+      "text": "The new public dashboard exposes a hash-bound snapshot, P&L history, and the ten latest V13.5 system fills.",
+      "textPreview": "The new public dashboard exposes a hash-bound snapshot, P&L history, and the ten latest V13.5 system fills.",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "The new public dashboard exposes a hash-bound snapshot, P&L history, and the ten latest V13.5 system fills."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "The new public dashboard exposes a hash-bound snapshot, P&L history, and the ten latest V13.5 system fills.",
+          "resolvedTextStyle": {
+            "fontSize": 18,
+            "color": "#A3B8AC",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "The new public dashboard exposes a hash-bound snapshot, P&L history, and the ten latest V13.5 system fills.",
+              "fontSize": 18,
+              "color": "#A3B8AC"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 4,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/jadsjuxc",
+      "id": "4",
+      "bbox": [
+        72,
+        225,
+        500,
+        78
+      ],
+      "geometry": "rect",
+      "text": "$100,245.53",
+      "textPreview": "$100,245.53",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "$100,245.53"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "$100,245.53",
+          "resolvedTextStyle": {
+            "fontSize": 58,
+            "color": "#EDF7F1",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "$100,245.53",
+              "fontSize": 58,
+              "color": "#EDF7F1"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 5,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/y94bapwr",
+      "id": "5",
+      "bbox": [
+        76,
+        306,
+        390,
+        26
+      ],
+      "geometry": "rect",
+      "text": "BROKER-REPORTED EQUITY",
+      "textPreview": "BROKER-REPORTED EQUITY",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "BROKER-REPORTED EQUITY"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "BROKER-REPORTED EQUITY",
+          "resolvedTextStyle": {
+            "fontSize": 14,
+            "color": "#6EE7B7",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "BROKER-REPORTED EQUITY",
+              "fontSize": 14,
+              "color": "#6EE7B7",
+              "bold": true
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 6,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/lwvalkf2",
+      "id": "6",
+      "bbox": [
+        72,
+        373,
+        230,
+        52
+      ],
+      "geometry": "rect",
+      "text": "+$245.53",
+      "textPreview": "+$245.53",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "+$245.53"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "+$245.53",
+          "resolvedTextStyle": {
+            "fontSize": 38,
+            "color": "#6EE7B7",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "+$245.53",
+              "fontSize": 38,
+              "color": "#6EE7B7",
+              "bold": true
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 7,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/kbmtcfex",
+      "id": "7",
+      "bbox": [
+        76,
+        426,
+        320,
+        30
+      ],
+      "geometry": "rect",
+      "text": "+0.25% since fresh $100K baseline",
+      "textPreview": "+0.25% since fresh $100K baseline",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "+0.25% since fresh $100K baseline"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "+0.25% since fresh $100K baseline",
+          "resolvedTextStyle": {
+            "fontSize": 17,
+            "color": "#A3B8AC",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "+0.25% since fresh $100K baseline",
+              "fontSize": 17,
+              "color": "#A3B8AC"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 8,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/fets7qxs",
+      "id": "8",
+      "bbox": [
+        72,
+        485,
+        330,
+        38
+      ],
+      "geometry": "rect",
+      "text": "+$145.80 today (+0.15%)",
+      "textPreview": "+$145.80 today (+0.15%)",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "+$145.80 today (+0.15%)"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "+$145.80 today (+0.15%)",
+          "resolvedTextStyle": {
+            "fontSize": 24,
+            "color": "#A8F0C6",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "+$145.80 today (+0.15%)",
+              "fontSize": 24,
+              "color": "#A8F0C6",
+              "bold": true
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 9,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ed0relwn",
+      "id": "9",
+      "bbox": [
+        72,
+        565,
+        500,
+        28
+      ],
+      "geometry": "rect",
+      "text": "ACTIVE | Account 4c0db2cd-f24c-419f-a9fb-339a24cdef1c",
+      "textPreview": "ACTIVE | Account 4c0db2cd-f24c-419f-a9fb-339a24cdef1c",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "ACTIVE | Account 4c0db2cd-f24c-419f-a9fb-339a24cdef1c"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "ACTIVE | Account 4c0db2cd-f24c-419f-a9fb-339a24cdef1c",
+          "resolvedTextStyle": {
+            "fontSize": 15,
+            "color": "#6F8579",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "ACTIVE | Account 4c0db2cd-f24c-419f-a9fb-339a24cdef1c",
+              "fontSize": 15,
+              "color": "#6F8579"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 10,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/4vm1kjy1",
+      "id": "10",
+      "bbox": [
+        610,
+        205,
+        1,
+        410
+      ],
+      "geometry": "line",
+      "lineColor": "#24483A",
+      "lineWidth": 2
+    },
+    {
+      "order": 11,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/5wvitof6",
+      "id": "11",
+      "bbox": [
+        660,
+        210,
+        400,
+        28
+      ],
+      "geometry": "rect",
+      "text": "LATEST 5 OF 10 SYSTEM FILLS",
+      "textPreview": "LATEST 5 OF 10 SYSTEM FILLS",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "LATEST 5 OF 10 SYSTEM FILLS"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "LATEST 5 OF 10 SYSTEM FILLS",
+          "resolvedTextStyle": {
+            "fontSize": 14,
+            "color": "#F3C96B",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "LATEST 5 OF 10 SYSTEM FILLS",
+              "fontSize": 14,
+              "color": "#F3C96B",
+              "bold": true
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 12,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/i94ji9gv",
+      "id": "12",
+      "bbox": [
+        660,
+        265,
+        90,
+        26
+      ],
+      "geometry": "rect",
+      "text": "12:47 ET",
+      "textPreview": "12:47 ET",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "12:47 ET"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "12:47 ET",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#6F8579",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "12:47 ET",
+              "fontSize": 16,
+              "color": "#6F8579"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 13,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/jad0rexg",
+      "id": "13",
+      "bbox": [
+        760,
+        265,
+        175,
+        26
+      ],
+      "geometry": "rect",
+      "text": "SELL TO OPEN",
+      "textPreview": "SELL TO OPEN",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "SELL TO OPEN"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "SELL TO OPEN",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#6EE7B7",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "SELL TO OPEN",
+              "fontSize": 16,
+              "color": "#6EE7B7",
+              "bold": true
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 14,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/szm1ojex",
+      "id": "14",
+      "bbox": [
+        940,
+        265,
+        170,
+        26
+      ],
+      "geometry": "rect",
+      "text": "QQQ $695 PUT",
+      "textPreview": "QQQ $695 PUT",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "QQQ $695 PUT"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "QQQ $695 PUT",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#EDF7F1",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "QQQ $695 PUT",
+              "fontSize": 16,
+              "color": "#EDF7F1",
+              "bold": true
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 15,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/t0fixofi",
+      "id": "15",
+      "bbox": [
+        1120,
+        265,
+        75,
+        26
+      ],
+      "geometry": "rect",
+      "text": "$0.79",
+      "textPreview": "$0.79",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "$0.79"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "$0.79",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#EDF7F1",
+            "alignment": "right"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "$0.79",
+              "fontSize": 16,
+              "color": "#EDF7F1"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 16,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/6x4jmtgr",
+      "id": "16",
+      "bbox": [
+        660,
+        305,
+        535,
+        1
+      ],
+      "geometry": "line",
+      "lineColor": "#24483A",
+      "lineWidth": 1
+    },
+    {
+      "order": 17,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ryd0vexc",
+      "id": "17",
+      "bbox": [
+        660,
+        327,
+        90,
+        26
+      ],
+      "geometry": "rect",
+      "text": "12:39 ET",
+      "textPreview": "12:39 ET",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "12:39 ET"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "12:39 ET",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#6F8579",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "12:39 ET",
+              "fontSize": 16,
+              "color": "#6F8579"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 18,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/832hczyt",
+      "id": "18",
+      "bbox": [
+        760,
+        327,
+        175,
+        26
+      ],
+      "geometry": "rect",
+      "text": "BUY TO CLOSE",
+      "textPreview": "BUY TO CLOSE",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "BUY TO CLOSE"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "BUY TO CLOSE",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#F3C96B",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "BUY TO CLOSE",
+              "fontSize": 16,
+              "color": "#F3C96B",
+              "bold": true
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 19,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/94bil4fe",
+      "id": "19",
+      "bbox": [
+        940,
+        327,
+        170,
+        26
+      ],
+      "geometry": "rect",
+      "text": "QQQ $693 PUT",
+      "textPreview": "QQQ $693 PUT",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "QQQ $693 PUT"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "QQQ $693 PUT",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#EDF7F1",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "QQQ $693 PUT",
+              "fontSize": 16,
+              "color": "#EDF7F1",
+              "bold": true
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 20,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/pojqtw3q",
+      "id": "20",
+      "bbox": [
+        1120,
+        327,
+        75,
+        26
+      ],
+      "geometry": "rect",
+      "text": "$0.70",
+      "textPreview": "$0.70",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "$0.70"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "$0.70",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#EDF7F1",
+            "alignment": "right"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "$0.70",
+              "fontSize": 16,
+              "color": "#EDF7F1"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 21,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/onap0rm5",
+      "id": "21",
+      "bbox": [
+        660,
+        367,
+        535,
+        1
+      ],
+      "geometry": "line",
+      "lineColor": "#24483A",
+      "lineWidth": 1
+    },
+    {
+      "order": 22,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/3m18rmlk",
+      "id": "22",
+      "bbox": [
+        660,
+        389,
+        90,
+        26
+      ],
+      "geometry": "rect",
+      "text": "11:04 ET",
+      "textPreview": "11:04 ET",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "11:04 ET"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "11:04 ET",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#6F8579",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "11:04 ET",
+              "fontSize": 16,
+              "color": "#6F8579"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 23,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/2ls7yh4f",
+      "id": "23",
+      "bbox": [
+        760,
+        389,
+        175,
+        26
+      ],
+      "geometry": "rect",
+      "text": "SELL TO OPEN",
+      "textPreview": "SELL TO OPEN",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "SELL TO OPEN"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "SELL TO OPEN",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#6EE7B7",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "SELL TO OPEN",
+              "fontSize": 16,
+              "color": "#6EE7B7",
+              "bold": true
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 24,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/xs3qxw32",
+      "id": "24",
+      "bbox": [
+        940,
+        389,
+        170,
+        26
+      ],
+      "geometry": "rect",
+      "text": "QQQ $693 PUT",
+      "textPreview": "QQQ $693 PUT",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "QQQ $693 PUT"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "QQQ $693 PUT",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#EDF7F1",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "QQQ $693 PUT",
+              "fontSize": 16,
+              "color": "#EDF7F1",
+              "bold": true
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 25,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/crup4rmh",
+      "id": "25",
+      "bbox": [
+        1120,
+        389,
+        75,
+        26
+      ],
+      "geometry": "rect",
+      "text": "$0.89",
+      "textPreview": "$0.89",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "$0.89"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "$0.89",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#EDF7F1",
+            "alignment": "right"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "$0.89",
+              "fontSize": 16,
+              "color": "#EDF7F1"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 26,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/bq18v6lw",
+      "id": "26",
+      "bbox": [
+        660,
+        429,
+        535,
+        1
+      ],
+      "geometry": "line",
+      "lineColor": "#24483A",
+      "lineWidth": 1
+    },
+    {
+      "order": 27,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/qps7214b",
+      "id": "27",
+      "bbox": [
+        660,
+        451,
+        90,
+        26
+      ],
+      "geometry": "rect",
+      "text": "11:03 ET",
+      "textPreview": "11:03 ET",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "11:03 ET"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "11:03 ET",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#6F8579",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "11:03 ET",
+              "fontSize": 16,
+              "color": "#6F8579"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 28,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/lg3q1g3y",
+      "id": "28",
+      "bbox": [
+        760,
+        451,
+        175,
+        26
+      ],
+      "geometry": "rect",
+      "text": "BUY TO CLOSE",
+      "textPreview": "BUY TO CLOSE",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "BUY TO CLOSE"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "BUY TO CLOSE",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#F3C96B",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "BUY TO CLOSE",
+              "fontSize": 16,
+              "color": "#F3C96B",
+              "bold": true
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 29,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/kfup8bmd",
+      "id": "29",
+      "bbox": [
+        940,
+        451,
+        170,
+        26
+      ],
+      "geometry": "rect",
+      "text": "QQQ $691 PUT",
+      "textPreview": "QQQ $691 PUT",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "QQQ $691 PUT"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "QQQ $691 PUT",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#EDF7F1",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "QQQ $691 PUT",
+              "fontSize": 16,
+              "color": "#EDF7F1",
+              "bold": true
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 30,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/i1on2dkv",
+      "id": "30",
+      "bbox": [
+        1120,
+        451,
+        75,
+        26
+      ],
+      "geometry": "rect",
+      "text": "$0.79",
+      "textPreview": "$0.79",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "$0.79"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "$0.79",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#EDF7F1",
+            "alignment": "right"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "$0.79",
+              "fontSize": 16,
+              "color": "#EDF7F1"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 31,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/j2x4vi1g",
+      "id": "31",
+      "bbox": [
+        660,
+        491,
+        535,
+        1
+      ],
+      "geometry": "line",
+      "lineColor": "#24483A",
+      "lineWidth": 1
+    },
+    {
+      "order": 32,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/43654n21",
+      "id": "32",
+      "bbox": [
+        660,
+        513,
+        90,
+        26
+      ],
+      "geometry": "rect",
+      "text": "10:21 ET",
+      "textPreview": "10:21 ET",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "10:21 ET"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "10:21 ET",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#6F8579",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "10:21 ET",
+              "fontSize": 16,
+              "color": "#6F8579"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 33,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/5ofmx8jm",
+      "id": "33",
+      "bbox": [
+        760,
+        513,
+        175,
+        26
+      ],
+      "geometry": "rect",
+      "text": "SELL TO OPEN",
+      "textPreview": "SELL TO OPEN",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "SELL TO OPEN"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "SELL TO OPEN",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#6EE7B7",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "SELL TO OPEN",
+              "fontSize": 16,
+              "color": "#6EE7B7",
+              "bold": true
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 34,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/6pon6dk7",
+      "id": "34",
+      "bbox": [
+        940,
+        513,
+        170,
+        26
+      ],
+      "geometry": "rect",
+      "text": "QQQ $691 PUT",
+      "textPreview": "QQQ $691 PUT",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "QQQ $691 PUT"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "QQQ $691 PUT",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#EDF7F1",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "QQQ $691 PUT",
+              "fontSize": 16,
+              "color": "#EDF7F1",
+              "bold": true
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 35,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/rqx4zi1c",
+      "id": "35",
+      "bbox": [
+        1120,
+        513,
+        75,
+        26
+      ],
+      "geometry": "rect",
+      "text": "$0.96",
+      "textPreview": "$0.96",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "$0.96"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "$0.96",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#EDF7F1",
+            "alignment": "right"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "$0.96",
+              "fontSize": 16,
+              "color": "#EDF7F1"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 36,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/sr658n2x",
+      "id": "36",
+      "bbox": [
+        660,
+        596,
+        535,
+        30
+      ],
+      "geometry": "rect",
+      "text": "Captured Sep 3, 2026, 2:11 PM EDT | Paper trading is simulated",
+      "textPreview": "Captured Sep 3, 2026, 2:11 PM EDT | Paper trading is simulated",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Captured Sep 3, 2026, 2:11 PM EDT | Paper trading is simulated"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Captured Sep 3, 2026, 2:11 PM EDT | Paper trading is simulated",
+          "resolvedTextStyle": {
+            "fontSize": 15,
+            "color": "#6F8579",
+            "alignment": "right"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Captured Sep 3, 2026, 2:11 PM EDT | Paper trading is simulated",
+              "fontSize": 15,
+              "color": "#6F8579"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 37,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/tszm1sji",
+      "id": "37",
+      "bbox": [
+        72,
+        676,
+        1136,
+        1
+      ],
+      "geometry": "line",
+      "lineColor": "#24483A",
+      "lineWidth": 1
+    },
+    {
+      "order": 38,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/et8naxk3",
+      "id": "38",
+      "bbox": [
+        72,
+        687,
+        330,
+        20
+      ],
+      "geometry": "rect",
+      "text": "STABLE INCOME GENERATOR",
+      "textPreview": "STABLE INCOME GENERATOR",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "STABLE INCOME GENERATOR"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "STABLE INCOME GENERATOR",
+          "resolvedTextStyle": {
+            "fontSize": 11,
+            "color": "#6F8579",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "STABLE INCOME GENERATOR",
+              "fontSize": 11,
+              "color": "#6F8579",
+              "bold": true
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 39,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/fuh4321o",
+      "id": "39",
+      "bbox": [
+        1148,
+        687,
+        60,
+        20
+      ],
+      "geometry": "rect",
+      "text": "06",
+      "textPreview": "06",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "06"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "06",
+          "resolvedTextStyle": {
+            "fontSize": 11,
+            "color": "#6F8579",
+            "bold": true,
+            "alignment": "right"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "06",
+              "fontSize": 11,
+              "color": "#6F8579",
+              "bold": true
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    }
+  ],
+  "composeRuns": []
+}

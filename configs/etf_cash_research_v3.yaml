@@ -1,0 +1,95 @@
+schema_version: etf-cash-research-protocol/v3
+initial_cash: 1000.0
+target_investment: 0.99
+minimum_order_notional: 5.0
+quantity_decimals: 6
+dates:
+  warmup_start: '2019-01-01'
+  primary_start: '2023-09-19'
+  primary_end: '2026-09-18'
+settlement_change: '2024-05-28'
+max_drawdown:
+  track_a: 0.35
+  track_b: 0.5
+bootstrap:
+  samples: 2000
+  block_length: 20
+  seed: 135
+costs:
+  track_a:
+  - name: base
+    basis_points_per_side: 5.0
+    sell_fee: 0.01
+  - name: stress
+    basis_points_per_side: 15.0
+    sell_fee: 0.01
+  - name: severe
+    basis_points_per_side: 30.0
+    sell_fee: 0.01
+  track_b:
+  - name: base
+    basis_points_per_side: 10.0
+    sell_fee: 0.01
+  - name: stress
+    basis_points_per_side: 25.0
+    sell_fee: 0.01
+  - name: severe
+    basis_points_per_side: 50.0
+    sell_fee: 0.01
+delay_stress_sessions: 1
+stress_periods:
+- id: stress_2020
+  start: '2020-01-02'
+  end: '2020-12-31'
+- id: stress_2022
+  start: '2022-01-03'
+  end: '2022-12-30'
+evaluation_windows:
+- id: W1
+  start: '2023-09-19'
+  end: '2024-03-18'
+- id: W2
+  start: '2024-03-19'
+  end: '2024-09-18'
+- id: W3
+  start: '2024-09-19'
+  end: '2025-03-18'
+- id: W4
+  start: '2025-03-19'
+  end: '2025-09-18'
+- id: W5
+  start: '2025-09-19'
+  end: '2026-03-18'
+- id: W6
+  start: '2026-03-19'
+  end: '2026-09-18'
+execution:
+  signal_clock: 09:20 America/New_York
+  information_cutoff: previous_completed_session_close
+  fill: next_regular_session_open_with_adverse_cost
+  mark: regular_session_close
+  reductions_before_increases: true
+  unsettled_sale_proceeds_available: false
+  cash_interest: 0.0
+limitations:
+- historical_periods_reused
+- deterministic_backtest_only
+- llm_overlay_not_performance_tested
+- no_live_authority
+primary_candidate_count: 63
+rules_revision: approved-2026-09-20-v3
+subagent_model: gpt-5.6-luna
+subagent_reasoning_effort: max
+sizing: prior_close_equity_and_price; split_unit_conversion_only
+schedules: execution_session_calendar; first_session_review
+position_state: actual_fills_and_internal_transfers
+quantity_precision: integer_microshares
+delay: frozen_requested_quantity; one_additional_session
+settlement: verified_provider_calendar_settlement_date
+indicators: Wilder_SMA_seed;sample_volatility;forward_split_consistent
+selection_groups:
+- unleveraged
+- TQQQ_SOXL
+- SPXL_SOXL
+sensitivities: false
+warmup_policy: all_available_history_from_2019_or_fund_inception; no_synthetic_preinception_prices

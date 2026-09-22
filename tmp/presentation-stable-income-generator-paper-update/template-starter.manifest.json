@@ -1,0 +1,111 @@
+{
+  "sourcePptx": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/output/presentation/stable-income-generator-hackathon-deck-v2.pptx",
+  "mapPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-paper-update/template-frame-map.json",
+  "output": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-paper-update/template-starter.pptx",
+  "outputBytes": 2049502,
+  "sourceSlideCount": 9,
+  "slideCount": 9,
+  "previewDir": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-paper-update/template-starter-preview",
+  "layoutDir": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-paper-update/template-starter-layout",
+  "slides": [
+    {
+      "outputSlide": 1,
+      "sourceSlide": 1,
+      "narrativeRole": "brand-preserved opening thesis",
+      "reuseMode": "duplicate-slide",
+      "editTargetCount": 0,
+      "previewPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-paper-update/template-starter-preview/starter-slide-01.png",
+      "previewRelativePath": "template-starter-preview/starter-slide-01.png",
+      "layoutPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-paper-update/template-starter-layout/starter-slide-01.layout.json",
+      "layoutRelativePath": "template-starter-layout/starter-slide-01.layout.json"
+    },
+    {
+      "outputSlide": 2,
+      "sourceSlide": 2,
+      "narrativeRole": "income objective",
+      "reuseMode": "duplicate-slide",
+      "editTargetCount": 0,
+      "previewPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-paper-update/template-starter-preview/starter-slide-02.png",
+      "previewRelativePath": "template-starter-preview/starter-slide-02.png",
+      "layoutPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-paper-update/template-starter-layout/starter-slide-02.layout.json",
+      "layoutRelativePath": "template-starter-layout/starter-slide-02.layout.json"
+    },
+    {
+      "outputSlide": 3,
+      "sourceSlide": 3,
+      "narrativeRole": "strategy mechanics",
+      "reuseMode": "duplicate-slide",
+      "editTargetCount": 0,
+      "previewPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-paper-update/template-starter-preview/starter-slide-03.png",
+      "previewRelativePath": "template-starter-preview/starter-slide-03.png",
+      "layoutPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-paper-update/template-starter-layout/starter-slide-03.layout.json",
+      "layoutRelativePath": "template-starter-layout/starter-slide-03.layout.json"
+    },
+    {
+      "outputSlide": 4,
+      "sourceSlide": 4,
+      "narrativeRole": "section-preserved full-sample benchmark evidence",
+      "reuseMode": "duplicate-slide",
+      "editTargetCount": 0,
+      "previewPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-paper-update/template-starter-preview/starter-slide-04.png",
+      "previewRelativePath": "template-starter-preview/starter-slide-04.png",
+      "layoutPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-paper-update/template-starter-layout/starter-slide-04.layout.json",
+      "layoutRelativePath": "template-starter-layout/starter-slide-04.layout.json"
+    },
+    {
+      "outputSlide": 5,
+      "sourceSlide": 5,
+      "narrativeRole": "section-preserved bull and bear evidence",
+      "reuseMode": "duplicate-slide",
+      "editTargetCount": 0,
+      "previewPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-paper-update/template-starter-preview/starter-slide-05.png",
+      "previewRelativePath": "template-starter-preview/starter-slide-05.png",
+      "layoutPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-paper-update/template-starter-layout/starter-slide-05.layout.json",
+      "layoutRelativePath": "template-starter-layout/starter-slide-05.layout.json"
+    },
+    {
+      "outputSlide": 6,
+      "sourceSlide": 6,
+      "narrativeRole": "current broker-reported paper evidence",
+      "reuseMode": "duplicate-slide",
+      "editTargetCount": 4,
+      "previewPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-paper-update/template-starter-preview/starter-slide-06.png",
+      "previewRelativePath": "template-starter-preview/starter-slide-06.png",
+      "layoutPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-paper-update/template-starter-layout/starter-slide-06.layout.json",
+      "layoutRelativePath": "template-starter-layout/starter-slide-06.layout.json"
+    },
+    {
+      "outputSlide": 7,
+      "sourceSlide": 7,
+      "narrativeRole": "deterministic and constrained AI boundary",
+      "reuseMode": "duplicate-slide",
+      "editTargetCount": 0,
+      "previewPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-paper-update/template-starter-preview/starter-slide-07.png",
+      "previewRelativePath": "template-starter-preview/starter-slide-07.png",
+      "layoutPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-paper-update/template-starter-layout/starter-slide-07.layout.json",
+      "layoutRelativePath": "template-starter-layout/starter-slide-07.layout.json"
+    },
+    {
+      "outputSlide": 8,
+      "sourceSlide": 8,
+      "narrativeRole": "container and PostgreSQL architecture",
+      "reuseMode": "duplicate-slide",
+      "editTargetCount": 0,
+      "previewPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-paper-update/template-starter-preview/starter-slide-08.png",
+      "previewRelativePath": "template-starter-preview/starter-slide-08.png",
+      "layoutPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-paper-update/template-starter-layout/starter-slide-08.layout.json",
+      "layoutRelativePath": "template-starter-layout/starter-slide-08.layout.json"
+    },
+    {
+      "outputSlide": 9,
+      "sourceSlide": 9,
+      "narrativeRole": "submission proof and call to action",
+      "reuseMode": "duplicate-slide",
+      "editTargetCount": 2,
+      "previewPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-paper-update/template-starter-preview/starter-slide-09.png",
+      "previewRelativePath": "template-starter-preview/starter-slide-09.png",
+      "layoutPath": "/Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator-paper-update/template-starter-layout/starter-slide-09.layout.json",
+      "layoutRelativePath": "template-starter-layout/starter-slide-09.layout.json"
+    }
+  ]
+}

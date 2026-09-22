@@ -1,0 +1,556 @@
+{
+  "schema": "openai.presentation.layout/v4",
+  "unit": "px",
+  "slide": {
+    "aid": "sl/e6l3b7",
+    "id": "e6l3b7",
+    "slide": 4,
+    "layoutId": "/ppt/slideLayouts/slideLayout1.xml",
+    "layoutName": "Title Slide",
+    "layoutType": "title",
+    "masterLayoutId": "/ppt/slideMasters/slideMaster1.xml",
+    "masterLayoutName": "Master",
+    "backgroundColor": "#06130F",
+    "frame": {
+      "left": 0,
+      "top": 0,
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "theme": {
+    "colorSchemeName": "ChatGPT",
+    "colors": {
+      "accent1": "#156082",
+      "accent2": "#E97132",
+      "accent3": "#196B24",
+      "accent4": "#0F9ED5",
+      "accent5": "#A02B93",
+      "accent6": "#4EA72E",
+      "dk1": "#000000",
+      "lt1": "#FFFFFF",
+      "dk2": "#0E2841",
+      "lt2": "#E8E8E8",
+      "hlink": "#467886",
+      "folHlink": "#96607D"
+    },
+    "fontScheme": {
+      "name": "Office",
+      "majorFont": {
+        "latinTypeface": "Calibri Light",
+        "eastAsianTypeface": "Calibri Light",
+        "complexScriptTypeface": "Calibri Light"
+      },
+      "minorFont": {
+        "latinTypeface": "Calibri",
+        "eastAsianTypeface": "Calibri",
+        "complexScriptTypeface": "Calibri"
+      }
+    },
+    "typefaces": [
+      "Calibri",
+      "Calibri Light"
+    ]
+  },
+  "inheritedLayers": [
+    {
+      "scope": "layout",
+      "id": "/ppt/slideLayouts/slideLayout1.xml",
+      "name": "Title Slide",
+      "type": "title",
+      "parentLayoutId": "/ppt/slideMasters/slideMaster1.xml",
+      "elements": []
+    },
+    {
+      "scope": "master",
+      "id": "/ppt/slideMasters/slideMaster1.xml",
+      "name": "Master",
+      "type": "master",
+      "elements": []
+    }
+  ],
+  "elements": [
+    {
+      "order": 1,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/pg76psbm",
+      "id": "10",
+      "name": "section-kicker",
+      "bbox": [
+        72,
+        42,
+        500,
+        28
+      ],
+      "geometry": "rect",
+      "text": "FROZEN BENCHMARK STUDY",
+      "textPreview": "FROZEN BENCHMARK STUDY",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "FROZEN BENCHMARK STUDY"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "FROZEN BENCHMARK STUDY",
+          "resolvedTextStyle": {
+            "fontSize": 14,
+            "color": "#6EE7B7",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "FROZEN BENCHMARK STUDY",
+              "fontSize": 14,
+              "color": "#6EE7B7",
+              "bold": true
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 2,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/e9oralkv",
+      "id": "2",
+      "name": "slide-title",
+      "bbox": [
+        72,
+        78,
+        1000,
+        58
+      ],
+      "geometry": "rect",
+      "text": "The backtest favors steadiness over beta",
+      "textPreview": "The backtest favors steadiness over beta",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "The backtest favors steadiness over beta"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "The backtest favors steadiness over beta",
+          "resolvedTextStyle": {
+            "fontSize": 40,
+            "color": "#EDF7F1",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "The backtest favors steadiness over beta",
+              "fontSize": 40,
+              "color": "#EDF7F1"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 3,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/zaxsjqlg",
+      "id": "3",
+      "name": "slide-subtitle",
+      "bbox": [
+        72,
+        137,
+        1050,
+        40
+      ],
+      "geometry": "rect",
+      "text": "V13.5 gave up upside in exchange for a shallower booked-equity drawdown and stronger downside-adjusted return.",
+      "textPreview": "V13.5 gave up upside in exchange for a shallower booked-equity drawdown and stronger downside-adjusted return.",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "V13.5 gave up upside in exchange for a shallower booked-equity drawdown and stronger downside-adjusted return."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "V13.5 gave up upside in exchange for a shallower booked-equity drawdown and stronger downside-adjusted return.",
+          "resolvedTextStyle": {
+            "fontSize": 18,
+            "color": "#A3B8AC",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "V13.5 gave up upside in exchange for a shallower booked-equity drawdown and stronger downside-adjusted return.",
+              "fontSize": 18,
+              "color": "#A3B8AC"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 4,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ofq9gv2x",
+      "id": "4",
+      "bbox": [
+        810,
+        46,
+        395,
+        28
+      ],
+      "geometry": "rect",
+      "text": "-7.15% MDD  |  2.44 SORTINO",
+      "textPreview": "-7.15% MDD  |  2.44 SORTINO",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "-7.15% MDD  |  2.44 SORTINO"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "-7.15% MDD  |  2.44 SORTINO",
+          "resolvedTextStyle": {
+            "fontSize": 17,
+            "color": "#6EE7B7",
+            "bold": true,
+            "alignment": "right"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "-7.15% MDD  |  2.44 SORTINO",
+              "fontSize": 17,
+              "color": "#6EE7B7",
+              "bold": true
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 5,
+      "kind": "image",
+      "scope": "slide",
+      "aid": "im/nqdwry5k",
+      "id": "11",
+      "bbox": [
+        223.03,
+        180,
+        833.94,
+        430
+      ],
+      "geometry": "roundRect",
+      "contentType": "image/png",
+      "imageMask": {
+        "geometry": "roundRect",
+        "adjustmentList": [
+          {
+            "name": "adj",
+            "formula": "val 2791"
+          }
+        ]
+      },
+      "asset": {
+        "assetId": "/ppt/media/image2.png",
+        "contentType": "image/png",
+        "byteLength": 128332
+      },
+      "fillImage": {
+        "assetId": "/ppt/media/image2.png",
+        "contentType": "image/png",
+        "byteLength": 128332
+      }
+    },
+    {
+      "order": 6,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/md8re5kr",
+      "id": "6",
+      "bbox": [
+        75,
+        626,
+        1130,
+        28
+      ],
+      "geometry": "rect",
+      "text": "Exploratory in-sample proxy | 644 sessions | Jan 29, 2024 - Aug 24, 2026 | Not continuous mark-to-market",
+      "textPreview": "Exploratory in-sample proxy | 644 sessions | Jan 29, 2024 - Aug 24, 2026 | Not continuous mark-to-market",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Exploratory in-sample proxy | 644 sessions | Jan 29, 2024 - Aug 24, 2026 | Not continuous mark-to-market"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Exploratory in-sample proxy | 644 sessions | Jan 29, 2024 - Aug 24, 2026 | Not continuous mark-to-market",
+          "resolvedTextStyle": {
+            "fontSize": 15,
+            "color": "#6F8579",
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Exploratory in-sample proxy | 644 sessions | Jan 29, 2024 - Aug 24, 2026 | Not continuous mark-to-market",
+              "fontSize": 15,
+              "color": "#6F8579"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 7,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/nehsnqlc",
+      "id": "7",
+      "bbox": [
+        72,
+        676,
+        1136,
+        1
+      ],
+      "geometry": "line",
+      "lineColor": "#24483A",
+      "lineWidth": 1
+    },
+    {
+      "order": 8,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/w3qtkf29",
+      "id": "8",
+      "bbox": [
+        72,
+        687,
+        330,
+        20
+      ],
+      "geometry": "rect",
+      "text": "STABLE INCOME GENERATOR",
+      "textPreview": "STABLE INCOME GENERATOR",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "STABLE INCOME GENERATOR"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "STABLE INCOME GENERATOR",
+          "resolvedTextStyle": {
+            "fontSize": 11,
+            "color": "#6F8579",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "STABLE INCOME GENERATOR",
+              "fontSize": 11,
+              "color": "#6F8579",
+              "bold": true
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 9,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/x4jatk3e",
+      "id": "9",
+      "bbox": [
+        1148,
+        687,
+        60,
+        20
+      ],
+      "geometry": "rect",
+      "text": "04",
+      "textPreview": "04",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "04"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "04",
+          "resolvedTextStyle": {
+            "fontSize": 11,
+            "color": "#6F8579",
+            "bold": true,
+            "alignment": "right"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "04",
+              "fontSize": 11,
+              "color": "#6F8579",
+              "bold": true
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    }
+  ],
+  "composeRuns": []
+}

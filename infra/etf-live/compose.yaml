@@ -1,0 +1,64 @@
+name: alpaca-etf-live
+services:
+  t08:
+    image: "${ETF_LIVE_IMAGE:?set ETF_LIVE_IMAGE to an immutable GHCR digest}"
+    platform: linux/amd64
+    environment:
+      ETF_LIVE_ENABLED: "${ETF_LIVE_ENABLED:-0}"
+      ETF_LIVE_CONFIG: /app/configs/live/t08_tecl.yaml
+      ALPACA_API_KEY_FILE: /run/etf-live-secrets/alpaca_api_key
+      ALPACA_API_SECRET_FILE: /run/etf-live-secrets/alpaca_api_secret
+      TELEGRAM_BOT_TOKEN_FILE: /run/etf-live-secrets/telegram_bot_token
+      TELEGRAM_CHAT_ID_FILE: /run/etf-live-secrets/telegram_chat_id
+    volumes:
+      - /var/lib/alpaca-etf-live/t08_tecl:/var/lib/alpaca-etf-live/t08_tecl:rw
+      - /etc/etf-live:/etc/etf-live:ro
+      - /etc/etf-live-secrets:/run/etf-live-secrets:ro
+      - /etc/etf-live-config:/app/configs/live:ro
+    read_only: true
+    init: true
+    user: "10002:10002"
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: [/tmp:rw,noexec,nosuid,nodev,size=32m]
+    restart: unless-stopped
+    stop_grace_period: 30s
+    healthcheck:
+      test: ["CMD", "python", "-m", "packages.etf_live.cli", "status", "--config", "/app/configs/live/t08_tecl.yaml"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 768M
+          pids: 64
+    logging:
+      driver: json-file
+      options: {max-size: 10m, max-file: "5"}
+  # Kept only for an explicit compatibility rollback.  It is never started by
+  # the default deployment and cannot share the T08 state directory.
+  l11:
+    profiles: [legacy-l11]
+    image: "${ETF_LIVE_IMAGE:?set ETF_LIVE_IMAGE to an immutable GHCR digest}"
+    platform: linux/amd64
+    environment:
+      ETF_LIVE_ENABLED: "${ETF_LIVE_ENABLED:-0}"
+      ETF_LIVE_CONFIG: /app/configs/live/l11_tqqq_soxl.yaml
+      ALPACA_API_KEY_FILE: /run/etf-live-secrets/alpaca_api_key
+      ALPACA_API_SECRET_FILE: /run/etf-live-secrets/alpaca_api_secret
+      TELEGRAM_BOT_TOKEN_FILE: /run/etf-live-secrets/telegram_bot_token
+      TELEGRAM_CHAT_ID_FILE: /run/etf-live-secrets/telegram_chat_id
+    volumes:
+      - /var/lib/alpaca-etf-live/l11_tqqq_soxl:/var/lib/alpaca-etf-live/l11_tqqq_soxl:rw
+      - /etc/etf-live:/etc/etf-live:ro
+      - /etc/etf-live-secrets:/run/etf-live-secrets:ro
+      - /etc/etf-live-config:/app/configs/live:ro
+    read_only: true
+    init: true
+    user: "10002:10002"
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: [/tmp:rw,noexec,nosuid,nodev,size=32m]

@@ -1,0 +1,202 @@
+{"kind":"deck","id":"pr/ap6gfk","name":"Deck"}
+{"kind":"layout","layoutId":"8bf8b107-337e-4b01-bbb2-d7acefbaa179","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"a4812cd2-25bb-410d-8346-10d833f75852","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/cj96bk","slide":1,"title":"ALPACA HACKATHON 2026","textShapes":4}
+{"kind":"shape","id":"sh/69c7qpcf","slide":1,"bbox":[0,0,615,720]}
+{"kind":"shape","id":"sh/7al8jad0","slide":1,"bbox":[72,112,82,1]}
+{"kind":"textbox","id":"sh/k7upofe9","slide":1,"text":"ALPACA HACKATHON 2026","textPreview":"ALPACA HACKATHON 2026","textChars":21,"textLines":1,"bbox":[72,58,380,28]}
+{"kind":"textbox","id":"sh/l83qhkvu","slide":1,"text":"Stable Income\nGenerator","textPreview":"Stable Income | Generator","textChars":23,"textLines":2,"bbox":[72,148,500,180]}
+{"kind":"textbox","id":"sh/y5c7m5w3","slide":1,"text":"Automated options income.\nDeterministic authority. Public proof.","textPreview":"Automated options income. | Deterministic authority. Public proof.","textChars":64,"textLines":2,"bbox":[72,365,450,92]}
+{"kind":"textbox","id":"sh/j6l8fado","slide":1,"text":"V13.5 QQQ wheel | Alpaca paper | Containerized","textPreview":"V13.5 QQQ wheel | Alpaca paper | Containerized","textChars":46,"textLines":1,"bbox":[72,610,480,30]}
+{"kind":"image","id":"im/o7e903qt","slide":1,"name":"","alt":"Emerald growth path above a containerized trading system","bbox":[0,0,1280,720]}
+{"kind":"notes","id":"nt/cj96bk","slide":1,"text":"[Sources]\n- /Users/lipengyuan/PycharmProjects/alpaca-hackathon/docs/index.html\n- /Users/lipengyuan/PycharmProjects/alpaca-hackathon/docs/assets/stable-income-generator-banner.png\n- https://lipengyuan1994.github.io/alpaca-hackathon/"}
+{"kind":"slide","id":"sl/xvja1v","slide":2,"title":"THE MANDATE","textShapes":16}
+{"kind":"textbox","id":"sh/u5cbmd0v","slide":2,"name":"section-kicker","text":"THE MANDATE","textPreview":"THE MANDATE","textChars":11,"textLines":1,"bbox":[72,42,500,28]}
+{"kind":"textbox","id":"sh/h8nuh8j6","slide":2,"name":"slide-title","text":"Income is a path-quality problem","textPreview":"Income is a path-quality problem","textChars":32,"textLines":1,"bbox":[72,78,1000,58]}
+{"kind":"textbox","id":"sh/g7eto3il","slide":2,"name":"slide-subtitle","text":"Maximum upside and dependable income are different objectives.","textPreview":"Maximum upside and dependable income are different objectives.","textChars":62,"textLines":1,"bbox":[72,137,1050,40]}
+{"kind":"textbox","id":"sh/3u5cji1c","slide":2,"text":"STEADY","textPreview":"STEADY","textChars":6,"textLines":1,"bbox":[72,235,470,82]}
+{"kind":"textbox","id":"sh/2twbqd0r","slide":2,"text":"beats spectacular\nwhen cashflow is the goal.","textPreview":"beats spectacular | when cashflow is the goal.","textChars":44,"textLines":2,"bbox":[75,318,465,110]}
+{"kind":"shape","id":"sh/pwnulsji","slide":2,"bbox":[590,215,1,320]}
+{"kind":"textbox","id":"sh/4vetsnix","slide":2,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[640,220,52,30]}
+{"kind":"textbox","id":"sh/jy1s7y1s","slide":2,"text":"Generate repeatable premium","textPreview":"Generate repeatable premium","textChars":27,"textLines":1,"bbox":[710,216,445,34]}
+{"kind":"textbox","id":"sh/yxsbet0n","slide":2,"text":"Fully collateralized option expressions.","textPreview":"Fully collateralized option expressions.","textChars":40,"textLines":1,"bbox":[710,257,445,32]}
+{"kind":"textbox","id":"sh/s3ql4jut","slide":2,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[640,338,52,30]}
+{"kind":"textbox","id":"sh/t4z2d4ve","slide":2,"text":"Adapt when QQQ trend changes","textPreview":"Adapt when QQQ trend changes","textChars":28,"textLines":1,"bbox":[710,334,445,34]}
+{"kind":"textbox","id":"sh/6ho329cn","slide":2,"text":"One wheel, two deterministic postures.","textPreview":"One wheel, two deterministic postures.","textChars":38,"textLines":1,"bbox":[710,375,445,32]}
+{"kind":"textbox","id":"sh/7ihkbed8","slide":2,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[640,456,52,30]}
+{"kind":"textbox","id":"sh/g7ql8jup","slide":2,"text":"Prove operation, not intention","textPreview":"Prove operation, not intention","textChars":30,"textLines":1,"bbox":[710,452,445,34]}
+{"kind":"textbox","id":"sh/h8z21oba","slide":2,"text":"Broker telemetry, audit records, and replay.","textPreview":"Broker telemetry, audit records, and replay.","textChars":44,"textLines":1,"bbox":[710,493,445,32]}
+{"kind":"shape","id":"sh/u58369cj","slide":2,"bbox":[72,676,1136,1]}
+{"kind":"textbox","id":"sh/f6hkzed4","slide":2,"text":"STABLE INCOME GENERATOR","textPreview":"STABLE INCOME GENERATOR","textChars":23,"textLines":1,"bbox":[72,687,330,20]}
+{"kind":"textbox","id":"sh/wb61wful","slide":2,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[1148,687,60,20]}
+{"kind":"notes","id":"nt/xvja1v","slide":2,"text":"[Sources]\n- /Users/lipengyuan/PycharmProjects/alpaca-hackathon/docs/index.html\n- /Users/lipengyuan/PycharmProjects/alpaca-hackathon/docs/assets/data/v13-5-benchmark.json"}
+{"kind":"slide","id":"sl/1yx2tz","slide":3,"title":"INSIDE V13.5","textShapes":19}
+{"kind":"textbox","id":"sh/8vyh0ral","slide":3,"name":"section-kicker","text":"INSIDE V13.5","textPreview":"INSIDE V13.5","textChars":12,"textLines":1,"bbox":[72,42,500,28]}
+{"kind":"textbox","id":"sh/7u50rmt0","slide":3,"name":"slide-title","text":"One QQQ wheel. Two market postures.","textPreview":"One QQQ wheel. Two market postures.","textChars":35,"textLines":1,"bbox":[72,78,1000,58]}
+{"kind":"textbox","id":"sh/mtwzyhsf","slide":3,"name":"slide-subtitle","text":"The prior close versus its prior 50-session SMA changes strike distance - not discretion.","textPreview":"The prior close versus its prior 50-session SMA changes strike distance - not discretion.","textChars":89,"textLines":1,"bbox":[72,137,1050,40]}
+{"kind":"shape","id":"sh/lsnipcba","slide":3,"bbox":[640,205,1,280]}
+{"kind":"textbox","id":"sh/krehwrap","slide":3,"text":"UPTREND","textPreview":"UPTREND","textChars":7,"textLines":1,"bbox":[90,218,260,32]}
+{"kind":"textbox","id":"sh/zq50nmt4","slide":3,"text":"1% OTM put","textPreview":"1% OTM put","textChars":10,"textLines":1,"bbox":[90,270,420,54]}
+{"kind":"textbox","id":"sh/ypwzuhsj","slide":3,"text":"3% OTM covered call","textPreview":"3% OTM covered call","textChars":19,"textLines":1,"bbox":[90,333,440,45]}
+{"kind":"textbox","id":"sh/5ori1gbe","slide":3,"text":"Collect put premium nearer the rising market while preserving more upside room on calls.","textPreview":"Collect put premium nearer the rising market while preserving more upside room on calls.","textChars":88,"textLines":1,"bbox":[90,410,445,72]}
+{"kind":"textbox","id":"sh/4ni18bat","slide":3,"text":"DOWNTREND","textPreview":"DOWNTREND","textChars":9,"textLines":1,"bbox":[700,218,280,32]}
+{"kind":"textbox","id":"sh/6hw3qt4v","slide":3,"text":"3% OTM put","textPreview":"3% OTM put","textChars":10,"textLines":1,"bbox":[700,270,420,54]}
+{"kind":"textbox","id":"sh/ri54jyl0","slide":3,"text":"1% OTM covered call","textPreview":"1% OTM covered call","textChars":19,"textLines":1,"bbox":[700,333,440,45]}
+{"kind":"textbox","id":"sh/sjyls3ml","slide":3,"text":"Move puts farther away while bringing calls closer to monetize a cautious regime.","textPreview":"Move puts farther away while bringing calls closer to monetize a cautious regime.","textChars":81,"textLines":1,"bbox":[700,410,445,72]}
+{"kind":"shape","id":"sh/dk7ml836","slide":3,"bbox":[72,530,1136,1]}
+{"kind":"textbox","id":"sh/idw3mt4j","slide":3,"text":"QQQ ONLY","textPreview":"QQQ ONLY","textChars":8,"textLines":1,"bbox":[72,565,200,36]}
+{"kind":"textbox","id":"sh/je54fyl4","slide":3,"text":"7-14 DTE","textPreview":"7-14 DTE","textChars":8,"textLines":1,"bbox":[300,565,200,36]}
+{"kind":"textbox","id":"sh/4felojmp","slide":3,"text":"1 CONTRACT","textPreview":"1 CONTRACT","textChars":10,"textLines":1,"bbox":[528,565,200,36]}
+{"kind":"textbox","id":"sh/5gnmho3a","slide":3,"text":">15% PROFIT","textPreview":">15% PROFIT","textChars":11,"textLines":1,"bbox":[756,565,200,36]}
+{"kind":"textbox","id":"sh/29g3yd4n","slide":3,"text":"2% DAILY STOP","textPreview":"2% DAILY STOP","textChars":13,"textLines":1,"bbox":[984,565,200,36]}
+{"kind":"textbox","id":"sh/nap4ril8","slide":3,"text":"Cash-secured puts and share-covered calls only","textPreview":"Cash-secured puts and share-covered calls only","textChars":46,"textLines":1,"bbox":[340,618,600,28]}
+{"kind":"shape","id":"sh/zihs3qxo","slide":3,"bbox":[72,676,1136,1]}
+{"kind":"textbox","id":"sh/yh8rulg3","slide":3,"text":"STABLE INCOME GENERATOR","textPreview":"STABLE INCOME GENERATOR","textChars":23,"textLines":1,"bbox":[72,687,330,20]}
+{"kind":"textbox","id":"sh/lkza5gfu","slide":3,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[1148,687,60,20]}
+{"kind":"notes","id":"nt/1yx2tz","slide":3,"text":"[Sources]\n- /Users/lipengyuan/PycharmProjects/alpaca-hackathon/docs/index.html#strategy\n- /Users/lipengyuan/PycharmProjects/alpaca-hackathon/configs/paper/v13_5_qqq.yaml\n- /Users/lipengyuan/PycharmProjects/alpaca-hackathon/docs/deployment/PAPER_WHEEL_V13_5.md"}
+{"kind":"slide","id":"sl/90bb24","slide":4,"title":"FROZEN BENCHMARK STUDY","textShapes":7}
+{"kind":"textbox","id":"sh/7ils7ylk","slide":4,"name":"section-kicker","text":"FROZEN BENCHMARK STUDY","textPreview":"FROZEN BENCHMARK STUDY","textChars":22,"textLines":1,"bbox":[72,42,500,28]}
+{"kind":"textbox","id":"sh/8ju9g325","slide":4,"name":"slide-title","text":"The backtest favors steadiness over beta","textPreview":"The backtest favors steadiness over beta","textChars":40,"textLines":1,"bbox":[72,78,1000,58]}
+{"kind":"textbox","id":"sh/9k3a9o3q","slide":4,"name":"slide-subtitle","text":"V13.5 gave up upside in exchange for a shallower booked-equity drawdown and stronger downside-adjusted return.","textPreview":"V13.5 gave up upside in exchange for a shallower booked-equity drawdown and stronger downside-adjusted return.","textChars":110,"textLines":1,"bbox":[72,137,1050,40]}
+{"kind":"textbox","id":"sh/ulwritkb","slide":4,"text":"-7.15% MDD  |  2.44 SORTINO","textPreview":"-7.15% MDD  |  2.44 SORTINO","textChars":27,"textLines":1,"bbox":[810,46,395,28]}
+{"kind":"textbox","id":"sh/wne9k321","slide":4,"text":"Exploratory in-sample proxy | 644 sessions | Jan 29, 2024 - Aug 24, 2026 | Not continuous mark-to-market","textPreview":"Exploratory in-sample proxy | 644 sessions | Jan 29, 2024 - Aug 24, 2026 | Not continuous mark-to-market","textChars":104,"textLines":1,"bbox":[75,626,1130,28]}
+{"kind":"shape","id":"sh/h8nad83m","slide":4,"bbox":[72,676,1136,1]}
+{"kind":"textbox","id":"sh/i9wbmdk7","slide":4,"text":"STABLE INCOME GENERATOR","textPreview":"STABLE INCOME GENERATOR","textChars":23,"textLines":1,"bbox":[72,687,330,20]}
+{"kind":"textbox","id":"sh/ja5sfils","slide":4,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[1148,687,60,20]}
+{"kind":"image","id":"im/alcjad0j","slide":4,"name":"","geometry":"roundRect","alt":"Growth of 100,000 comparing V13.5 booked equity with SPY and QQQ price-only benchmarks","bbox":[70,180,1140,430]}
+{"kind":"notes","id":"nt/90bb24","slide":4,"text":"[Sources]\n- /Users/lipengyuan/PycharmProjects/alpaca-hackathon/docs/assets/data/v13-5-benchmark.json\n- /Users/lipengyuan/PycharmProjects/alpaca-hackathon/docs/assets/v13-5-performance.svg\n- /Users/lipengyuan/PycharmProjects/alpaca-hackathon/research/candidates/group_a_wheel_v13_package_20260830/run_manifest.json"}
+{"kind":"slide","id":"sl/x7v6g4","slide":5,"title":"BROKER-REPORTED PAPER EVIDENCE","textShapes":33}
+{"kind":"textbox","id":"sh/kj2ds7eh","slide":5,"name":"section-kicker","text":"BROKER-REPORTED PAPER EVIDENCE","textPreview":"BROKER-REPORTED PAPER EVIDENCE","textChars":30,"textLines":1,"bbox":[72,42,500,28]}
+{"kind":"textbox","id":"sh/jitwjmdc","slide":5,"name":"slide-title","text":"The system is already operating on Alpaca paper","textPreview":"The system is already operating on Alpaca paper","textChars":47,"textLines":1,"bbox":[72,78,1000,58]}
+{"kind":"textbox","id":"sh/ihkvqhwr","slide":5,"name":"slide-subtitle","text":"A sanitized public snapshot separates observed paper behavior from historical research.","textPreview":"A sanitized public snapshot separates observed paper behavior from historical research.","textChars":87,"textLines":1,"bbox":[72,137,1050,40]}
+{"kind":"textbox","id":"sh/tovepwve","slide":5,"text":"$100,079.73","textPreview":"$100,079.73","textChars":11,"textLines":1,"bbox":[72,225,500,78]}
+{"kind":"textbox","id":"sh/sn2dgret","slide":5,"text":"BROKER-REPORTED EQUITY","textPreview":"BROKER-REPORTED EQUITY","textChars":22,"textLines":1,"bbox":[76,306,390,26]}
+{"kind":"textbox","id":"sh/7mtwnmd8","slide":5,"text":"+$79.73","textPreview":"+$79.73","textChars":7,"textLines":1,"bbox":[72,373,230,52]}
+{"kind":"textbox","id":"sh/6lkvehwn","slide":5,"text":"since fresh $100K baseline","textPreview":"since fresh $100K baseline","textChars":26,"textLines":1,"bbox":[76,426,320,30]}
+{"kind":"textbox","id":"sh/hcvetwva","slide":5,"text":"+$150.00 today","textPreview":"+$150.00 today","textChars":14,"textLines":1,"bbox":[72,485,330,38]}
+{"kind":"textbox","id":"sh/gbmxkrep","slide":5,"text":"Account 4c0db2cd-f24c-419f-a9fb-339a24cdef1c","textPreview":"Account 4c0db2cd-f24c-419f-a9fb-339a24cdef1c","textChars":44,"textLines":1,"bbox":[72,565,500,28]}
+{"kind":"shape","id":"sh/e5w3ihgj","slide":5,"bbox":[610,205,1,410]}
+{"kind":"textbox","id":"sh/fqpkrmx4","slide":5,"text":"MOST RECENT SYSTEM FILLS","textPreview":"MOST RECENT SYSTEM FILLS","textChars":24,"textLines":1,"bbox":[660,210,400,28]}
+{"kind":"textbox","id":"sh/0rylkryp","slide":5,"text":"11:42 ET","textPreview":"11:42 ET","textChars":8,"textLines":1,"bbox":[660,265,90,26]}
+{"kind":"textbox","id":"sh/1s72twfa","slide":5,"text":"SELL TO OPEN","textPreview":"SELL TO OPEN","textChars":12,"textLines":1,"bbox":[760,265,175,26]}
+{"kind":"textbox","id":"sh/2tg3m1wv","slide":5,"text":"QQQ $704 PUT","textPreview":"QQQ $704 PUT","textChars":12,"textLines":1,"bbox":[940,265,170,26]}
+{"kind":"textbox","id":"sh/nupkv6xg","slide":5,"text":"$2.78","textPreview":"$2.78","textChars":5,"textLines":1,"bbox":[1120,265,75,26]}
+{"kind":"shape","id":"sh/ovylobel","slide":5,"bbox":[660,305,535,1]}
+{"kind":"textbox","id":"sh/pw72xgf6","slide":5,"text":"11:41 ET","textPreview":"11:41 ET","textChars":8,"textLines":1,"bbox":[660,327,90,26]}
+{"kind":"textbox","id":"sh/ixcjaxgb","slide":5,"text":"BUY TO CLOSE","textPreview":"BUY TO CLOSE","textChars":12,"textLines":1,"bbox":[760,327,175,26]}
+{"kind":"textbox","id":"sh/3ylkj2xw","slide":5,"text":"QQQ $702 PUT","textPreview":"QQQ $702 PUT","textChars":12,"textLines":1,"bbox":[940,327,170,26]}
+{"kind":"textbox","id":"sh/7210rydo","slide":5,"text":"$2.37","textPreview":"$2.37","textChars":5,"textLines":1,"bbox":[1120,327,75,26]}
+{"kind":"shape","id":"sh/m1szidw3","slide":5,"bbox":[660,367,535,1]}
+{"kind":"textbox","id":"sh/94jit8vu","slide":5,"text":"10:31 ET","textPreview":"10:31 ET","textChars":8,"textLines":1,"bbox":[660,389,90,26]}
+{"kind":"textbox","id":"sh/83ahk3e9","slide":5,"text":"SELL TO OPEN","textPreview":"SELL TO OPEN","textChars":12,"textLines":1,"bbox":[760,389,175,26]}
+{"kind":"textbox","id":"sh/zehgnyds","slide":5,"text":"QQQ $702 PUT","textPreview":"QQQ $702 PUT","textChars":12,"textLines":1,"bbox":[940,389,170,26]}
+{"kind":"textbox","id":"sh/yd8zetw7","slide":5,"text":"$2.86","textPreview":"$2.86","textChars":5,"textLines":1,"bbox":[1120,389,75,26]}
+{"kind":"shape","id":"sh/lgjip8vy","slide":5,"bbox":[660,429,535,1]}
+{"kind":"textbox","id":"sh/kfqhg3ed","slide":5,"text":"10:30 ET","textPreview":"10:30 ET","textChars":8,"textLines":1,"bbox":[660,451,90,26]}
+{"kind":"textbox","id":"sh/3al0zidw","slide":5,"text":"BUY TO CLOSE","textPreview":"BUY TO CLOSE","textChars":12,"textLines":1,"bbox":[760,451,175,26]}
+{"kind":"textbox","id":"sh/i9czqxwb","slide":5,"text":"QQQ $700 PUT","textPreview":"QQQ $700 PUT","textChars":12,"textLines":1,"bbox":[940,451,170,26]}
+{"kind":"textbox","id":"sh/0fmxkfut","slide":5,"text":"$2.57","textPreview":"$2.57","textChars":5,"textLines":1,"bbox":[1120,451,75,26]}
+{"kind":"shape","id":"sh/1gfetkbe","slide":5,"bbox":[660,491,535,1]}
+{"kind":"textbox","id":"sh/ed4fipc3","slide":5,"text":"10:01 ET","textPreview":"10:01 ET","textChars":8,"textLines":1,"bbox":[660,513,90,26]}
+{"kind":"textbox","id":"sh/fedwrat8","slide":5,"text":"SELL TO OPEN","textPreview":"SELL TO OPEN","textChars":12,"textLines":1,"bbox":[760,513,175,26]}
+{"kind":"textbox","id":"sh/oj6xozu5","slide":5,"text":"QQQ $700 PUT","textPreview":"QQQ $700 PUT","textChars":12,"textLines":1,"bbox":[940,513,170,26]}
+{"kind":"textbox","id":"sh/pkfex4bq","slide":5,"text":"$3.06","textPreview":"$3.06","textChars":5,"textLines":1,"bbox":[1120,513,75,26]}
+{"kind":"textbox","id":"sh/2hofmpcz","slide":5,"text":"Captured Sep 2, 2026 at 7:13 PM EDT | Paper trading is simulated","textPreview":"Captured Sep 2, 2026 at 7:13 PM EDT | Paper trading is simulated","textChars":64,"textLines":1,"bbox":[660,596,535,30]}
+{"kind":"shape","id":"sh/nixwvutk","slide":5,"bbox":[72,676,1136,1]}
+{"kind":"textbox","id":"sh/c76xszu1","slide":5,"text":"STABLE INCOME GENERATOR","textPreview":"STABLE INCOME GENERATOR","textChars":23,"textLines":1,"bbox":[72,687,330,20]}
+{"kind":"textbox","id":"sh/x8ze14bm","slide":5,"text":"05","textPreview":"05","textChars":2,"textLines":1,"bbox":[1148,687,60,20]}
+{"kind":"notes","id":"nt/x7v6g4","slide":5,"text":"[Sources]\n- https://lipengyuan1994.github.io/alpaca-hackathon/assets/data/live-paper-snapshot.json\n- /Users/lipengyuan/PycharmProjects/alpaca-hackathon/tmp/presentation-stable-income-generator/live-paper-snapshot.json (generated_at 2026-09-02T23:13:19.732773Z)\n- /Users/lipengyuan/PycharmProjects/alpaca-hackathon/packages/paper_wheel/public_snapshot.py"}
+{"kind":"slide","id":"sl/fejofk","slide":6,"title":"DETERMINISM + INTELLIGENCE","textShapes":18}
+{"kind":"textbox","id":"sh/t87ap0z2","slide":6,"name":"section-kicker","text":"DETERMINISM + INTELLIGENCE","textPreview":"DETERMINISM + INTELLIGENCE","textChars":26,"textLines":1,"bbox":[72,42,500,28]}
+{"kind":"textbox","id":"sh/65wre50b","slide":6,"name":"slide-title","text":"AI can veto. Deterministic controls retain authority.","textPreview":"AI can veto. Deterministic controls retain authority.","textChars":53,"textLines":1,"bbox":[72,78,1000,58]}
+{"kind":"textbox","id":"sh/r65snahw","slide":6,"name":"slide-subtitle","text":"The model contributes context-sensitive restraint without gaining executable control.","textPreview":"The model contributes context-sensitive restraint without gaining executable control.","textChars":85,"textLines":1,"bbox":[72,137,1050,40]}
+{"kind":"shape","id":"sh/43e9cvi5","slide":6,"bbox":[238,285,38,18]}
+{"kind":"shape","id":"sh/54nal0zq","slide":6,"bbox":[468,285,38,18]}
+{"kind":"shape","id":"sh/i1wral0f","slide":6,"bbox":[698,285,38,18]}
+{"kind":"shape","id":"sh/j25sjqhk","slide":6,"bbox":[928,285,38,18]}
+{"kind":"shape","id":"sh/ozytozyp","slide":6,"bbox":[52,235,185,120]}
+{"kind":"textbox","id":"sh/p0raxkza","slide":6,"text":"Market context","textPreview":"Market context","textChars":14,"textLines":1,"bbox":[66,253,157,34]}
+{"kind":"textbox","id":"sh/9wfi5wj6","slide":6,"text":"ECONOMIC DATA","textPreview":"ECONOMIC DATA","textChars":13,"textLines":1,"bbox":[64,297,161,42]}
+{"kind":"shape","id":"sh/8v6hcr2l","slide":6,"bbox":[282,235,185,120]}
+{"kind":"textbox","id":"sh/7axg3m10","slide":6,"text":"V13.5 proposal","textPreview":"V13.5 proposal","textChars":14,"textLines":1,"bbox":[296,253,157,34]}
+{"kind":"textbox","id":"sh/m9ozahkf","slide":6,"text":"SEMANTIC ONLY","textPreview":"SEMANTIC ONLY","textChars":13,"textLines":1,"bbox":[294,297,161,42]}
+{"kind":"shape","id":"sh/l8fy1cja","slide":6,"bbox":[512,235,185,120]}
+{"kind":"textbox","id":"sh/k7mh872p","slide":6,"text":"Gemini 3.6 Flash","textPreview":"Gemini 3.6 Flash","textChars":16,"textLines":1,"bbox":[526,253,157,34]}
+{"kind":"textbox","id":"sh/z6dgz214","slide":6,"text":"ALLOW / VETO","textPreview":"ALLOW / VETO","textChars":12,"textLines":1,"bbox":[524,297,161,42]}
+{"kind":"shape","id":"sh/y54z6xkj","slide":6,"bbox":[742,235,185,120]}
+{"kind":"textbox","id":"sh/54zidgje","slide":6,"text":"Risk + preflight","textPreview":"Risk + preflight","textChars":16,"textLines":1,"bbox":[756,253,157,34]}
+{"kind":"textbox","id":"sh/43qhkb2t","slide":6,"text":"REVALIDATE","textPreview":"REVALIDATE","textChars":10,"textLines":1,"bbox":[754,297,161,42]}
+{"kind":"shape","id":"sh/ojitwze1","slide":6,"bbox":[972,235,185,120]}
+{"kind":"textbox","id":"sh/pkra54vm","slide":6,"text":"Alpaca paper","textPreview":"Alpaca paper","textChars":12,"textLines":1,"bbox":[986,253,157,34]}
+{"kind":"textbox","id":"sh/2h0bu9wb","slide":6,"text":"EXECUTION","textPreview":"EXECUTION","textChars":9,"textLines":1,"bbox":[984,297,161,42]}
+{"kind":"textbox","id":"sh/ni9s3edw","slide":6,"text":"No model-generated contract, size, price, or execution command.","textPreview":"No model-generated contract, size, price, or execution command.","textChars":63,"textLines":1,"bbox":[170,420,940,52]}
+{"kind":"shape","id":"sh/0fytsze5","slide":6,"bbox":[155,510,970,78]}
+{"kind":"textbox","id":"sh/1g7a14vq","slide":6,"text":"CURRENT LIVE BOUNDARY","textPreview":"CURRENT LIVE BOUNDARY","textChars":21,"textLines":1,"bbox":[180,525,240,24]}
+{"kind":"textbox","id":"sh/edgrqpwz","slide":6,"text":"The V13.5 paper canary is deterministic-only. The hybrid gate is implemented and replay-tested in the broader platform.","textPreview":"The V13.5 paper canary is deterministic-only. The hybrid gate is implemented and replay-tested in the broader platform.","textChars":119,"textLines":1,"bbox":[400,522,700,48]}
+{"kind":"shape","id":"sh/fepszudk","slide":6,"bbox":[72,676,1136,1]}
+{"kind":"textbox","id":"sh/sry9ofe9","slide":6,"text":"STABLE INCOME GENERATOR","textPreview":"STABLE INCOME GENERATOR","textChars":23,"textLines":1,"bbox":[72,687,330,20]}
+{"kind":"textbox","id":"sh/ds7axkve","slide":6,"text":"06","textPreview":"06","textChars":2,"textLines":1,"bbox":[1148,687,60,20]}
+{"kind":"notes","id":"nt/fejofk","slide":6,"text":"[Sources]\n- /Users/lipengyuan/PycharmProjects/alpaca-hackathon/docs/index.html#intelligence\n- /Users/lipengyuan/PycharmProjects/alpaca-hackathon/docs/architecture/STRATEGY_API.md\n- /Users/lipengyuan/PycharmProjects/alpaca-hackathon/docs/deployment/ECONOMIC_CONTEXT.md"}
+{"kind":"slide","id":"sl/21xyyx","slide":7,"title":"PORTABLE BY CONSTRUCTION","textShapes":19}
+{"kind":"textbox","id":"sh/vmhgze9c","slide":7,"name":"section-kicker","text":"PORTABLE BY CONSTRUCTION","textPreview":"PORTABLE BY CONSTRUCTION","textChars":24,"textLines":1,"bbox":[72,42,500,28]}
+{"kind":"textbox","id":"sh/wnqh8jqx","slide":7,"name":"slide-title","text":"Containers move the system without sharing authority","textPreview":"Containers move the system without sharing authority","textChars":52,"textLines":1,"bbox":[72,78,1000,58]}
+{"kind":"textbox","id":"sh/hozy1ori","slide":7,"name":"slide-subtitle","text":"Config selects behavior; role boundaries constrain credentials, network access, and broker reach.","textPreview":"Config selects behavior; role boundaries constrain credentials, network access, and broker reach.","textChars":97,"textLines":1,"bbox":[72,137,1050,40]}
+{"kind":"shape","id":"sh/mh8z2p8f","slide":7,"bbox":[45,195,1190,330]}
+{"kind":"textbox","id":"sh/7ihgvu90","slide":7,"text":"LOCAL ARM64  /  CLOUD VM  /  CONTAINER RUNNER","textPreview":"LOCAL ARM64  /  CLOUD VM  /  CONTAINER RUNNER","textChars":45,"textLines":1,"bbox":[75,215,590,24]}
+{"kind":"shape","id":"sh/8jqh4zql","slide":7,"bbox":[238,300,29,18]}
+{"kind":"shape","id":"sh/9kzyx4r6","slide":7,"bbox":[448,300,29,18]}
+{"kind":"shape","id":"sh/ytofyp8j","slide":7,"bbox":[658,300,29,18]}
+{"kind":"shape","id":"sh/zuxgru94","slide":7,"bbox":[868,300,29,18]}
+{"kind":"shape","id":"sh/j2dgvulc","slide":7,"bbox":[138,385,18,28]}
+{"kind":"shape","id":"sh/i14zmp4r","slide":7,"bbox":[348,385,18,28]}
+{"kind":"shape","id":"sh/5ofyx43i","slide":7,"bbox":[558,385,18,28]}
+{"kind":"shape","id":"sh/kn6hozmx","slide":7,"bbox":[768,385,18,28]}
+{"kind":"shape","id":"sh/7qx0zelo","slide":7,"bbox":[978,385,18,28]}
+{"kind":"shape","id":"sh/6pozq943","slide":7,"bbox":[60,260,175,120]}
+{"kind":"textbox","id":"sh/tsfi1o3e","slide":7,"text":"Data","textPreview":"Data","textChars":4,"textLines":1,"bbox":[74,278,147,34]}
+{"kind":"textbox","id":"sh/sr6hsjmt","slide":7,"text":"MARKET CONTEXT","textPreview":"MARKET CONTEXT","textChars":14,"textLines":1,"bbox":[72,322,151,42]}
+{"kind":"shape","id":"sh/nutgnal4","slide":7,"bbox":[270,260,175,120]}
+{"kind":"textbox","id":"sh/mtkze54j","slide":7,"text":"Strategy","textPreview":"Strategy","textChars":8,"textLines":1,"bbox":[284,278,147,34]}
+{"kind":"textbox","id":"sh/a1cbihsj","slide":7,"text":"PURE SIGNAL","textPreview":"PURE SIGNAL","textChars":11,"textLines":1,"bbox":[282,322,151,42]}
+{"kind":"shape","id":"sh/b2lsbm94","slide":7,"bbox":[480,260,175,120]}
+{"kind":"textbox","id":"sh/c3utkrap","slide":7,"text":"Agent","textPreview":"Agent","textChars":5,"textLines":1,"bbox":[494,278,147,34]}
+{"kind":"textbox","id":"sh/xo3adcru","slide":7,"text":"ALLOW / VETO","textPreview":"ALLOW / VETO","textChars":12,"textLines":1,"bbox":[492,322,151,42]}
+{"kind":"shape","id":"sh/2xsbexs7","slide":7,"bbox":[690,260,175,120]}
+{"kind":"textbox","id":"sh/3y1s729s","slide":7,"text":"Risk","textPreview":"Risk","textChars":4,"textLines":1,"bbox":[704,278,147,34]}
+{"kind":"textbox","id":"sh/ozutg7ad","slide":7,"text":"HASH-BOUND","textPreview":"HASH-BOUND","textChars":10,"textLines":1,"bbox":[702,322,151,42]}
+{"kind":"shape","id":"sh/p03a9cry","slide":7,"bbox":[900,260,175,120]}
+{"kind":"textbox","id":"sh/etsbaxsb","slide":7,"text":"Execution","textPreview":"Execution","textChars":9,"textLines":1,"bbox":[914,278,147,34]}
+{"kind":"textbox","id":"sh/fu1s329w","slide":7,"text":"PAPER KEY ONLY","textPreview":"PAPER KEY ONLY","textChars":14,"textLines":1,"bbox":[912,322,151,42]}
+{"kind":"shape","id":"sh/ho7e90be","slide":7,"bbox":[270,420,740,76]}
+{"kind":"textbox","id":"sh/wnydgvut","slide":7,"text":"PostgreSQL 18","textPreview":"PostgreSQL 18","textChars":13,"textLines":1,"bbox":[300,438,220,32]}
+{"kind":"textbox","id":"sh/vmpw7qt8","slide":7,"text":"EVENT LEDGER  |  AUDIT  |  OUTBOX / INBOX  |  RECONCILIATION","textPreview":"EVENT LEDGER  |  AUDIT  |  OUTBOX / INBOX  |  RECONCILIATION","textChars":60,"textLines":1,"bbox":[520,443,460,28]}
+{"kind":"textbox","id":"sh/ulgvelcn","slide":7,"text":"Same contracts. Same configuration. New host.","textPreview":"Same contracts. Same configuration. New host.","textChars":45,"textLines":1,"bbox":[250,570,780,48]}
+{"kind":"shape","id":"sh/9k7e5gb2","slide":7,"bbox":[72,676,1136,1]}
+{"kind":"textbox","id":"sh/8jydcvux","slide":7,"text":"STABLE INCOME GENERATOR","textPreview":"STABLE INCOME GENERATOR","textChars":23,"textLines":1,"bbox":[72,687,330,20]}
+{"kind":"textbox","id":"sh/7ipw3qtc","slide":7,"text":"07","textPreview":"07","textChars":2,"textLines":1,"bbox":[1148,687,60,20]}
+{"kind":"notes","id":"nt/21xyyx","slide":7,"text":"[Sources]\n- /Users/lipengyuan/PycharmProjects/alpaca-hackathon/docs/architecture/ARCHITECTURE_DESIGN.html\n- /Users/lipengyuan/PycharmProjects/alpaca-hackathon/docs/architecture/SYSTEM_ARCHITECTURE.md\n- /Users/lipengyuan/PycharmProjects/alpaca-hackathon/infra/compose.yaml"}
+{"kind":"slide","id":"sl/ifjk37","slide":8,"title":"THE SUBMISSION","textShapes":19}
+{"kind":"textbox","id":"sh/snul0f2d","slide":8,"name":"section-kicker","text":"THE SUBMISSION","textPreview":"THE SUBMISSION","textChars":14,"textLines":1,"bbox":[72,42,500,28]}
+{"kind":"textbox","id":"sh/rmlk7a1s","slide":8,"name":"slide-title","text":"A working system, not a concept.","textPreview":"A working system, not a concept.","textChars":32,"textLines":1,"bbox":[72,78,1000,58]}
+{"kind":"textbox","id":"sh/qls3y5k7","slide":8,"name":"slide-subtitle","text":"Inspect the evidence, replay the controls, and watch the paper account.","textPreview":"Inspect the evidence, replay the controls, and watch the paper account.","textChars":71,"textLines":1,"bbox":[72,137,1050,40]}
+{"kind":"textbox","id":"sh/1s32d4ju","slide":8,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[72,220,55,32]}
+{"kind":"textbox","id":"sh/0rul4z29","slide":8,"text":"BACKTESTED","textPreview":"BACKTESTED","textChars":10,"textLines":1,"bbox":[145,215,250,38]}
+{"kind":"textbox","id":"sh/fqlkbu14","slide":8,"text":"644 sessions with SPY / QQQ comparison","textPreview":"644 sessions with SPY / QQQ comparison","textChars":38,"textLines":1,"bbox":[400,220,475,34]}
+{"kind":"shape","id":"sh/epc32pkj","slide":8,"bbox":[145,278,730,1]}
+{"kind":"textbox","id":"sh/hwj210jq","slide":8,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[72,325,55,32]}
+{"kind":"textbox","id":"sh/wvalsv25","slide":8,"text":"OPERATING","textPreview":"OPERATING","textChars":9,"textLines":1,"bbox":[145,320,250,38]}
+{"kind":"textbox","id":"sh/610vexwz","slide":8,"text":"V13.5 on Alpaca paper with public telemetry","textPreview":"V13.5 on Alpaca paper with public telemetry","textChars":43,"textLines":1,"bbox":[400,325,475,34]}
+{"kind":"shape","id":"sh/7mtwn2xk","slide":8,"bbox":[145,383,730,1]}
+{"kind":"textbox","id":"sh/sn2dgne5","slide":8,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[72,430,55,32]}
+{"kind":"textbox","id":"sh/tobepsfq","slide":8,"text":"PORTABLE","textPreview":"PORTABLE","textChars":8,"textLines":1,"bbox":[145,425,250,38]}
+{"kind":"textbox","id":"sh/upkvixwb","slide":8,"text":"Config-driven containers and PostgreSQL","textPreview":"Config-driven containers and PostgreSQL","textChars":39,"textLines":1,"bbox":[400,430,475,34]}
+{"kind":"shape","id":"sh/fqtwr2xw","slide":8,"bbox":[905,208,300,300]}
+{"kind":"textbox","id":"sh/gr2dk7e1","slide":8,"text":"INSPECT THE PROOF","textPreview":"INSPECT THE PROOF","textChars":17,"textLines":1,"bbox":[935,238,240,28]}
+{"kind":"textbox","id":"sh/hsbetcvm","slide":8,"text":"Stable Income\nGenerator","textPreview":"Stable Income | Generator","textChars":23,"textLines":2,"bbox":[930,286,250,86]}
+{"kind":"textbox","id":"sh/2t4vmhw7","slide":8,"text":"lipengyuan1994.github.io/\nalpaca-hackathon/","textPreview":"lipengyuan1994.github.io/ | alpaca-hackathon/","textChars":43,"textLines":2,"bbox":[925,397,260,58]}
+{"kind":"textbox","id":"sh/3udwvmds","slide":8,"text":"Credential-free replay","textPreview":"Credential-free replay","textChars":22,"textLines":1,"bbox":[72,565,250,24]}
+{"kind":"textbox","id":"sh/zydc3mt0","slide":8,"text":"uv sync --frozen   |   uv run paper-decision-worker   |   uv run pytest -q","textPreview":"uv sync --frozen   |   uv run paper-decision-worker   |   uv run pytest -q","textChars":74,"textLines":1,"bbox":[72,598,1000,32]}
+{"kind":"shape","id":"sh/ex4vahcf","slide":8,"bbox":[72,676,1136,1]}
+{"kind":"textbox","id":"sh/1kvu5cbq","slide":8,"text":"STABLE INCOME GENERATOR","textPreview":"STABLE INCOME GENERATOR","textChars":23,"textLines":1,"bbox":[72,687,330,20]}
+{"kind":"textbox","id":"sh/0jmdcrul","slide":8,"text":"08","textPreview":"08","textChars":2,"textLines":1,"bbox":[1148,687,60,20]}
+{"kind":"notes","id":"nt/ifjk37","slide":8,"text":"[Sources]\n- https://lipengyuan1994.github.io/alpaca-hackathon/\n- https://github.com/lipengyuan1994/alpaca-hackathon\n- /Users/lipengyuan/PycharmProjects/alpaca-hackathon/docs/deployment/judge-reproduce.md"}

@@ -47,6 +47,8 @@ research-data-group-a-wheel-v13-backtest = "packages.research_data.cli:group_a_w
 research-data-group-a-proxy-backtest = "packages.research_data.cli:group_a_proxy_backtest_main"
 research-data-collect-options-stage = "packages.research_data.cli:option_stage_main"
 research-data-finalize-options = "packages.research_data.cli:option_finalize_main"
+etf-cash-research = "packages.etf_cash_research.cli:main"
+etf-live = "packages.etf_live.cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["apps", "packages", "strategy_plugins"]

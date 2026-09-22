@@ -1,0 +1,242 @@
+{
+  "account": {
+    "account_id": "4c0db2cd-f24c-419f-a9fb-339a24cdef1c",
+    "buying_power": 123258.12,
+    "cash": 100314.53,
+    "day_pnl": 145.8,
+    "day_return": 0.0014565473852926477,
+    "day_start_equity": 100099.73,
+    "equity": 100245.53,
+    "starting_baseline": 100000.0,
+    "status": "ACTIVE",
+    "total_pnl": 245.53,
+    "total_return": 0.0024553
+  },
+  "artifact_hash": "sha256:a0ccc3dca7fa08e71a1cd78b8a6c94faea0ce305f5aa31ff20849348b5a1a986",
+  "generated_at": "2026-09-03T18:11:50.184548Z",
+  "portfolio_history": {
+    "period": "1A",
+    "points": [
+      {
+        "equity": 100000.0,
+        "timestamp": "2026-08-28T00:00:00Z",
+        "total_pnl": 0.0,
+        "total_return": 0.0
+      },
+      {
+        "equity": 100000.0,
+        "timestamp": "2026-08-29T00:00:00Z",
+        "total_pnl": 0.0,
+        "total_return": 0.0
+      },
+      {
+        "equity": 100000.0,
+        "timestamp": "2026-09-01T00:00:00Z",
+        "total_pnl": 0.0,
+        "total_return": 0.0
+      },
+      {
+        "equity": 99929.73,
+        "timestamp": "2026-09-02T00:00:00Z",
+        "total_pnl": -70.27,
+        "total_return": -0.0007027
+      },
+      {
+        "equity": 100099.73,
+        "timestamp": "2026-09-03T00:00:00Z",
+        "total_pnl": 99.73,
+        "total_return": 0.0009973
+      }
+    ],
+    "status": "available",
+    "timeframe": "1D"
+  },
+  "publication_scope": {
+    "account_id_publication_approved": true,
+    "excluded": [
+      "API credentials",
+      "broker origin",
+      "broker order IDs",
+      "order submission and cancellation controls"
+    ],
+    "order_filter": "Filled broker orders with the V13.5 system-owned client-order prefix only.",
+    "paper_only": true
+  },
+  "recent_filled_system_orders": [
+    {
+      "action": "SELL_TO_OPEN",
+      "average_fill_price": 0.79,
+      "contract": {
+        "expiry": "2026-09-10",
+        "option_type": "PUT",
+        "strike": 695.0,
+        "symbol": "QQQ260910P00695000",
+        "underlying": "QQQ"
+      },
+      "filled_at": "2026-09-03T16:47:47.418458Z",
+      "quantity": 1.0,
+      "side": "SELL",
+      "system_ref": "8ce81330"
+    },
+    {
+      "action": "BUY_TO_CLOSE",
+      "average_fill_price": 0.7,
+      "contract": {
+        "expiry": "2026-09-10",
+        "option_type": "PUT",
+        "strike": 693.0,
+        "symbol": "QQQ260910P00693000",
+        "underlying": "QQQ"
+      },
+      "filled_at": "2026-09-03T16:39:44.505269Z",
+      "quantity": 1.0,
+      "side": "BUY",
+      "system_ref": "200f2f4d"
+    },
+    {
+      "action": "SELL_TO_OPEN",
+      "average_fill_price": 0.89,
+      "contract": {
+        "expiry": "2026-09-10",
+        "option_type": "PUT",
+        "strike": 693.0,
+        "symbol": "QQQ260910P00693000",
+        "underlying": "QQQ"
+      },
+      "filled_at": "2026-09-03T15:04:48.048096Z",
+      "quantity": 1.0,
+      "side": "SELL",
+      "system_ref": "2658abed"
+    },
+    {
+      "action": "BUY_TO_CLOSE",
+      "average_fill_price": 0.79,
+      "contract": {
+        "expiry": "2026-09-10",
+        "option_type": "PUT",
+        "strike": 691.0,
+        "symbol": "QQQ260910P00691000",
+        "underlying": "QQQ"
+      },
+      "filled_at": "2026-09-03T15:03:37.863821Z",
+      "quantity": 1.0,
+      "side": "BUY",
+      "system_ref": "d9664fe3"
+    },
+    {
+      "action": "SELL_TO_OPEN",
+      "average_fill_price": 0.96,
+      "contract": {
+        "expiry": "2026-09-10",
+        "option_type": "PUT",
+        "strike": 691.0,
+        "symbol": "QQQ260910P00691000",
+        "underlying": "QQQ"
+      },
+      "filled_at": "2026-09-03T14:21:19.947124Z",
+      "quantity": 1.0,
+      "side": "SELL",
+      "system_ref": "a1bfece2"
+    },
+    {
+      "action": "BUY_TO_CLOSE",
+      "average_fill_price": 0.83,
+      "contract": {
+        "expiry": "2026-09-10",
+        "option_type": "PUT",
+        "strike": 689.0,
+        "symbol": "QQQ260910P00689000",
+        "underlying": "QQQ"
+      },
+      "filled_at": "2026-09-03T14:19:54.608249Z",
+      "quantity": 1.0,
+      "side": "BUY",
+      "system_ref": "e1fcb11f"
+    },
+    {
+      "action": "SELL_TO_OPEN",
+      "average_fill_price": 1.02,
+      "contract": {
+        "expiry": "2026-09-10",
+        "option_type": "PUT",
+        "strike": 689.0,
+        "symbol": "QQQ260910P00689000",
+        "underlying": "QQQ"
+      },
+      "filled_at": "2026-09-03T13:31:55.731483Z",
+      "quantity": 1.0,
+      "side": "SELL",
+      "system_ref": "64f5e32f"
+    },
+    {
+      "action": "BUY_TO_CLOSE",
+      "average_fill_price": 1.95,
+      "contract": {
+        "expiry": "2026-09-08",
+        "option_type": "PUT",
+        "strike": 704.0,
+        "symbol": "QQQ260908P00704000",
+        "underlying": "QQQ"
+      },
+      "filled_at": "2026-09-03T13:30:50.277018Z",
+      "quantity": 1.0,
+      "side": "BUY",
+      "system_ref": "22d36473"
+    },
+    {
+      "action": "SELL_TO_OPEN",
+      "average_fill_price": 2.78,
+      "contract": {
+        "expiry": "2026-09-08",
+        "option_type": "PUT",
+        "strike": 704.0,
+        "symbol": "QQQ260908P00704000",
+        "underlying": "QQQ"
+      },
+      "filled_at": "2026-09-01T15:42:10.927695Z",
+      "quantity": 1.0,
+      "side": "SELL",
+      "system_ref": "805c2262"
+    },
+    {
+      "action": "BUY_TO_CLOSE",
+      "average_fill_price": 2.37,
+      "contract": {
+        "expiry": "2026-09-08",
+        "option_type": "PUT",
+        "strike": 702.0,
+        "symbol": "QQQ260908P00702000",
+        "underlying": "QQQ"
+      },
+      "filled_at": "2026-09-01T15:41:29.082232Z",
+      "quantity": 1.0,
+      "side": "BUY",
+      "system_ref": "771c164a"
+    }
+  ],
+  "refresh_contract": {
+    "browser_poll_seconds": 60,
+    "delivery": "Sanitized JSON is regenerated by GitHub Actions and deployed with GitHub Pages.",
+    "publishing_window": {
+      "final_run": "17:00",
+      "start": "09:00",
+      "timezone": "America/New_York",
+      "weekdays": [
+        "MON",
+        "TUE",
+        "WED",
+        "THU",
+        "FRI"
+      ]
+    },
+    "scheduled_interval_seconds": 1800,
+    "stale_after_seconds": 5400
+  },
+  "schema_version": "stable-income-generator-live-paper/v3",
+  "source": "broker_reported_paper",
+  "strategy": {
+    "client_order_prefix": "rs-v135",
+    "strategy_id": "v13.5",
+    "underlying": "QQQ"
+  }
+}

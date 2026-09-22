@@ -1,0 +1,10 @@
+Primary external source:
+https://lipengyuan1994.github.io/alpaca-hackathon/paper-performance.html
+
+Machine-readable deployed evidence:
+https://lipengyuan1994.github.io/alpaca-hackathon/assets/data/live-paper-snapshot.json
+
+Source classification:
+broker_reported_paper, Alpaca paper account, simulated performance, sanitized public snapshot.
+
+Snapshot capture used for authoring will be copied to live-paper-snapshot.json immediately before the edit.

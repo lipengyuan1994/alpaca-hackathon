@@ -1,0 +1,437 @@
+- generic [active] [ref=e1]:
+  - link "Skip to evidence" [ref=e2] [cursor=pointer]:
+    - /url: "#main"
+  - banner [ref=e3]:
+    - link "Stable Income Generator home" [ref=e4] [cursor=pointer]:
+      - /url: "#top"
+      - generic [aria-hidden] [ref=e5]: SIG
+      - generic [ref=e6]: Stable Income Generator
+    - navigation "Primary navigation" [ref=e7]:
+      - link "Paper account" [ref=e8] [cursor=pointer]:
+        - /url: paper-performance.html
+      - link "Performance" [ref=e9] [cursor=pointer]:
+        - /url: "#performance"
+      - link "Intelligence" [ref=e10] [cursor=pointer]:
+        - /url: "#intelligence"
+      - link "Architecture" [ref=e11] [cursor=pointer]:
+        - /url: architecture/ARCHITECTURE_DESIGN.html
+      - link "Run it" [ref=e12] [cursor=pointer]:
+        - /url: "#run"
+  - main [ref=e13]:
+    - generic [ref=e14]:
+      - img "A steady emerald growth path crossing calm and turbulent market regimes above a modular containerized decision system" [ref=e15]
+      - generic [ref=e17]:
+        - paragraph [ref=e18]: Running on Alpaca paper
+        - heading [level=1] [ref=e20]:
+          - text: Income engineering,
+          - emphasis [ref=e21]: not market guessing.
+        - paragraph [ref=e22]: Stable Income Generator turns a technology conviction into bounded, auditable options decisions—backtested over 644 sessions, containerized by role, and operating against a real Alpaca paper account.
+        - generic [ref=e23]:
+          - link "Explore the evidence" [ref=e24] [cursor=pointer]:
+            - /url: "#performance"
+            - text: Explore the evidence
+            - generic [aria-hidden] [ref=e25]: ↘
+          - link "View source" [ref=e26] [cursor=pointer]:
+            - /url: https://github.com/lipengyuan1994/alpaca-hackathon
+        - list "Product attributes" [ref=e27]:
+          - listitem [ref=e28]: Paper only
+          - listitem [ref=e29]: Deterministic execution
+          - listitem [ref=e30]: Fail closed
+      - complementary "Live paper account snapshot" [ref=e31]:
+        - generic [ref=e32]:
+          - generic [ref=e33]: Paper account equity
+          - generic [ref=e34]: Stale · 1328m old
+        - link "Open Alpaca paper account performance" [ref=e36] [cursor=pointer]:
+          - /url: paper-performance.html
+          - strong [ref=e37]: $100,079.73
+        - paragraph [ref=e38]: +$79.73 since fresh $100K baseline · live since Sep 1, 2026
+        - generic [ref=e39]:
+          - generic [ref=e40]:
+            - term [ref=e41]: Account ID
+            - definition [ref=e42]:
+              - code [ref=e43]: 4c0db2cd-f24c-419f-a9fb-339a24cdef1c
+              - button "Copy Alpaca paper account ID" [ref=e44] [cursor=pointer]: Copy
+          - generic [ref=e45]:
+            - term [ref=e46]: Strategy
+            - definition [ref=e47]: V13.5 · QQQ
+          - generic [ref=e48]:
+            - term [ref=e49]: Last deployed
+            - definition [ref=e50]:
+              - time [ref=e51]: Sep 2, 2026, 6:04 PM EDT
+        - generic [ref=e52]:
+          - strong [ref=e53]: broker_reported_paper
+          - text: evidence, with Cloudflare alarms targeting a refresh every 30 minutes during the weekday monitoring window.
+          - link "How updates reach this page →" [ref=e54] [cursor=pointer]:
+            - /url: "#refresh"
+          - text: Full ID published with account-owner approval; API credentials and controls remain private.
+    - region "V13.5 evidence highlights" [ref=e55]:
+      - article [ref=e56]:
+        - generic [ref=e57]: Frozen backtest return
+        - strong [ref=e58]: +30.29%
+        - generic [ref=e59]: Jan 2024 – Aug 2026
+      - article [ref=e60]:
+        - generic [ref=e61]: Booked-equity drawdown
+        - strong [ref=e62]: −7.15%
+        - generic [ref=e63]: vs −22.84% QQQ
+      - article [ref=e64]:
+        - generic [ref=e65]: Sharpe / Sortino
+        - strong [ref=e66]: 1.14 / 2.44
+        - generic [ref=e67]: 64 completed cycles
+      - article [ref=e68]:
+        - generic [ref=e69]: Paper account P&L
+        - strong [ref=e70]: +$79.73
+        - generic [ref=e71]: Captured Sep 2, 2026, 6:04 PM EDT
+    - generic [ref=e72]:
+      - generic [ref=e73]:
+        - generic [ref=e74]:
+          - paragraph [ref=e75]: Evidence, not theatre
+          - heading "Three proof layers. Never blended." [level=2] [ref=e76]: Three proof layers.Never blended.
+        - paragraph [ref=e77]: A serious trading system should make it easy to see where every claim comes from. We separate historical research, deterministic system verification, and broker-reported paper behavior.
+      - generic [ref=e78]:
+        - article [ref=e79]:
+          - generic [ref=e80]: 01 · BACKTEST
+          - heading "Frozen and reproducible" [level=3] [ref=e81]
+          - paragraph [ref=e82]: V13.5 was selected by a predeclared net-return rule from five QQQ wheel variants. The result is bound to immutable input and output hashes and independently reproduced byte for byte.
+          - link "Inspect run manifest ↗" [ref=e83] [cursor=pointer]:
+            - /url: https://github.com/lipengyuan1994/alpaca-hackathon/blob/main/research/candidates/group_a_wheel_v13_package_20260830/run_manifest.json
+        - article [ref=e84]:
+          - generic [ref=e85]: 02 · AUTOMATION
+          - heading "Executing the lifecycle" [level=3] [ref=e86]
+          - paragraph [ref=e87]: "The paper scheduler wakes every 60 seconds. Its hash-chained journal recorded five filled orders on September 1: three cash-secured put entries and two deterministic profit-taking closes."
+          - link "Read the paper runbook ↗" [ref=e88] [cursor=pointer]:
+            - /url: https://github.com/lipengyuan1994/alpaca-hackathon/blob/main/docs/deployment/PAPER_WHEEL_V13_5.md
+        - article [ref=e89]:
+          - generic [ref=e90]: 03 · PAPER ACCOUNT
+          - heading "Near-live broker evidence" [level=3] [ref=e91]
+          - paragraph [ref=e92]: Running since Tuesday, September 1, 2026. Cloudflare Durable Object alarms trigger broker snapshots every 30 minutes on weekdays, 9:00 AM–5:00 PM ET. Equity, P&L history, and filled V13.5 orders come from Alpaca paper—not a backtest.
+          - link "Open paper account performance →" [ref=e93] [cursor=pointer]:
+            - /url: paper-performance.html
+    - region [ref=e94]:
+      - generic [ref=e95]:
+        - generic [ref=e96]:
+          - paragraph [ref=e97]: From broker to browser
+          - heading "Fresh evidence. A visible update path." [level=2] [ref=e98]: Fresh evidence.A visible update path.
+        - paragraph [ref=e99]: A persistent Cloudflare Durable Object alarm starts each scheduled refresh—no open browser or running laptop required. GitHub Actions reads the paper account, then publishes the latest evidence to this website.
+      - list "Paper performance publication flow" [ref=e100]:
+        - listitem [ref=e101]:
+          - generic [ref=e102]: 01 · SCHEDULE
+          - strong [ref=e103]: Cloudflare alarm
+          - generic [ref=e104]: Stored timer targets :00 and :30, Monday–Friday, 9 AM–5 PM Eastern.
+        - listitem [ref=e105]:
+          - generic [ref=e106]: 02 · TRIGGER
+          - strong [ref=e107]: GitHub Actions
+          - generic [ref=e108]: Authenticated dispatch starts the Pages workflow. A GitHub schedule remains as fallback.
+        - listitem [ref=e109]:
+          - generic [ref=e110]: 03 · READ
+          - strong [ref=e111]: Alpaca paper
+          - generic [ref=e112]: Read-only account, daily P&L history, and the ten most recent system fills.
+        - listitem [ref=e113]:
+          - generic [ref=e114]: 04 · PUBLISH
+          - strong [ref=e115]: GitHub Pages
+          - generic [ref=e116]: Sanitized, timestamped JSON ships with the dashboard. API credentials stay private.
+        - listitem [ref=e117]:
+          - generic [ref=e118]: 05 · DISPLAY
+          - strong [ref=e119]: Your dashboard
+          - generic [ref=e120]: The browser checks the published snapshot every 60 seconds and shows its age.
+      - paragraph [ref=e121]: Scheduled snapshots, not a tick-by-tick stream. Build and deployment time adds latency. Eastern daylight saving time is handled automatically; the weekday schedule does not exclude market holidays. Data over 90 minutes old is marked stale during the refresh window, or off hours outside it.
+      - generic [ref=e122]:
+        - strong [ref=e123]: Refresh ≠ trading
+        - paragraph [ref=e124]: The paper trading loop operates separately. This publishing pipeline reads results; it never starts trading, submits orders, or cancels them. Real-market paper evidence is observable performance—not a promise of future returns.
+      - generic [ref=e125]:
+        - link "Open paper performance →" [ref=e126] [cursor=pointer]:
+          - /url: paper-performance.html
+        - link "Read the refresh runbook ↗" [ref=e127] [cursor=pointer]:
+          - /url: https://github.com/lipengyuan1994/alpaca-hackathon/blob/main/docs/deployment/PAPER_PERFORMANCE_REFRESH.md
+        - link "Inspect published JSON ↗" [ref=e128] [cursor=pointer]:
+          - /url: assets/data/live-paper-snapshot.json
+    - generic [ref=e129]:
+      - generic [ref=e130]:
+        - generic [ref=e131]:
+          - paragraph [ref=e132]: V13.5 benchmark study
+          - heading "A steadier path—not a beta race." [level=2] [ref=e133]
+        - paragraph [ref=e134]: "On the same frozen dates, SPY and QQQ earned more total return. V13.5’s case is different: premium income with a materially shallower booked-equity drawdown and a stronger downside-adjusted Sortino ratio."
+      - figure "Frozen Alpaca IEX sample · 644 sessions · Jan 29, 2024–Aug 24, 2026 Data, method & hashes ↓" [ref=e135]:
+        - img "Growth of $100,000 chart comparing V13.5 booked equity with SPY and QQQ price-only buy-and-hold benchmarks" [ref=e136]
+        - generic [ref=e137]:
+          - generic [ref=e138]: Frozen Alpaca IEX sample · 644 sessions · Jan 29, 2024–Aug 24, 2026
+          - link "Data, method & hashes ↓" [ref=e139] [cursor=pointer]:
+            - /url: assets/data/v13-5-benchmark.json
+      - table [ref=e141]:
+        - caption [ref=e142]: Growth and risk metrics from a $100,000 starting value
+        - rowgroup [ref=e143]:
+          - row [ref=e144]:
+            - columnheader "Series" [ref=e145]
+            - columnheader "Ending value" [ref=e146]
+            - columnheader "Return" [ref=e147]
+            - columnheader "CAGR" [ref=e148]
+            - columnheader "Sharpe" [ref=e149]
+            - columnheader "Sortino" [ref=e150]
+            - columnheader "Max drawdown" [ref=e151]
+        - rowgroup [ref=e152]:
+          - row [ref=e153]:
+            - rowheader "V13.5" [ref=e154]
+            - cell "$130,285.80" [ref=e156]
+            - cell "+30.29%" [ref=e157]
+            - cell "+10.81%" [ref=e158]
+            - cell "1.14" [ref=e159]
+            - cell "2.44" [ref=e160]
+            - cell "−7.15%" [ref=e161]
+          - row [ref=e162]:
+            - rowheader "SPY" [ref=e163]
+            - cell "$156,629.13" [ref=e165]
+            - cell "+56.63%" [ref=e166]
+            - cell "+19.03%" [ref=e167]
+            - cell "1.21" [ref=e168]
+            - cell "1.78" [ref=e169]
+            - cell "−18.98%" [ref=e170]
+          - row [ref=e171]:
+            - rowheader "QQQ" [ref=e172]
+            - cell "$166,709.15" [ref=e174]
+            - cell "+66.71%" [ref=e175]
+            - cell "+21.94%" [ref=e176]
+            - cell "1.05" [ref=e177]
+            - cell "1.55" [ref=e178]
+            - cell "−22.84%" [ref=e179]
+      - generic [ref=e180]:
+        - article [ref=e181]:
+          - generic [ref=e182]: Downside lens
+          - strong [ref=e183]: 3.2×
+          - paragraph [ref=e184]: QQQ’s deepest price drawdown was 3.2 times V13.5’s booked-equity drawdown in this sample.
+        - article [ref=e185]:
+          - generic [ref=e186]: Income lens
+          - strong [ref=e187]: "2.44"
+          - paragraph [ref=e188]: V13.5 delivered the strongest Sortino ratio—return earned per unit of downside variation.
+        - article [ref=e189]:
+          - generic [ref=e190]: Honest trade-off
+          - strong [ref=e191]: −36 pts
+          - paragraph [ref=e192]: V13.5 trailed QQQ’s total return by 36.42 percentage points. Income stability, not maximum upside, is the product objective.
+    - generic [ref=e193]:
+      - generic [ref=e194]:
+        - generic [ref=e195]:
+          - paragraph [ref=e196]: Bull and bear evidence
+          - heading "Adaptive by design. Resilient in observed stress." [level=2] [ref=e197]: Adaptive by design.Resilient in observed stress.
+        - generic [ref=e198]:
+          - paragraph [ref=e199]: V13.5 changes strike distance using only information available before each decision. It remained positive over the full sample and absorbed the four largest observed QQQ drawdowns above 5% with materially smaller booked-equity moves.
+          - paragraph [ref=e200]:
+            - strong [ref=e201]: Why we do not say “proven forever.”
+            - text: Downtrend-labeled sessions were negative for V13.5, and the research uses historical option-bar proxies without continuous mark-to-market. A credible income system reports that boundary.
+      - generic "QQQ drawdown episode comparison" [ref=e202]:
+        - article [ref=e203]:
+          - generic [ref=e204]: Feb–Apr 2025
+          - strong [ref=e205]: QQQ −22.84%
+          - emphasis [ref=e206]: V13.5 −6.97%
+        - article [ref=e207]:
+          - generic [ref=e208]: Jul–Aug 2024
+          - strong [ref=e209]: QQQ −13.54%
+          - emphasis [ref=e210]: V13.5 +4.14%
+        - article [ref=e211]:
+          - generic [ref=e212]: Oct 2025–Mar 2026
+          - strong [ref=e213]: QQQ −12.20%
+          - emphasis [ref=e214]: V13.5 +0.14%
+        - article [ref=e215]:
+          - generic [ref=e216]: Jun–Jul 2026
+          - strong [ref=e217]: QQQ −11.33%
+          - emphasis [ref=e218]: V13.5 −1.87%
+    - generic [ref=e219]:
+      - generic [ref=e220]:
+        - generic [ref=e221]:
+          - paragraph [ref=e222]: Inside V13.5
+          - heading "One wheel. Two market postures." [level=2] [ref=e223]: One wheel.Two market postures.
+        - paragraph [ref=e224]: "We run QQQ because technology compounds human productivity—and because a liquid index gives the strategy a focused, repeatable operating surface. The expression stays conservative: fully cash-secured puts and share-covered calls only."
+      - generic [ref=e225]:
+        - article [ref=e226]:
+          - text: Prior close above prior 50-session SMA
+          - heading "Uptrend posture" [level=3] [ref=e227]
+          - generic [ref=e228]:
+            - generic [ref=e229]: 1%
+            - generic [ref=e230]: OTM put
+            - generic [ref=e232]: 3%
+            - generic [ref=e233]: OTM call
+          - paragraph [ref=e234]: Collect more put premium near the rising market while leaving more upside room on covered calls.
+        - article [ref=e235]:
+          - text: Prior close at or below prior 50-session SMA
+          - heading "Defensive posture" [level=3] [ref=e236]
+          - generic [ref=e237]:
+            - generic [ref=e238]: 3%
+            - generic [ref=e239]: OTM put
+            - generic [ref=e241]: 1%
+            - generic [ref=e242]: OTM call
+          - paragraph [ref=e243]: Move cash-secured puts farther away while bringing calls closer to monetize a more cautious regime.
+      - generic [ref=e244]:
+        - generic [ref=e245]:
+          - generic [ref=e246]: Universe
+          - strong [ref=e247]: QQQ only
+        - generic [ref=e248]:
+          - generic [ref=e249]: Expiry
+          - strong [ref=e250]: 7–14 DTE
+        - generic [ref=e251]:
+          - generic [ref=e252]: Position
+          - strong [ref=e253]: 1 contract
+        - generic [ref=e254]:
+          - generic [ref=e255]: Take profit
+          - strong [ref=e256]: ">15% credit"
+        - generic [ref=e257]:
+          - generic [ref=e258]: Daily stop
+          - strong [ref=e259]: 2% drawdown
+    - generic [ref=e260]:
+      - generic [ref=e261]:
+        - generic [ref=e262]:
+          - paragraph [ref=e263]: Determinism + intelligence
+          - heading "The model can stop a trade. It cannot invent one." [level=2] [ref=e264]
+        - paragraph [ref=e265]:
+          - text: The platform’s pinned Gemini 3.6 Flash profile receives sanitized economic context and a semantic proposal. Its output is structurally limited to
+          - code [ref=e266]: ALLOW_UNCHANGED
+          - text: or
+          - code [ref=e267]: VETO
+          - text: . Missing context, model failure, timeout, or invalid output becomes
+          - code [ref=e268]: NO_TRADE
+          - text: .
+      - list "Trading decision flow" [ref=e269]:
+        - listitem [ref=e270]:
+          - text: "01"
+          - generic [ref=e271]:
+            - strong [ref=e272]: Daily context
+            - generic [ref=e273]: Immutable Alpaca market and news proxies, captured once
+          - text: →
+        - listitem [ref=e274]:
+          - text: "02"
+          - generic [ref=e275]:
+            - strong [ref=e276]: Deterministic signal
+            - generic [ref=e277]: Frozen features and registered strategy logic
+          - text: →
+        - listitem [ref=e278]:
+          - text: "03"
+          - generic [ref=e279]:
+            - strong [ref=e280]: Gemini 3.6 Flash
+            - generic [ref=e281]: Support unchanged or veto—nothing executable
+          - text: →
+        - listitem [ref=e282]:
+          - text: "04"
+          - generic [ref=e283]:
+            - strong [ref=e284]: Exact order plan
+            - generic [ref=e285]: Contract, quantity, limit and canonical hash
+          - text: →
+        - listitem [ref=e286]:
+          - text: "05"
+          - generic [ref=e287]:
+            - strong [ref=e288]: Independent risk
+            - generic [ref=e289]: Snapshot-bound approval and execution preflight
+          - text: →
+        - listitem [ref=e290]:
+          - text: "06"
+          - generic [ref=e291]:
+            - strong [ref=e292]: Paper execution
+            - generic [ref=e293]: Idempotent submission, reconciliation and audit
+      - generic [ref=e294]:
+        - strong [ref=e295]: Current-paper boundary
+        - paragraph [ref=e296]: The active V13.5 wheel canary is intentionally deterministic-only while its equity-assignment lifecycle remains separate from the general strategy API. The combined economic/LLM gate is implemented in the broader platform and fixture path; we do not attribute today’s paper P&L to Gemini.
+    - generic [ref=e297]:
+      - generic [ref=e298]:
+        - generic [ref=e299]:
+          - paragraph [ref=e300]: Config-driven infrastructure
+          - heading "Ship the control plane, not a snowflake machine." [level=2] [ref=e301]
+        - paragraph [ref=e302]: Each role has one job, one dependency set, and only the minimum network and secret access it needs. YAML selects strategy and risk behavior; canonical hashes invalidate stale approvals when configuration changes.
+      - generic [ref=e303]:
+        - generic "Container roles" [ref=e304]:
+          - article [ref=e305]:
+            - generic [ref=e306]: Public
+            - strong [ref=e307]: API
+            - generic [ref=e308]: GET-only replay
+          - article [ref=e309]:
+            - generic [ref=e310]: Decide
+            - strong [ref=e311]: Decision
+            - generic [ref=e312]: No broker key
+          - article [ref=e313]:
+            - generic [ref=e314]: Reason
+            - strong [ref=e315]: Agent
+            - generic [ref=e316]: No order tools
+          - article [ref=e317]:
+            - generic [ref=e318]: Context
+            - strong [ref=e319]: Economic
+            - generic [ref=e320]: Data-only key
+          - article [ref=e321]:
+            - generic [ref=e322]: Execute
+            - strong [ref=e323]: Execution
+            - generic [ref=e324]: Paper key only
+          - article [ref=e325]:
+            - generic [ref=e326]: Persist
+            - strong [ref=e327]: Postgres
+            - generic [ref=e328]: Outbox + audit
+        - generic [ref=e329]:
+          - generic [ref=e330]: configs/paper/v13_5_qqq.yaml
+          - code [ref=e336]: "strategy: strategy_id: v13.5 symbols: [QQQ] minimum_dte: 7 maximum_dte: 14 take_profit_fraction: 0.15 risk: max_contracts_per_symbol: 1 maximum_daily_drawdown_fraction: 0.02 allow_unmanaged_positions: false"
+      - generic [ref=e337]:
+        - strong [ref=e338]: Portable where it matters.
+        - paragraph [ref=e339]:
+          - text: The verified release targets native ARM64—from this M1 Pro development host to Linux/ARM cloud VMs and container runners. Moving the one-shot workers to another scheduler is configuration and operations work, not a strategy rewrite. The current macOS
+          - code [ref=e340]: launchd
+          - text: wrapper is replaceable; the contracts, risk logic, broker adapter, and containers remain the portable core.
+    - generic [ref=e341]:
+      - generic [ref=e342]:
+        - generic [ref=e343]:
+          - paragraph [ref=e344]: Judge reproduction
+          - heading "Clone. Verify. Replay." [level=2] [ref=e345]
+        - paragraph [ref=e346]: The default judge path needs no Alpaca or Gemini credentials and cannot place an order. It replays frozen inputs, exposes the read-only API, and proves the deterministic control flow.
+      - generic [ref=e347]:
+        - article [ref=e348]:
+          - generic [ref=e349]:
+            - generic [ref=e350]: 1 · Get the exact release
+            - button "Copy" [ref=e351] [cursor=pointer]
+          - code [ref=e353]: git clone https://github.com/lipengyuan1994/alpaca-hackathon.git cd alpaca-hackathon git rev-parse HEAD
+        - article [ref=e354]:
+          - generic [ref=e355]:
+            - generic [ref=e356]: 2 · Install and verify
+            - button "Copy" [ref=e357] [cursor=pointer]
+          - code [ref=e359]: uv sync --frozen uv run pytest -q
+        - article [ref=e360]:
+          - generic [ref=e361]:
+            - generic [ref=e362]: 3 · Replay both outcomes
+            - button "Copy" [ref=e363] [cursor=pointer]
+          - code [ref=e365]: uv run paper-decision-worker uv run paper-decision-worker --approved
+        - article [ref=e366]:
+          - generic [ref=e367]:
+            - generic [ref=e368]: 4 · Open the read-only API
+            - button "Copy" [ref=e369] [cursor=pointer]
+          - code [ref=e371]: docker compose -f infra/compose.yaml up --build api curl http://127.0.0.1:8000/v1/status
+      - generic [ref=e372]:
+        - link "Full reproduction guide" [ref=e373] [cursor=pointer]:
+          - /url: https://github.com/lipengyuan1994/alpaca-hackathon/blob/main/docs/deployment/judge-reproduce.md
+        - link "Explore architecture" [ref=e374] [cursor=pointer]:
+          - /url: architecture/ARCHITECTURE_DESIGN.html
+    - generic [ref=e375]:
+      - paragraph [ref=e376]: Why Stable Income Generator
+      - heading [level=2] [ref=e377]:
+        - text: Most demos stop at an idea.
+        - emphasis [ref=e378]: Ours closes the loop.
+      - generic [ref=e379]:
+        - paragraph [ref=e380]: We built the automated system, froze and reproduced the strategy evidence, put V13.5 behind real risk controls, scheduled it against a fresh Alpaca paper account, and published the result—even where the benchmarks win.
+        - list [ref=e381]:
+          - listitem [ref=e382]:
+            - generic [ref=e383]: "01"
+            - text: Backtested strategy
+          - listitem [ref=e384]:
+            - generic [ref=e385]: "02"
+            - text: Active paper automation
+          - listitem [ref=e386]:
+            - generic [ref=e387]: "03"
+            - text: Positive dated paper P&L
+          - listitem [ref=e388]:
+            - generic [ref=e389]: "04"
+            - text: Containerized control plane
+          - listitem [ref=e390]:
+            - generic [ref=e391]: "05"
+            - text: Constrained economic intelligence
+  - contentinfo [ref=e392]:
+    - generic [ref=e393]:
+      - generic [aria-hidden] [ref=e394]: SIG
+      - strong [ref=e395]: Stable Income Generator
+    - paragraph [ref=e396]: RegimeSwitch · Paper-only options research and automation · MIT licensed
+    - navigation "Footer navigation" [ref=e397]:
+      - link "GitHub" [ref=e398] [cursor=pointer]:
+        - /url: https://github.com/lipengyuan1994/alpaca-hackathon
+      - link "Architecture" [ref=e399] [cursor=pointer]:
+        - /url: architecture/ARCHITECTURE_DESIGN.html
+      - link "Docs" [ref=e400] [cursor=pointer]:
+        - /url: https://github.com/lipengyuan1994/alpaca-hackathon/blob/main/docs/index.md
+      - link "Back to top ↑" [ref=e401] [cursor=pointer]:
+        - /url: "#top"

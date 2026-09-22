@@ -1,0 +1,259 @@
+- generic [active] [ref=e1]:
+  - link "Skip to account performance" [ref=e2] [cursor=pointer]:
+    - /url: "#main"
+  - banner [ref=e3]:
+    - link "Stable Income Generator home" [ref=e4] [cursor=pointer]:
+      - /url: index.html
+      - generic [aria-hidden] [ref=e5]: SIG
+      - generic [ref=e6]: Stable Income Generator
+    - navigation "Primary navigation" [ref=e7]:
+      - link "Paper account" [ref=e8] [cursor=pointer]:
+        - /url: paper-performance.html
+      - link "Research" [ref=e9] [cursor=pointer]:
+        - /url: index.html#performance
+      - link "Architecture" [ref=e10] [cursor=pointer]:
+        - /url: architecture/ARCHITECTURE_DESIGN.html
+      - link "Back to overview" [ref=e11] [cursor=pointer]:
+        - /url: index.html
+  - main [ref=e12]:
+    - generic [ref=e13]:
+      - generic [ref=e14]:
+        - paragraph [ref=e15]: Alpaca paper account
+        - heading [level=1] [ref=e17]:
+          - text: Performance,
+          - emphasis [ref=e18]: in the open.
+        - paragraph [ref=e19]: A broker-reported record of Stable Income Generator operating against live market conditions in an Alpaca paper account since Tuesday, September 1, 2026. Follow the equity curve and system fills as the strategy proves itself beyond the backtest.
+      - complementary "Paper account refresh status" [ref=e20]:
+        - generic [ref=e21]: Near-live · 0m old
+        - strong [ref=e23]: $100,243.53
+        - paragraph [ref=e24]: +$243.53 since fresh $100K baseline · live since Sep 1, 2026
+        - generic [ref=e25]:
+          - generic [ref=e26]:
+            - term [ref=e27]: Live-market launch
+            - definition [ref=e28]:
+              - time [ref=e29]: Sep 1, 2026
+          - generic [ref=e30]:
+            - term [ref=e31]: Account status
+            - definition [ref=e32]: ACTIVE
+          - generic [ref=e33]:
+            - term [ref=e34]: Last captured
+            - definition [ref=e35]:
+              - time [ref=e36]: Sep 3, 2026, 4:23 PM EDT
+          - generic [ref=e37]:
+            - term [ref=e38]: Refresh target
+            - definition [ref=e39]: Every 30 minutes · weekdays
+    - region [ref=e40]:
+      - generic [ref=e41]:
+        - generic [ref=e42]:
+          - paragraph [ref=e43]: Current account
+          - heading "Broker snapshot" [level=2] [ref=e44]
+        - paragraph [ref=e45]:
+          - strong [ref=e46]: BROKER VERIFIED · refreshed Sep 3, 2026, 4:23 PM EDT
+          - generic [ref=e47]:
+            - text: Browser checks every 60 seconds · Cloudflare alarm target every 30 minutes, Monday–Friday, 9:00 AM–5:00 PM ET · marked stale when over 90 minutes old during the refresh window; labeled off hours outside it.
+            - link "How updates reach this page →" [ref=e48] [cursor=pointer]:
+              - /url: index.html#refresh
+      - generic "Paper account metrics" [ref=e49]:
+        - article [ref=e50]:
+          - generic [ref=e51]: Equity
+          - strong [ref=e52]: $100,243.53
+          - generic [ref=e53]: Broker reported
+        - article [ref=e54]:
+          - generic [ref=e55]: Total paper P&L
+          - strong [ref=e56]: +$243.53
+          - generic [ref=e57]: vs fresh $100K baseline
+        - article [ref=e58]:
+          - generic [ref=e59]: Today
+          - strong [ref=e60]: +$143.80
+          - generic [ref=e61]: +0.14%
+        - article [ref=e62]:
+          - generic [ref=e63]: Cash
+          - strong [ref=e64]: $100,314.53
+          - generic [ref=e65]: Uncommitted balance
+        - article [ref=e66]:
+          - generic [ref=e67]: Buying power
+          - strong [ref=e68]: $123,258.12
+          - generic [ref=e69]: Broker reported
+    - region [ref=e70]:
+      - generic [ref=e71]:
+        - generic [ref=e72]:
+          - paragraph [ref=e73]: Movement
+          - heading "Paper P&L history" [level=2] [ref=e74]
+        - generic [ref=e75]:
+          - generic [ref=e76]: Captured Sep 3, 2026, 4:23 PM EDT · 5 daily points + latest snapshot
+          - strong [ref=e77]: +$243.53 · latest snapshot
+      - figure "Paper account P&L against the $100,000 starting baseline. Daily broker history is extended to the latest account snapshot when available, using the same P&L as the account cards. The dashed final segment marks that snapshot—not another daily close. This is sampled history, not a continuous intraday record." [ref=e78]:
+        - img "Paper P&L history Paper account P&L against the $100,000 starting baseline. Daily broker history is extended to the latest account snapshot when available, using the same P&L as the account cards. The dashed final segment marks that snapshot—not another daily close. This is sampled history, not a continuous intraday record." [ref=e79]:
+          - generic [ref=e80]: −$107.93
+          - generic [ref=e81]: −$10.65
+          - generic [ref=e82]: +$86.63
+          - generic [ref=e83]: +$183.91
+          - generic [ref=e84]: +$281.19
+          - 'generic "Latest account snapshot: +$243.53 · Sep 3, 2026, 4:23 PM EDT" [ref=e88]'
+          - generic [ref=e89]: Aug 27
+          - generic [ref=e90]: Aug 31
+          - generic [ref=e91]: Latest snapshot
+      - generic "Calculated live paper performance metrics" [ref=e93]:
+        - article [ref=e94]:
+          - generic [ref=e95]: Cumulative P&L
+          - strong [ref=e96]: +$243.53
+          - generic [ref=e97]: Since the Sep 1 launch baseline
+        - article [ref=e98]:
+          - generic [ref=e99]: Cumulative return
+          - strong [ref=e100]: +0.24%
+          - generic [ref=e101]: Broker equity vs $100K baseline
+        - article [ref=e102]:
+          - generic [ref=e103]: Annualized P&L rate
+          - strong [ref=e104]: +33.15%
+          - generic [ref=e105]: +$33,153.35/yr · 2.7 elapsed days
+        - article [ref=e106]:
+          - generic [ref=e107]: Max drawdown
+          - strong [ref=e108]: −$70.27
+          - generic [ref=e109]: −0.07% peak-to-trough · 5 observations
+      - paragraph [ref=e110]: Annualized P&L rate scales cumulative return over 2.7 elapsed days since the Sep 1, 2026 launch. It is an early live-paper run-rate, not a forecast.
+    - region [ref=e111]:
+      - generic [ref=e112]:
+        - generic [ref=e113]:
+          - generic [ref=e114]:
+            - paragraph [ref=e115]: Most recent system activity
+            - heading "Top 10 recent fills" [level=2] [ref=e116]
+          - generic [ref=e117]:
+            - generic [ref=e118]: 10 fills available
+            - link "Download hash-bound JSON ↓" [ref=e119] [cursor=pointer]:
+              - /url: assets/data/live-paper-snapshot.json
+        - table [ref=e121]:
+          - caption [ref=e122]:
+            - text: Newest ten filled broker orders carrying the
+            - code [ref=e123]: rs-v135
+            - text: system prefix. Manual, canceled, unfilled, and foreign orders are excluded.
+          - rowgroup [ref=e124]:
+            - row [ref=e125]:
+              - columnheader "Filled" [ref=e126]
+              - columnheader "Action" [ref=e127]
+              - columnheader "Contract" [ref=e128]
+              - columnheader "Qty" [ref=e129]
+              - columnheader "Avg fill" [ref=e130]
+              - columnheader "System ref" [ref=e131]
+          - rowgroup [ref=e132]:
+            - row [ref=e133]:
+              - cell "Sep 3, 12:47 PM" [ref=e134]
+              - cell "Sell To Open" [ref=e135]
+              - cell "QQQ $695 PUT Expires Sep 10, 2026" [ref=e137]:
+                - strong [ref=e138]: QQQ $695 PUT
+                - generic [ref=e139]: Expires Sep 10, 2026
+              - cell "1" [ref=e140]
+              - cell "$0.79" [ref=e141]
+              - cell [ref=e142]:
+                - code [ref=e143]: 8ce81330
+            - row [ref=e144]:
+              - cell "Sep 3, 12:39 PM" [ref=e145]
+              - cell "Buy To Close" [ref=e146]
+              - cell "QQQ $693 PUT Expires Sep 10, 2026" [ref=e148]:
+                - strong [ref=e149]: QQQ $693 PUT
+                - generic [ref=e150]: Expires Sep 10, 2026
+              - cell "1" [ref=e151]
+              - cell "$0.70" [ref=e152]
+              - cell [ref=e153]:
+                - code [ref=e154]: 200f2f4d
+            - row [ref=e155]:
+              - cell "Sep 3, 11:04 AM" [ref=e156]
+              - cell "Sell To Open" [ref=e157]
+              - cell "QQQ $693 PUT Expires Sep 10, 2026" [ref=e159]:
+                - strong [ref=e160]: QQQ $693 PUT
+                - generic [ref=e161]: Expires Sep 10, 2026
+              - cell "1" [ref=e162]
+              - cell "$0.89" [ref=e163]
+              - cell [ref=e164]:
+                - code [ref=e165]: 2658abed
+            - row [ref=e166]:
+              - cell "Sep 3, 11:03 AM" [ref=e167]
+              - cell "Buy To Close" [ref=e168]
+              - cell "QQQ $691 PUT Expires Sep 10, 2026" [ref=e170]:
+                - strong [ref=e171]: QQQ $691 PUT
+                - generic [ref=e172]: Expires Sep 10, 2026
+              - cell "1" [ref=e173]
+              - cell "$0.79" [ref=e174]
+              - cell [ref=e175]:
+                - code [ref=e176]: d9664fe3
+            - row [ref=e177]:
+              - cell "Sep 3, 10:21 AM" [ref=e178]
+              - cell "Sell To Open" [ref=e179]
+              - cell "QQQ $691 PUT Expires Sep 10, 2026" [ref=e181]:
+                - strong [ref=e182]: QQQ $691 PUT
+                - generic [ref=e183]: Expires Sep 10, 2026
+              - cell "1" [ref=e184]
+              - cell "$0.96" [ref=e185]
+              - cell [ref=e186]:
+                - code [ref=e187]: a1bfece2
+            - row [ref=e188]:
+              - cell "Sep 3, 10:19 AM" [ref=e189]
+              - cell "Buy To Close" [ref=e190]
+              - cell "QQQ $689 PUT Expires Sep 10, 2026" [ref=e192]:
+                - strong [ref=e193]: QQQ $689 PUT
+                - generic [ref=e194]: Expires Sep 10, 2026
+              - cell "1" [ref=e195]
+              - cell "$0.83" [ref=e196]
+              - cell [ref=e197]:
+                - code [ref=e198]: e1fcb11f
+            - row [ref=e199]:
+              - cell "Sep 3, 9:31 AM" [ref=e200]
+              - cell "Sell To Open" [ref=e201]
+              - cell "QQQ $689 PUT Expires Sep 10, 2026" [ref=e203]:
+                - strong [ref=e204]: QQQ $689 PUT
+                - generic [ref=e205]: Expires Sep 10, 2026
+              - cell "1" [ref=e206]
+              - cell "$1.02" [ref=e207]
+              - cell [ref=e208]:
+                - code [ref=e209]: 64f5e32f
+            - row [ref=e210]:
+              - cell "Sep 3, 9:30 AM" [ref=e211]
+              - cell "Buy To Close" [ref=e212]
+              - cell "QQQ $704 PUT Expires Sep 8, 2026" [ref=e214]:
+                - strong [ref=e215]: QQQ $704 PUT
+                - generic [ref=e216]: Expires Sep 8, 2026
+              - cell "1" [ref=e217]
+              - cell "$1.95" [ref=e218]
+              - cell [ref=e219]:
+                - code [ref=e220]: 22d36473
+            - row [ref=e221]:
+              - cell "Sep 1, 11:42 AM" [ref=e222]
+              - cell "Sell To Open" [ref=e223]
+              - cell "QQQ $704 PUT Expires Sep 8, 2026" [ref=e225]:
+                - strong [ref=e226]: QQQ $704 PUT
+                - generic [ref=e227]: Expires Sep 8, 2026
+              - cell "1" [ref=e228]
+              - cell "$2.78" [ref=e229]
+              - cell [ref=e230]:
+                - code [ref=e231]: 805c2262
+            - row [ref=e232]:
+              - cell "Sep 1, 11:41 AM" [ref=e233]
+              - cell "Buy To Close" [ref=e234]
+              - cell "QQQ $702 PUT Expires Sep 8, 2026" [ref=e236]:
+                - strong [ref=e237]: QQQ $702 PUT
+                - generic [ref=e238]: Expires Sep 8, 2026
+              - cell "1" [ref=e239]
+              - cell "$2.37" [ref=e240]
+              - cell [ref=e241]:
+                - code [ref=e242]: 771c164a
+    - region [ref=e243]:
+      - generic [ref=e244]:
+        - paragraph [ref=e245]: Live-market proof
+        - heading "Real market conditions. Real strategy decisions. Results in the open." [level=2] [ref=e246]
+      - generic [ref=e247]:
+        - paragraph [ref=e248]: This is more than a hypothetical model output. Stable Income Generator runs on live market data, and its account values, portfolio history, and system fills are reported directly by Alpaca’s paper Trading API. The public record shows how the strategy performs as markets move—not just how it scored in a historical test.
+        - paragraph [ref=e249]:
+          - text: The trade table is restricted to filled orders with the system-owned
+          - code [ref=e250]: rs-v135
+          - text: client-order prefix. Credentials and order-control capabilities remain private. Paper execution and capital are simulated, so these results demonstrate live-market operation rather than live-money returns.
+  - contentinfo [ref=e251]:
+    - generic [ref=e252]:
+      - generic [aria-hidden] [ref=e253]: SIG
+      - strong [ref=e254]: Stable Income Generator
+    - paragraph [ref=e255]: Broker-reported paper evidence · refreshed every 30 minutes on weekdays
+    - navigation "Footer navigation" [ref=e256]:
+      - link "Overview" [ref=e257] [cursor=pointer]:
+        - /url: index.html
+      - link "GitHub" [ref=e258] [cursor=pointer]:
+        - /url: https://github.com/lipengyuan1994/alpaca-hackathon
+      - link "Back to top ↑" [ref=e259] [cursor=pointer]:
+        - /url: "#main"

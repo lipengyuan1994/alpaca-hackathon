@@ -1,0 +1,28 @@
+name: deploy-etf-live
+on:
+  workflow_dispatch:
+    inputs:
+      image_digest:
+        description: Full immutable T08 image digest
+        required: true
+        type: string
+permissions:
+  contents: read
+  packages: read
+concurrency:
+  group: vultr-etf-live
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    environment: vultr-etf-live
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - name: Deploy immutable T08 image
+        env:
+          DEPLOY_HOST: ${{ vars.VULTR_DEPLOY_HOST }}
+          DEPLOY_USER: ${{ vars.VULTR_DEPLOY_USER }}
+          DEPLOY_KEY: ${{ secrets.VULTR_DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.VULTR_SSH_KNOWN_HOSTS }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: infra/etf-live/github-deploy.sh '${{ inputs.image_digest }}'

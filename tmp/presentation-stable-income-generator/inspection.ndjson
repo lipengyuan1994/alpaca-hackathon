@@ -1,0 +1,200 @@
+{"kind":"slide","id":"sl/cj96bk","slide":1,"title":"ALPACA HACKATHON 2026","textShapes":4}
+{"kind":"shape","id":"sh/69c7qpcf","slide":1,"bbox":[0,0,615,720]}
+{"kind":"shape","id":"sh/7al8jad0","slide":1,"bbox":[72,112,82,1]}
+{"kind":"textbox","id":"sh/k7upofe9","slide":1,"textChars":21,"textLines":1}
+{"kind":"textbox","id":"sh/l83qhkvu","slide":1,"textChars":23,"textLines":2}
+{"kind":"textbox","id":"sh/y5c7m5w3","slide":1,"textChars":64,"textLines":2}
+{"kind":"textbox","id":"sh/j6l8fado","slide":1,"textChars":46,"textLines":1}
+{"kind":"image","id":"im/o7e903qt","slide":1,"name":"","alt":"Emerald growth path above a containerized trading system","bbox":[0,0,1280,720]}
+{"kind":"notes","id":"nt/cj96bk","slide":1,"text":"[Sources] | - /Users/lipengyuan/PycharmProjects/alpaca-hackathon/docs/index.h..."}
+{"kind":"slide","id":"sl/xvja1v","slide":2,"title":"THE MANDATE","textShapes":16}
+{"kind":"textbox","id":"sh/u5cbmd0v","slide":2,"textChars":11,"textLines":1}
+{"kind":"textbox","id":"sh/h8nuh8j6","slide":2,"textChars":32,"textLines":1}
+{"kind":"textbox","id":"sh/g7eto3il","slide":2,"textChars":62,"textLines":1}
+{"kind":"textbox","id":"sh/3u5cji1c","slide":2,"textChars":6,"textLines":1}
+{"kind":"textbox","id":"sh/2twbqd0r","slide":2,"textChars":44,"textLines":2}
+{"kind":"shape","id":"sh/pwnulsji","slide":2,"bbox":[590,215,1,320]}
+{"kind":"textbox","id":"sh/4vetsnix","slide":2,"textChars":2,"textLines":1}
+{"kind":"textbox","id":"sh/jy1s7y1s","slide":2,"textChars":27,"textLines":1}
+{"kind":"textbox","id":"sh/yxsbet0n","slide":2,"textChars":40,"textLines":1}
+{"kind":"textbox","id":"sh/s3ql4jut","slide":2,"textChars":2,"textLines":1}
+{"kind":"textbox","id":"sh/t4z2d4ve","slide":2,"textChars":28,"textLines":1}
+{"kind":"textbox","id":"sh/6ho329cn","slide":2,"textChars":38,"textLines":1}
+{"kind":"textbox","id":"sh/7ihkbed8","slide":2,"textChars":2,"textLines":1}
+{"kind":"textbox","id":"sh/g7ql8jup","slide":2,"textChars":30,"textLines":1}
+{"kind":"textbox","id":"sh/h8z21oba","slide":2,"textChars":44,"textLines":1}
+{"kind":"shape","id":"sh/u58369cj","slide":2,"bbox":[72,676,1136,1]}
+{"kind":"textbox","id":"sh/f6hkzed4","slide":2,"textChars":23,"textLines":1}
+{"kind":"textbox","id":"sh/wb61wful","slide":2,"textChars":2,"textLines":1}
+{"kind":"notes","id":"nt/xvja1v","slide":2,"text":"[Sources] | - /Users/lipengyuan/PycharmProjects/alpaca-hackathon/docs/index.h..."}
+{"kind":"slide","id":"sl/1yx2tz","slide":3,"title":"INSIDE V13.5","textShapes":19}
+{"kind":"textbox","id":"sh/8vyh0ral","slide":3,"textChars":12,"textLines":1}
+{"kind":"textbox","id":"sh/7u50rmt0","slide":3,"textChars":35,"textLines":1}
+{"kind":"textbox","id":"sh/mtwzyhsf","slide":3,"textChars":89,"textLines":1}
+{"kind":"shape","id":"sh/lsnipcba","slide":3,"bbox":[640,205,1,280]}
+{"kind":"textbox","id":"sh/krehwrap","slide":3,"textChars":7,"textLines":1}
+{"kind":"textbox","id":"sh/zq50nmt4","slide":3,"textChars":10,"textLines":1}
+{"kind":"textbox","id":"sh/ypwzuhsj","slide":3,"textChars":19,"textLines":1}
+{"kind":"textbox","id":"sh/5ori1gbe","slide":3,"textChars":88,"textLines":1}
+{"kind":"textbox","id":"sh/4ni18bat","slide":3,"textChars":9,"textLines":1}
+{"kind":"textbox","id":"sh/6hw3qt4v","slide":3,"textChars":10,"textLines":1}
+{"kind":"textbox","id":"sh/ri54jyl0","slide":3,"textChars":19,"textLines":1}
+{"kind":"textbox","id":"sh/sjyls3ml","slide":3,"textChars":81,"textLines":1}
+{"kind":"shape","id":"sh/dk7ml836","slide":3,"bbox":[72,530,1136,1]}
+{"kind":"textbox","id":"sh/idw3mt4j","slide":3,"textChars":8,"textLines":1}
+{"kind":"textbox","id":"sh/je54fyl4","slide":3,"textChars":8,"textLines":1}
+{"kind":"textbox","id":"sh/4felojmp","slide":3,"textChars":10,"textLines":1}
+{"kind":"textbox","id":"sh/5gnmho3a","slide":3,"textChars":11,"textLines":1}
+{"kind":"textbox","id":"sh/29g3yd4n","slide":3,"textChars":13,"textLines":1}
+{"kind":"textbox","id":"sh/nap4ril8","slide":3,"textChars":46,"textLines":1}
+{"kind":"shape","id":"sh/zihs3qxo","slide":3,"bbox":[72,676,1136,1]}
+{"kind":"textbox","id":"sh/yh8rulg3","slide":3,"textChars":23,"textLines":1}
+{"kind":"textbox","id":"sh/lkza5gfu","slide":3,"textChars":2,"textLines":1}
+{"kind":"notes","id":"nt/1yx2tz","slide":3,"text":"[Sources] | - /Users/lipengyuan/PycharmProjects/alpaca-hackathon/docs/index.h..."}
+{"kind":"slide","id":"sl/90bb24","slide":4,"title":"FROZEN BENCHMARK STUDY","textShapes":7}
+{"kind":"textbox","id":"sh/7ils7ylk","slide":4,"textChars":22,"textLines":1}
+{"kind":"textbox","id":"sh/8ju9g325","slide":4,"textChars":40,"textLines":1}
+{"kind":"textbox","id":"sh/9k3a9o3q","slide":4,"textChars":110,"textLines":1}
+{"kind":"textbox","id":"sh/ulwritkb","slide":4,"textChars":27,"textLines":1}
+{"kind":"textbox","id":"sh/wne9k321","slide":4,"textChars":104,"textLines":1}
+{"kind":"shape","id":"sh/h8nad83m","slide":4,"bbox":[72,676,1136,1]}
+{"kind":"textbox","id":"sh/i9wbmdk7","slide":4,"textChars":23,"textLines":1}
+{"kind":"textbox","id":"sh/ja5sfils","slide":4,"textChars":2,"textLines":1}
+{"kind":"image","id":"im/alcjad0j","slide":4,"name":"","geometry":"roundRect","alt":"Growth of 100,000 comparing V13.5 booked equity with SPY and QQQ price-only benchmarks","bbox":[70,180,1140,430]}
+{"kind":"notes","id":"nt/90bb24","slide":4,"text":"[Sources] | - /Users/lipengyuan/PycharmProjects/alpaca-hackathon/docs/assets/..."}
+{"kind":"slide","id":"sl/x7v6g4","slide":5,"title":"BROKER-REPORTED PAPER EVIDENCE","textShapes":33}
+{"kind":"textbox","id":"sh/kj2ds7eh","slide":5,"textChars":30,"textLines":1}
+{"kind":"textbox","id":"sh/jitwjmdc","slide":5,"textChars":47,"textLines":1}
+{"kind":"textbox","id":"sh/ihkvqhwr","slide":5,"textChars":87,"textLines":1}
+{"kind":"textbox","id":"sh/tovepwve","slide":5,"textChars":11,"textLines":1}
+{"kind":"textbox","id":"sh/sn2dgret","slide":5,"textChars":22,"textLines":1}
+{"kind":"textbox","id":"sh/7mtwnmd8","slide":5,"textChars":7,"textLines":1}
+{"kind":"textbox","id":"sh/6lkvehwn","slide":5,"textChars":26,"textLines":1}
+{"kind":"textbox","id":"sh/hcvetwva","slide":5,"textChars":14,"textLines":1}
+{"kind":"textbox","id":"sh/gbmxkrep","slide":5,"textChars":44,"textLines":1}
+{"kind":"shape","id":"sh/e5w3ihgj","slide":5,"bbox":[610,205,1,410]}
+{"kind":"textbox","id":"sh/fqpkrmx4","slide":5,"textChars":24,"textLines":1}
+{"kind":"textbox","id":"sh/0rylkryp","slide":5,"textChars":8,"textLines":1}
+{"kind":"textbox","id":"sh/1s72twfa","slide":5,"textChars":12,"textLines":1}
+{"kind":"textbox","id":"sh/2tg3m1wv","slide":5,"textChars":12,"textLines":1}
+{"kind":"textbox","id":"sh/nupkv6xg","slide":5,"textChars":5,"textLines":1}
+{"kind":"shape","id":"sh/ovylobel","slide":5,"bbox":[660,305,535,1]}
+{"kind":"textbox","id":"sh/pw72xgf6","slide":5,"textChars":8,"textLines":1}
+{"kind":"textbox","id":"sh/ixcjaxgb","slide":5,"textChars":12,"textLines":1}
+{"kind":"textbox","id":"sh/3ylkj2xw","slide":5,"textChars":12,"textLines":1}
+{"kind":"textbox","id":"sh/7210rydo","slide":5,"textChars":5,"textLines":1}
+{"kind":"shape","id":"sh/m1szidw3","slide":5,"bbox":[660,367,535,1]}
+{"kind":"textbox","id":"sh/94jit8vu","slide":5,"textChars":8,"textLines":1}
+{"kind":"textbox","id":"sh/83ahk3e9","slide":5,"textChars":12,"textLines":1}
+{"kind":"textbox","id":"sh/zehgnyds","slide":5,"textChars":12,"textLines":1}
+{"kind":"textbox","id":"sh/yd8zetw7","slide":5,"textChars":5,"textLines":1}
+{"kind":"shape","id":"sh/lgjip8vy","slide":5,"bbox":[660,429,535,1]}
+{"kind":"textbox","id":"sh/kfqhg3ed","slide":5,"textChars":8,"textLines":1}
+{"kind":"textbox","id":"sh/3al0zidw","slide":5,"textChars":12,"textLines":1}
+{"kind":"textbox","id":"sh/i9czqxwb","slide":5,"textChars":12,"textLines":1}
+{"kind":"textbox","id":"sh/0fmxkfut","slide":5,"textChars":5,"textLines":1}
+{"kind":"shape","id":"sh/1gfetkbe","slide":5,"bbox":[660,491,535,1]}
+{"kind":"textbox","id":"sh/ed4fipc3","slide":5,"textChars":8,"textLines":1}
+{"kind":"textbox","id":"sh/fedwrat8","slide":5,"textChars":12,"textLines":1}
+{"kind":"textbox","id":"sh/oj6xozu5","slide":5,"textChars":12,"textLines":1}
+{"kind":"textbox","id":"sh/pkfex4bq","slide":5,"textChars":5,"textLines":1}
+{"kind":"textbox","id":"sh/2hofmpcz","slide":5,"textChars":64,"textLines":1}
+{"kind":"shape","id":"sh/nixwvutk","slide":5,"bbox":[72,676,1136,1]}
+{"kind":"textbox","id":"sh/c76xszu1","slide":5,"textChars":23,"textLines":1}
+{"kind":"textbox","id":"sh/x8ze14bm","slide":5,"textChars":2,"textLines":1}
+{"kind":"notes","id":"nt/x7v6g4","slide":5,"text":"[Sources] | - https://lipengyuan1994.github.io/alpaca-hackathon/assets/data/l..."}
+{"kind":"slide","id":"sl/fejofk","slide":6,"title":"DETERMINISM + INTELLIGENCE","textShapes":18}
+{"kind":"textbox","id":"sh/t87ap0z2","slide":6,"textChars":26,"textLines":1}
+{"kind":"textbox","id":"sh/65wre50b","slide":6,"textChars":53,"textLines":1}
+{"kind":"textbox","id":"sh/r65snahw","slide":6,"textChars":85,"textLines":1}
+{"kind":"shape","id":"sh/43e9cvi5","slide":6,"bbox":[238,285,38,18]}
+{"kind":"shape","id":"sh/54nal0zq","slide":6,"bbox":[468,285,38,18]}
+{"kind":"shape","id":"sh/i1wral0f","slide":6,"bbox":[698,285,38,18]}
+{"kind":"shape","id":"sh/j25sjqhk","slide":6,"bbox":[928,285,38,18]}
+{"kind":"shape","id":"sh/ozytozyp","slide":6,"bbox":[52,235,185,120]}
+{"kind":"textbox","id":"sh/p0raxkza","slide":6,"textChars":14,"textLines":1}
+{"kind":"textbox","id":"sh/9wfi5wj6","slide":6,"textChars":13,"textLines":1}
+{"kind":"shape","id":"sh/8v6hcr2l","slide":6,"bbox":[282,235,185,120]}
+{"kind":"textbox","id":"sh/7axg3m10","slide":6,"textChars":14,"textLines":1}
+{"kind":"textbox","id":"sh/m9ozahkf","slide":6,"textChars":13,"textLines":1}
+{"kind":"shape","id":"sh/l8fy1cja","slide":6,"bbox":[512,235,185,120]}
+{"kind":"textbox","id":"sh/k7mh872p","slide":6,"textChars":16,"textLines":1}
+{"kind":"textbox","id":"sh/z6dgz214","slide":6,"textChars":12,"textLines":1}
+{"kind":"shape","id":"sh/y54z6xkj","slide":6,"bbox":[742,235,185,120]}
+{"kind":"textbox","id":"sh/54zidgje","slide":6,"textChars":16,"textLines":1}
+{"kind":"textbox","id":"sh/43qhkb2t","slide":6,"textChars":10,"textLines":1}
+{"kind":"shape","id":"sh/ojitwze1","slide":6,"bbox":[972,235,185,120]}
+{"kind":"textbox","id":"sh/pkra54vm","slide":6,"textChars":12,"textLines":1}
+{"kind":"textbox","id":"sh/2h0bu9wb","slide":6,"textChars":9,"textLines":1}
+{"kind":"textbox","id":"sh/ni9s3edw","slide":6,"textChars":63,"textLines":1}
+{"kind":"shape","id":"sh/0fytsze5","slide":6,"bbox":[155,510,970,78]}
+{"kind":"textbox","id":"sh/1g7a14vq","slide":6,"textChars":21,"textLines":1}
+{"kind":"textbox","id":"sh/edgrqpwz","slide":6,"textChars":119,"textLines":1}
+{"kind":"shape","id":"sh/fepszudk","slide":6,"bbox":[72,676,1136,1]}
+{"kind":"textbox","id":"sh/sry9ofe9","slide":6,"textChars":23,"textLines":1}
+{"kind":"textbox","id":"sh/ds7axkve","slide":6,"textChars":2,"textLines":1}
+{"kind":"notes","id":"nt/fejofk","slide":6,"text":"[Sources] | - /Users/lipengyuan/PycharmProjects/alpaca-hackathon/docs/index.h..."}
+{"kind":"slide","id":"sl/21xyyx","slide":7,"title":"PORTABLE BY CONSTRUCTION","textShapes":19}
+{"kind":"textbox","id":"sh/vmhgze9c","slide":7,"textChars":24,"textLines":1}
+{"kind":"textbox","id":"sh/wnqh8jqx","slide":7,"textChars":52,"textLines":1}
+{"kind":"textbox","id":"sh/hozy1ori","slide":7,"textChars":97,"textLines":1}
+{"kind":"shape","id":"sh/mh8z2p8f","slide":7,"bbox":[45,195,1190,330]}
+{"kind":"textbox","id":"sh/7ihgvu90","slide":7,"textChars":45,"textLines":1}
+{"kind":"shape","id":"sh/8jqh4zql","slide":7,"bbox":[238,300,29,18]}
+{"kind":"shape","id":"sh/9kzyx4r6","slide":7,"bbox":[448,300,29,18]}
+{"kind":"shape","id":"sh/ytofyp8j","slide":7,"bbox":[658,300,29,18]}
+{"kind":"shape","id":"sh/zuxgru94","slide":7,"bbox":[868,300,29,18]}
+{"kind":"shape","id":"sh/j2dgvulc","slide":7,"bbox":[138,385,18,28]}
+{"kind":"shape","id":"sh/i14zmp4r","slide":7,"bbox":[348,385,18,28]}
+{"kind":"shape","id":"sh/5ofyx43i","slide":7,"bbox":[558,385,18,28]}
+{"kind":"shape","id":"sh/kn6hozmx","slide":7,"bbox":[768,385,18,28]}
+{"kind":"shape","id":"sh/7qx0zelo","slide":7,"bbox":[978,385,18,28]}
+{"kind":"shape","id":"sh/6pozq943","slide":7,"bbox":[60,260,175,120]}
+{"kind":"textbox","id":"sh/tsfi1o3e","slide":7,"textChars":4,"textLines":1}
+{"kind":"textbox","id":"sh/sr6hsjmt","slide":7,"textChars":14,"textLines":1}
+{"kind":"shape","id":"sh/nutgnal4","slide":7,"bbox":[270,260,175,120]}
+{"kind":"textbox","id":"sh/mtkze54j","slide":7,"textChars":8,"textLines":1}
+{"kind":"textbox","id":"sh/a1cbihsj","slide":7,"textChars":11,"textLines":1}
+{"kind":"shape","id":"sh/b2lsbm94","slide":7,"bbox":[480,260,175,120]}
+{"kind":"textbox","id":"sh/c3utkrap","slide":7,"textChars":5,"textLines":1}
+{"kind":"textbox","id":"sh/xo3adcru","slide":7,"textChars":12,"textLines":1}
+{"kind":"shape","id":"sh/2xsbexs7","slide":7,"bbox":[690,260,175,120]}
+{"kind":"textbox","id":"sh/3y1s729s","slide":7,"textChars":4,"textLines":1}
+{"kind":"textbox","id":"sh/ozutg7ad","slide":7,"textChars":10,"textLines":1}
+{"kind":"shape","id":"sh/p03a9cry","slide":7,"bbox":[900,260,175,120]}
+{"kind":"textbox","id":"sh/etsbaxsb","slide":7,"textChars":9,"textLines":1}
+{"kind":"textbox","id":"sh/fu1s329w","slide":7,"textChars":14,"textLines":1}
+{"kind":"shape","id":"sh/ho7e90be","slide":7,"bbox":[270,420,740,76]}
+{"kind":"textbox","id":"sh/wnydgvut","slide":7,"textChars":13,"textLines":1}
+{"kind":"textbox","id":"sh/vmpw7qt8","slide":7,"textChars":60,"textLines":1}
+{"kind":"textbox","id":"sh/ulgvelcn","slide":7,"textChars":45,"textLines":1}
+{"kind":"shape","id":"sh/9k7e5gb2","slide":7,"bbox":[72,676,1136,1]}
+{"kind":"textbox","id":"sh/8jydcvux","slide":7,"textChars":23,"textLines":1}
+{"kind":"textbox","id":"sh/7ipw3qtc","slide":7,"textChars":2,"textLines":1}
+{"kind":"notes","id":"nt/21xyyx","slide":7,"text":"[Sources] | - /Users/lipengyuan/PycharmProjects/alpaca-hackathon/docs/archite..."}
+{"kind":"slide","id":"sl/ifjk37","slide":8,"title":"THE SUBMISSION","textShapes":19}
+{"kind":"textbox","id":"sh/snul0f2d","slide":8,"textChars":14,"textLines":1}
+{"kind":"textbox","id":"sh/rmlk7a1s","slide":8,"textChars":32,"textLines":1}
+{"kind":"textbox","id":"sh/qls3y5k7","slide":8,"textChars":71,"textLines":1}
+{"kind":"textbox","id":"sh/1s32d4ju","slide":8,"textChars":2,"textLines":1}
+{"kind":"textbox","id":"sh/0rul4z29","slide":8,"textChars":10,"textLines":1}
+{"kind":"textbox","id":"sh/fqlkbu14","slide":8,"textChars":38,"textLines":1}
+{"kind":"shape","id":"sh/epc32pkj","slide":8,"bbox":[145,278,730,1]}
+{"kind":"textbox","id":"sh/hwj210jq","slide":8,"textChars":2,"textLines":1}
+{"kind":"textbox","id":"sh/wvalsv25","slide":8,"textChars":9,"textLines":1}
+{"kind":"textbox","id":"sh/610vexwz","slide":8,"textChars":43,"textLines":1}
+{"kind":"shape","id":"sh/7mtwn2xk","slide":8,"bbox":[145,383,730,1]}
+{"kind":"textbox","id":"sh/sn2dgne5","slide":8,"textChars":2,"textLines":1}
+{"kind":"textbox","id":"sh/tobepsfq","slide":8,"textChars":8,"textLines":1}
+{"kind":"textbox","id":"sh/upkvixwb","slide":8,"textChars":39,"textLines":1}
+{"kind":"shape","id":"sh/fqtwr2xw","slide":8,"bbox":[905,208,300,300]}
+{"kind":"textbox","id":"sh/gr2dk7e1","slide":8,"textChars":17,"textLines":1}
+{"kind":"textbox","id":"sh/hsbetcvm","slide":8,"textChars":23,"textLines":2}
+{"kind":"textbox","id":"sh/2t4vmhw7","slide":8,"textChars":43,"textLines":2}
+{"kind":"textbox","id":"sh/3udwvmds","slide":8,"textChars":22,"textLines":1}
+{"kind":"textbox","id":"sh/zydc3mt0","slide":8,"textChars":74,"textLines":1}
+{"kind":"shape","id":"sh/ex4vahcf","slide":8,"bbox":[72,676,1136,1]}
+{"kind":"textbox","id":"sh/1kvu5cbq","slide":8,"textChars":23,"textLines":1}
+{"kind":"textbox","id":"sh/0jmdcrul","slide":8,"textChars":2,"textLines":1}
+{"kind":"notes","id":"nt/ifjk37","slide":8,"text":"[Sources] | - https://lipengyuan1994.github.io/alpaca-hackathon/ | - https://..."}
+{"kind":"notice","message":"Truncated: omitted 0 lines. Increase maxChars or narrow target."}

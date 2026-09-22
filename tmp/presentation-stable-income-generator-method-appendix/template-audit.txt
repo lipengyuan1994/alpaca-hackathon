@@ -1,0 +1,8 @@
+Source: output/presentation/stable-income-generator-hackathon-deck-v3.pptx
+Inventory: 9 widescreen slides, dark forest-green canvas, Calibri/Calibri Light typography, mint primary accent, amber benchmark accent, thin green rules, and lower-right two-digit page markers.
+Hierarchy: retain all imported masters, layouts, slide furniture, notes, and source-slide geometry. Edit only slide-local inherited text objects.
+Insertion contract: preserve slides 1-9; clarify the conditional-return comparison on slide 5; duplicate source slide 2 as output slide 10 for a calculation appendix.
+Reusable pattern: source slide 2 supplies the appendix's existing large-formula left column and three-step explanatory right column.
+Placeholders: no visible prompt placeholders were found in rendered source slides. The final exported PPTX must still pass the structural empty-placeholder audit.
+Typography and spacing: retain every copied text box's font family, size, weight, alignment, inset, and position; shorten copy to fit inherited frames.
+

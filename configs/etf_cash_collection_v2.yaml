@@ -1,0 +1,10 @@
+schema_version: etf-cash-collection-spec/v2
+collection_id: etf_cash_research_v2
+symbols: [QQQM, SMH, SOXX, QQQ, SPY, TQQQ, SOXL, SPXL]
+stock_history:
+  start: '2022-09-01T00:00:00Z'
+  end: '2026-09-18T23:59:59Z'
+feeds: [sip, iex]
+timeframe: 1Day
+page_limit: 10000
+availability_delay_seconds: 1

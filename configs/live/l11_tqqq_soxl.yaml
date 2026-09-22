@@ -1,0 +1,26 @@
+schema_version: etf-live-config/v1
+mode: observe
+account_id: pending
+timezone: America/New_York
+trading_base_url: https://api.alpaca.markets
+data_base_url: https://data.alpaca.markets
+state_path: /var/lib/alpaca-etf-live/l11_tqqq_soxl/state.db
+enabled_file: /etc/etf-live/enabled
+target_investment: "0.99"
+initial_cash: "1000"
+minimum_order_notional: "5"
+quantity_decimals: 6
+buy_spread_limit: "0.005"
+buy_limit_adverse_bps: "25"
+quote_max_age_seconds: 2
+buy_cutoff: "09:35"
+exit_start: "09:30"
+polling_seconds: 15
+heartbeat_seconds: 60
+symbols: [TQQQ, SOXL]
+signal_symbols: [QQQ, SOXX]
+strategy_id: L11
+strategy_config_hash: sha256:23e2652143a651e22d19789338cd2b954545c349232433bfda33bd4e29749a70
+secrets_root: /run/etf-live-secrets
+telegram_enabled: true
+gemini_observer_enabled: false

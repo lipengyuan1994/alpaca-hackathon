@@ -1,19 +1,19 @@
 {
   "account": {
     "account_id": "4c0db2cd-f24c-419f-a9fb-339a24cdef1c",
-    "buying_power": 124263.84,
-    "cash": 100565.96,
-    "day_pnl": 2.0,
-    "day_return": 1.9921318759427763e-05,
-    "day_start_equity": 100394.96,
-    "equity": 100396.96,
+    "buying_power": 110199.4,
+    "cash": 101349.85,
+    "day_pnl": 127.88,
+    "day_return": 0.0012669543568497618,
+    "day_start_equity": 100934.97,
+    "equity": 101062.85,
     "starting_baseline": 100000.0,
     "status": "ACTIVE",
-    "total_pnl": 396.96,
-    "total_return": 0.0039696
+    "total_pnl": 1062.85,
+    "total_return": 0.0106285
   },
-  "artifact_hash": "sha256:bda379b15afabfa1e17f5eace8a6cebbb469edbe42ecbd743853c74356bfcf2c",
-  "generated_at": "2026-09-13T15:36:55.633614Z",
+  "artifact_hash": "sha256:e574f2c228462fe29cf6da28cf6ed59951eeca611cec66f2c21ad91ba59ca085",
+  "generated_at": "2026-09-22T18:34:36.385246Z",
   "portfolio_history": {
     "period": "1A",
     "points": [
@@ -82,6 +82,42 @@
         "timestamp": "2026-09-12T00:00:00Z",
         "total_pnl": 394.96,
         "total_return": 0.0039496
+      },
+      {
+        "equity": 100353.96,
+        "timestamp": "2026-09-15T00:00:00Z",
+        "total_pnl": 353.96,
+        "total_return": 0.0035396
+      },
+      {
+        "equity": 100315.96,
+        "timestamp": "2026-09-16T00:00:00Z",
+        "total_pnl": 315.96,
+        "total_return": 0.0031596
+      },
+      {
+        "equity": 100299.85,
+        "timestamp": "2026-09-17T00:00:00Z",
+        "total_pnl": 299.85,
+        "total_return": 0.0029985
+      },
+      {
+        "equity": 100585.69,
+        "timestamp": "2026-09-18T00:00:00Z",
+        "total_pnl": 585.69,
+        "total_return": 0.0058569
+      },
+      {
+        "equity": 100693.48,
+        "timestamp": "2026-09-19T00:00:00Z",
+        "total_pnl": 693.48,
+        "total_return": 0.0069348
+      },
+      {
+        "equity": 100934.97,
+        "timestamp": "2026-09-22T00:00:00Z",
+        "total_pnl": 934.97,
+        "total_return": 0.0093497
       }
     ],
     "status": "available",
@@ -101,153 +137,153 @@
   "recent_filled_system_orders": [
     {
       "action": "SELL_TO_OPEN",
-      "average_fill_price": 1.52,
+      "average_fill_price": 3.15,
       "contract": {
-        "expiry": "2026-09-18",
+        "expiry": "2026-09-29",
         "option_type": "PUT",
-        "strike": 695.0,
-        "symbol": "QQQ260918P00695000",
+        "strike": 738.0,
+        "symbol": "QQQ260929P00738000",
         "underlying": "QQQ"
       },
-      "filled_at": "2026-09-11T17:27:58.566464Z",
+      "filled_at": "2026-09-22T14:14:49.288943Z",
       "quantity": 1.0,
       "side": "SELL",
-      "system_ref": "a631b4db"
+      "system_ref": "c7c818be"
     },
     {
       "action": "BUY_TO_CLOSE",
-      "average_fill_price": 4.51,
+      "average_fill_price": 2.62,
       "contract": {
-        "expiry": "2026-09-18",
+        "expiry": "2026-09-29",
         "option_type": "PUT",
-        "strike": 712.0,
-        "symbol": "QQQ260918P00712000",
+        "strike": 736.0,
+        "symbol": "QQQ260929P00736000",
         "underlying": "QQQ"
       },
-      "filled_at": "2026-09-11T17:26:50.936241Z",
+      "filled_at": "2026-09-22T14:13:44.647068Z",
       "quantity": 1.0,
       "side": "BUY",
-      "system_ref": "524d8cce"
+      "system_ref": "897f92b2"
     },
     {
       "action": "SELL_TO_OPEN",
-      "average_fill_price": 5.35,
+      "average_fill_price": 3.14,
       "contract": {
-        "expiry": "2026-09-18",
+        "expiry": "2026-09-29",
         "option_type": "PUT",
-        "strike": 712.0,
-        "symbol": "QQQ260918P00712000",
+        "strike": 736.0,
+        "symbol": "QQQ260929P00736000",
         "underlying": "QQQ"
       },
-      "filled_at": "2026-09-08T15:59:00.464195Z",
+      "filled_at": "2026-09-22T13:41:31.913321Z",
       "quantity": 1.0,
       "side": "SELL",
-      "system_ref": "fc5b6710"
+      "system_ref": "97d5f515"
     },
     {
       "action": "BUY_TO_CLOSE",
-      "average_fill_price": 2.39,
+      "average_fill_price": 2.67,
       "contract": {
-        "expiry": "2026-09-11",
+        "expiry": "2026-09-29",
         "option_type": "PUT",
-        "strike": 713.0,
-        "symbol": "QQQ260911P00713000",
+        "strike": 734.0,
+        "symbol": "QQQ260929P00734000",
         "underlying": "QQQ"
       },
-      "filled_at": "2026-09-08T13:30:11.992733Z",
+      "filled_at": "2026-09-22T13:41:11.033946Z",
       "quantity": 1.0,
       "side": "BUY",
-      "system_ref": "8c33dc02"
+      "system_ref": "105137b5"
     },
     {
       "action": "SELL_TO_OPEN",
-      "average_fill_price": 3.03,
+      "average_fill_price": 3.15,
       "contract": {
-        "expiry": "2026-09-11",
+        "expiry": "2026-09-29",
         "option_type": "PUT",
-        "strike": 713.0,
-        "symbol": "QQQ260911P00713000",
+        "strike": 734.0,
+        "symbol": "QQQ260929P00734000",
         "underlying": "QQQ"
       },
-      "filled_at": "2026-09-04T13:35:50.947407Z",
+      "filled_at": "2026-09-22T13:30:48.458122Z",
       "quantity": 1.0,
       "side": "SELL",
-      "system_ref": "e3595371"
+      "system_ref": "5c52f340"
     },
     {
       "action": "BUY_TO_CLOSE",
-      "average_fill_price": 0.48,
+      "average_fill_price": 2.62,
       "contract": {
-        "expiry": "2026-09-10",
+        "expiry": "2026-09-28",
         "option_type": "PUT",
-        "strike": 695.0,
-        "symbol": "QQQ260910P00695000",
+        "strike": 732.0,
+        "symbol": "QQQ260928P00732000",
         "underlying": "QQQ"
       },
-      "filled_at": "2026-09-04T13:30:20.937724Z",
+      "filled_at": "2026-09-21T19:33:34.438561Z",
       "quantity": 1.0,
       "side": "BUY",
-      "system_ref": "56911799"
+      "system_ref": "666e28cf"
     },
     {
       "action": "SELL_TO_OPEN",
-      "average_fill_price": 0.79,
+      "average_fill_price": 3.1,
       "contract": {
-        "expiry": "2026-09-10",
+        "expiry": "2026-09-28",
         "option_type": "PUT",
-        "strike": 695.0,
-        "symbol": "QQQ260910P00695000",
+        "strike": 732.0,
+        "symbol": "QQQ260928P00732000",
         "underlying": "QQQ"
       },
-      "filled_at": "2026-09-03T16:47:47.418458Z",
+      "filled_at": "2026-09-21T18:07:14.308612Z",
       "quantity": 1.0,
       "side": "SELL",
-      "system_ref": "8ce81330"
+      "system_ref": "d35a0ba2"
     },
     {
       "action": "BUY_TO_CLOSE",
-      "average_fill_price": 0.7,
+      "average_fill_price": 2.67,
       "contract": {
-        "expiry": "2026-09-10",
+        "expiry": "2026-09-28",
         "option_type": "PUT",
-        "strike": 693.0,
-        "symbol": "QQQ260910P00693000",
+        "strike": 730.0,
+        "symbol": "QQQ260928P00730000",
         "underlying": "QQQ"
       },
-      "filled_at": "2026-09-03T16:39:44.505269Z",
+      "filled_at": "2026-09-21T18:06:19.858702Z",
       "quantity": 1.0,
       "side": "BUY",
-      "system_ref": "200f2f4d"
+      "system_ref": "001e390c"
     },
     {
       "action": "SELL_TO_OPEN",
-      "average_fill_price": 0.89,
+      "average_fill_price": 3.19,
       "contract": {
-        "expiry": "2026-09-10",
+        "expiry": "2026-09-28",
         "option_type": "PUT",
-        "strike": 693.0,
-        "symbol": "QQQ260910P00693000",
+        "strike": 730.0,
+        "symbol": "QQQ260928P00730000",
         "underlying": "QQQ"
       },
-      "filled_at": "2026-09-03T15:04:48.048096Z",
+      "filled_at": "2026-09-21T15:48:28.766634Z",
       "quantity": 1.0,
       "side": "SELL",
-      "system_ref": "2658abed"
+      "system_ref": "1b596d15"
     },
     {
       "action": "BUY_TO_CLOSE",
-      "average_fill_price": 0.79,
+      "average_fill_price": 2.5,
       "contract": {
-        "expiry": "2026-09-10",
+        "expiry": "2026-09-28",
         "option_type": "PUT",
-        "strike": 691.0,
-        "symbol": "QQQ260910P00691000",
+        "strike": 727.0,
+        "symbol": "QQQ260928P00727000",
         "underlying": "QQQ"
       },
-      "filled_at": "2026-09-03T15:03:37.863821Z",
+      "filled_at": "2026-09-21T15:47:42.717085Z",
       "quantity": 1.0,
       "side": "BUY",
-      "system_ref": "d9664fe3"
+      "system_ref": "e678171e"
     }
   ],
   "refresh_contract": {

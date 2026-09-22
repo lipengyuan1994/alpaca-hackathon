@@ -1,0 +1,3 @@
+Slide 5: rewrite the inherited bull-participation kicker and adjacent session label so the +43.43% versus +37.05% claim is explicitly marked as an uptrend-only conditional return. No geometry or style changes.
+Slide 10: duplicate source slide 2 and rewrite its inherited content frames as a calculation-method appendix. Preserve the divider, footer, page marker frame, typography, and spatial hierarchy.
+

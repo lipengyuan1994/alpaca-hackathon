@@ -1,0 +1,3 @@
+Output slide 5 duplicates source slide 4 and intentionally replaces the central benchmark-chart image with editable native shapes. The new evidence stays inside the former chart region, retains the source slide's title hierarchy, typography, colors, methodology footer, brand rail, and page marker, and adds no unrelated visual language.
+
+Output slides 6-9 preserve their source content and styling. Their only intentional change is sequential page numbering after insertion of the new slide.
