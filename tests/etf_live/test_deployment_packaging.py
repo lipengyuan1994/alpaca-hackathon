@@ -27,6 +27,7 @@ def test_l11_image_is_linux_amd64_and_contains_only_the_isolated_runtime() -> No
     assert "packages/paper_wheel" not in source
     assert "configs/paper" not in source
     assert "USER 10002:10002" in source
+    assert "chown -R 10002:10002 /app /var/lib/alpaca-etf-live" in source
 
 
 def test_l11_compose_is_disabled_by_default_and_uses_separate_roots() -> None:
@@ -48,14 +49,27 @@ def test_l11_compose_is_disabled_by_default_and_uses_separate_roots() -> None:
     assert "alpaca-paper" not in str(compose)
 
 
+def test_t08_is_the_selected_default_service_and_keeps_l11_compatibility_profile() -> None:
+    compose = _compose()
+    service = compose["services"]["t08"]  # type: ignore[index]
+    assert service["environment"]["ETF_LIVE_CONFIG"] == "/app/configs/live/t08_tecl.yaml"
+    assert "/var/lib/alpaca-etf-live/t08_tecl:/var/lib/alpaca-etf-live/t08_tecl:rw" in service["volumes"]
+    assert service["healthcheck"]["test"] == ["CMD", "python", "-m", "packages.etf_live.cli", "status", "--config", "/app/configs/live/t08_tecl.yaml"]
+    assert service["healthcheck"]["retries"] == 3
+    assert compose["services"]["l11"]["profiles"] == ["legacy-l11"]  # type: ignore[index]
+
+
 def test_deployer_requires_immutable_digest_and_stages_while_disabled() -> None:
     deployer = _read("deploy.sh")
     assert "ghcr.io/lipengyuan1994/alpaca-hackathon-etf-live@sha256:*" in deployer
     assert re.search(r'if \[ "\$\{#digest\}" -ne 64 \]', deployer)
     assert "/etc/etf-live/enabled" in deployer
     assert "ETF_LIVE_IMAGE_STAGED_DISABLED" in deployer
-    assert "l11 preflight" in deployer
-    assert deployer.index("l11 preflight") < deployer.index("up -d")
+    assert "ETF_LIVE_DEPLOY_HEALTHCHECK_FAILED" in deployer
+    assert "ETF_LIVE_POSTSTART_PREFLIGHT_BLOCKED" in deployer
+    assert "ETF_LIVE_PREVIOUS_IMAGE_RESTORED" in deployer
+    assert "wait_healthy" in deployer
+    assert 'run --rm --no-deps "$service" preflight --config "$config"' in deployer
     assert "/opt/alpaca-etf-live" in deployer
     assert "/opt/alpaca-paper" not in deployer
 
@@ -66,6 +80,8 @@ def test_entrypoint_honors_operator_actions_and_fails_closed_by_default() -> Non
     assert "packages.etf_live.cli" in entrypoint
     assert "ETF_LIVE_ENABLE_FILE_MISSING" in entrypoint
     assert "run-once" in entrypoint
+    assert "ETF_LIVE_CONSECUTIVE_FAILURE_LIMIT" in entrypoint
+    assert "ETF_LIVE_MAX_CONSECUTIVE_FAILURES" in entrypoint
     assert 'if [ "$#" -gt 0 ]' in entrypoint
 
 
@@ -101,6 +117,10 @@ def test_workflows_use_pinned_actions_and_manual_protected_deployment() -> None:
     assert all(re.fullmatch(r"[0-9a-f]{40}", revision) for revision in uses)
     assert "platforms: linux/amd64" in image_workflow
     assert "alpaca-hackathon-etf-live" in image_workflow
+    assert "packages/etf_strategy_core/**" in image_workflow
+    assert "tests/etf_live/**" in image_workflow
+    assert "Smoke-test the disabled image without credentials" in image_workflow
+    assert "docker run --rm" in image_workflow
     assert "workflow_dispatch:" in deploy_workflow
     assert "environment: vultr-etf-live" in deploy_workflow
     assert "GHCR_TOKEN" in deploy_workflow

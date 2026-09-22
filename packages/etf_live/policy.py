@@ -1,4 +1,4 @@
-"""Pure, deterministic L11 policy for the isolated live service.
+"""Pure, deterministic policies for the isolated ETF live service.
 
 The policy is intentionally smaller than the research engine.  It accepts a
 point-in-time feature snapshot and reconciled account state, then returns
@@ -6,7 +6,7 @@ declarative order intents.  It has no broker, filesystem, clock, or network
 dependency.  A caller persists :attr:`PolicyDecision.next_state` after it
 persists the decision and its intents.
 
-L11 has two independent cadences:
+The archived L11 policy has two independent cadences:
 
 * allocation targets are evaluated on the first exchange session of an ISO
   week (or once for an explicitly designated activation review), and
@@ -174,6 +174,7 @@ class PolicyState:
     exited_session: datetime | None = None
     exited_symbols: tuple[str, ...] = ()
     last_decision_id: str | None = None
+    allocation_target_weight: Decimal | None = None
 
     def __post_init__(self) -> None:
         if self.last_execution_session is not None:
@@ -182,6 +183,7 @@ class PolicyState:
             object.__setattr__(self, "exited_session", _stamp(self.exited_session))
         symbols = tuple(sorted({str(item).upper() for item in self.exited_symbols}))
         object.__setattr__(self, "exited_symbols", symbols)
+        object.__setattr__(self, "allocation_target_weight", _decimal(self.allocation_target_weight))
 
     @property
     def initial_activation_review_consumed(self) -> bool:
@@ -197,6 +199,7 @@ class PolicyState:
             "exited_session": None if self.exited_session is None else _iso(self.exited_session),
             "exited_symbols": list(self.exited_symbols),
             "last_decision_id": self.last_decision_id,
+            "allocation_target_weight": None if self.allocation_target_weight is None else format(self.allocation_target_weight, "f"),
         }
 
     @classmethod
@@ -208,17 +211,17 @@ class PolicyState:
             exited_session=payload.get("exited_session"),
             exited_symbols=tuple(payload.get("exited_symbols", ())),
             last_decision_id=payload.get("last_decision_id"),
+            allocation_target_weight=payload.get("allocation_target_weight"),
         )
 
 
 @dataclass(frozen=True)
 class PolicyContext:
-    """Point-in-time inputs for one L11 decision.
+    """Point-in-time inputs for one ETF policy decision.
 
-    ``features`` is a mapping keyed by QQQ, SOXX, TQQQ, and SOXL.  Each value
-    may be a mapping or a :class:`FeatureSnapshot`.  Only the signal proxy
-    mappings are used for selection and exits.  ``pair_features`` may carry
-    ``ratio`` and ``ratio_sma20`` when those values are maintained separately.
+    ``features`` is keyed by the configured tradable and signal symbols. Each
+    value may be a mapping, a row history, or a :class:`FeatureSnapshot`.
+    ``pair_features`` remains available for the archived multi-ETF policy.
     """
 
     execution_session: date | datetime
@@ -238,6 +241,7 @@ class PolicyContext:
     pair_features: Mapping[str, Any] = field(default_factory=dict)
     settled_cash: Decimal | None = None
     reserved_cash: Decimal | None = None
+    purchase_allowed: bool = True
 
     @property
     def activation_review_requested(self) -> bool:
@@ -611,25 +615,30 @@ class L11Policy:
             return None
         # A feature provider may expose rows under ``rows``/``history``.  Use
         # the newest row at or before the cutoff and ignore future rows.
-        if isinstance(value, Mapping):
+        if isinstance(value, Sequence) and not isinstance(value, (str, bytes, Mapping)):
+            rows = value
+        elif isinstance(value, Mapping):
             rows = value.get("rows", value.get("history"))
-            if isinstance(rows, Sequence) and not isinstance(rows, (str, bytes)):
-                eligible = []
-                for row in rows:
-                    if not isinstance(row, Mapping):
-                        continue
-                    stamp = row.get("asof", row.get("date", row.get("timestamp")))
-                    if stamp is None:
-                        continue
-                    try:
-                        row_stamp = _stamp(stamp)
-                    except (TypeError, ValueError):
-                        continue
-                    if row_stamp <= cutoff:
-                        eligible.append((row_stamp, row))
-                if eligible:
-                    return max(eligible, key=lambda item: item[0])[1]
-                return None
+        else:
+            rows = None
+        if isinstance(rows, Sequence) and not isinstance(rows, (str, bytes)):
+            eligible = []
+            for row in rows:
+                if not isinstance(row, Mapping):
+                    continue
+                stamp = row.get("asof", row.get("date", row.get("timestamp")))
+                if stamp is None:
+                    continue
+                try:
+                    row_stamp = _stamp(stamp)
+                except (TypeError, ValueError):
+                    continue
+                if row_stamp <= cutoff:
+                    eligible.append((row_stamp, row))
+            if eligible:
+                return max(eligible, key=lambda item: item[0])[1]
+            return None
+        if isinstance(value, Mapping):
             asof = value.get("asof", value.get("information_cutoff"))
             if asof is not None:
                 try:
@@ -655,6 +664,8 @@ class L11Policy:
             "r63": ("r63", "return63", "return_63", "momentum63"),
             "sma200": ("sma200", "sma_200", "trend200"),
             "close": ("close", "previous_close", "prior_close"),
+            "asymmetry": ("asymmetry", "downside_asymmetry", "downside_ratio", "A", "a"),
+            "vol_ratio": ("vol_ratio", "volatility_ratio", "sigma20_over_sigma60", "V", "v"),
         }
         names = aliases.get(name, (name,))
         raw = None
@@ -753,9 +764,200 @@ class L11Policy:
         return parsed.quantize(quantum, rounding=ROUND_DOWN)
 
 
+class T08Policy(L11Policy):
+    """Pure daily TECL/cash implementation of research strategy T08.
+
+    A completed allocation transition is held in fixed shares until the
+    strategy allocation state changes. Execution feedback, rather than a
+    proposed order, records a completed transition. This prevents daily
+    rebalance churn from market-driven weight drift.
+    """
+
+    strategy_id = "T08"
+    minimum_order_notional = Decimal("5")
+
+    def __init__(
+        self,
+        *,
+        target_investment: Decimal | float = Decimal("0.99"),
+        symbols: Sequence[str] = ("TECL",),
+        signal_symbols: Sequence[str] = ("XLK",),
+    ) -> None:
+        target = _decimal(target_investment)
+        if target is None or target <= _ZERO or target > Decimal("0.99"):
+            raise ValueError("ETF_LIVE_TARGET_INVESTMENT_INVALID")
+        normalized_symbols = tuple(str(item).upper() for item in symbols)
+        normalized_signals = tuple(str(item).upper() for item in signal_symbols)
+        if normalized_symbols != ("TECL",):
+            raise ValueError("ETF_LIVE_T08_SYMBOLS_INVALID")
+        if normalized_signals != ("XLK",):
+            raise ValueError("ETF_LIVE_T08_SIGNAL_SYMBOLS_INVALID")
+        self.target_investment = target
+        self.symbols = normalized_symbols
+        self.signal_symbols = normalized_signals
+        self.trade_symbol = "TECL"
+        self.signal_symbol = "XLK"
+
+    def decide(self, context: PolicyContext) -> PolicyDecision:
+        execution = _stamp(context.execution_session)
+        cutoff = None if context.information_cutoff is None else _stamp(context.information_cutoff)
+        if cutoff is None:
+            return self._blocked_t08(context, execution, "ETF_LIVE_NO_INFORMATION_CUTOFF")
+        if cutoff >= execution:
+            return self._blocked_t08(context, execution, "ETF_LIVE_INFORMATION_CUTOFF_NOT_PRIOR")
+
+        state = context.state if isinstance(context.state, PolicyState) else PolicyState.from_dict(context.state)
+        positions = self._positions(context.positions)
+        pending = self._pending(context.pending_orders)
+        snapshot = self._snapshot(context.features, self.signal_symbol, cutoff)
+        close = self._value(snapshot, "close", cutoff)
+        trend = self._value(snapshot, "sma200", cutoff)
+        asymmetry = self._value(snapshot, "asymmetry", cutoff)
+        vol_ratio = self._value(snapshot, "vol_ratio", cutoff)
+        if asymmetry is None:
+            downside = self._value(snapshot, "downside_rms20", cutoff)
+            upside = self._value(snapshot, "upside_rms20", cutoff)
+            if downside is not None and upside is not None:
+                if downside == _ZERO and upside == _ZERO:
+                    asymmetry = Decimal("1")
+                elif upside == _ZERO:
+                    asymmetry = Decimal("999999") if downside > _ZERO else Decimal("1")
+                else:
+                    asymmetry = downside / upside
+        if vol_ratio is None:
+            sigma20 = self._value(snapshot, "sigma20", cutoff)
+            sigma60 = self._value(snapshot, "sigma60", cutoff)
+            if sigma20 is not None and sigma60 is not None:
+                vol_ratio = _ZERO if sigma60 == _ZERO and sigma20 == _ZERO else (None if sigma60 == _ZERO else sigma20 / sigma60)
+
+        held = positions.get(self.trade_symbol, _ZERO)
+        below_trend = close is not None and trend is not None and close < trend
+        equal_trend = close is not None and trend is not None and close == trend
+        target: Decimal | None
+        if below_trend:
+            target = _ZERO
+        elif equal_trend:
+            # Equality retains the actual state.  No target is inferred from
+            # a potentially stale risk snapshot at the boundary.
+            target = None
+        elif close is not None and trend is not None and close > trend and asymmetry is not None and vol_ratio is not None:
+            target = Decimal("0.495") if asymmetry > Decimal("1.5") and vol_ratio > Decimal("1.25") else self.target_investment
+        else:
+            # Missing risk features block increases but preserve a valid
+            # existing position.  This is the fail-closed live behavior.
+            target = None
+
+        exited = bool(below_trend and held > _ZERO)
+        if state.exited_session is not None and state.exited_session == execution and self.trade_symbol in state.exited_symbols:
+            exited = True
+
+        intents_payload: list[dict[str, Any]] = []
+        accepted_target = state.allocation_target_weight
+        transition_complete_without_order = False
+        if target is not None and not (exited and target > _ZERO):
+            target_quantity = self._target_quantity(self.trade_symbol, target, context) if target > _ZERO else _ZERO
+            if target > _ZERO and target_quantity is None:
+                target_quantity = None
+            if target_quantity is not None:
+                if target == accepted_target and target > _ZERO:
+                    # Hold acquired shares. Market movement does not create
+                    # an allocation transition or trigger daily rebalancing.
+                    transition_complete_without_order = True
+                else:
+                    delta = target_quantity - held
+                    if delta > _ZERO:
+                        if context.purchase_allowed and not self._has_active(pending, self.trade_symbol, _BUY) and not exited:
+                            market_value = delta * (_positive(context.prior_close.get(self.trade_symbol)) or _ZERO)
+                            if market_value < self.minimum_order_notional:
+                                transition_complete_without_order = True
+                            else:
+                                intents_payload.append({
+                                    "symbol": self.trade_symbol,
+                                    "side": _BUY,
+                                    "quantity": delta,
+                                    "reason": "T08_ALLOCATION_INCREASE",
+                                    "target_weight": target,
+                                    "target_quantity": target_quantity,
+                                })
+                    elif delta < _ZERO:
+                        if not self._has_active(pending, self.trade_symbol, _SELL):
+                            market_value = -delta * (_positive(context.prior_close.get(self.trade_symbol)) or _ZERO)
+                            if target > _ZERO and market_value < self.minimum_order_notional:
+                                transition_complete_without_order = True
+                            else:
+                                intents_payload.append({
+                                    "symbol": self.trade_symbol,
+                                    "side": _SELL,
+                                    "quantity": -delta,
+                                    "reason": "T08_ALLOCATION_REDUCTION" if target > _ZERO else "T08_XLK_SMA200_EXIT",
+                                    "target_weight": target,
+                                    "target_quantity": target_quantity,
+                                })
+                    else:
+                        transition_complete_without_order = True
+                if transition_complete_without_order:
+                    accepted_target = target
+
+        decision_payload = {
+            "strategy_id": self.strategy_id,
+            "execution_session": execution,
+            "information_cutoff": cutoff,
+            "target": target,
+            "features": {"close": close, "sma200": trend, "asymmetry": asymmetry, "vol_ratio": vol_ratio},
+            "positions": positions,
+            "pending": pending,
+            "purchase_allowed": context.purchase_allowed,
+            "intents": intents_payload,
+        }
+        decision_id = f"t08d-{_digest(decision_payload)[:24]}"
+        intents = tuple(
+            OrderIntent(
+                decision_id=decision_id,
+                intent_id=f"t08i-{_digest({'decision_id': decision_id, 'index': index, 'intent': payload})[:20]}",
+                symbol=payload["symbol"],
+                side=payload["side"],
+                quantity=self._floor(payload["quantity"]),
+                reason=payload["reason"],
+                signal_cutoff=cutoff,
+                decision_session=execution,
+                target_weight=payload.get("target_weight"),
+                target_quantity=payload.get("target_quantity"),
+                metadata={"strategy_id": self.strategy_id, "daily": True},
+            )
+            for index, payload in enumerate(intents_payload)
+            if self._floor(payload["quantity"]) > _ZERO
+        )
+        next_state = replace(
+            state,
+            activation_review_consumed=state.activation_review_consumed or context.activation_review_requested,
+            last_execution_session=execution,
+            exited_session=execution if exited else (None if state.exited_session == execution else state.exited_session),
+            exited_symbols=(self.trade_symbol,) if exited else (() if state.exited_session == execution else state.exited_symbols),
+            last_decision_id=decision_id,
+            allocation_target_weight=accepted_target,
+        )
+        return PolicyDecision(
+            decision_id=decision_id,
+            intents=intents,
+            next_state=next_state,
+            review=True,
+            activation_review=bool(context.activation_review_requested and not state.activation_review_consumed),
+            signal_cutoff=cutoff,
+        )
+
+    evaluate = decide
+
+    def _blocked_t08(self, context: PolicyContext, execution: datetime, reason: str) -> PolicyDecision:
+        payload = {"strategy_id": self.strategy_id, "execution_session": execution, "reason": reason}
+        decision_id = f"t08d-{_digest(payload)[:24]}"
+        state = context.state if isinstance(context.state, PolicyState) else PolicyState.from_dict(context.state)
+        return PolicyDecision(decision_id, (), state, False, False, None, status="BLOCKED", blocked_reason=reason)
+
+
 __all__ = [
     "FeatureSnapshot",
     "L11Policy",
+    "T08Policy",
     "OrderIntent",
     "PendingOrder",
     "PolicyContext",

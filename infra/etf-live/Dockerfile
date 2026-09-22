@@ -14,12 +14,13 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     TZ=America/New_York \
     ETF_LIVE_ENABLED=0 \
-    ETF_LIVE_CONFIG=/app/configs/live/l11_tqqq_soxl.yaml \
+    ETF_LIVE_CONFIG=/app/configs/live/t08_tecl.yaml \
     ETF_LIVE_SECRETS_ROOT=/run/etf-live-secrets \
-    ETF_LIVE_STATE_ROOT=/var/lib/alpaca-etf-live/l11_tqqq_soxl
+    ETF_LIVE_STATE_ROOT=/var/lib/alpaca-etf-live/t08_tecl
 COPY packages/contracts packages/contracts
 COPY packages/runtime_secrets.py packages/runtime_secrets.py
 COPY packages/etf_live packages/etf_live
+COPY configs/live/t08_tecl.yaml configs/live/t08_tecl.yaml
 COPY configs/live/l11_tqqq_soxl.yaml configs/live/l11_tqqq_soxl.yaml
 COPY pyproject.toml pyproject.toml
 COPY infra/etf-live/entrypoint.sh /usr/local/bin/etf-live-entrypoint
@@ -30,7 +31,7 @@ RUN pip install --no-cache-dir \
       "h11==0.16.0" "idna==3.19" "sniffio==1.3.1" \
       "typing-extensions==4.16.0" "typing-inspection==0.4.4" \
     && chmod 0555 /usr/local/bin/etf-live-entrypoint \
-    && mkdir -p /app/configs/live /app/artifacts /var/lib/alpaca-etf-live/l11_tqqq_soxl \
-    && chown -R 10002:10002 /app
+    && mkdir -p /app/configs/live /app/artifacts /var/lib/alpaca-etf-live/t08_tecl /var/lib/alpaca-etf-live/l11_tqqq_soxl \
+    && chown -R 10002:10002 /app /var/lib/alpaca-etf-live
 USER 10002:10002
 ENTRYPOINT ["/usr/local/bin/etf-live-entrypoint"]

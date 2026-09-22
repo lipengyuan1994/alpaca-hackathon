@@ -1,4 +1,4 @@
-"""Operator CLI for the isolated L11 runtime."""
+"""Operator CLI for the isolated deterministic ETF runtime."""
 
 from __future__ import annotations
 
@@ -31,7 +31,7 @@ def _runtime(path: Path) -> LiveRuntime:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="L11 TQQQ/SOXL live runtime")
+    parser = argparse.ArgumentParser(description="T08 TECL/XLK live runtime (L11 remains a compatibility config)")
     parser.add_argument("action", choices=("status", "preflight", "reconcile", "run-once", "arm-live", "pause-buys", "resume-buys"))
     parser.add_argument("--config", type=Path, required=True)
     parser.add_argument("--reason", default="operator requested")

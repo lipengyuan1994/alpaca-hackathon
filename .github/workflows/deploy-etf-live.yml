@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       image_digest:
-        description: Full immutable L11 image digest
+        description: Full immutable T08 image digest
         required: true
         type: string
 permissions:
@@ -18,7 +18,7 @@ jobs:
     environment: vultr-etf-live
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
-      - name: Deploy immutable L11 image
+      - name: Deploy immutable T08 image
         env:
           DEPLOY_HOST: ${{ vars.VULTR_DEPLOY_HOST }}
           DEPLOY_USER: ${{ vars.VULTR_DEPLOY_USER }}

@@ -1,4 +1,4 @@
-"""Strict configuration for the isolated L11 live service."""
+"""Strict configuration for the isolated deterministic ETF live service."""
 
 from __future__ import annotations
 
@@ -38,11 +38,23 @@ class LiveConfig(BaseModel):
     heartbeat_seconds: int = Field(default=60, ge=15, le=600)
     symbols: tuple[str, ...] = ("TQQQ", "SOXL")
     signal_symbols: tuple[str, ...] = ("QQQ", "SOXX")
-    strategy_id: Literal["L11"] = "L11"
+    strategy_id: Literal["L11", "T08"] = "L11"
     strategy_config_hash: str = Field(pattern=r"^sha256:[0-9a-f]{64}$")
     secrets_root: Path = Path("/run/etf-live-secrets")
     telegram_enabled: bool = True
     gemini_observer_enabled: bool = False
+
+    @model_validator(mode="before")
+    @classmethod
+    def _strategy_defaults(cls, data: object) -> object:
+        if not isinstance(data, dict) or data.get("strategy_id", "L11") != "T08":
+            return data
+        payload = dict(data)
+        payload.setdefault("symbols", ("TECL",))
+        payload.setdefault("signal_symbols", ("XLK",))
+        payload.setdefault("state_path", Path("/var/lib/alpaca-etf-live/t08_tecl/state.db"))
+        payload.setdefault("initial_cash", Decimal("2000"))
+        return payload
 
     @field_validator("symbols", "signal_symbols")
     @classmethod
@@ -54,8 +66,12 @@ class LiveConfig(BaseModel):
 
     @model_validator(mode="after")
     def _validate(self) -> "LiveConfig":
-        if set(self.symbols) != {"TQQQ", "SOXL"} or set(self.signal_symbols) != {"QQQ", "SOXX"}:
-            raise ValueError("ETF_LIVE_L11_UNIVERSE_INVALID")
+        expected = {
+            "L11": ({"TQQQ", "SOXL"}, {"QQQ", "SOXX"}),
+            "T08": ({"TECL"}, {"XLK"}),
+        }[self.strategy_id]
+        if set(self.symbols) != expected[0] or set(self.signal_symbols) != expected[1]:
+            raise ValueError(f"ETF_LIVE_{self.strategy_id}_UNIVERSE_INVALID")
         if self.mode == "live" and self.account_id in {"pending", "replace-me"}:
             raise ValueError("ETF_LIVE_ACCOUNT_ID_REQUIRED")
         if ZoneInfo(self.timezone).key != self.timezone:

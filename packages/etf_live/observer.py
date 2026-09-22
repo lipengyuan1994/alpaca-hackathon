@@ -14,7 +14,7 @@ from packages.etf_cash_research.news_gate import (
 
 
 def observe_news(*, context: MorningNewsContext, proposed_increases: dict[str, float], assessment: NewsVetoAssessment, now: datetime) -> dict[str, Any]:
-    """Validate a precomputed observer result without changing L11 intents.
+    """Validate a precomputed observer result without changing ETF intents.
 
     The production transport is intentionally supplied later.  This adapter
     proves the observer contract and returns evidence only; the live runtime

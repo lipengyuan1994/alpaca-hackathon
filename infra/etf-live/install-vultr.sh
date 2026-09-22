@@ -9,11 +9,15 @@ fi
 
 script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 install -d -m 0750 -o 10002 -g 10002 /etc/etf-live-secrets /etc/etf-live-config
+install -d -m 0750 -o 10002 -g 10002 /var/lib/alpaca-etf-live/t08_tecl
 install -d -m 0750 -o 10002 -g 10002 /var/lib/alpaca-etf-live/l11_tqqq_soxl
 install -d -m 0755 /etc/etf-live /opt/alpaca-etf-live
 install -m 0644 "$script_dir/compose.yaml" /opt/alpaca-etf-live/compose.yaml
 install -m 0755 "$script_dir/deploy.sh" /usr/local/sbin/deploy-alpaca-etf-live
 install -m 0755 "$script_dir/ssh-dispatch.sh" /usr/local/sbin/alpaca-etf-live-ssh-dispatch
+if [ -f "$script_dir/../../configs/live/t08_tecl.yaml" ]; then
+  install -m 0644 "$script_dir/../../configs/live/t08_tecl.yaml" /etc/etf-live-config/t08_tecl.yaml
+fi
 if [ -f "$script_dir/../../configs/live/l11_tqqq_soxl.yaml" ]; then
   install -m 0644 "$script_dir/../../configs/live/l11_tqqq_soxl.yaml" /etc/etf-live-config/l11_tqqq_soxl.yaml
 fi

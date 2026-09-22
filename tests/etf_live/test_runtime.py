@@ -133,7 +133,7 @@ def test_preflight_blocks_non_one_multiplier_and_unmanaged_position(tmp_path: Pa
         LiveRuntime(config=config, broker=PreflightBroker("1", [{"symbol": "TQQQ", "qty": "1"}])).preflight(now=datetime.now(UTC))
 
 
-def test_reconcile_records_incremental_fill_and_broker_settled_cash(tmp_path: Path) -> None:
+def test_reconcile_does_not_replace_internal_settled_cash_with_buying_power(tmp_path: Path) -> None:
     config = _config(tmp_path)
     state = LiveState(config.state_path)
     state.bind_config(config.config_hash)
@@ -175,4 +175,107 @@ def test_reconcile_records_incremental_fill_and_broker_settled_cash(tmp_path: Pa
     assert result["reconciled_fills"] == 1
     assert state.order("l11-d1-tqqq-buy")["status"] == "filled"
     assert state.filled_quantity("l11-d1-tqqq-buy") == "2"
-    assert state.settled_cash() == "900"
+    assert state.filled_consideration("l11-d1-tqqq-buy") == "100"
+    assert state.settled_cash() == "1000"
+
+
+def test_cumulative_average_changes_use_incremental_consideration_not_new_average(tmp_path: Path) -> None:
+    config = _config(tmp_path)
+    state = LiveState(config.state_path)
+    state.bind_config(config.config_hash)
+    state.save_order({
+        "client_order_id": "l11-d1-tqqq-buy",
+        "decision_id": "d1",
+        "symbol": "TQQQ",
+        "side": "buy",
+        "order_type": "limit",
+        "requested_qty": "2",
+        "limit_price": "60",
+        "status": "accepted",
+        "broker_order_id": "broker-1",
+        "reserved_cash": "120",
+        "updated_at": datetime.now(UTC).isoformat(),
+    })
+    state.set_settled_cash("1000")
+
+    class ChangingAverageBroker(FakeBroker):
+        filled_qty = "1"
+        average = "50"
+
+        def account(self) -> AccountSnapshot:
+            return AccountSnapshot("acct", "ACTIVE", Decimal("1000"), Decimal("1000"), Decimal("1000"), Decimal("1000"), Decimal("1"), False, False, False)
+
+        def positions(self) -> list[dict[str, str]]:
+            return []
+
+        def open_orders(self) -> list[dict[str, str]]:
+            return []
+
+        def order_by_id(self, order_id: str) -> dict[str, object] | None:
+            return {"id": "broker-1", "client_order_id": "l11-d1-tqqq-buy", "status": "partially_filled", "filled_qty": self.filled_qty, "filled_avg_price": self.average}
+
+        def order_by_client_id(self, client_order_id: str) -> dict[str, object] | None:
+            return None
+
+    broker = ChangingAverageBroker()
+    runtime = LiveRuntime(config=config, broker=broker, state=state)
+    now = datetime(2026, 9, 21, 14, 31, tzinfo=UTC)
+    runtime.reconcile(now=now)
+    broker.filled_qty, broker.average = "2", "50.5"
+    runtime.reconcile(now=now)
+    records = state.fill_records("l11-d1-tqqq-buy")
+    assert [Decimal(row["quantity"]) for row in records] == [Decimal("1"), Decimal("1")]
+    assert [Decimal(row["price"]) for row in records] == [Decimal("50"), Decimal("51")]
+    assert state.filled_consideration("l11-d1-tqqq-buy") == "101.0"
+    broker.average = "50.75"
+    runtime.reconcile(now=now)
+    assert state.filled_quantity("l11-d1-tqqq-buy") == "2"
+    assert state.filled_consideration("l11-d1-tqqq-buy") == "101.50"
+
+
+def test_reconcile_prefers_individual_fill_activities(tmp_path: Path) -> None:
+    config = _config(tmp_path)
+    state = LiveState(config.state_path)
+    state.bind_config(config.config_hash)
+    state.save_order({
+        "client_order_id": "l11-d1-tqqq-buy",
+        "decision_id": "d1",
+        "symbol": "TQQQ",
+        "side": "buy",
+        "order_type": "limit",
+        "requested_qty": "2",
+        "limit_price": "51",
+        "status": "accepted",
+        "broker_order_id": "broker-1",
+        "reserved_cash": "102",
+        "updated_at": datetime.now(UTC).isoformat(),
+    })
+    state.set_settled_cash("1000")
+
+    class ActivityBroker(FakeBroker):
+        def account(self) -> AccountSnapshot:
+            return AccountSnapshot("acct", "ACTIVE", Decimal("1000"), Decimal("1000"), Decimal("1000"), Decimal("1000"), Decimal("1"), False, False, False)
+
+        def positions(self) -> list[dict[str, str]]:
+            return []
+
+        def open_orders(self) -> list[dict[str, str]]:
+            return []
+
+        def order_by_id(self, order_id: str) -> dict[str, object] | None:
+            return {"id": "broker-1", "client_order_id": "l11-d1-tqqq-buy", "status": "filled", "filled_qty": "2", "filled_avg_price": "50"}
+
+        def order_by_client_id(self, client_order_id: str) -> dict[str, object] | None:
+            return None
+
+        def order_fill_activities(self, order_id: str) -> list[dict[str, object]]:
+            return [
+                {"id": "activity-1", "order_id": order_id, "symbol": "TQQQ", "side": "buy", "qty": "1", "price": "49.9", "transaction_time": "2026-09-21T14:31:00Z"},
+                {"id": "activity-2", "order_id": order_id, "symbol": "TQQQ", "side": "buy", "qty": "1", "price": "50.1", "transaction_time": "2026-09-21T14:31:02Z"},
+            ]
+
+    result = LiveRuntime(config=config, broker=ActivityBroker(), state=state).reconcile(now=datetime(2026, 9, 21, 14, 32, tzinfo=UTC))
+    assert result["reconciled_fills"] == 2
+    assert state.filled_quantity("l11-d1-tqqq-buy") == "2"
+    assert state.filled_consideration("l11-d1-tqqq-buy") == "100.0"
+    assert {row["fill_id"] for row in state.fill_records("l11-d1-tqqq-buy")} == {"activity-1", "activity-2"}
