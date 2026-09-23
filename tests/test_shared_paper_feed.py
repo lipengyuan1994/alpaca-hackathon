@@ -5,8 +5,10 @@ import tempfile
 import unittest
 from datetime import UTC, datetime
 from pathlib import Path
+from urllib.parse import urlsplit
 
 from scripts.publish_shared_paper_feed import canonical_hash, publish, validate_bundle
+from scripts.verify_shared_paper_page import verify_deployed_page
 
 
 def fixture_bundle() -> dict[str, object]:
@@ -138,6 +140,58 @@ class SharedPaperFeedTests(unittest.TestCase):
             self.assertIn(digest, public_json)
             self.assertNotIn('"account_id":', public_json)
             self.assertNotIn("private", public_js)
+
+    def test_deployed_page_verifier_accepts_matching_public_files(self) -> None:
+        bundle = fixture_bundle()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            incoming = root / "bundle.json"
+            public_root = root / "docs"
+            incoming.write_text(json.dumps(bundle), encoding="utf-8")
+            publish(incoming, public_root=public_root, mode="site-only", max_age_seconds=5400)
+
+            def fetch(url: str) -> bytes:
+                return (public_root / urlsplit(url).path.removeprefix("/repo/")).read_bytes()
+
+            result = verify_deployed_page(
+                public_root,
+                "https://pages.example/repo/",
+                attempts=1,
+                fetch=fetch,
+                sleep=lambda _seconds: None,
+            )
+            self.assertEqual(result["snapshot_hash"], bundle["snapshot"]["snapshot_hash"])
+            self.assertEqual(result["captured_at"], bundle["compatibility"]["generated_at"])
+
+    def test_deployed_page_verifier_rejects_a_different_valid_capture(self) -> None:
+        bundle = fixture_bundle()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            incoming = root / "bundle.json"
+            public_root = root / "docs"
+            incoming.write_text(json.dumps(bundle), encoding="utf-8")
+            publish(incoming, public_root=public_root, mode="site-only", max_age_seconds=5400)
+            remote = json.loads((public_root / "assets/data/live-paper-snapshot.json").read_text())
+            remote["generated_at"] = "2026-09-22T21:01:00Z"
+            remote["artifact_hash"] = canonical_hash(
+                {key: value for key, value in remote.items() if key != "artifact_hash"}
+            )
+            tampered = json.dumps(remote).encode()
+
+            def fetch(url: str) -> bytes:
+                path = urlsplit(url).path.removeprefix("/repo/")
+                if path.endswith(".json"):
+                    return tampered
+                return (public_root / path).read_bytes()
+
+            with self.assertRaisesRegex(SystemExit, "O_DEPLOYED_FEED_IDENTITY_MISMATCH"):
+                verify_deployed_page(
+                    public_root,
+                    "https://pages.example/repo/",
+                    attempts=1,
+                    fetch=fetch,
+                    sleep=lambda _seconds: None,
+                )
 
 
 if __name__ == "__main__":

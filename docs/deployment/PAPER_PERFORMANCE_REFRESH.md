@@ -1,9 +1,9 @@
 # Paper performance refresh: Cloudflare → GitHub Actions → GitHub Pages
 
-This runbook describes the read-only publication pipeline for the
+This runbook describes O's read-only compatibility publication pipeline for the
 [paper performance dashboard](https://lipengyuan1994.github.io/alpaca-hackathon/paper-performance.html)
-and the home-page account card. Implementation and automatic-run evidence were
-checked on September 3, 2026.
+and home-page account card. O's page remains live while SignalQuarry owns the
+durable paper feed and GET-only Vultr exporter.
 
 The paper system went live on **Tuesday, September 1, 2026**. It operates with
 real market data in an Alpaca **paper** account. Publishing its results is a
@@ -14,17 +14,20 @@ orders, or authorize live-money trading. See the separate
 ## End-to-end flow
 
 ```text
-Cloudflare: persistent SQLite Durable Object alarm
-  │ authenticated workflow_dispatch, ref=main
+O Cloudflare: persistent SQLite Durable Object alarm
+  │ authenticated workflow_dispatch, ref=main, workflow=pages.yml
   ▼
-GitHub Actions: .github/workflows/pages.yml
-  │ GET account, closed orders, daily portfolio history from Alpaca paper
+O GitHub Actions: .github/workflows/pages.yml
+  │ restricted SSH command: capture-current (or latest for site-only)
   ▼
-public_snapshot.py: validate account → sanitize → hash → write JSON
-  │ assemble HTML + assets and upload deployment artifact
+SignalQuarry Vultr exporter: GET-only Alpaca paper capture + durable history
+  │ validated snapshot and O-compatible allowlisted projection
   ▼
-GitHub Pages: publish website and assets/data/live-paper-snapshot.json
-  │ browser fetches deployed JSON on load and every 60 seconds
+publish_shared_paper_feed.py: verify hashes/identity → write O fallback JSON
+  │ assemble O HTML + assets and upload deployment artifact
+  ▼
+O GitHub Pages: keep the existing website URL
+  │ browser fetches A's compatibility endpoint on load and every 60 seconds
   ▼
 Home-page account card + dedicated paper performance dashboard
 ```
@@ -39,9 +42,11 @@ execution service still has its own runtime requirements.
 | Durable Object | `PaperRefreshScheduler`, binding `PAPER_REFRESH_SCHEDULER`; [scheduler](../../cloudflare/alpaca-paper-refresh-native/scheduler.js) | Persistent enabled state, alarm, retry and last-result records |
 | Logical job | `lipengyuan1994/alpaca-hackathon:pages.yml` | Stable object identity for this one refresh job |
 | Deployment | [wrangler.jsonc](../../cloudflare/alpaca-paper-refresh-native/wrangler.jsonc) | SQLite migration, binding, observability, no Cron Triggers |
-| Publisher | [pages.yml](../../.github/workflows/pages.yml) | Fetch broker evidence, build site, deploy Pages |
-| Snapshot builder | [public_snapshot.py](../../packages/paper_wheel/public_snapshot.py) | Account validation, allowlisted public fields, canonical artifact hash |
-| Browser | [site.js](../assets/site.js) | Fetch published JSON, render metrics/history/fills, label freshness |
+| Publisher | [pages.yml](../../.github/workflows/pages.yml) | Retrieve the durable A feed using O's restricted publication key, stage an O-compatible fallback, build and deploy O Pages |
+| O feed adapter | [publish_shared_paper_feed.py](../../scripts/publish_shared_paper_feed.py) | Strict schema and hash validation, paper-only identity check, allowlisted O projection |
+| Deployed-page verifier | [verify_shared_paper_page.py](../../scripts/verify_shared_paper_page.py) | Retry Pages propagation and compare deployed JSON/script identities with the staged snapshot |
+| Shared feed | [SignalQuarry latest compatibility feed](https://lipengyuan1994.github.io/signalquarry/feeds/compat/alpaca-hackathon/v1/latest.json) | Public sanitized paper balances, supported performance metrics and selected activity |
+| Browser | [site.js](../assets/site.js) | Fetch SignalQuarry's compatibility JSON, render metrics/history/fills, label freshness |
 
 ## Schedule and freshness
 
@@ -52,14 +57,17 @@ execution service still has its own runtime requirements.
 - **Startup:** enabling a stopped timer schedules one automatic validation
   attempt ten seconds later if that time is in-window; otherwise it schedules
   the next regular slot. Starting an already enabled timer is idempotent.
-- **Fallback:** GitHub's own weekday schedule remains in `pages.yml`, with
-  `America/New_York` specified. It is independent of Cloudflare and can be
-  delayed. It uses half-hour slots from 09:00–16:30 plus 17:00.
-- **Other triggers:** `workflow_dispatch` and qualifying pushes to `main`
-  (website docs, snapshot builder, or the Pages workflow). A docs deployment
-  can therefore refresh data outside the normal monitoring window.
-- **Browser:** fetches the deployed JSON on load and every 60 seconds with
-  cache bypass. This does not call Alpaca, trigger Actions, or restart an alarm.
+- **GitHub fallback:** O's `pages.yml` weekday schedule remains enabled with
+  `America/New_York` specified. It requests a durable capture from the Vultr
+  exporter and publishes the O compatibility site; it does not call Alpaca
+  directly. It is independent of Cloudflare and can be delayed.
+- **Other triggers:** `workflow_dispatch` can request a capture or a site-only
+  rebuild. Qualifying pushes to `main` use site-only mode and reuse the latest
+  durable snapshot; they do not make a broker capture.
+- **Browser:** fetches SignalQuarry's compatibility JSON on load and every 60
+  seconds with cache bypass. This does not call Alpaca, trigger Actions, or
+  restart an alarm. A and O display the same capture identity when both feeds
+  are available.
 - **Freshness:** `generated_at` is the broker snapshot generation time in UTC,
   not page-load time or deployment-completion time. A snapshot older than
   **90 minutes** is labeled stale during the publishing window; outside the
@@ -67,10 +75,10 @@ execution service still has its own runtime requirements.
   not an accumulation of active trading minutes.
 
 Thirty minutes is the target dispatch cadence, not a streaming-data guarantee.
-GitHub queue/build/deploy time adds latency. The shared Pages concurrency group
-uses `cancel-in-progress: true`; overlapping fallback, alarm, or push runs may
-cancel an earlier run. Check the latest successful deployment, not just whether
-one particular run was cancelled.
+GitHub queue/build/deploy time adds latency. O and A each serialize their own
+Pages deployments with `cancel-in-progress: false`. Overlapping capture
+requests reuse the durable capture-slot result; deployment serialization is
+independent in each repository.
 
 ### Website-code caching
 
@@ -84,15 +92,16 @@ reload the page (use a new page query string if the HTML itself is cached).
 
 ## Data and credential boundaries
 
-Cloudflare has a `GITHUB_TOKEN` secret: a fine-grained token with Actions write
-access to this repository. It posts to the GitHub workflow-dispatch endpoint
-for `pages.yml` with `ref: main`. **HTTP 204 means accepted, not deployed.**
-Cloudflare does not need the Alpaca API key or secret.
+Cloudflare retains its existing repository-scoped `GITHUB_TOKEN` with Actions
+write access to O. It dispatches O's `pages.yml` with `ref: main`; **HTTP 204
+means accepted, not deployed.** It does not hold Alpaca credentials. A has a
+separate Cloudflare workflow, Worker and repository-scoped dispatch credential.
 
-GitHub Actions supplies these repository secrets only to the snapshot step:
-`ALPACA_PAPER_API_KEY`, `ALPACA_PAPER_API_SECRET`, `ALPACA_PAPER_ACCOUNT_ID`, and
-`ALPACA_PAPER_BASE_URL`. The base URL must remain the Alpaca paper endpoint.
-The builder uses GET requests for:
+O Actions uses `PUBLIC_FEED_SSH_HOST`, `PUBLIC_FEED_SSH_USER`,
+`PUBLIC_FEED_SSH_KEY`, and `PUBLIC_FEED_KNOWN_HOSTS` to invoke only the
+Vultr exporter's restricted `capture-current` or `latest` commands. The A-owned
+exporter holds the paper broker credential on Vultr and makes GET-only requests
+to Alpaca for:
 
 - `/v2/account` — validates the returned account ID against the expected ID;
 - `/v2/orders?status=closed&limit=500&direction=desc&nested=true` — selects filled
@@ -100,41 +109,33 @@ The builder uses GET requests for:
 - `/v2/account/portfolio/history?period=1A&timeframe=1D&intraday_reporting=market_hours`
   — daily paper equity/P&L history, with up to 366 sanitized points.
 
-The ten fills are **the most recent system fills, not the ten most profitable
-trades**. Account/history metrics describe the account; the fills table filters
-to the system prefix. The graph can be unavailable if the history request
-fails while account and order reads succeed. The chart extends daily history
-with `account.total_pnl` at `generated_at` when that valid snapshot is at least
-as recent as the history. Its headline therefore matches the current account
-cards; a dashed final segment and capture timestamp distinguish the snapshot
-from daily observations. Same-timestamp observations are replaced rather than
-duplicated. A lower or negative current P&L is included just like a higher one.
-Without enough history, the current amount still displays but no trend is
-invented. Daily-history drawdown remains a separately sampled metric, not a
-continuous intraday drawdown.
+The feed preserves imported legacy observations and appends new captures;
+rolling Alpaca history responses cannot erase older observations. The ten
+fills are **the most recent system fills, not the ten most profitable trades**.
+Unavailable inputs remain labeled unavailable. Net P&L and Modified Dietz daily
+returns are shown only when their required cash-flow and equity observations
+are available; these are not described as exact time-weighted returns.
 
-The public JSON contains broker-reported paper balances, P&L, selected fills,
-history, freshness metadata, and the account ID published with the owner's
-approval. API credentials and broker order IDs are excluded. The canonical
-SHA-256 artifact hash binds the snapshot contents; it is not a signature or
-proof of profitability. Paper fills and short-history annualized calculations
-are not guaranteed future returns or live-money results.
+The public JSON contains allowlisted broker-reported paper balances, supported
+P&L, selected sanitized fills, accumulated history, freshness metadata and a
+public deployment alias. Account identifiers, API credentials, broker order
+IDs, raw responses and host paths are excluded. The canonical SHA-256 artifact
+hash binds the snapshot contents; it is not a signature or proof of
+profitability. Paper fills and short-history metrics are not guaranteed future
+returns or live-money results.
 
-The workflow generates JSON in its checkout, atomically replaces the output,
-and publishes it in the Pages artifact; it does **not** commit each snapshot
-to Git. The checked-in JSON and a local preview can therefore be older than
-the deployed JSON. Missing required secrets, account mismatch, or failure of
-required account/order reads stops publication and leaves the previous site
-deployment available.
+The O workflow validates the bundle, atomically replaces the fallback, deploys
+the site and verifies the actual deployed JSON and browser script against the
+staged snapshot. The fallback is not committed on each run and can be older
+than the deployed page. A missing feed key, invalid bundle, stale capture,
+schema mismatch or deployed identity mismatch fails the workflow and leaves
+the previous valid Pages deployment available.
 
-For a local checkout, run `./scripts/install_git_hooks.sh` once. Its pre-commit
-hook refreshes and stages both the hash-bound JSON and its sanitized browser
-fallback from the local paper credential bundle. The fallback lets `file://`
-previews render the same snapshot when browsers block a JSON fetch. Its
-pre-push hook rejects a snapshot older than 90 minutes or a fallback that does
-not exactly match the JSON. These local hooks are fail closed: missing
-credentials, an unavailable broker, a non-native macOS Python, or invalid
-evidence stops the commit or push.
+For a local checkout, run `./scripts/install_git_hooks.sh` once. The pre-commit
+hook checks staged diffs. The pre-push hook verifies the feed adapter tests and
+requires any changed public snapshot to be committed; it does not call Alpaca
+or require local broker credentials. The checked-in sanitized browser fallback
+supports local file previews when browsers block network fetches.
 
 ## Operator controls
 
@@ -215,9 +216,9 @@ counts are not evidence that an alarm is armed.
    stopped. Observe a real automatic alarm, not just a manual dispatch.
 4. Correlate its application outcome/request ID with a new
    [GitHub Actions run](https://github.com/lipengyuan1994/alpaca-hackathon/actions/workflows/pages.yml).
-   Verify that deployment succeeds and the
-   [public JSON](https://lipengyuan1994.github.io/alpaca-hackathon/assets/data/live-paper-snapshot.json)
-   has advanced `generated_at`.
+   Verify O's deployed fallback matches the staged compatibility snapshot and
+   the O browser fetch points to the same latest
+   [SignalQuarry compatibility JSON](https://lipengyuan1994.github.io/signalquarry/feeds/compat/alpaca-hackathon/v1/latest.json).
 5. Verify a persisted future alarm and, after initial setup, a normal cadence
    slot. Update this runbook, website copy, browser freshness contract, and CI
    together when the schedule or publication behavior changes.

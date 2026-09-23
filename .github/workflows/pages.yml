@@ -6,6 +6,7 @@ on:
     paths:
       - "docs/**"
       - "scripts/publish_shared_paper_feed.py"
+      - "scripts/verify_shared_paper_page.py"
       - ".github/workflows/pages.yml"
   schedule:
     - cron: "*/30 9-16 * * 1-5"
@@ -108,8 +109,12 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
       - name: Record the shared snapshot identity
+        env:
+          PAGES_URL: ${{ steps.deployment.outputs.page_url }}
         run: |
           set -euo pipefail
+          python3 scripts/verify_shared_paper_page.py \
+            --public-root docs --base-url "$PAGES_URL"
           python3 - <<'PY'
           import json
           from pathlib import Path
