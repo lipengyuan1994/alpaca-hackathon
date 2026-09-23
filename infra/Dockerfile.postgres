@@ -7,7 +7,9 @@ FROM postgres:18.3-bookworm@sha256:80630f83606d8db77d30b3851b16a9f78be2d0d4dda6f
 # directory, in lexical order.  The role script runs before the schema, then
 # the grants run after every table exists.
 COPY --chmod=755 infra/postgres/000_create_execution_role.sh /docker-entrypoint-initdb.d/000_create_execution_role.sh
+COPY --chmod=755 infra/postgres/004_readonly_api_role.sh /docker-entrypoint-initdb.d/004_readonly_api_role.sh
 COPY infra/postgres/001_initial.sql /docker-entrypoint-initdb.d/001_initial.sql
 COPY infra/postgres/002_runtime_safety.sql /docker-entrypoint-initdb.d/002_runtime_safety.sql
 COPY infra/postgres/003_economic_context.sql /docker-entrypoint-initdb.d/003_economic_context.sql
 COPY --chmod=755 infra/postgres/999_grant_execution_role.sh /docker-entrypoint-initdb.d/999_grant_execution_role.sh
+COPY --chmod=755 infra/postgres/005_grant_readonly_api_role.sh /docker-entrypoint-initdb.d/005_grant_readonly_api_role.sh
