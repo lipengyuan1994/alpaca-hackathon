@@ -26,12 +26,5 @@ printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
 ssh_target="${DEPLOY_USER}@${DEPLOY_HOST}"
 ssh_args=(-i "$HOME/.ssh/deploy_key" -o BatchMode=yes -o StrictHostKeyChecking=yes)
 
-cleanup() {
-    ssh "${ssh_args[@]}" "$ssh_target" ghcr-logout >/dev/null 2>&1 || true
-}
-trap cleanup EXIT
-
-printf '%s' "$GHCR_TOKEN" | ssh "${ssh_args[@]}" "$ssh_target" ghcr-login
-ssh "${ssh_args[@]}" "$ssh_target" \
+printf '%s' "$GHCR_TOKEN" | ssh "${ssh_args[@]}" "$ssh_target" \
     "deploy ghcr.io/lipengyuan1994/alpaca-hackathon-paper-wheel@${image_digest}"
-
