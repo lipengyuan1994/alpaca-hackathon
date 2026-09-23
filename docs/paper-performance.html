@@ -37,14 +37,14 @@
       <div>
         <p class="eyebrow"><span class="live-dot" aria-hidden="true"></span> Alpaca paper account</p>
         <h1>Performance,<br><em>in the open.</em></h1>
-        <p class="lede">A broker-reported record of Stable Income Generator operating against live market conditions in an Alpaca paper account since Tuesday, September 1, 2026. Follow the equity curve and system fills as the strategy proves itself beyond the backtest.</p>
+        <p class="lede">A broker-reported record from a simulated Alpaca paper account since Tuesday, September 1, 2026. Market prices are real, but the funds and fills are simulated. Follow the equity curve and sanitized system activity alongside the backtest evidence.</p>
       </div>
       <aside class="paper-status-card" aria-label="Paper account refresh status">
         <span class="status-pill" data-live-freshness><span class="live-dot" aria-hidden="true"></span> Checking latest snapshot</span>
         <strong data-live-equity>Loading snapshot…</strong>
         <p class="positive" data-live-total-pnl>Loading broker P&amp;L…</p>
         <dl>
-          <div><dt>Live-market launch</dt><dd><time datetime="2026-09-01">Sep 1, 2026</time></dd></div>
+          <div><dt>Paper trading started</dt><dd><time datetime="2026-09-01">Sep 1, 2026</time></dd></div>
           <div><dt>Account status</dt><dd data-live-account-status>ACTIVE</dd></div>
           <div><dt>Last captured</dt><dd><time data-live-generated-at>Loading…</time></dd></div>
           <div><dt>Refresh target</dt><dd>Every 30 minutes · weekdays</dd></div>
@@ -102,14 +102,14 @@
             <p class="eyebrow">Most recent system activity</p>
             <h2 id="recent-trades-title">Top 10 recent fills</h2>
           </div>
-          <div class="trade-meta"><span data-live-order-count>Loading fills…</span><a href="assets/data/live-paper-snapshot.json">Download hash-bound JSON ↓</a></div>
+          <div class="trade-meta"><span data-live-order-count>Loading fills…</span><a data-snapshot-download href="https://lipengyuan1994.github.io/signalquarry/feeds/compat/alpaca-hackathon/v1/latest.json">Download hash-bound JSON ↓</a></div>
         </div>
         <div class="live-table-wrap">
           <table class="live-trades-table">
-            <caption>Newest ten filled broker orders carrying the <code>rs-v135</code> system prefix. Manual, canceled, unfilled, and foreign orders are excluded.</caption>
-            <thead><tr><th scope="col">Filled</th><th scope="col">Action</th><th scope="col">Contract</th><th scope="col">Qty</th><th scope="col">Avg fill</th><th scope="col">System ref</th></tr></thead>
+            <caption>Newest ten filled V13.5 paper orders. Manual, canceled, unfilled, and unrelated orders are excluded; broker and client-order identifiers are omitted.</caption>
+            <thead><tr><th scope="col">Filled</th><th scope="col">Action</th><th scope="col">Contract</th><th scope="col">Qty</th><th scope="col">Avg fill</th></tr></thead>
             <tbody data-live-orders>
-              <tr><td colspan="6">Loading sanitized system fills…</td></tr>
+              <tr><td colspan="5">Loading sanitized paper fills…</td></tr>
             </tbody>
           </table>
         </div>
@@ -118,12 +118,12 @@
 
     <section class="paper-performance-section paper-method" aria-labelledby="method-title">
       <div>
-        <p class="eyebrow">Live-market proof</p>
-        <h2 id="method-title">Real market conditions. Real strategy decisions. Results in the open.</h2>
+        <p class="eyebrow">Paper-market observation</p>
+        <h2 id="method-title">Market observations. Simulated funds. Results in the open.</h2>
       </div>
       <div>
-        <p>This is more than a hypothetical model output. Stable Income Generator runs on live market data, and its account values, portfolio history, and system fills are reported directly by Alpaca’s paper Trading API. The public record shows how the strategy performs as markets move—not just how it scored in a historical test.</p>
-        <p>The trade table is restricted to filled orders with the system-owned <code>rs-v135</code> client-order prefix. Credentials and order-control capabilities remain private. Paper execution and capital are simulated, so these results demonstrate live-market operation rather than live-money returns.</p>
+        <p>Account values, portfolio history, and paper fills are reported by Alpaca’s paper Trading API. The page shows the strategy under observed market conditions alongside historical research, with the limitations of simulated execution stated clearly.</p>
+        <p>Only allowlisted V13.5 paper activity is published. Account identifiers, broker order IDs, client-order IDs, credentials, and order controls are excluded. Paper execution and capital are simulated; these results are not live-money returns.</p>
       </div>
     </section>
   </main>
@@ -133,6 +133,7 @@
     <p>Broker-reported paper evidence · refreshed every 30 minutes on weekdays</p>
     <nav aria-label="Footer navigation">
       <a href="index.html">Overview</a>
+      <a href="https://lipengyuan1994.github.io/signalquarry/">New research: SignalQuarry</a>
       <a href="https://github.com/lipengyuan1994/alpaca-hackathon">GitHub</a>
       <a href="#main">Back to top ↑</a>
     </nav>

@@ -16,4 +16,4 @@ if ! git diff --quiet -- docs/assets/data/live-paper-snapshot.json docs/assets/d
   exit 1
 fi
 
-exec "$python_path" scripts/refresh_public_paper_snapshot.py --check
+exec "$python_path" -m unittest discover -s tests -p 'test_shared_paper_feed.py'

@@ -51,7 +51,7 @@
           <li>Fail closed</li>
         </ul>
       </div>
-      <aside class="proof-card" aria-label="Live paper account snapshot">
+      <aside class="proof-card" aria-label="Alpaca paper account snapshot">
         <div class="proof-card-head">
           <span>Paper account equity</span>
           <span class="status-pill" data-live-freshness><span class="live-dot" aria-hidden="true"></span> Near-live · checking</span>
@@ -59,11 +59,11 @@
         <a class="live-equity-link" href="paper-performance.html" aria-label="Open Alpaca paper account performance"><strong data-live-equity>Loading snapshot…</strong></a>
         <p class="positive" data-live-total-pnl>Loading broker P&amp;L…</p>
         <dl>
-          <div><dt>Account ID</dt><dd class="account-row"><code data-live-account-id>4c0db2cd-f24c-419f-a9fb-339a24cdef1c</code><button class="copy-mini" type="button" data-copy="4c0db2cd-f24c-419f-a9fb-339a24cdef1c" aria-label="Copy Alpaca paper account ID">Copy</button></dd></div>
+          <div><dt>Public deployment</dt><dd data-live-deployment-alias>v13-5-paper</dd></div>
           <div><dt>Strategy</dt><dd>V13.5 · QQQ</dd></div>
           <div><dt>Last deployed</dt><dd><time data-live-generated-at>Loading…</time></dd></div>
         </dl>
-        <small><strong>broker_reported_paper</strong> evidence, with Cloudflare alarms targeting a refresh every 30 minutes during the weekday monitoring window. <a href="#refresh">How updates reach this page →</a> Full ID published with account-owner approval; API credentials and controls remain private.</small>
+        <small><strong>Alpaca paper-account evidence</strong>, with this repository’s Cloudflare workflow requesting a refresh every 30 minutes during the weekday monitoring window. Balances and fills are simulated; no account identifier is published. <a href="#refresh">How updates reach this page →</a></small>
       </aside>
     </section>
 
@@ -363,6 +363,7 @@ curl http://127.0.0.1:8000/v1/status</code></pre>
     <div><span class="brand-mark" aria-hidden="true">SIG</span><strong>Stable Income Generator</strong></div>
     <p>RegimeSwitch · Paper-only options research and automation · MIT licensed</p>
     <nav aria-label="Footer navigation">
+      <a href="https://lipengyuan1994.github.io/signalquarry/">New research: SignalQuarry</a>
       <a href="https://github.com/lipengyuan1994/alpaca-hackathon">GitHub</a>
       <a href="architecture/ARCHITECTURE_DESIGN.html">Architecture</a>
       <a href="https://github.com/lipengyuan1994/alpaca-hackathon/blob/main/docs/index.md">Docs</a>

@@ -1,5 +1,12 @@
 # RegimeSwitch — paper-only options-agent system
 
+> **Repository status:** this is the historical application source. New research,
+> backtests, strategy plugins, and paper-trading development continue in
+> [SignalQuarry](https://github.com/lipengyuan1994/signalquarry). This repository
+> remains maintained only for its existing paper-performance page and its
+> repository-scoped Cloudflare publication workflow. The page reads the shared,
+> sanitized SignalQuarry public feed; it does not submit orders.
+
 This is the executable modular-monolith skeleton defined in the
 [system architecture](docs/architecture/SYSTEM_ARCHITECTURE.md). It has no
 live-trading mode, endpoint, or live credential path.
