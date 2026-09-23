@@ -51,7 +51,7 @@
           <li>Fail closed</li>
         </ul>
       </div>
-      <aside class="proof-card" aria-label="Live paper account snapshot">
+      <aside class="proof-card" aria-label="Alpaca paper account snapshot">
         <div class="proof-card-head">
           <span>Paper account equity</span>
           <span class="status-pill" data-live-freshness><span class="live-dot" aria-hidden="true"></span> Near-live · checking</span>
@@ -59,11 +59,11 @@
         <a class="live-equity-link" href="paper-performance.html" aria-label="Open Alpaca paper account performance"><strong data-live-equity>Loading snapshot…</strong></a>
         <p class="positive" data-live-total-pnl>Loading broker P&amp;L…</p>
         <dl>
-          <div><dt>Account ID</dt><dd class="account-row"><code data-live-account-id>4c0db2cd-f24c-419f-a9fb-339a24cdef1c</code><button class="copy-mini" type="button" data-copy="4c0db2cd-f24c-419f-a9fb-339a24cdef1c" aria-label="Copy Alpaca paper account ID">Copy</button></dd></div>
+          <div><dt>Public deployment</dt><dd data-live-deployment-alias>v13-5-paper</dd></div>
           <div><dt>Strategy</dt><dd>V13.5 · QQQ</dd></div>
           <div><dt>Last deployed</dt><dd><time data-live-generated-at>Loading…</time></dd></div>
         </dl>
-        <small><strong>broker_reported_paper</strong> evidence, with Cloudflare alarms targeting a refresh every 30 minutes during the weekday monitoring window. <a href="#refresh">How updates reach this page →</a> Full ID published with account-owner approval; API credentials and controls remain private.</small>
+        <small><strong>Alpaca paper-account evidence</strong>, with this repository’s Cloudflare workflow requesting a refresh every 30 minutes during the weekday monitoring window. Balances and fills are simulated; no account identifier is published. <a href="#refresh">How updates reach this page →</a></small>
       </aside>
     </section>
 
@@ -135,13 +135,13 @@
           <p class="eyebrow">From broker to browser</p>
           <h2 id="refresh-heading">Fresh evidence.<br>A visible update path.</h2>
         </div>
-        <p class="section-intro">A persistent Cloudflare Durable Object alarm starts each scheduled refresh—no open browser or running laptop required. GitHub Actions reads the paper account, then publishes the latest evidence to this website.</p>
+        <p class="section-intro">A persistent Cloudflare Durable Object alarm starts each scheduled refresh—no open browser or running laptop required. GitHub Actions requests a sanitized snapshot from SignalQuarry’s GET-only publication endpoint; broker credentials and capture remain on Vultr.</p>
       </div>
       <ol class="refresh-flow" aria-label="Paper performance publication flow">
         <li><span>01 · SCHEDULE</span><strong>Cloudflare alarm</strong><small>Stored timer targets :00 and :30, Monday–Friday, 9 AM–5 PM Eastern.</small></li>
         <li><span>02 · TRIGGER</span><strong>GitHub Actions</strong><small>Authenticated dispatch starts the Pages workflow. A GitHub schedule remains as fallback.</small></li>
-        <li><span>03 · READ</span><strong>Alpaca paper</strong><small>Read-only account, daily P&amp;L history, and the ten most recent system fills.</small></li>
-        <li><span>04 · PUBLISH</span><strong>GitHub Pages</strong><small>Sanitized, timestamped JSON ships with the dashboard. API credentials stay private.</small></li>
+        <li><span>03 · READ</span><strong>SignalQuarry exporter</strong><small>A Vultr-hosted GET-only adapter captures Alpaca paper balances, daily history, and recent system fills.</small></li>
+        <li><span>04 · PUBLISH</span><strong>SignalQuarry + O Pages</strong><small>Sanitized, timestamped JSON feeds both dashboards. Broker credentials stay on Vultr.</small></li>
         <li><span>05 · DISPLAY</span><strong>Your dashboard</strong><small>The browser checks the published snapshot every 60 seconds and shows its age.</small></li>
       </ol>
       <p class="truth-note">Scheduled snapshots, not a tick-by-tick stream. Build and deployment time adds latency. Eastern daylight saving time is handled automatically; the weekday schedule does not exclude market holidays. Data over 90 minutes old is marked stale during the refresh window, or off hours outside it.</p>
@@ -363,6 +363,7 @@ curl http://127.0.0.1:8000/v1/status</code></pre>
     <div><span class="brand-mark" aria-hidden="true">SIG</span><strong>Stable Income Generator</strong></div>
     <p>RegimeSwitch · Paper-only options research and automation · MIT licensed</p>
     <nav aria-label="Footer navigation">
+      <a href="https://lipengyuan1994.github.io/signalquarry/">New research: SignalQuarry</a>
       <a href="https://github.com/lipengyuan1994/alpaca-hackathon">GitHub</a>
       <a href="architecture/ARCHITECTURE_DESIGN.html">Architecture</a>
       <a href="https://github.com/lipengyuan1994/alpaca-hackathon/blob/main/docs/index.md">Docs</a>
@@ -370,6 +371,6 @@ curl http://127.0.0.1:8000/v1/status</code></pre>
     </nav>
   </footer>
   <script src="assets/data/live-paper-snapshot.js"></script>
-  <script src="assets/site.js?v=47791fc2a10a" defer></script>
+  <script src="assets/site.js?v=520f96b166b8" defer></script>
 </body>
 </html>

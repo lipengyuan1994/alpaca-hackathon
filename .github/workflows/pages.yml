@@ -5,19 +5,23 @@ on:
     branches: [main]
     paths:
       - "docs/**"
-      - "packages/paper_wheel/public_snapshot.py"
+      - "scripts/publish_shared_paper_feed.py"
+      - "scripts/verify_shared_paper_page.py"
       - ".github/workflows/pages.yml"
   schedule:
-    # Thirty-minute broker captures during the public monitoring window only.
-    # The separate final trigger includes exactly 5:00 PM without continuing
-    # through the rest of the 5 PM hour.
     - cron: "*/30 9-16 * * 1-5"
       timezone: "America/New_York"
     - cron: "0 17 * * 1-5"
       timezone: "America/New_York"
-  # Cloudflare's persistent Durable Object alarm dispatches this workflow.
-  # The schedule above remains an independent GitHub fallback.
+  # The existing O Cloudflare Worker still dispatches this workflow.
   workflow_dispatch:
+    inputs:
+      mode:
+        description: Capture the current slot or rebuild from the latest persisted snapshot
+        required: false
+        default: refresh
+        type: choice
+        options: [refresh, site-only]
 
 permissions:
   contents: read
@@ -26,31 +30,73 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-      - name: Refresh sanitized paper evidence
+      - name: Checkout the current default branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Select publication mode
+        id: mode
         env:
-          ALPACA_PAPER_API_KEY: ${{ secrets.ALPACA_PAPER_API_KEY }}
-          ALPACA_PAPER_API_SECRET: ${{ secrets.ALPACA_PAPER_API_SECRET }}
-          ALPACA_PAPER_ACCOUNT_ID: ${{ secrets.ALPACA_PAPER_ACCOUNT_ID }}
-          ALPACA_PAPER_BASE_URL: ${{ secrets.ALPACA_PAPER_BASE_URL }}
-        run: >-
-          python3 packages/paper_wheel/public_snapshot.py
-          --output docs/assets/data/live-paper-snapshot.json
-          --browser-output docs/assets/data/live-paper-snapshot.js
+          REQUESTED_MODE: ${{ inputs.mode }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          mode="$REQUESTED_MODE"
+          if [ -z "$mode" ]; then
+            if [ "$EVENT_NAME" = push ]; then mode=site-only; else mode=refresh; fi
+          fi
+          case "$mode" in refresh|site-only) ;; *) exit 64 ;; esac
+          echo "value=$mode" >> "$GITHUB_OUTPUT"
+      - name: Retrieve a durable SignalQuarry paper snapshot bundle
+        env:
+          SSH_HOST: ${{ secrets.PUBLIC_FEED_SSH_HOST }}
+          SSH_USER: ${{ secrets.PUBLIC_FEED_SSH_USER }}
+          SSH_PRIVATE_KEY: ${{ secrets.PUBLIC_FEED_SSH_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.PUBLIC_FEED_KNOWN_HOSTS }}
+          MODE: ${{ steps.mode.outputs.value }}
+        run: |
+          set -euo pipefail
+          : "${SSH_HOST:?PUBLIC_FEED_SSH_HOST is required}"
+          : "${SSH_USER:?PUBLIC_FEED_SSH_USER is required}"
+          : "${SSH_PRIVATE_KEY:?PUBLIC_FEED_SSH_KEY is required}"
+          : "${SSH_KNOWN_HOSTS:?PUBLIC_FEED_KNOWN_HOSTS is required}"
+          install -d -m 0700 "$RUNNER_TEMP/shared-feed-ssh"
+          printf '%s\n' "$SSH_PRIVATE_KEY" > "$RUNNER_TEMP/shared-feed-ssh/id_ed25519"
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > "$RUNNER_TEMP/shared-feed-ssh/known_hosts"
+          chmod 0600 "$RUNNER_TEMP/shared-feed-ssh/id_ed25519" "$RUNNER_TEMP/shared-feed-ssh/known_hosts"
+          ssh-keygen -F "$SSH_HOST" -f "$RUNNER_TEMP/shared-feed-ssh/known_hosts" >/dev/null
+          remote_command=capture-current
+          if [ "$MODE" = site-only ]; then remote_command=latest; fi
+          ssh -T -i "$RUNNER_TEMP/shared-feed-ssh/id_ed25519" \
+            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            -o UserKnownHostsFile="$RUNNER_TEMP/shared-feed-ssh/known_hosts" \
+            -o ConnectTimeout=15 "$SSH_USER@$SSH_HOST" "$remote_command" \
+            > "$RUNNER_TEMP/public-performance-bundle.json"
+          test -s "$RUNNER_TEMP/public-performance-bundle.json"
+      - name: Test O's standard-library feed adapter
+        run: python3 -m unittest discover -s tests -p 'test_shared_paper_feed.py' -v
+      - name: Validate the bundle and stage the compatible O fallback
+        env:
+          MODE: ${{ steps.mode.outputs.value }}
+        run: |
+          set -euo pipefail
+          python3 scripts/publish_shared_paper_feed.py \
+            --input "$RUNNER_TEMP/public-performance-bundle.json" \
+            --public-root docs --mode "$MODE" --max-age-seconds 5400
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
-      - name: Assemble public site
+      - name: Assemble O's historical site
         run: |
+          set -euo pipefail
           mkdir -p _site/architecture
           cp docs/index.html docs/paper-performance.html docs/.nojekyll _site/
           cp -R docs/assets _site/assets
@@ -59,6 +105,20 @@ jobs:
         uses: actions/upload-pages-artifact@v4
         with:
           path: _site
-      - name: Deploy GitHub Pages
+      - name: Deploy Pages
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Record the shared snapshot identity
+        env:
+          PAGES_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          set -euo pipefail
+          python3 scripts/verify_shared_paper_page.py \
+            --public-root docs --base-url "$PAGES_URL"
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          feed = json.loads(Path("docs/assets/data/live-paper-snapshot.json").read_text())
+          print(f"PUBLISHED_SNAPSHOT_HASH={feed['signalquarry_snapshot_hash']}")
+          print(f"PUBLISHED_CAPTURED_AT={feed['generated_at']}")
+          PY

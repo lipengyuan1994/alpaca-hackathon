@@ -82,11 +82,20 @@ def test_manual_deployment_workflow_pins_every_action_to_a_full_sha() -> None:
     assert "infra/paper-wheel/github-deploy.sh" in workflow
 
 
-def test_deployment_ssh_key_is_limited_to_three_commands() -> None:
+def test_deployment_ssh_key_is_limited_to_the_atomic_deploy_command() -> None:
     dispatcher = (ROOT / "infra/paper-wheel/ssh-dispatch.sh").read_text(encoding="utf-8")
     assert 'original_command="${SSH_ORIGINAL_COMMAND:-}"' in dispatcher
-    assert "ghcr-login)" in dispatcher
     assert "deploy)" in dispatcher
-    assert "ghcr-logout)" in dispatcher
+    assert "alpaca-paper-deploy-session" in dispatcher
+    assert "ghcr-login)" not in dispatcher
+    assert "ghcr-logout)" not in dispatcher
     assert "PAPER_WHEEL_SSH_COMMAND_NOT_ALLOWED" in dispatcher
     assert "sh -c" not in dispatcher
+
+
+def test_deployment_client_sends_token_and_digest_in_one_locked_session() -> None:
+    client = (ROOT / "infra/paper-wheel/github-deploy.sh").read_text(encoding="utf-8")
+    assert "printf '%s' \"$GHCR_TOKEN\" | ssh" in client
+    assert '"deploy ghcr.io/lipengyuan1994/alpaca-hackathon-paper-wheel@${image_digest}"' in client
+    assert "ghcr-login" not in client
+    assert "ghcr-logout" not in client

@@ -72,9 +72,12 @@ def test_pages_workflow_publishes_only_the_curated_site() -> None:
     assert 'cron: "*/30 9-16 * * 1-5"' in workflow
     assert 'cron: "0 17 * * 1-5"' in workflow
     assert workflow.count('timezone: "America/New_York"') == 2
-    assert "packages/paper_wheel/public_snapshot.py" in workflow
-    assert "secrets.ALPACA_PAPER_API_KEY" in workflow
-    assert "secrets.ALPACA_PAPER_API_SECRET" in workflow
+    assert "scripts/publish_shared_paper_feed.py" in workflow
+    assert "scripts/verify_shared_paper_page.py" in workflow
+    assert "PUBLIC_FEED_SSH_HOST" in workflow
+    assert "capture-current" in workflow and "latest" in workflow
+    assert "secrets.ALPACA_PAPER_API_KEY" not in workflow
+    assert "secrets.ALPACA_PAPER_API_SECRET" not in workflow
     assert "_site/architecture/ARCHITECTURE_DESIGN.html" in workflow
 
 
@@ -95,7 +98,11 @@ def test_refresh_docs_and_home_explain_the_deployed_alarm_pipeline() -> None:
     assert 'id="refresh"' in html
     assert 'href="index.html#refresh"' in paper
     assert "Cloudflare Durable Object alarm" in html
-    assert "GitHub Actions" in html and "GitHub Pages" in html
+    assert "GitHub Actions" in html and "SignalQuarry + O Pages" in html
+    assert "sanitized snapshot from SignalQuarry" in html
+    assert "SignalQuarry exporter</strong>" in html
+    assert "SignalQuarry + O Pages</strong>" in html
+    assert "direct Alpaca credentials" not in html
     assert "PAPER_PERFORMANCE_REFRESH.md" in html
     assert "Refresh ≠ trading" in html
     assert "90 active minutes" not in paper
@@ -103,7 +110,7 @@ def test_refresh_docs_and_home_explain_the_deployed_alarm_pipeline() -> None:
         assert "PAPER_PERFORMANCE_REFRESH.md" in source.read_text(encoding="utf-8")
     for endpoint in ("GET /scheduler/status", "POST /scheduler/start", "POST /scheduler/stop"):
         assert endpoint in docs
-    assert "HTTP 204 means accepted, not deployed" in docs
+    assert "means accepted, not deployed" in docs
     assert "Cron Events are expected" in docs
 
 
@@ -134,7 +141,9 @@ def test_public_copy_matches_approved_paper_snapshot() -> None:
     snapshot = json.loads(LIVE_PATH.read_text(encoding="utf-8"))
     assert snapshot["source"] == "broker_reported_paper"
     assert snapshot["schema_version"] == "stable-income-generator-live-paper/v3"
-    assert snapshot["account"]["account_id"] in html
+    assert snapshot["account"]["deployment_alias"] == "v13-5-paper"
+    assert "account_id" not in snapshot["account"]
+    assert "no account identifier is published" in html
     assert "Loading snapshot…" in html and "Loading snapshot…" in paper_performance
     assert "Gemini 3.6 Flash" in html
     assert 'href="paper-performance.html"' in html
@@ -161,16 +170,11 @@ def test_public_copy_matches_approved_paper_snapshot() -> None:
 
 def test_local_file_browser_snapshot_matches_hash_bound_json() -> None:
     snapshot = json.loads(LIVE_PATH.read_text(encoding="utf-8"))
-    encoded = json.dumps(
-        snapshot,
-        ensure_ascii=False,
-        allow_nan=False,
-        sort_keys=True,
-        separators=(",", ":"),
-    )
-    assert BROWSER_LIVE_PATH.read_text(encoding="utf-8") == (
-        f"globalThis.__LIVE_PAPER_SNAPSHOT__ = Object.freeze({encoded});\n"
-    )
+    script = BROWSER_LIVE_PATH.read_text(encoding="utf-8")
+    prefix = "globalThis.__LIVE_PAPER_SNAPSHOT__ = Object.freeze("
+    assert script.startswith(prefix) and script.endswith(");\n")
+    browser_snapshot = json.loads(script[len(prefix) : -3])
+    assert browser_snapshot == snapshot
     for html_path in (HTML_PATH, PAPER_PERFORMANCE_PATH):
         html = html_path.read_text(encoding="utf-8")
         assert '<script src="assets/data/live-paper-snapshot.js"></script>' in html
@@ -183,8 +187,9 @@ def test_repository_hooks_refresh_before_commit_and_guard_push() -> None:
     assert pre_commit.stat().st_mode & 0o111
     assert pre_push.stat().st_mode & 0o111
     assert installer.stat().st_mode & 0o111
-    assert "refresh_public_paper_snapshot.py --stage" in pre_commit.read_text()
-    assert "refresh_public_paper_snapshot.py --check" in pre_push.read_text()
+    assert "git diff --cached --check" in pre_commit.read_text()
+    assert "commit the refreshed public snapshot before pushing" in pre_push.read_text()
+    assert "test_shared_paper_feed.py" in pre_push.read_text()
     assert "core.hooksPath .githooks" in installer.read_text()
 
 

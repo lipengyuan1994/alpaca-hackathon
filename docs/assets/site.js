@@ -1,4 +1,4 @@
-const SNAPSHOT_PATH = "assets/data/live-paper-snapshot.json";
+const SNAPSHOT_PATH = "https://lipengyuan1994.github.io/signalquarry/feeds/compat/alpaca-hackathon/v1/latest.json";
 const PAPER_LAUNCH_AT = new Date("2026-09-01T00:00:00-04:00");
 const ANNUALIZATION_DAYS = 365.2425;
 
@@ -93,7 +93,7 @@ function renderOrders(orders) {
   if (!orders.length) {
     const row = document.createElement("tr");
     const cell = document.createElement("td");
-    cell.colSpan = 6;
+    cell.colSpan = 5;
     cell.className = "empty-orders";
     cell.textContent = "No filled V13.5 orders are available in the broker history yet.";
     row.append(cell);
@@ -127,12 +127,7 @@ function renderOrders(orders) {
     quantity.textContent = Number(order.quantity).toLocaleString("en-US");
     const average = document.createElement("td");
     average.textContent = money.format(Number(order.average_fill_price));
-    const reference = document.createElement("td");
-    const referenceCode = document.createElement("code");
-    referenceCode.textContent = order.system_ref;
-    reference.append(referenceCode);
-
-    row.append(filled, actionCell, contractCell, quantity, average, reference);
+    row.append(filled, actionCell, contractCell, quantity, average);
     body.append(row);
   });
 }
@@ -397,7 +392,7 @@ function applySnapshot(snapshot) {
     "[data-live-buying-power]",
     `${money.format(Number(account.buying_power))} buying power`,
   );
-  updateText("[data-live-account-id]", account.account_id);
+  updateText("[data-live-deployment-alias]", account.deployment_alias || "v13-5-paper");
   document.querySelectorAll("[data-live-generated-at]").forEach((element) => {
     element.textContent = easternTime.format(new Date(snapshot.generated_at));
     element.setAttribute("datetime", snapshot.generated_at);
@@ -444,6 +439,9 @@ async function refreshSnapshot() {
     if (!response.ok) throw new Error("snapshot unavailable");
     const snapshot = await response.json();
     applySnapshot(snapshot);
+    document.querySelectorAll("[data-snapshot-download]").forEach((link) => {
+      link.href = SNAPSHOT_PATH;
+    });
   } catch {
     setFeedError();
   }
