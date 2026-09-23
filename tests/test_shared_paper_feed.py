@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from datetime import UTC, datetime
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import parse_qs, urlsplit
 
 from scripts.publish_shared_paper_feed import canonical_hash, publish, validate_bundle
 from scripts.verify_shared_paper_page import verify_deployed_page
@@ -162,6 +162,44 @@ class SharedPaperFeedTests(unittest.TestCase):
             )
             self.assertEqual(result["snapshot_hash"], bundle["snapshot"]["snapshot_hash"])
             self.assertEqual(result["captured_at"], bundle["compatibility"]["generated_at"])
+
+    def test_deployed_page_verifier_retries_until_the_new_pages_edge_propagates(self) -> None:
+        bundle = fixture_bundle()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            incoming = root / "bundle.json"
+            public_root = root / "docs"
+            incoming.write_text(json.dumps(bundle), encoding="utf-8")
+            publish(incoming, public_root=public_root, mode="site-only", max_age_seconds=5400)
+            expected_json = (public_root / "assets/data/live-paper-snapshot.json").read_bytes()
+            expected_script = (public_root / "assets/data/live-paper-snapshot.js").read_bytes()
+            stale = json.loads(expected_json)
+            stale["generated_at"] = "2026-09-22T20:59:00Z"
+            stale["signalquarry_snapshot_hash"] = "sha256:" + "0" * 64
+            stale["artifact_hash"] = canonical_hash({key: value for key, value in stale.items() if key != "artifact_hash"})
+            stale_json = json.dumps(stale).encode()
+            attempts: list[int] = []
+            waits: list[float] = []
+
+            def fetch(url: str) -> bytes:
+                attempt = int(parse_qs(urlsplit(url).query)["verify"][0])
+                attempts.append(attempt)
+                if attempt < 2:
+                    return stale_json if urlsplit(url).path.endswith(".json") else b"stale browser snapshot"
+                return expected_json if urlsplit(url).path.endswith(".json") else expected_script
+
+            result = verify_deployed_page(
+                public_root,
+                "https://pages.example/repo/",
+                attempts=4,
+                timeout_seconds=30,
+                fetch=fetch,
+                sleep=waits.append,
+            )
+
+            self.assertEqual(result["snapshot_hash"], bundle["snapshot"]["snapshot_hash"])
+            self.assertEqual(attempts, [0, 0, 1, 1, 2, 2])
+            self.assertEqual(waits, [5.0, 5.0])
 
     def test_deployed_page_verifier_rejects_a_different_valid_capture(self) -> None:
         bundle = fixture_bundle()
