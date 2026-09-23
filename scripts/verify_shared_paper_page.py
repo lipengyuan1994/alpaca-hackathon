@@ -19,11 +19,13 @@ except ImportError:  # Direct script execution from the Pages workflow.
 
 JSON_PATH = "assets/data/live-paper-snapshot.json"
 SCRIPT_PATH = "assets/data/live-paper-snapshot.js"
+DEFAULT_PROPAGATION_ATTEMPTS = 36
+DEFAULT_PROPAGATION_TIMEOUT_SECONDS = 180.0
 
 
 def _fetch(url: str) -> bytes:
     request = Request(url, headers={"Cache-Control": "no-cache", "Pragma": "no-cache"})
-    with urlopen(request, timeout=15) as response:
+    with urlopen(request, timeout=10) as response:
         if response.status != 200:
             raise ValueError("O_DEPLOYED_FEED_HTTP_STATUS_INVALID")
         return response.read()
@@ -44,20 +46,25 @@ def verify_deployed_page(
     public_root: Path,
     base_url: str,
     *,
-    attempts: int = 12,
+    attempts: int = DEFAULT_PROPAGATION_ATTEMPTS,
     wait_seconds: float = 5.0,
+    timeout_seconds: float = DEFAULT_PROPAGATION_TIMEOUT_SECONDS,
     fetch: Any = _fetch,
     sleep: Any = time.sleep,
+    monotonic: Any = time.monotonic,
 ) -> dict[str, str]:
     """Retry Pages propagation and verify JSON identity plus browser fallback."""
-    if not base_url.startswith("https://") or attempts < 1:
+    if not base_url.startswith("https://") or attempts < 1 or wait_seconds < 0 or timeout_seconds <= 0:
         raise ValueError("O_DEPLOYED_SITE_URL_INVALID")
     expected, expected_script = _read_local(public_root)
     expected_hash = expected.get("signalquarry_snapshot_hash")
     expected_time = expected.get("generated_at")
     last_error: Exception | None = None
+    deadline = monotonic() + timeout_seconds
 
     for attempt in range(attempts):
+        if monotonic() >= deadline:
+            break
         try:
             query = urlencode({"verify": attempt})
             remote_json = json.loads(fetch(f"{base_url.rstrip('/')}/{JSON_PATH}?{query}"))
@@ -82,7 +89,9 @@ def verify_deployed_page(
         except (HTTPError, URLError, TimeoutError, OSError, ValueError, json.JSONDecodeError) as exc:
             last_error = exc
             if attempt + 1 < attempts:
-                sleep(wait_seconds)
+                remaining = deadline - monotonic()
+                if remaining > 0:
+                    sleep(min(wait_seconds, remaining))
 
     reason = str(last_error) if last_error and str(last_error).isupper() else "O_DEPLOYED_FEED_NOT_PROPAGATED"
     raise SystemExit(reason) from last_error
